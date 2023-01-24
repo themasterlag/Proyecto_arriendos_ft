@@ -1,0 +1,40 @@
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.input-file-container {
+	position: relative;
+	width: 225px;
+}
+
+.input-file-trigger {
+	display: block;
+	padding: 14px 45px;
+	background: #3ab4e4;
+	color: #fff;
+	font-size: 1em;
+	transition: all .4s;
+	cursor: pointer;
+}
+
+.input-file {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 225px;
+	padding: 14px 0;
+	opacity: 0;
+	cursor: pointer;
+  border-bottom: #34495E;
+}
+
+/* some styles for interactions */
+.input-file:hover + .input-file-trigger,
+.input-file:focus + .input-file-trigger,
+.input-file-trigger:hover,
+.input-file-trigger:focus {
+	background: #34495E;
+	color: #099ff7;
+}
+
