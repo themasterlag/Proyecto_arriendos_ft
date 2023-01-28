@@ -1,82 +1,832 @@
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h4 class="card-title">Registro</h4>
-                        <p class="card-category">Selecciona que quieres registrar</p>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Registros</h4>
+            <p class="card-category">¿Que quieres registrar?</p>
+          </div>
+          <div class="card-body">
+            <mat-accordion>
+              <mat-expansion-panel hideToggle> </mat-expansion-panel>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Datos del Tercero</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <!--formulario del tercero-->
+                <form
+                  [formGroup]="formulariotercero"
+                  (ngSubmit)="registrartercero()"
+                >
+                  <div class="row">
+                    <div class="col-md-2">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Tipo persona"
+                          (selectionChange)="validartipopersona($event.value)"
+                          formControlName="tipo_documento"
+                        >
+                          <mat-option value="Cedula"> Cedula </mat-option>
+                          <mat-option value="Cedula_Extrangeria">
+                            Cedula extranjería
+                          </mat-option>
+                          <mat-option value="Nit"> Nit </mat-option>
+                        </mat-select>
+                      </mat-form-field>
                     </div>
-                    <div class="card-body">
-                      
-                            <mat-accordion>
-                                <mat-expansion-panel >
-                                  <mat-expansion-panel-header>
-                                    
-                                    <mat-panel-title>
-                                        <h6 class="text-info">Datos Del Tercero</h6>
-                                    </mat-panel-title>
-                                  </mat-expansion-panel-header>
-                                  <div class="row">
-                                    <div class="col-md-2">
-                                      <mat-form-field class="example-full-width" >
-                                            
-                                 
-                                          <mat-select placeholder="Tipo De Identificacion" formControlName ="tipo_documento">
-                                            <mat-option  value="Cedula" >
-                                              CEDULA
-                                            </mat-option>
-                                          </mat-select>
-                                        </mat-form-field> 
-                                    </div>
-
-                               
-                                    <div class="col-md-2">
-                                      <mat-form-field class="example-full-width" >
-                                          <input matInput placeholder="Fecha De Solicitud" type="date" formControlName ="fecha_solicitud">
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <mat-form-field class="example-full-width" >
-                                          <input matInput placeholder="Nombre del solicitante" type="text" formControlName ="nombre_solicitante" >
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <mat-form-field class="example-full-width" >
-                                          <input matInput placeholder="Cargo" type="text" formControlName ="cargo" >
-                                        </mat-form-field>
-                                    </div>
-                                  
-                                    <div class="col-md-3">
-                                        <mat-form-field class="example-full-width" >
-                                          <input matInput placeholder="Encargado" type="text" formControlName ="encargado">
-                                        </mat-form-field>
-                                    </div>
-                                   
-                                </div>
-
-                                </mat-expansion-panel>
-                              </mat-accordion>
-
-           
+                    <div class="col-md-2">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Numero De Documento"
+                          type="number"
+                          formControlName="numero_documento"
+                        />
+                      </mat-form-field>
                     </div>
+                    <div class="natural col-md-8" *ngIf="tipopersona">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <mat-form-field class="example-full-width">
+                            <input
+                              matInput
+                              placeholder="Nombre Del Tercero"
+                              type="text"
+                              formControlName="nombres"
+                            />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                          <mat-form-field class="example-full-width">
+                            <input
+                              matInput
+                              placeholder="Apellidos Del Tercero"
+                              type="text"
+                              formControlName="apellidos"
+                            />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                          <mat-form-field class="example-full-width">
+                            <mat-select
+                              placeholder="Género"
+                              formControlName="genero"
+                            >
+                              <mat-option value="Masculino">
+                                Masculino
+                              </mat-option>
+                              <mat-option value="Femenino">
+                                Femenino
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="juridica col-md-8" *ngIf="!tipopersona">
+                      <div class="row">
+                        <div class="col-md-1">
+                          <mat-form-field class="example-full-width">
+                            <input
+                              matInput
+                              placeholder="DV"
+                              type="number"
+                              formControlName="digito_verificacion"
+                            />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-11">
+                          <mat-form-field class="example-full-width">
+                            <input
+                              matInput
+                              placeholder="Razon social"
+                              type="text"
+                              formControlName="razon_social"
+                            />
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Departamento"
+                          formControlName="departamento"
+                          (selectionChange)="filtrardepar($event.value)"
+                        >
+                          <mat-option
+                            [value]="d.id_departamento"
+                            *ngFor="let d of departamentos"
+                          >
+                            {{ d.departamento }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4" *ngIf="filtermuni">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Municipio"
+                          formControlName="id_municipio"
+                        >
+                          <mat-option
+                            [value]="m.id_municipio"
+                            *ngFor="let m of municipiosfiltro"
+                          >
+                            {{ m.municipio }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Dirección"
+                          type="text"
+                          formControlName="direccion"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Número Contacto 1"
+                          type="number"
+                          formControlName="numero_contacto"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Número Contacto 2"
+                          type="number"
+                          formControlName="numero_contacto2"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Correo Electronico"
+                          type="email"
+                          formControlName="email"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Fecha De Nacimiento"
+                          type="date"
+                          formControlName="fecha_nacimiento"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <button
+                    mat-raised-button
+                    type="submit"
+                    class="btn btn-info pull-right"
+                    id="button-guardar"
+                  >
+                    Guardar
+                  </button>
+                </form>
+              </mat-expansion-panel>
+            </mat-accordion>
+
+            <hr />
+
+ <!--formulario pdv-->
+            <mat-accordion>
+              <mat-expansion-panel hideToggle> </mat-expansion-panel>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Datos Del Pdv</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <hr />
+                <div class="row" *ngIf="propietariostabla.length > 0">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-8">
+                    <div class="card">
+                      <div class="card-header card-header-success">
+                        <h4 class="card-title">
+                          Propietarios del nuevo punto de venta
+                        </h4>
+                        <p class="card-category">
+                          Aqui econtraras todos los propietarios a relacionar en
+                          el nuevo punto de venta
+                        </p>
+                      </div>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <thead class="text-info">
+                              <th>TIPO DOCUMENTO</th>
+                              <th>IDENTIFICACION</th>
+                              <th>NOMBRES</th>
+                              <th>ACCIONES</th>
+                            </thead>
+                            <tbody>
+                              <tr
+                                *ngFor="
+                                  let pt of propietariostabla;
+                                  let i = index
+                                "
+                              >
+                                <td>{{ pt.tipoid }}</td>
+                                <td>{{ pt.identificacion }}</td>
+                                <td
+                                  *ngIf="pt.nombres == '' || pt.nombres == null"
+                                >
+                                  {{ pt.razon }}
+                                </td>
+                                <td *ngIf="pt.razon == null || pt.razon == ''">
+                                  {{ pt.nombres }} {{ pt.apellidos }}
+                                </td>
+                                <td>
+                                  <button
+                                    class="btn btn-danger"
+                                    (click)="delitem(i)"
+                                  >
+                                    <span class="material-symbols-outlined">
+                                      eliminar
+                                    </span>
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-2"></div>
                 </div>
-            </div></div></div></div>
+                <hr />
 
-                           
+                <div class="row">
+                  <div class="col-md-12">
+                    <mat-form-field class="example-full-width">
+                      <mat-select
+                        placeholder="Propietario"
+                        (selectionChange)="addpropietario($event.value)"
+                      >
+                        <mat-option
+                          [value]="c.id_cliente"
+                          *ngFor="let c of clientes"
+                        >
+                          {{ c.numero_documento }} - {{ c.nombres }}
+                          {{ c.apellidos }} {{ c.razon_social }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
 
-                      
+                <form [formGroup]="formulariopdv" (ngSubmit)="registropdv()">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Nombre Comercial"
+                          type="text"
+                          formControlName="nombre_comercial"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input 
+                        matInput
+                        placeholder="Codigo Citio de venta"
+                        type="number"
+                        
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input 
+                        matInput
+                        placeholder="Codigo Oficina"
+                        type="number"
+                        
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Departamento"
+                          (selectionChange)="filtrardepar($event.value)"
+                        >
+                          <mat-option
+                            [value]="d.id_departamento"
+                            *ngFor="let d of departamentos"
+                          >
+                            {{ d.departamento }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4" *ngIf="filtermuni">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Municipio"
+                          formControlName="id_municipio"
+                        >
+                          <mat-option
+                            [value]="m.id_municipio"
+                            *ngFor="let m of municipiosfiltro"
+                          >
+                            {{ m.municipio }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
 
-                       
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="Zona"
+                          (selectionChange)="filtrarmicrozonas($event.value)"
+                        >
+                          <mat-option
+                            [value]="z.id_zona"
+                            *ngFor="let z of zonas"
+                          >
+                            {{ z.zona }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4" *ngIf="filtermicrozonas">
+                      <mat-form-field class="example-full-width">
+                        <mat-select
+                          placeholder="MicroZona"
+                          formControlName="microzona"
+                        >
+                          <mat-option
+                            [value]="m.id_microzona"
+                            *ngFor="let m of microzonasfiltro"
+                          >
+                            {{ m.microzona }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Dirección"
+                          type="text"
+                          formControlName="direccion"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Area En Mts Cuadrados"
+                          type="number"
+                          formControlName="area_local"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Latitud"
+                          type="text"
+                          formControlName="latitud"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Longitud"
+                          type="text"
+                          formControlName="longitud"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Codigo Glpi"
+                          type="number"
+                          formControlName="codigo_glpi"
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                      <mat-form-field class="example-full-width">
+                        <input
+                          matInput
+                          placeholder="Ficha Catastral"
+                          type="number"
+                          formControlName="numero_ficha_catastral"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <mat-form-field class="example-full-width">
+                        <textarea
+                          matInput
+                          placeholder="Observaciones"
+                          rows="5"
+                          formControlName="observacion"
+                        ></textarea>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                      <mat-checkbox
+                        class="example-margin"
+                        formControlName="linea_vista"
+                        value="true"
+                        >Linea De Vista</mat-checkbox
+                      ><br />
+                      <mat-checkbox
+                        class="example-margin"
+                        formControlName="sanitario"
+                        value="true"
+                        >Sanitario</mat-checkbox
+                      ><br />
+                      <mat-checkbox
+                        class="example-margin"
+                        formControlName="lavamanos"
+                        value="true"
+                        >Lavamanos</mat-checkbox
+                      ><br />
+                      <mat-checkbox
+                        class="example-margin"
+                        formControlName="poceta"
+                        value="true"
+                        >Poceta</mat-checkbox
+                      >
+                    </div>
+                  </div>
+                  <button
+                    mat-raised-button
+                    type="submit"
+                    class="btn btn-info pull-right"
+                    id="button-guardar"
+                  >
+                    Guardar
+                  </button>
+                </form>
+              </mat-expansion-panel>
+            </mat-accordion>
+
+            <hr />
+
+<!--form contrato -->
+
+<mat-accordion>
+  <mat-expansion-panel hideToggle> </mat-expansion-panel>
+  <mat-expansion-panel
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h6 class="text-info">Datos del contrato</h6>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+     <hr>
+    <form [formGroup]="formulariocontrato" (ngSubmit)="registrocontrato()">
+      <div class="row">
+        <div class="col-md-6" style="padding: 10px; border-right:1px solid #ccc;">
+          <h5 ><strong>Responsable y/o Arrendador</strong></h5>
+          <div class="col-md-12">
+            <mat-form-field class="example-full-width">
+              <mat-select
+                placeholder="Responsable"
+               formControlName="id_clienteresponsable"
+              >
+                <mat-option
+                  [value]="c.id_cliente"
+                  *ngFor="let c of clientes"
+                >
+                  {{ c.numero_documento }} - {{ c.nombres }}
+                  {{ c.apellidos }} {{ c.razon_social }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <h5 ><strong>Carga Tributaria </strong></h5>
+            <mat-checkbox
+              class="example-margin"
+              formControlName="iva"
+              value="true"
+              >Iva</mat-checkbox
+            ><br />
+            <mat-checkbox
+              class="example-margin"
+              formControlName="rete_iva"
+              value="true"
+              >Rete Iva</mat-checkbox
+            ><br />
+            <mat-checkbox
+              class="example-margin"
+              formControlName="rete_fuente"
+              value="true"
+              >Retefuente</mat-checkbox
+            >
+          </div>
 
 
-                      
-                 
+        </div>
+        <div class="col-md-6" style="padding: 10px; border-left:1px solid #ccc;">
+          <h5 ><strong>Autorizado</strong></h5>
+          <div class="col-md-12">
+            <mat-form-field class="example-full-width">
+              <mat-select
+                placeholder="Autorizado"
+               formControlName="id_clienteautorizado"
+              >
+                <mat-option
+                  [value]="c.id_cliente"
+                  *ngFor="let c of clientes"
+                >
+                  {{ c.numero_documento }} - {{ c.nombres }}
+                  {{ c.apellidos }} {{ c.razon_social }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="row">
+           <div class="col-md-6">
+            <mat-form-field class="example-full-width">
+              <mat-select
+                placeholder="Entidad Bancaria"
+               formControlName="entidad_bancaria"
+              >
+                <mat-option
+                  [value]="b.id_entidad_bancaria"
+                  *ngFor="let b of bancos"
+                >
+                  {{b.entidad_bancaria}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
 
+          <div class="col-md-6">
+            <mat-form-field class="example-full-width">
+              <mat-select
+                placeholder="Tipo de Cuenta"
+                formControlName="id_tipo_cuenta"
+               
+              >
+                <mat-option
+                  [value]="t.id_tipo_cuenta"
+                  *ngFor="let t of tipocuentas"
+                >
+                  {{t.tipo_cuenta}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-                      
+        </div>
 
-   
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field class="example-full-width">
+              <input
+                matInput
+                placeholder="Numero De Cuenta"
+                type="number"
+                formControlName="numero_cuenta"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+        </div>
 
-  
+      
+       </div>
+       <hr>
+       <h5 ><strong>Parametros</strong></h5>
+      <div class="row" >
+      <div class="col-md-12">
+        <mat-form-field class="example-full-width">
+          <mat-select
+            placeholder="Punto de venta"
+           formControlName="id_punto_venta"
+          >
+            <mat-option
+              [value]="p.id_punto_venta"
+              *ngFor="let p of pdv"
+            >
+              {{p.nombre_comercial}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Fecha Inicio Contrato"
+              type="date"
+              formControlName="fecha_inicio_contrato"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Fecha Fin Contrato"
+              type="date"
+              formControlName="fecha_fin_contrato"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Canon De Arriendo $$$"
+              type="number"
+              formControlName="valor_canon"
+            />
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Valor Administracion $$$"
+              type="number"
+              formControlName="valor_adminstracion"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Porcentaje de aumento %"
+              type="number"
+              formControlName="incremento_anual"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="example-full-width">
+            <input
+              matInput
+              placeholder="Porcentaje de aumento adicional %"
+              type="number"
+              formControlName="incremento_adicional"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-checkbox
+          class="example-margin"
+          formControlName="poliza"
+          value="true"
+          >Poliza</mat-checkbox
+        >
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field class="example-full-width">
+            <mat-select
+              placeholder="Servicios Publicos"
+              (selectionChange)="addservicio($event.value)"
+              formControlName="id_tipo_servicio"
+            >
+              <mat-option [value]="s.id_tipo_servicio" *ngFor="let s of serviciospublicos"> 
+                {{s.tipo_servicio}}
+              </mat-option>
+             
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <hr>
+      <div class="row" *ngIf="serviciostabla.length>0">
+      
+        <div class="col-md-12">
+          <table class="table">
+            <thead>
+              <tr>
+              <th>SERVICIO</th>
+              <th>PORCENTAJE</th>
+              <th>ACCION</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of serviciostabla let i = index" >
+                <td>
+                  {{s.nombre}}
+                </td>
+                <td>
+                  {{s.porcentaje}} %
+                </td>
+                <td>
+                  <a class="btn btn-danger" (click)="delserviciopublico(i)" >DELETE</a>
+                </td>
+                
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+       
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field class="example-full-width">
+            <textarea
+              matInput
+              placeholder="Observaciones"
+              rows="5"
+              formControlName="definicion"
+            ></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      
+        <button
+        mat-raised-button
+        type="submit"
+        class="btn btn-info pull-right"
+        id="button-guardar"
+      >
+        Guardar
+      </button>
+    </form>
+  </mat-expansion-panel>
+</mat-accordion>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -20,8 +20,6 @@ export class NavbarComponent implements OnInit {
           this.sidebarVisible = false;
     }
 
-    
-
     ngOnInit(){
       this.listTitles = ROUTES.filter(listTitle => listTitle);
       const navbar: HTMLElement = this.element.nativeElement;

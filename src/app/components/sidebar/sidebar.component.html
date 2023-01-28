@@ -48,7 +48,7 @@
         </li>
     </ul>
   </div>
-    <ul class="nav">
+    <ul class="nav" id="navigation">
         <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
             <a class="nav-link" [routerLink]="[menuItem.path]">
                 <i class="material-icons">{{menuItem.icon}}</i>

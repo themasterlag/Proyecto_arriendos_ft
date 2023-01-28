@@ -1,0 +1,19 @@
+.nav li a{
+    border-radius: 25px;
+}
+.nav-item{
+    border-radius: 25px;
+}
+.nav-link{
+    
+    border-radius: 25px;
+
+}
+.active > a { 
+    background-color: #ffe203 !important; 
+    border-radius: 25px;
+    color: black !important;
+}
+.sidebar .nav li a, .sidebar .nav li .dropdown-menu a{
+    border-radius: 25px !important;
+}

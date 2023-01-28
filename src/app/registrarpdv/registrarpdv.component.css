@@ -1,40 +1,42 @@
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+.card{
+    background: #e8e8e8; /* por ejemplo */
+    font-size: 18px; /* por ejemplo */
+    border-radius: 25px;
+  }
+#banner{
+    border-radius: 25px;
+    background: #ffe203;
+    
 }
-.input-file-container {
-	position: relative;
-	width: 225px;
+.card-category{
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 12px;
 }
-
-.input-file-trigger {
-	display: block;
-	padding: 14px 45px;
-	background: #3ab4e4;
-	color: #fff;
-	font-size: 1em;
-	transition: all .4s;
-	cursor: pointer;
+.card-title{
+    color: #1b4f35 !important;
+    font-weight: 900;
+    font-size: 18px;
 }
-
-.input-file {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 225px;
-	padding: 14px 0;
-	opacity: 0;
-	cursor: pointer;
-  border-bottom: #34495E;
+.example-full-width{
+    font-size: medium;
+    margin: auto;
+    border-radius: 25px;
 }
-
-/* some styles for interactions */
-.input-file:hover + .input-file-trigger,
-.input-file:focus + .input-file-trigger,
-.input-file-trigger:hover,
-.input-file-trigger:focus {
-	background: #34495E;
-	color: #099ff7;
+.card-body{
+    border-radius: 25px;
 }
-
+#mat-expansion-panel-header-1{
+    border-radius: 25px;
+}
+.mat-accordion .mat-expansion-panel:last-of-type{
+    border-radius: 25px;
+}
+.text-info{
+    color: #359b68 !important;
+    font-weight: 900;
+}
+#button-guardar{
+    background-color: #1b4f35 !important;
+    border-radius: 25px !important;
+}

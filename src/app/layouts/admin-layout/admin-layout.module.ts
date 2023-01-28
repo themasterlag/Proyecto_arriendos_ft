@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { DashboardComponent } from '../../dashboard/dashboard.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
@@ -18,10 +18,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-
-
+import { PagosComponent } from 'app/pagos/pagos.component';
+import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
 
 @NgModule({
   imports: [
@@ -37,14 +37,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTooltipModule,
     MatExpansionModule,
     MatCheckboxModule,
-    
-    
-   
- 
-    
   ],
   declarations: [
-    
     DashboardComponent,
     UserProfileComponent,
     TableListComponent,
@@ -54,11 +48,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     NotificationsComponent,
     UpgradeComponent,
     RegistrarpdvComponent,
-
-    
-  ],
-  providers:[
-    Validators
+    PagosComponent,
+    FiltroPdvCodigoPipe,
   ]
 })
 
