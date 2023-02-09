@@ -309,37 +309,39 @@
                 </div>
 
                 <form [formGroup]="formulariopdv" (ngSubmit)="registropdv()">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <mat-form-field class="example-full-width">
-                        <input
+                  
+
+                    <div class="row">
+                      <div class="col-md-3">
+                        <mat-form-field class="example-full-width">
+                          <input 
                           matInput
-                          placeholder="Nombre Comercial"
-                          type="text"
-                          formControlName="nombre_comercial"
-                        />
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md-4">
-                      <mat-form-field class="example-full-width">
-                        <input 
-                        matInput
-                        placeholder="Codigo Citio de venta"
-                        type="number"
-                        
-                        />
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md-4">
-                      <mat-form-field class="example-full-width">
-                        <input 
-                        matInput
-                        placeholder="Codigo Oficina"
-                        type="number"
-                        
-                        />
-                      </mat-form-field>
-                    </div>
+                          placeholder="Codigo Sitio de venta"
+                          type="number"
+                          formControlName="codigo_citio_venta"
+                          />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-3">
+                        <mat-form-field class="example-full-width">
+                          <input 
+                          matInput
+                          placeholder="Codigo Oficina"
+                          type="number"
+                          formControlName="codigo_oficina"
+                          />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field class="example-full-width">
+                          <input
+                            matInput
+                            placeholder="Nombre Comercial"
+                            type="text"
+                            formControlName="nombre_comercial"
+                          />
+                        </mat-form-field>
+                      </div>
                     <div class="col-md-4">
                       <mat-form-field class="example-full-width">
                         <mat-select

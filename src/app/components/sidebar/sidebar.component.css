@@ -17,3 +17,7 @@
 .sidebar .nav li a, .sidebar .nav li .dropdown-menu a{
     border-radius: 25px !important;
 }
+#logogana {
+    border-radius: 35px;
+    width: 180px;
+}
