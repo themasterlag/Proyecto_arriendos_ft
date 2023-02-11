@@ -1,0 +1,18 @@
+<div class="container-fluid">
+    <div class="modal fade show" style="display: block" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img class="card-img-top" src="./assets/img/logo-ganagana-amarillo-2.png" alt="Logo" />
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" placeholder="usuario" [(ngModel)]="usuario"/>
+                    <input type="text" class="form-control" placeholder="Contraseña" [(ngModel)]="clave"/>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" (click)="iniciarSesion()">Iniciar sesion</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
