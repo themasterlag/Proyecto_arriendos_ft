@@ -76,4 +76,8 @@ export class GeneralesService {
   traerpendientespagoarriendo(mes, anio) {
     return this.servicio.get(this.api + "preliquidacion/" + mes + "/" + anio);
   }
+
+  iniciarSesion(datos){
+    return this.servicio.post(this.api + "aut/login", datos);
+  }
 }
