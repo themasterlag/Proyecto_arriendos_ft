@@ -45,6 +45,14 @@ export class GeneralesService {
     return this.servicio.post(this.api + "autorizado", autorizado);
   }
 
+  traerAutorizado(){
+    return this.servicio.get(this.api + "autorizado");
+  }
+
+  traerConceptos(){
+    return this.servicio.get(this.api + "conceptos");
+  }
+
   registrarcontrato(contrato) {
     return this.servicio.post(this.api + "contrato", contrato);
   }

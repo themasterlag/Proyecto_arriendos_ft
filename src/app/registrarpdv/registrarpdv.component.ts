@@ -25,11 +25,19 @@ export class RegistrarpdvComponent implements OnInit {
   formulariopdv: FormGroup;
   formulariocontrato: FormGroup;
   listprop: any[] = [];
+  listAut: any[] = [];
+  listConceptos: any[] = [];
   listservicios: any[] = [];
   serviciosfilter: any[];
   clientes: any;
   clientesfilter: any;
+  autorizados: any;
+  autorizadosFilter: any;
+  conceptos: any;
+  conceptosFilter: any;
   propietariostabla: any = [];
+  autorizadosTabla: any = [];
+  conceptosTabla: any = [];
   serviciostabla: any = [];
   bancos: any;
   tipocuentas: any;
@@ -111,6 +119,8 @@ export class RegistrarpdvComponent implements OnInit {
     this.traertipocuentas();
     this.traerpdv();
     this.traerserviciospublicos();
+    // this.traerautorizado();
+    this.traerconceptos();
     Loading.remove();
   }
   traerserviciospublicos() {
@@ -177,6 +187,18 @@ export class RegistrarpdvComponent implements OnInit {
       (res) => {
         this.clientes = res;
         console.log(this.clientes);
+      },
+      (err) => {
+        console.log(err.message);
+      }
+    );
+  }
+
+  traerconceptos() {
+    this.servicio.traerConceptos().subscribe(
+      (res) => {
+        this.conceptos = res;
+        console.log(res, "conceptos");
       },
       (err) => {
         console.log(err.message);
@@ -334,7 +356,7 @@ export class RegistrarpdvComponent implements OnInit {
       rete_fuente: this.formulariocontrato.value.rete_fuente,
     };
 
-    console.log(this.id_pago + "aqui metodo pago");
+    // console.log(this.id_pago + "aqui metodo pago");
     let autorizado = {
       id_cliente: this.formulariocontrato.value.id_clienteautorizado,
       metodo_pago: this.id_pago,
@@ -476,6 +498,58 @@ export class RegistrarpdvComponent implements OnInit {
       );
     }
   }
+  addConceptos(value) {
+    this.listConceptos.push({
+      id_concepto: value,
+    });
+
+    this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
+
+    this.conceptosTabla.push({
+      id_concepto: this.conceptosFilter[0].id_concepto,
+      codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+      nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+    });
+  }
+
+  deliCon(i) {
+    this.conceptosTabla.splice(i, 1);
+    this.listConceptos.splice(i, 1);
+  }
+
+  // INOFRMACION DE LOS AUTROIZADOS
+  // traerautorizado() {
+  //   this.servicio.traerAutorizado().subscribe(
+  //     (res) => {
+  //       this.autorizados = res;
+  //       console.log(res, "autorizados");
+  //     },
+  //     (err) => {
+  //       console.log(err.message);
+  //     }
+  //   );
+  // }
+  // 
+  // addAutorizado(value) {
+  //   this.listAut.push({
+  //     id_autorizado: value,
+  //   });
+
+  //   this.autorizadosFilter = this.autorizados.filter((i) => i.id_autorizado == value);
+
+  //   this.autorizadosTabla.push({
+  //     id_cliente: this.autorizadosFilter[0].id_cliente,
+  //     metodo_pago: this.autorizadosFilter[0].metodo_pago,
+  //     entidad_bancaria: this.autorizadosFilter[0].entidad_bancaria,
+  //     numero_cuenta: this.autorizadosFilter[0].numero_cuenta,
+  //     id_tipo_cuenta: this.autorizadosFilter[0].id_tipo_cuenta,
+  //   });
+  // }
+
+  // deliAut(i) {
+  //   this.autorizadosTabla.splice(i, 1);
+  //   this.listAut.splice(i, 1);
+  // }
 
   
 
