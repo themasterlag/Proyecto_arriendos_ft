@@ -35,6 +35,9 @@ export class RegistrarpdvComponent implements OnInit {
   tipocuentas: any;
   pdv: any;
   serviciospublicos: any = [];
+  pago_efectivo: boolean = false;
+  pago_transferencia: boolean = false;
+  id_pago: any;
 
   constructor(
     public servicio: GeneralesService,
@@ -299,6 +302,28 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
+  cambiarModoPago(modo){
+  
+    switch (modo) {
+      case "efectivo":
+
+        this.pago_efectivo = true;
+        this.pago_transferencia = false;
+        this.id_pago = 2;
+                
+        break;
+      case "transferencia":
+        
+        this.pago_efectivo = false;
+        this.pago_transferencia = true;
+        this.id_pago = 1;
+    
+      default:
+        break;
+    }
+    
+  }
+
   registrocontrato() {
     Loading.pulse("Cargando");
     let responsable = {
@@ -309,9 +334,10 @@ export class RegistrarpdvComponent implements OnInit {
       rete_fuente: this.formulariocontrato.value.rete_fuente,
     };
 
+    console.log(this.id_pago + "aqui metodo pago");
     let autorizado = {
       id_cliente: this.formulariocontrato.value.id_clienteautorizado,
-      metodo_pago: 1,
+      metodo_pago: this.id_pago,
       entidad_bancaria: this.formulariocontrato.value.entidad_bancaria,
       numero_cuenta: this.formulariocontrato.value.numero_cuenta,
       id_tipo_cuenta: this.formulariocontrato.value.id_tipo_cuenta,
@@ -450,4 +476,10 @@ export class RegistrarpdvComponent implements OnInit {
       );
     }
   }
+
+  
+
 }
+
+
+
