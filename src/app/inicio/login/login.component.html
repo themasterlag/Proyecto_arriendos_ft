@@ -6,11 +6,14 @@
                     <img class="card-img-top" src="./assets/img/logo-ganagana-amarillo-2.png" alt="Logo" />
                 </div>
                 <div class="modal-body">
+                    <div *ngIf="errorLogin" class="alert" style="color: #8d363f; background-color: #f5c6cb;" role="alert">
+                        <h5 class="m-0"><strong>{{errorLogin}}</strong></h5>
+                    </div>                    
                     <input type="text" class="form-control" placeholder="usuario" [(ngModel)]="usuario"/>
-                    <input type="text" class="form-control" placeholder="Contraseña" [(ngModel)]="clave"/>
+                    <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="clave"/>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" (click)="iniciarSesion()">Iniciar sesion</button>
+                    <button class="btn" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
                 </div>
             </div>
         </div>

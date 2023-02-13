@@ -16,7 +16,8 @@ export let Path = {
       
     // url: 'http://localhost/api_administramos/'
   // url: 'http://54.174.81.71/administramos_software/api_administramos/'
-     url: 'http://10.250.9.36:3000/api/arriendos/'
+    //  url: 'http://10.250.9.36:3000/api/arriendos/'
+        url: 'http://localhost:3000/api/arriendos/'
       }
       
       export let ApiMail = {

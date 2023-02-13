@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AutenticacionService } from 'app/auth/autenticacion.service';
 
 declare const $: any;
 declare interface RouteInfo {
@@ -30,7 +31,7 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor() { }
+  constructor(public servicioAuth:AutenticacionService) { }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
@@ -41,4 +42,8 @@ export class SidebarComponent implements OnInit {
       }
       return true;
   };
+
+  cerrarSesion(){
+    this.servicioAuth.cerrarSesion();
+  }
 }
