@@ -72,7 +72,7 @@
               "buildOptimizer": false,
               "sourceMap": true,
               "optimization": {
-                "scripts": true,
+                "scripts": false,
                 "styles": {
                   "minify": false,
                   "inlineCritical": true

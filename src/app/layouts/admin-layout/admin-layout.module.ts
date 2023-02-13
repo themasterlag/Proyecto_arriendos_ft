@@ -19,6 +19,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
 import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
@@ -37,6 +39,7 @@ import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
     MatTooltipModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatButtonToggleModule,
   ],
   declarations: [
     DashboardComponent,

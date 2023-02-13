@@ -103,7 +103,7 @@ export class RegistrarpdvComponent implements OnInit {
       valor_adminstracion: ["", Validators.required],
       incremento_anual: ["", Validators.required],
       incremento_adicional: ["", Validators.required],
-      poliza: ["", Validators.required],
+      poliza: [false, Validators.required],
       definicion: ["", Validators.required],
     });
   }
@@ -393,7 +393,16 @@ export class RegistrarpdvComponent implements OnInit {
             contrato.id_responsable = idresponsable;
             contrato.id_autorizado = idautorizado;
 
-            this.servicio.registrarcontrato(contrato).subscribe(
+            let datos = new FormData();
+            let conceptosLista:any = [];
+            this.listConceptos.forEach(concepto => {
+              conceptosLista.push(concepto.id_concepto);
+            });       
+
+            datos.set("contrato", JSON.stringify(contrato));
+            datos.set("conceptos", conceptosLista);
+
+            this.servicio.registrarcontrato(datos).subscribe(
               (res: any) => {
                 if (res.estado == "1") {
                   this.registroserviciocontrato(res.id);

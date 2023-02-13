@@ -674,8 +674,14 @@
                 </mat-form-field>
               </div>
               <div class="row">            
-                  <div class="col-md-6" align="center">
-                    <button
+                  <div class="col-12" align="center">
+                    <mat-button-toggle-group class="w-75" name="fontStyle" aria-label="Font Style">
+                      <mat-button-toggle class="w-50" (click)="cambiarModoPago('efectivo')">Efecitvo</mat-button-toggle>
+                      <mat-button-toggle class="w-50" (click)="cambiarModoPago('transferencia')">Transferencia</mat-button-toggle>
+                    </mat-button-toggle-group>
+                  </div>
+
+                    <!-- <button
                     mat-raised-button
                     type="button"
                     class="btn btn-info"
@@ -683,11 +689,9 @@
                     (click)= "cambiarModoPago('efectivo')"            
                     >
                     Efecitvo
-                    </button>
-                  </div>
+                    </button> -->
                 
-                  <div class="col-md-6" align="center">
-                    <button
+                    <!-- <button
                     mat-raised-button
                     type="button"
                     class="btn btn-info"
@@ -695,11 +699,10 @@
                     (click)= "cambiarModoPago('transferencia')"
                     >
                     Transferencia
-                    </button>
-                  </div>
+                    </button> -->
               </div> 
             
-              <div *ngIf="pago_efectivo">
+              <!-- <div *ngIf="pago_efectivo">
               <div class="row">
                 <div class="col-md-6">
                 <mat-form-field class="example-full-width">
@@ -736,7 +739,7 @@
                 </div>
     
               </div> 
-              </div>  
+              </div>   -->
               
             <div *ngIf="pago_transferencia">
               <div class="row">
