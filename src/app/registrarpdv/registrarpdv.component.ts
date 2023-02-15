@@ -265,14 +265,14 @@ export class RegistrarpdvComponent implements OnInit {
   addservicio(value) {
     Confirm.prompt(
       "Sistema De Gestion De Arriendos",
-      "Cual es el porcentaje a pagar?",
+      "Cual es el valor a pagar?",
       "",
       "OK",
       "Cancel",
       (porcen) => {
         this.listservicios.push({
           id_tipo_servicio: value,
-          porcentaje: porcen,
+          valor: porcen,
         });
 
         this.serviciosfilter = this.serviciospublicos.filter(
@@ -283,7 +283,7 @@ export class RegistrarpdvComponent implements OnInit {
 
         this.serviciostabla.push({
           nombre: this.serviciosfilter[0].tipo_servicio,
-          porcentaje: porcen,
+          valor: porcen,
         });
       },
       () => {},

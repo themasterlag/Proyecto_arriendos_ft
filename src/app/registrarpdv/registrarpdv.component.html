@@ -92,7 +92,7 @@
 
                     <div class="juridica col-md-8" *ngIf="!tipopersona">
                       <div class="row">
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                           <mat-form-field class="example-full-width">
                             <input
                               matInput
@@ -102,7 +102,7 @@
                             />
                           </mat-form-field>
                         </div>
-                        <div class="col-md-11">
+                        <div class="col-md-10">
                           <mat-form-field class="example-full-width">
                             <input
                               matInput
@@ -192,12 +192,21 @@
                       </mat-form-field>
                     </div>
                     <div class="col-md-3">
-                      <mat-form-field class="example-full-width">
+                      <mat-form-field class="example-full-width" *ngIf="tipopersona">
                         <input
                           matInput
                           placeholder="Fecha De Nacimiento"
                           type="date"
                           formControlName="fecha_nacimiento"
+                        />
+                      </mat-form-field>
+                    
+                      <mat-form-field class="example-full-width" *ngIf="!tipopersona">
+                        <input
+                          matInput
+                          placeholder="Fecha De Creación"
+                          type="date"
+                          formControlName="fecha_creacion"
                         />
                       </mat-form-field>
                     </div>
@@ -864,15 +873,21 @@
               </mat-form-field>
             </div>
 
-            <div class="col-md-3">
-              <mat-form-field class="example-full-width">
-                <input
+            <div class="col-md-1">
+              <!-- <mat-form-field class="example-full-width"> -->
+                <!-- <input
                   matInput
-                  placeholder="Porcentaje de aumento %"
+                  placeholder="IPC"
                   type="number"
                   formControlName="incremento_anual"
-                />
-              </mat-form-field>
+                /> -->
+                <br>
+                <mat-checkbox
+                class="example-margin"
+                formControlName="IPC"
+                value="true"
+                >IPC</mat-checkbox>
+              <!-- </mat-form-field> -->
             </div>
             <div class="col-md-3">
               <mat-form-field class="example-full-width">
@@ -886,6 +901,7 @@
             </div>
 
             <div class="col-md-3">
+              <br>
               <mat-checkbox
               class="example-margin"
               formControlName="poliza"
@@ -919,7 +935,7 @@
                 <thead>
                   <tr>
                   <th>SERVICIO</th>
-                  <th>PORCENTAJE</th>
+                  <th>VALOR</th>
                   <th>ACCION</th>
                 </tr>
                 </thead>
@@ -929,7 +945,7 @@
                       {{s.nombre}}
                     </td>
                     <td>
-                      {{s.porcentaje}} %
+                      {{s.valor}} 
                     </td>
                     <td>
                       <a class="btn btn-danger" (click)="delserviciopublico(i)" >DELETE</a>
