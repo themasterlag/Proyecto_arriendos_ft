@@ -41,7 +41,7 @@ export class RegistrarpdvComponent implements OnInit {
   serviciostabla: any = [];
   bancos: any;
   tipocuentas: any;
-  pdv: any;
+  pdv: any = [];
   serviciospublicos: any = [];
   pago_efectivo: boolean = false;
   pago_transferencia: boolean = false;
@@ -324,29 +324,24 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
-  cambiarModoPago(modo){
-  
+  cambiarModoPago(modo) {
     switch (modo) {
       case "efectivo":
-
         this.pago_efectivo = true;
         this.pago_transferencia = false;
         this.id_pago = 2;
-                
+
         break;
       case "transferencia":
-        
         this.pago_efectivo = false;
         this.pago_transferencia = true;
         this.id_pago = 1;
-    
       default:
         break;
     }
-    
   }
 
-  registrocontrato() {
+  registrocontrato(): void {
     Loading.pulse("Cargando");
     let responsable = {
       id_cliente: this.formulariocontrato.value.id_clienteresponsable,
@@ -394,10 +389,10 @@ export class RegistrarpdvComponent implements OnInit {
             contrato.id_autorizado = idautorizado;
 
             let datos = new FormData();
-            let conceptosLista:any = [];
-            this.listConceptos.forEach(concepto => {
+            let conceptosLista: any = [];
+            this.listConceptos.forEach((concepto) => {
               conceptosLista.push(concepto.id_concepto);
-            });       
+            });
 
             datos.set("contrato", JSON.stringify(contrato));
             datos.set("conceptos", conceptosLista);
@@ -448,6 +443,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.enviarregistrotercero(formtercer).subscribe(
       (res) => {
         console.log(res);
+        this.traerclientes();
       },
       (err) => {
         console.log(err.message);
@@ -477,11 +473,11 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registropdv() {
-    console.log(this.formulariopdv.value);
     this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
       (res: any) => {
         if (res.estado == "1") {
           this.resgistropropietarios(res.id);
+          this.traerpdv();
         } else {
           console.log(res);
         }
@@ -490,6 +486,8 @@ export class RegistrarpdvComponent implements OnInit {
         console.log(err.message);
       }
     );
+    this.traerpdv;
+    console.log("refresh");
   }
 
   resgistropropietarios(id) {
@@ -538,7 +536,7 @@ export class RegistrarpdvComponent implements OnInit {
   //     }
   //   );
   // }
-  // 
+  //
   // addAutorizado(value) {
   //   this.listAut.push({
   //     id_autorizado: value,
@@ -559,10 +557,4 @@ export class RegistrarpdvComponent implements OnInit {
   //   this.autorizadosTabla.splice(i, 1);
   //   this.listAut.splice(i, 1);
   // }
-
-  
-
 }
-
-
-

@@ -1,0 +1,21 @@
+.modal-content{
+    background-color: #d8d8d8;
+    border-radius: 25px;
+}
+.form-control{
+    border-radius: 25px;
+    text-align: center;
+    background-image: linear-gradient(
+        to top, #1b4f35 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px 
+    );
+}
+.modal-footer{
+    display: unset;
+    text-align: center;
+}
+.btn-success{
+    text-align: center;
+    border-radius: 25px;
+    background-color: #1b4f35;
+    
+}

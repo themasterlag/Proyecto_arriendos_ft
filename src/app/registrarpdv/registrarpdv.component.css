@@ -48,3 +48,15 @@
     background-color: #1b4f35 !important;
     border-radius: 25px !important;
 }
+.w-75{
+    border-radius: 25px;
+}
+.w-50{
+    border-radius: 25px;
+}
+.mat-button-toggle-checked{
+    background-color: #1b4f3594;
+}
+::ng-deep .mat-select-content{
+    background-color: #1b4f35;
+}
