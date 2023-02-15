@@ -3,6 +3,7 @@ import { GeneralesService } from "app/services/generales.service";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
+import swal from "sweetalert2";
 
 @Component({
   selector: "app-registrarpdv",
@@ -16,6 +17,7 @@ export class RegistrarpdvComponent implements OnInit {
   departamentos: any;
   municipios: any;
   municipiosfiltro: any;
+  tipopunto: any;
   zonas: any;
   microzonas: any;
   microzonasfiltro: any;
@@ -46,6 +48,7 @@ export class RegistrarpdvComponent implements OnInit {
   pago_efectivo: boolean = false;
   pago_transferencia: boolean = false;
   id_pago: any;
+  incremento_anual = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -70,21 +73,22 @@ export class RegistrarpdvComponent implements OnInit {
 
     this.formulariopdv = this.formularioter.group({
       nombre_comercial: ["", Validators.required],
-      id_municipio: ["", Validators.required],
-      microzona: ["", Validators.required],
-      direccion: ["", Validators.required],
+      id_municipio: [""],
+      microzona: [null],
+      direccion: [""],
       area_local: [""],
       latitud: [""],
       longitud: [""],
-      codigo_glpi: ["", Validators.required],
-      numero_ficha_catastral: ["", Validators.required],
-      observacion: ["", Validators.required],
+      codigo_glpi: [""],
+      numero_ficha_catastral: [""],
+      observacion: [""],
       linea_vista: [null],
       sanitario: [null],
       lavamanos: [null],
       poceta: [null],
       codigo_sitio_venta: [null],
       codigo_oficina: [null],
+      tipo_punto: [""],
     });
 
     this.formulariocontrato = this.formularioter.group({
@@ -100,11 +104,11 @@ export class RegistrarpdvComponent implements OnInit {
       fecha_inicio_contrato: ["", Validators.required],
       fecha_fin_contrato: ["", Validators.required],
       valor_canon: ["", Validators.required],
-      valor_adminstracion: ["", Validators.required],
-      incremento_anual: ["", Validators.required],
-      incremento_adicional: ["", Validators.required],
-      poliza: [false, Validators.required],
-      definicion: ["", Validators.required],
+      valor_adminstracion: [""],
+      incremento_anual: [null],
+      incremento_adicional: [""],
+      poliza: [false],
+      definicion: [""],
     });
   }
 
@@ -120,8 +124,19 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerpdv();
     this.traerserviciospublicos();
     // this.traerautorizado();
+    this.traertipopunto();
     this.traerconceptos();
     Loading.remove();
+  }
+
+  traertipopunto() {
+    try {
+      this.servicio.traertipodepunto().subscribe((res: any) => {
+        this.tipopunto = res;
+      });
+    } catch (error) {
+      console.error(error.message, this.tipopunto);
+    }
   }
   traerserviciospublicos() {
     try {
@@ -340,9 +355,22 @@ export class RegistrarpdvComponent implements OnInit {
         break;
     }
   }
+  checkIpc(value) {
+    switch (value) {
+      case true:
+        this.incremento_anual = 1;
+        return 1;
+      case false:
+        this.incremento_anual = null;
+        return null;
+      default:
+        break;
+    }
+  }
 
   registrocontrato(): void {
     Loading.pulse("Cargando");
+
     let responsable = {
       id_cliente: this.formulariocontrato.value.id_clienteresponsable,
       estado: "1",
@@ -364,7 +392,9 @@ export class RegistrarpdvComponent implements OnInit {
       id_punto_venta: this.formulariocontrato.value.id_punto_venta,
       id_usuario: 1,
       valor_canon: this.formulariocontrato.value.valor_canon,
-      incremento_anual: this.formulariocontrato.value.incremento_anual,
+      incremento_anual: this.checkIpc(
+        this.formulariocontrato.value.incremento_anual
+      ),
       incremento_adicional: this.formulariocontrato.value.incremento_adicional,
       fecha_inicio_contrato:
         this.formulariocontrato.value.fecha_inicio_contrato,
@@ -417,7 +447,6 @@ export class RegistrarpdvComponent implements OnInit {
         console.log(err.message);
       }
     );
-
     console.log(this.formulariocontrato.value);
   }
 
@@ -439,7 +468,6 @@ export class RegistrarpdvComponent implements OnInit {
     };
 
     console.log(formtercer);
-
     this.servicio.enviarregistrotercero(formtercer).subscribe(
       (res) => {
         console.log(res);
@@ -449,6 +477,7 @@ export class RegistrarpdvComponent implements OnInit {
         console.log(err.message);
       }
     );
+    swal.fire("Datos Registrados");
   }
 
   addpropietario(value) {
@@ -473,6 +502,7 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registropdv() {
+    console.log(this.formulariopdv.value);
     this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
       (res: any) => {
         if (res.estado == "1") {
@@ -487,6 +517,9 @@ export class RegistrarpdvComponent implements OnInit {
       }
     );
     this.traerpdv;
+    swal.fire(
+      `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
+    );
     console.log("refresh");
   }
 

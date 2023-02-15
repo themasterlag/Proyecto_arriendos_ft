@@ -45,11 +45,11 @@ export class GeneralesService {
     return this.servicio.post(this.api + "autorizado", autorizado);
   }
 
-  traerAutorizado(){
+  traerAutorizado() {
     return this.servicio.get(this.api + "autorizado");
   }
 
-  traerConceptos(){
+  traerConceptos() {
     return this.servicio.get(this.api + "conceptos");
   }
 
@@ -85,7 +85,11 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/" + mes + "/" + anio);
   }
 
-  iniciarSesion(datos){
+  iniciarSesion(datos) {
     return this.servicio.post(this.api + "aut/login", datos);
+  }
+
+  traertipodepunto() {
+    return this.servicio.get(this.api + "tipocontrato");
   }
 }
