@@ -310,6 +310,7 @@
                       <mat-select
                         placeholder="Propietario"
                         (selectionChange)="addpropietario($event.value)"
+                        formControlName="propietario"
                       >
                         <mat-option
                           [value]="c.id_cliente"
@@ -360,6 +361,7 @@
                         <mat-select
                           placeholder="Departamento"
                           (selectionChange)="filtrardepar($event.value)"
+                          formControlName="departamento"
                         >
                           <mat-option
                             [value]="d.id_departamento"

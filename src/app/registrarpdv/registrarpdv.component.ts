@@ -5,11 +5,13 @@ import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
 import swal from "sweetalert2";
 
+
 @Component({
   selector: "app-registrarpdv",
   templateUrl: "./registrarpdv.component.html",
   styleUrls: ["./registrarpdv.component.css"],
 })
+
 export class RegistrarpdvComponent implements OnInit {
   panelOpenState = false;
   tipopersona: boolean = null;
@@ -55,6 +57,7 @@ export class RegistrarpdvComponent implements OnInit {
     public formularioter: FormBuilder,
     private rutas: Router
   ) {
+
     this.formulariotercero = this.formularioter.group({
       tipo_documento: ["", Validators.required],
       numero_documento: ["", Validators.required],
@@ -69,6 +72,7 @@ export class RegistrarpdvComponent implements OnInit {
       numero_contacto2: ["", Validators.required],
       email: ["", Validators.required],
       fecha_nacimiento: ["", Validators.required],
+      departamento: [null, Validators.required]
     });
 
     this.formulariopdv = this.formularioter.group({
@@ -89,6 +93,8 @@ export class RegistrarpdvComponent implements OnInit {
       codigo_sitio_venta: [null],
       codigo_oficina: [null],
       tipo_punto: [""],
+      propietario: [null],
+      departamento: [null, Validators.required]
     });
 
     this.formulariocontrato = this.formularioter.group({
@@ -467,17 +473,25 @@ export class RegistrarpdvComponent implements OnInit {
       digito_verificacion: this.formulariotercero.value.digito_verificacion,
     };
 
-    console.log(formtercer);
     this.servicio.enviarregistrotercero(formtercer).subscribe(
       (res) => {
         console.log(res);
         this.traerclientes();
+        swal.fire("Datos Registrados").then(
+          (isConfirm) => {
+            this.formulariotercero.reset(); 
+            this.formulariotercero.markAsUntouched();
+          }
+        );
       },
       (err) => {
-        console.log(err.message);
+        swal.fire(
+          "Error al registrar",
+          err.error.menssage,
+          "error"
+        )
       }
     );
-    swal.fire("Datos Registrados");
   }
 
   addpropietario(value) {
@@ -502,25 +516,31 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registropdv() {
-    console.log(this.formulariopdv.value);
     this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
       (res: any) => {
         if (res.estado == "1") {
           this.resgistropropietarios(res.id);
           this.traerpdv();
+          swal.fire(
+            `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
+          ).then(
+            (isConfirm) => {
+              this.formulariopdv.reset(); 
+              this.formulariopdv.markAsUntouched();
+            });
         } else {
           console.log(res);
         }
       },
       (err) => {
-        console.log(err.message);
+        swal.fire(
+          "Error al registrar",
+          err.error.menssage,
+          "error"
+        );
       }
     );
     this.traerpdv;
-    swal.fire(
-      `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
-    );
-    console.log("refresh");
   }
 
   resgistropropietarios(id) {
