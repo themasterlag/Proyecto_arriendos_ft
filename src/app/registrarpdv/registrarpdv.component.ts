@@ -449,7 +449,6 @@ export class RegistrarpdvComponent implements OnInit {
         poliza: this.formulariocontrato.value.poliza,
         id_responsable: 0,
         id_autorizado: 0,
-        conceptos: this.conceptosTabla,
       };
       swal.fire({
         title: 'Seguro de guardar los cambios?',
