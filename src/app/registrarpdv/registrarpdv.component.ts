@@ -61,64 +61,64 @@ export class RegistrarpdvComponent implements OnInit {
   ) {
 
     this.formulariotercero = this.formularioter.group({
-      tipo_documento: ["", Validators.required],
-      numero_documento: ["", Validators.required],
-      nombres: [""],
-      apellidos: [""],
-      genero: [""],
-      digito_verificacion: [""],
-      razon_social: [""],
-      id_municipio: ["", Validators.required],
-      direccion: ["", Validators.required],
-      numero_contacto: ["", Validators.required],
-      numero_contacto2: [""],
-      email: ["", Validators.required],
-      fecha_nacimiento: [""],
+      tipo_documento: [null, Validators.required],
+      numero_documento: [null, Validators.required],
+      nombres: [null],
+      apellidos: [null],
+      genero: [null],
+      digito_verificacion: [null],
+      razon_social: [null],
+      id_municipio: [null, Validators.required],
+      direccion: [null, Validators.required],
+      numero_contacto: [null, Validators.required],
+      numero_contacto2: [null],
+      email: [null, Validators.required],
+      fecha_nacimiento: [null],
       departamento: [null, Validators.required],
-      fecha_creacion: [""]
+      fecha_creacion: [null]
     });
 
     this.formulariopdv = this.formularioter.group({
-      nombre_comercial: ["", Validators.required],
-      id_municipio: [""],
+      nombre_comercial: [null, Validators.required],
+      id_municipio: [null],
       microzona: [null],
-      direccion: [""],
-      area_local: [""],
-      latitud: [""],
-      longitud: [""],
-      codigo_glpi: [""],
-      numero_ficha_catastral: [""],
-      observacion: [""],
+      direccion: [null],
+      area_local: [null],
+      latitud: [null],
+      longitud: [null],
+      codigo_glpi: [null],
+      numero_ficha_catastral: [null],
+      observacion: [null],
       linea_vista: [null],
       sanitario: [null],
       lavamanos: [null],
       poceta: [null],
       codigo_sitio_venta: [null, Validators.required],
       codigo_oficina: [null, Validators.required],
-      tipo_punto: [""],
+      tipo_punto: [null],
       propietario: [null],
       departamento: [null, Validators.required]
     });
 
     this.formulariocontrato = this.formularioter.group({
-      id_clienteresponsable: ["", Validators.required],
+      id_clienteresponsable: [null, Validators.required],
       iva: [null],
       rete_iva: [null],
       rete_fuente: [null],
-      id_clienteautorizado: ["", Validators.required],
-      entidad_bancaria: [""],
-      id_tipo_cuenta: [""],
-      numero_cuenta: [""],
-      id_punto_venta: ["", Validators.required],
-      fecha_inicio_contrato: ["", Validators.required],
-      fecha_fin_contrato: ["", Validators.required],
-      valor_canon: ["", Validators.required],
-      valor_adminstracion: [""],
+      id_clienteautorizado: [null, Validators.required],
+      entidad_bancaria: [null],
+      id_tipo_cuenta: [null],
+      numero_cuenta: [null],
+      id_punto_venta: [null, Validators.required],
+      fecha_inicio_contrato: [null, Validators.required],
+      fecha_fin_contrato: [null, Validators.required],
+      valor_canon: [null, Validators.required],
+      valor_adminstracion: [null],
       incremento_anual: [null],
-      incremento_adicional: [""],
+      incremento_adicional: [null],
       poliza: [false],
-      definicion: [""],
-      // conceptos: ["", Validators.required]
+      definicion: [null],
+      // conceptos: [null, Validators.required]
     });
   }
 
@@ -308,7 +308,7 @@ export class RegistrarpdvComponent implements OnInit {
     Confirm.prompt(
       "Sistema De Gestion De Arriendos",
       "Cual es el valor a pagar?",
-      "",
+      " ",
       "OK",
       "Cancel",
       (porcen) => {
@@ -525,7 +525,7 @@ export class RegistrarpdvComponent implements OnInit {
           numero_contacto2: this.formulariotercero.value.numero_contacto2,
           fecha_nacimiento: this.formulariotercero.value.fecha_nacimiento,
           email: this.formulariotercero.value.email,
-          id_municipio: this.formulariotercero.value.id_municipio,
+          id_municipio: Number.parseInt(this.formulariotercero.value.id_municipio),
           tipo_documento: this.formulariotercero.value.tipo_documento,
           razon_social: this.formulariotercero.value.razon_social,
           digito_verificacion: this.formulariotercero.value.digito_verificacion,
@@ -552,7 +552,11 @@ export class RegistrarpdvComponent implements OnInit {
             this.traerclientes();
           },
           (err) => {
-            console.log(err.message);
+            swal.fire(
+              "Error al registrar",
+              err.error.menssage,
+              "error"
+            );
           }
             );
           } 
