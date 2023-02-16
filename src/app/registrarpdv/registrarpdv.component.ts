@@ -63,18 +63,19 @@ export class RegistrarpdvComponent implements OnInit {
     this.formulariotercero = this.formularioter.group({
       tipo_documento: ["", Validators.required],
       numero_documento: ["", Validators.required],
-      nombres: ["", Validators.required],
-      apellidos: ["", Validators.required],
-      genero: ["", Validators.required],
-      digito_verificacion: ["", Validators.required],
-      razon_social: ["", Validators.required],
+      nombres: [""],
+      apellidos: [""],
+      genero: [""],
+      digito_verificacion: [""],
+      razon_social: [""],
       id_municipio: ["", Validators.required],
       direccion: ["", Validators.required],
       numero_contacto: ["", Validators.required],
       numero_contacto2: [""],
       email: ["", Validators.required],
-      fecha_nacimiento: ["", Validators.required],
-      departamento: [null, Validators.required]
+      fecha_nacimiento: [""],
+      departamento: [null, Validators.required],
+      fecha_creacion: [""]
     });
 
     this.formulariopdv = this.formularioter.group({
@@ -195,8 +196,25 @@ export class RegistrarpdvComponent implements OnInit {
   validartipopersona(value) {
     if (value == "Nit") {
       this.tipopersona = false;
+      this.formulariocontrato.get("digito_verificaciona").removeValidators(Validators.required);
+      this.formulariocontrato.get("razon_social").removeValidators(Validators.required);
+      this.formulariocontrato.get("fecha_creacion").removeValidators(Validators.required);
+
+      this.formulariocontrato.get("razon_social").updateValueAndValidity();
+      this.formulariocontrato.get("digito_verificaciona").updateValueAndValidity();
+      this.formulariocontrato.get("fecha_creacion").updateValueAndValidity();
+
     } else {
       this.tipopersona = true;
+      this.formulariocontrato.get("nombres").removeValidators(Validators.required);
+      this.formulariocontrato.get("apellidos").removeValidators(Validators.required);
+      this.formulariocontrato.get("genero").removeValidators(Validators.required);
+      this.formulariocontrato.get("fecha_nacimiento").removeValidators(Validators.required);
+
+      this.formulariocontrato.get("nombres").updateValueAndValidity();
+      this.formulariocontrato.get("apellidosa").updateValueAndValidity();
+      this.formulariocontrato.get("genero").updateValueAndValidity();
+      this.formulariocontrato.get("fecha_nacimiento").updateValueAndValidity();
     }
   }
   validarmetodopago(value) {
