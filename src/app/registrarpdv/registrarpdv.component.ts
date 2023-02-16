@@ -4,6 +4,8 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
 import swal from "sweetalert2";
+import { ThisReceiver } from "@angular/compiler";
+
 
 
 @Component({
@@ -69,7 +71,7 @@ export class RegistrarpdvComponent implements OnInit {
       id_municipio: ["", Validators.required],
       direccion: ["", Validators.required],
       numero_contacto: ["", Validators.required],
-      numero_contacto2: ["", Validators.required],
+      numero_contacto2: [""],
       email: ["", Validators.required],
       fecha_nacimiento: ["", Validators.required],
       departamento: [null, Validators.required]
@@ -90,8 +92,8 @@ export class RegistrarpdvComponent implements OnInit {
       sanitario: [null],
       lavamanos: [null],
       poceta: [null],
-      codigo_sitio_venta: [null],
-      codigo_oficina: [null],
+      codigo_sitio_venta: [null, Validators.required],
+      codigo_oficina: [null, Validators.required],
       tipo_punto: [""],
       propietario: [null],
       departamento: [null, Validators.required]
@@ -99,13 +101,13 @@ export class RegistrarpdvComponent implements OnInit {
 
     this.formulariocontrato = this.formularioter.group({
       id_clienteresponsable: ["", Validators.required],
-      iva: [null, Validators.required],
-      rete_iva: [null, Validators.required],
-      rete_fuente: [null, Validators.required],
+      iva: [null],
+      rete_iva: [null],
+      rete_fuente: [null],
       id_clienteautorizado: ["", Validators.required],
-      entidad_bancaria: ["", Validators.required],
-      id_tipo_cuenta: ["", Validators.required],
-      numero_cuenta: ["", Validators.required],
+      entidad_bancaria: [""],
+      id_tipo_cuenta: [""],
+      numero_cuenta: [""],
       id_punto_venta: ["", Validators.required],
       fecha_inicio_contrato: ["", Validators.required],
       fecha_fin_contrato: ["", Validators.required],
@@ -115,6 +117,7 @@ export class RegistrarpdvComponent implements OnInit {
       incremento_adicional: [""],
       poliza: [false],
       definicion: [""],
+      // conceptos: ["", Validators.required]
     });
   }
 
@@ -351,12 +354,28 @@ export class RegistrarpdvComponent implements OnInit {
         this.pago_efectivo = true;
         this.pago_transferencia = false;
         this.id_pago = 2;
+        this.formulariocontrato.get("entidad_bancaria").removeValidators(Validators.required);
+        this.formulariocontrato.get("numero_cuenta").removeValidators(Validators.required);
+        this.formulariocontrato.get("id_tipo_cuenta").removeValidators(Validators.required);
+
+        this.formulariocontrato.get("entidad_bancaria").updateValueAndValidity();
+        this.formulariocontrato.get("numero_cuenta").updateValueAndValidity();
+        this.formulariocontrato.get("id_tipo_cuenta").updateValueAndValidity();
 
         break;
       case "transferencia":
         this.pago_efectivo = false;
         this.pago_transferencia = true;
         this.id_pago = 1;
+        this.formulariocontrato.get("entidad_bancaria").addValidators(Validators.required);
+        this.formulariocontrato.get("numero_cuenta").addValidators(Validators.required);
+        this.formulariocontrato.get("id_tipo_cuenta").addValidators(Validators.required);
+        this.formulariocontrato.updateValueAndValidity();
+        console.log(this.formulariocontrato.get("entidad_bancaria").validator)
+        console.log(this.formulariocontrato.get("numero_cuenta").validator)
+        console.log(this.formulariocontrato.get("id_tipo_cuenta").validator)
+        break;
+
       default:
         break;
     }
@@ -375,124 +394,160 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registrocontrato(): void {
-    Loading.pulse("Cargando");
+    // Loading.pulse("Cargando");
 
-    let responsable = {
-      id_cliente: this.formulariocontrato.value.id_clienteresponsable,
-      estado: "1",
-      iva: this.formulariocontrato.value.iva,
-      rete_iva: this.formulariocontrato.value.rete_iva,
-      rete_fuente: this.formulariocontrato.value.rete_fuente,
-    };
+    if (this.formulariocontrato.valid) {
 
-    // console.log(this.id_pago + "aqui metodo pago");
-    let autorizado = {
-      id_cliente: this.formulariocontrato.value.id_clienteautorizado,
-      metodo_pago: this.id_pago,
-      entidad_bancaria: this.formulariocontrato.value.entidad_bancaria,
-      numero_cuenta: this.formulariocontrato.value.numero_cuenta,
-      id_tipo_cuenta: this.formulariocontrato.value.id_tipo_cuenta,
-    };
-
-    let contrato = {
-      id_punto_venta: this.formulariocontrato.value.id_punto_venta,
-      id_usuario: 1,
-      valor_canon: this.formulariocontrato.value.valor_canon,
-      incremento_anual: this.checkIpc(
-        this.formulariocontrato.value.incremento_anual
-      ),
-      incremento_adicional: this.formulariocontrato.value.incremento_adicional,
-      fecha_inicio_contrato:
-        this.formulariocontrato.value.fecha_inicio_contrato,
-      fecha_fin_contrato: this.formulariocontrato.value.fecha_fin_contrato,
-      tipo_contrato: 1,
-      valor_adminstracion: this.formulariocontrato.value.valor_adminstracion,
-      definicion: this.formulariocontrato.value.definicion,
-      poliza: this.formulariocontrato.value.poliza,
-      id_responsable: 0,
-      id_autorizado: 0,
-    };
-
-    this.servicio.registrarresponsable(responsable).subscribe(
-      (res: any) => {
-        let idresponsable = res.id_responsable;
-
-        this.servicio.registrarautorizado(autorizado).subscribe(
-          (res: any) => {
-            let idautorizado = res.id_autorizado;
-
-            contrato.id_responsable = idresponsable;
-            contrato.id_autorizado = idautorizado;
-
-            let datos = new FormData();
-            let conceptosLista: any = [];
-            this.listConceptos.forEach((concepto) => {
-              conceptosLista.push(concepto.id_concepto);
-            });
-
-            datos.set("contrato", JSON.stringify(contrato));
-            datos.set("conceptos", conceptosLista);
-
-            this.servicio.registrarcontrato(datos).subscribe(
-              (res: any) => {
-                if (res.estado == "1") {
-                  this.registroserviciocontrato(res.id);
+      let responsable = {
+        id_cliente: this.formulariocontrato.value.id_clienteresponsable,
+        estado: "1",
+        iva: this.formulariocontrato.value.iva,
+        rete_iva: this.formulariocontrato.value.rete_iva,
+        rete_fuente: this.formulariocontrato.value.rete_fuente,
+      };
+  
+      // console.log(this.id_pago + "aqui metodo pago");
+      let autorizado = {
+        id_cliente: this.formulariocontrato.value.id_clienteautorizado,
+        metodo_pago: this.id_pago,
+        entidad_bancaria: this.formulariocontrato.value.entidad_bancaria,
+        numero_cuenta: this.formulariocontrato.value.numero_cuenta,
+        id_tipo_cuenta: this.formulariocontrato.value.id_tipo_cuenta,
+      };
+  
+      let contrato = {
+        id_punto_venta: this.formulariocontrato.value.id_punto_venta,
+        id_usuario: 1,
+        valor_canon: this.formulariocontrato.value.valor_canon,
+        incremento_anual: this.checkIpc(
+          this.formulariocontrato.value.incremento_anual
+        ),
+        incremento_adicional: this.formulariocontrato.value.incremento_adicional,
+        fecha_inicio_contrato:this.formulariocontrato.value.fecha_inicio_contrato,
+        fecha_fin_contrato: this.formulariocontrato.value.fecha_fin_contrato,
+        tipo_contrato: 1,
+        valor_adminstracion: this.formulariocontrato.value.valor_adminstracion,
+        definicion: this.formulariocontrato.value.definicion,
+        poliza: this.formulariocontrato.value.poliza,
+        id_responsable: 0,
+        id_autorizado: 0,
+        conceptos: this.conceptosTabla,
+      };
+      swal.fire({
+        title: 'Seguro de guardar los cambios?',
+        showDenyButton: true,
+        confirmButtonText: 'Guardar',
+        denyButtonText: `Cancelar`,
+      }).then((result) => {      
+        if (result.isConfirmed) {
+          swal.fire('Guardado con Exito!', '', 'success')
+          this.servicio.registrarresponsable(responsable).subscribe(
+            (res: any) => {
+              let idresponsable = res.id_responsable;
+      
+              this.servicio.registrarautorizado(autorizado).subscribe(
+                (res: any) => {
+                  let idautorizado = res.id_autorizado;
+      
+                  contrato.id_responsable = idresponsable;
+                  contrato.id_autorizado = idautorizado;
+      
+                  let datos = new FormData();
+                  let conceptosLista: any = [];
+                  this.listConceptos.forEach((concepto) => {
+                    conceptosLista.push(concepto.id_concepto);
+                  });
+      
+                  datos.set("contrato", JSON.stringify(contrato));
+                  datos.set("conceptos", conceptosLista);
+      
+                  this.servicio.registrarcontrato(datos).subscribe(
+                    (res: any) => {
+                      if (res.estado == "1") {
+                        this.registroserviciocontrato(res.id);
+                      }
+                    },
+                    (err) => {
+                      console.log(err.message);
+                    }
+                  );
+                },
+                (err) => {
+                  console.log(err.message);
                 }
-              },
-              (err) => {
-                console.log(err.message);
+              );
+            },
+            (err) => {
+              console.log(err.message);
+            }
+          );
+          console.log(this.formulariocontrato.value);
+        } 
+      })
+      
+    }else{
+    console.log(this.formulariocontrato)
+      swal.fire('Falta infromación del contrato','','question');
+
+    }    
+    
+  }
+
+  registrartercero() {
+
+      if (this.formulariotercero.valid) {
+
+        let formtercer = {
+          nombres: this.formulariotercero.value.nombres,
+          apellidos: this.formulariotercero.value.apellidos,
+          genero: this.formulariotercero.value.genero,
+          numero_documento: this.formulariotercero.value.numero_documento,
+          direccion: this.formulariotercero.value.direccion,
+          numero_contacto: this.formulariotercero.value.numero_contacto,
+          numero_contacto2: this.formulariotercero.value.numero_contacto2,
+          fecha_nacimiento: this.formulariotercero.value.fecha_nacimiento,
+          email: this.formulariotercero.value.email,
+          id_municipio: this.formulariotercero.value.id_municipio,
+          tipo_documento: this.formulariotercero.value.tipo_documento,
+          razon_social: this.formulariotercero.value.razon_social,
+          digito_verificacion: this.formulariotercero.value.digito_verificacion,
+        };
+    
+        swal.fire({
+          title: 'Seguro de guardar los cambios?',
+          showDenyButton: true,
+          confirmButtonText: 'Guardar',
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          
+          if (result.isConfirmed) {
+            this.servicio.enviarregistrotercero(formtercer).subscribe(
+              (res) => {
+            swal.fire('Guardados con Exito!', '', 'success').then(
+              (isConfirm) => {
+                this.formulariotercero.reset(); 
+                this.formulariotercero.markAsUntouched();
               }
             );
+            console.log(formtercer);
+            console.log(res);
+            this.traerclientes();
           },
           (err) => {
             console.log(err.message);
           }
-        );
-      },
-      (err) => {
-        console.log(err.message);
-      }
-    );
-    console.log(this.formulariocontrato.value);
-  }
+            );
+          } 
+        })
+        
+      }else{
 
-  registrartercero() {
-    let formtercer = {
-      nombres: this.formulariotercero.value.nombres,
-      apellidos: this.formulariotercero.value.apellidos,
-      genero: this.formulariotercero.value.genero,
-      numero_documento: this.formulariotercero.value.numero_documento,
-      direccion: this.formulariotercero.value.direccion,
-      numero_contacto: this.formulariotercero.value.numero_contacto,
-      numero_contacto2: this.formulariotercero.value.numero_contacto2,
-      fecha_nacimiento: this.formulariotercero.value.fecha_nacimiento,
-      email: this.formulariotercero.value.email,
-      id_municipio: this.formulariotercero.value.id_municipio,
-      tipo_documento: this.formulariotercero.value.tipo_documento,
-      razon_social: this.formulariotercero.value.razon_social,
-      digito_verificacion: this.formulariotercero.value.digito_verificacion,
-    };
+        swal.fire('Falta información en los datos del tercero','','question');
 
-    this.servicio.enviarregistrotercero(formtercer).subscribe(
-      (res) => {
-        console.log(res);
-        this.traerclientes();
-        swal.fire("Datos Registrados").then(
-          (isConfirm) => {
-            this.formulariotercero.reset(); 
-            this.formulariotercero.markAsUntouched();
-          }
-        );
-      },
-      (err) => {
-        swal.fire(
-          "Error al registrar",
-          err.error.menssage,
-          "error"
-        )
+        
+        // swal.fire("Datos Registrados");
       }
-    );
-  }
+  }    
 
   addpropietario(value) {
     this.listprop.push({
@@ -516,31 +571,54 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registropdv() {
-    this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
-      (res: any) => {
-        if (res.estado == "1") {
-          this.resgistropropietarios(res.id);
-          this.traerpdv();
-          swal.fire(
-            `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
-          ).then(
-            (isConfirm) => {
-              this.formulariopdv.reset(); 
-              this.formulariopdv.markAsUntouched();
-            });
-        } else {
-          console.log(res);
-        }
-      },
-      (err) => {
-        swal.fire(
-          "Error al registrar",
-          err.error.menssage,
-          "error"
-        );
-      }
-    );
-    this.traerpdv;
+
+    if (this.formulariopdv.valid) {
+
+      swal.fire({
+        title: 'Seguro de guardar los cambios?',
+        showDenyButton: true,
+        confirmButtonText: 'Guardar',
+        denyButtonText: `Cancelar`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          swal.fire('Guardado con Exito!', '', 'success')
+          console.log(this.formulariopdv.value);
+          this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
+            (res: any) => {
+              if (res.estado == "1") {
+                this.resgistropropietarios(res.id);
+                this.traerpdv();
+                swal.fire(
+                  `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
+                ).then(
+                  (isConfirm) => {
+                    this.formulariopdv.reset(); 
+                    this.formulariopdv.markAsUntouched();
+                  });
+              } else {
+                console.log(res);
+              }
+            },
+            (err) => {
+              swal.fire(
+                "Error al registrar",
+                err.error.menssage,
+                "error"
+              );
+            }
+          );
+          this.traerpdv;
+          
+            } 
+          })
+      
+    }else{
+
+      swal.fire('Falta información del punto de venta','','question');
+
+    }    
+        
   }
 
   resgistropropietarios(id) {
@@ -570,6 +648,7 @@ export class RegistrarpdvComponent implements OnInit {
       codigo_concepto: this.conceptosFilter[0].codigo_concepto,
       nombre_concepto: this.conceptosFilter[0].nombre_concepto,
     });
+
   }
 
   deliCon(i) {
