@@ -351,11 +351,11 @@ export class RegistrarpdvComponent implements OnInit {
 
           if (i == this.listservicios.length - 1) {
             Loading.remove();
-            Report.success(
-              "Sistema De Gestion De Pagos De Arriendos",
-              "Registro Exitoso",
-              "Okay"
-            );
+            // Report.success(
+            //   "Sistema De Gestion De Pagos De Arriendos",
+            //   "Registro Exitoso",
+            //   "Okay"
+            // );
             this.rutas.navigateByUrl("/dashboard");
           }
         },
