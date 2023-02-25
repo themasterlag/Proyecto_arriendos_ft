@@ -367,11 +367,13 @@ export class RegistrarpdvComponent implements OnInit {
             //   "Registro Exitoso",
             //   "Okay"
             // );
-            this.rutas.navigateByUrl("/dashboard");
+            // this.rutas.navigateByUrl("/dashboard");
+            swal.fire("Guardado con Exito!", "", "success");
           }
         },
         (err) => {
           console.log(err.message);
+          swal.fire("Ops!", "No se pudo registrar el contrato correctamente, por favor valide los datos e intente nuevamente.", "error");
         }
       );
     }
@@ -485,7 +487,6 @@ export class RegistrarpdvComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            swal.fire("Guardado con Exito!", "", "success");
             this.servicio.registrarresponsable(responsable).subscribe(
               (res: any) => {
                 let idresponsable = res.id_responsable;
