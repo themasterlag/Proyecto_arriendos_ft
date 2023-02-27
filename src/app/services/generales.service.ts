@@ -92,4 +92,8 @@ export class GeneralesService {
   traertipodepunto() {
     return this.servicio.get(this.api + "tipocontrato");
   }
+
+  traerContrato(id) {
+    return this.servicio.get(this.api + "contrato/pdv/" + id);
+  }
 }

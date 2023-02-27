@@ -168,6 +168,157 @@
           
         </mat-expansion-panel></mat-accordion>
 
+        <!--PAGOS DE VERDAD  -->
+
+            </div>
+            <div class="card-body">
+                <mat-accordion>
+              <mat-expansion-panel hideToggle> </mat-expansion-panel>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Pagos de verdad</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3" align="center">
+                        <br>
+                        <mat-checkbox
+                          class="example-margin"
+                          formControlName="no_responsable"
+                          value="true"
+                          >No Responsable</mat-checkbox
+                        >                        
+                    </div>
+                    <div class="col-md-3" align="center">
+                        <br>
+                        <mat-checkbox
+                          class="example-margin"
+                          formControlName="responsable"
+                          value="true"
+                          >Responsable</mat-checkbox
+                        >                        
+                    </div>                    
+                    <div class="col-md-3" align="center">
+                        <br>
+                        <mat-checkbox
+                          class="example-margin"
+                          formControlName="efectivo"
+                          value="true"
+                          
+                          >Efectivo</mat-checkbox
+                        >
+                    </div>
+                    <div class="col-md-3" align="center">
+                        <button
+                            mat-raised-button
+                            class="btn btn-info"
+                            id="button-guardar"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+               </div>
+               <hr>
+               <div class="col-md-12" *ngIf="consulta">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-success">
+                            <h4 class="card-title mt-0"> Pre-liquidacion de pago de arriendos</h4>
+                            <p class="card-category"> Aqui encontraras los valores de pago por cada uno de los puntos de venta</p>
+                        </div>
+                        <hr>
+                       <div class="row" >
+                        <div class="col-md-4">
+                            <input type="number" 
+                                class="form-control mb-2 " 
+                                placeholder=" Buscar Codigo Glpi"
+                                #txtsearch
+                                style="background-color: #EFEFFF;border-radius: 10px; padding: 3px;"
+                                (keyup)="buscar(txtsearch.value)">
+                        </div>
+                       </div>
+                       <hr>
+                        <div class="card-body" >
+                            <div class="table-responsive">
+                                
+                                <table class="table table-hover">
+                                    <thead class="text-success">
+                                        <th>
+                                            GLPI
+                                         </th>
+                                        <th>
+                                           PUNTO
+                                        </th>
+                                        <th>
+                                            MUNICIPIO
+                                        </th>
+                                        <th>
+                                            CC
+                                        </th>
+                                        <th>
+                                            RESPONSABLE
+                                        </th>
+                                        <th>
+                                            CANON
+                                        </th>
+                                        <th>
+                                            IVA
+                                        </th>
+                                        <th>
+                                            RETEIVA
+                                        </th>
+                                        <th>
+                                            RETEFUENTE
+                                        </th>
+                                        <th>
+                                            RETEICA
+                                        </th>
+                                        <th>
+                                            BOMBERIL
+                                        </th>
+                                        <th>
+                                            TOTAL A PAGAR
+                                        </th>
+                                        <th>
+                                            ACCIONES
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                     <tr *ngFor="let p of preliquidacion | filtroPdvCodigo:page:search ">
+                                            <td>{{p.codigo_glpi}}</td>
+                                            <td>{{p.nombre_comercial}}</td>
+                                            <td>{{p.municipio}}</td>
+                                            <td>{{p.cc}}</td>
+                                            <td>{{p.nombre}} {{p.apellido}}</td>
+                                            <td>$ {{p.canon | number:'1.0-0' }}</td>
+                                            <td>$ {{p.iva | number:'1.0-0' }}</td>
+                                            <td>$ {{p.rete_iva | number:'1.0-0' }}</td>
+                                            <td>$ {{p.rete_fuente | number:'1.0-0' }}</td>
+                                            <td>$ {{p.reteica | number:'1.0-0' }}</td>
+                                            <td>$ {{p.bomberil | number:'1.0-0' }}</td>
+                                            <td>$ {{p.valor_total | number:'1.0-0' }}</td>
+                                            <td><a class="btn btn-success">Pagar</a></td>
+                                    </tbody>
+                                </table>
+                               
+                            </div>
+                            <button class="btn btn-success" (click)="prevpage()" >
+                                < Atras
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-success" (click)="nextpage()" [disabled]="(preliquidacion | filtroPdvCodigo:page:search ).length <=9">
+                                Adelante >
+                            </button>
+                        </div>
+                    </div>
+                </div>
+          
+        </mat-expansion-panel></mat-accordion>
+
             </div>
         </div>
     </div>

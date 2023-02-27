@@ -531,13 +531,24 @@
                 (opened)="panelOpenState = true"
                 (closed)="panelOpenState = false"
               >
+              
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <h6 class="text-info">Datos del contrato</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
+
+                <div class="row" >                  
+                  <button mat-raised-button class="btn btn-info pull-left"
+                    id="button-consultar" (click)="traeContrato()">
+                      Consultar
+                  </button>
+                  <input class="formdata" placeholder="Id PDV" type="number"
+                  [(ngModel)]="consulta_pdv" />                   
+                </div>
+                
                 <hr />
-                <hr />
+                                
                 <div class="row" *ngIf="conceptosTabla.length > 0">
                   <div class="col-md-2"></div>
                   <div class="col-md-8">
@@ -981,7 +992,9 @@
                   >
                     Guardar
                   </button>
-                </form>
+
+                  
+                </form>                
               </mat-expansion-panel>
             </mat-accordion>
 

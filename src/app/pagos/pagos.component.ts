@@ -10,8 +10,8 @@ import { Loading, Report } from 'notiflix';
 })
 export class PagosComponent implements OnInit {
   panelOpenState = false;
- preliquidacion:any
- consulta:boolean = false
+  preliquidacion:any
+  consulta:boolean = false
   mes: any =0;
   anio: any = 0;
   valselects: boolean = false;
