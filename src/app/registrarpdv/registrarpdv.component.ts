@@ -4,7 +4,6 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
 import swal from "sweetalert2";
-import { ThisReceiver } from "@angular/compiler";
 
 @Component({
   selector: "app-registrarpdv",
@@ -148,24 +147,24 @@ export class RegistrarpdvComponent implements OnInit {
   }
   traerserviciospublicos() {
     try {
-      console.log("aqui");
+      //console.log("aqui");
       this.servicio.traerserviciospublicos().subscribe((res: any) => {
         this.serviciospublicos = res;
-        console.log(res);
-        console.log(this.serviciospublicos, "servicios");
+        //console.log(res);
+        //console.log(this.serviciospublicos, "servicios");
       });
     } catch (err) {
-      console.log(err.message, this.serviciospublicos);
+      //console.log(err.message, this.serviciospublicos);
     }
   }
   traerpdv() {
     this.servicio.traerpuntosdeventa().subscribe(
       (res: any) => {
         this.pdv = res;
-        console.log(res);
+        //console.log(res);
       },
       (err) => {
-        console.log(err.message);
+        //console.log(err.message);
       }
     );
   }
@@ -274,7 +273,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.bancos = res;
       },
       (err) => {
-        console.log(err.message);
+        //console.log(err.message);
       }
     );
   }
@@ -285,7 +284,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.tipocuentas = res;
       },
       (err) => {
-        console.log(err.message);
+        //console.log(err.message);
       }
     );
   }
@@ -340,10 +339,10 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerclientes().subscribe(
       (res) => {
         this.clientes = res;
-        console.log(this.clientes);
+        //console.log(this.clientes);
       },
       (err) => {
-        console.log(err.message);
+        //console.log(err.message);
       }
     );
   }
@@ -352,10 +351,10 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        console.log(res, "conceptos");
+        //console.log(res, "conceptos");
       },
       (err) => {
-        console.log(err.message);
+        //console.log(err.message);
       }
     );
   }
@@ -366,7 +365,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.municipios = res;
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
       }
     );
   }
@@ -377,7 +376,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.departamentos = res;
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
       }
     );
   }
@@ -388,7 +387,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.zonas = res;
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
       }
     );
   }
@@ -399,7 +398,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.microzonas = res;
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
       }
     );
   }
@@ -432,8 +431,8 @@ export class RegistrarpdvComponent implements OnInit {
         this.serviciosfilter = this.serviciospublicos.filter(
           (i) => i.id_tipo_servicio == value
         );
-        console.log(this.serviciosfilter);
-        console.log(this.listservicios);
+        //console.log(this.serviciosfilter);
+        //console.log(this.listservicios);
 
         this.serviciostabla.push({
           nombre: this.serviciosfilter[0].tipo_servicio,
@@ -455,11 +454,11 @@ export class RegistrarpdvComponent implements OnInit {
       const e = this.listservicios[i];
 
       e.id_contrato = idcontrato;
-      console.log(e);
+      //console.log(e);
 
       this.servicio.registroserviciocontrato(e).subscribe(
         (res: any) => {
-          console.log(res);
+          //console.log(res);
 
           if (i == this.listservicios.length - 1) {
             Loading.remove();
@@ -472,7 +471,7 @@ export class RegistrarpdvComponent implements OnInit {
           }
         },
         (err) => {
-          console.log(err.message);
+          //console.log(err.message);
         }
       );
     }
@@ -515,9 +514,9 @@ export class RegistrarpdvComponent implements OnInit {
           .get("id_tipo_cuenta")
           .addValidators(Validators.required);
         this.formulariocontrato.updateValueAndValidity();
-        console.log(this.formulariocontrato.get("entidad_bancaria").validator);
-        console.log(this.formulariocontrato.get("numero_cuenta").validator);
-        console.log(this.formulariocontrato.get("id_tipo_cuenta").validator);
+        //console.log(this.formulariocontrato.get("entidad_bancaria").validator);
+        //console.log(this.formulariocontrato.get("numero_cuenta").validator);
+        //console.log(this.formulariocontrato.get("id_tipo_cuenta").validator);
         break;
 
       default:
@@ -549,7 +548,7 @@ export class RegistrarpdvComponent implements OnInit {
         rete_fuente: this.formulariocontrato.value.rete_fuente ? 7 : null,
       };
 
-      // console.log(this.id_pago + "aqui metodo pago");
+      // //console.log(this.id_pago + "aqui metodo pago");
       let autorizado = {
         id_cliente: this.formulariocontrato.value.id_clienteautorizado,
         metodo_pago: this.id_pago,
@@ -619,24 +618,24 @@ export class RegistrarpdvComponent implements OnInit {
                         }
                       },
                       (err) => {
-                        console.log(err.message);
+                        //console.log(err.message);
                       }
                     );
                   },
                   (err) => {
-                    console.log(err.message);
+                    //console.log(err.message);
                   }
                 );
               },
               (err) => {
-                console.log(err.message);
+                //console.log(err.message);
               }
             );
-            console.log(this.formulariocontrato.value);
+            //console.log(this.formulariocontrato.value);
           }
         });
     } else {
-      console.log(this.formulariocontrato);
+      //console.log(this.formulariocontrato);
       swal.fire("Falta infromación del contrato", "", "question");
     }
   }
@@ -687,8 +686,8 @@ export class RegistrarpdvComponent implements OnInit {
                     this.formulariotercero.reset();
                     this.formulariotercero.markAsUntouched();
                   });
-                console.log(formtercer);
-                console.log(res);
+                //console.log(formtercer);
+                //console.log(res);
                 this.traerclientes();
               },
               (err) => {
@@ -738,7 +737,7 @@ export class RegistrarpdvComponent implements OnInit {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             swal.fire("Guardado con Exito!", "", "success");
-            console.log(this.formulariopdv.value);
+            //console.log(this.formulariopdv.value);
             this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
               (res: any) => {
                 if (res.estado == "1") {
@@ -753,7 +752,7 @@ export class RegistrarpdvComponent implements OnInit {
                       this.formulariopdv.markAsUntouched();
                     });
                 } else {
-                  console.log(res);
+                  //console.log(res);
                 }
               },
               (err) => {
@@ -775,10 +774,10 @@ export class RegistrarpdvComponent implements OnInit {
 
       this.servicio.enviarproppdv(e).subscribe(
         (res) => {
-          console.log(res);
+          //console.log(res);
         },
         (err) => {
-          console.log(err.message);
+          //console.log(err.message);
         }
       );
     }
@@ -820,10 +819,10 @@ export class RegistrarpdvComponent implements OnInit {
   //   this.servicio.traerAutorizado().subscribe(
   //     (res) => {
   //       this.autorizados = res;
-  //       console.log(res, "autorizados");
+  //       //console.log(res, "autorizados");
   //     },
   //     (err) => {
-  //       console.log(err.message);
+  //       //console.log(err.message);
   //     }
   //   );
   // }
