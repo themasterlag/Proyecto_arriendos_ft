@@ -28,7 +28,7 @@ export class PagosComponent implements OnInit {
   Loading.pulse("Cargando")
    
 this.servicio.traerpendientespagoarriendo(this.mes,this.anio).subscribe((res:any)=>{
-  console.log(res);
+  //console.log(res);
   
   this.preliquidacion = res
   this.consulta = true
