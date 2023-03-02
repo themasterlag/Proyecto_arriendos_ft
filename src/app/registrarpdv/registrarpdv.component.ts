@@ -50,7 +50,8 @@ export class RegistrarpdvComponent implements OnInit {
   pago_transferencia: boolean = false;
   id_pago: any;
   incremento_anual = null;
-  consulta_pdv:any = 32;
+  consulta_pdv: any = 32;
+  actualizar: boolean = false;
 
   constructor(
     public servicio: GeneralesService,
@@ -134,7 +135,6 @@ export class RegistrarpdvComponent implements OnInit {
     this.traertipopunto();
     this.traerconceptos();
     Loading.remove();
-    
   }
 
   traertipopunto() {
@@ -171,66 +171,98 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   traeContrato() {
+    this.actualizar = true;
     let id = this.consulta_pdv;
+
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
         console.log(res);
-        this.formulariocontrato.patchValue({"valor_adminstracion":res.contrato.valor_adminstracion});
-        this.formulariocontrato.patchValue({"valor_canon":res.contrato.valor_canon});
-        this.formulariocontrato.patchValue({"fecha_inicio_contrato":res.contrato.fecha_inicio_contrato});
-        this.formulariocontrato.patchValue({"fecha_fin_contrato":res.contrato.fecha_fin_contrato});
-        this.formulariocontrato.patchValue({"definicion":res.contrato.definicion});
-        this.formulariocontrato.patchValue({"id_clienteautorizado":res.contrato.id_autorizado_autorizado.id_cliente});  
-        if(res.contrato.id_autorizado_autorizado.metodo_pago == 1){
+        this.formulariocontrato.patchValue({
+          valor_adminstracion: res.contrato.valor_adminstracion,
+        });
+        this.formulariocontrato.patchValue({
+          valor_canon: res.contrato.valor_canon,
+        });
+        this.formulariocontrato.patchValue({
+          fecha_inicio_contrato: res.contrato.fecha_inicio_contrato,
+        });
+        this.formulariocontrato.patchValue({
+          fecha_fin_contrato: res.contrato.fecha_fin_contrato,
+        });
+        this.formulariocontrato.patchValue({
+          definicion: res.contrato.definicion,
+        });
+        this.formulariocontrato.patchValue({
+          id_clienteautorizado:
+            res.contrato.id_autorizado_autorizado.id_cliente,
+        });
+        if (res.contrato.id_autorizado_autorizado.metodo_pago == 1) {
           this.pago_transferencia = true;
           // this.pago_efectivo = false;
-        }else(res.contrato.id_autorizado_autorizado.metodo_pago == 2);{
+        } else res.contrato.id_autorizado_autorizado.metodo_pago == 2;
+        {
           this.pago_efectivo = true;
           // this.pago_transferencia = false;
         }
-        this.formulariocontrato.patchValue({"entidad_bancaria":res.contrato.id_autorizado_autorizado.entidad_bancaria});
-        this.formulariocontrato.patchValue({"id_tipo_cuenta":res.contrato.id_autorizado_autorizado.id_tipo_cuenta});
-        this.formulariocontrato.patchValue({"numero_cuenta":res.contrato.id_autorizado_autorizado.numero_cuenta});
-        this.formulariocontrato.patchValue({"incremento_adicional":res.contrato.incremento_adicional});
-        this.formulariocontrato.patchValue({"poliza":res.contrato.poliza});
-        this.formulariocontrato.patchValue({"incremento_anual":res.contrato.incremento_anual});
-        this.formulariocontrato.patchValue({"id_clienteresponsable":res.contrato.id_responsable_responsable.id_cliente});
-        if(res.contrato.id_responsable_responsable.iva != null){
-          this.formulariocontrato.patchValue({"iva":true});
+        this.formulariocontrato.patchValue({
+          entidad_bancaria:
+            res.contrato.id_autorizado_autorizado.entidad_bancaria,
+        });
+        this.formulariocontrato.patchValue({
+          id_tipo_cuenta: res.contrato.id_autorizado_autorizado.id_tipo_cuenta,
+        });
+        this.formulariocontrato.patchValue({
+          numero_cuenta: res.contrato.id_autorizado_autorizado.numero_cuenta,
+        });
+        this.formulariocontrato.patchValue({
+          incremento_adicional: res.contrato.incremento_adicional,
+        });
+        this.formulariocontrato.patchValue({ poliza: res.contrato.poliza });
+        this.formulariocontrato.patchValue({
+          incremento_anual: res.contrato.incremento_anual,
+        });
+        this.formulariocontrato.patchValue({
+          id_clienteresponsable:
+            res.contrato.id_responsable_responsable.id_cliente,
+        });
+        if (res.contrato.id_responsable_responsable.iva != null) {
+          this.formulariocontrato.patchValue({ iva: true });
         }
-        if(res.contrato.id_responsable_responsable.rete_iva != null){
-          this.formulariocontrato.patchValue({"rete_iva":true});
+        if (res.contrato.id_responsable_responsable.rete_iva != null) {
+          this.formulariocontrato.patchValue({ rete_iva: true });
         }
-        if(res.contrato.id_responsable_responsable.rete_fuente != null){
-          this.formulariocontrato.patchValue({"rete_fuente":true});
-        }       
-        this.formulariocontrato.patchValue({"id_punto_venta":res.contrato.id_punto_venta});
-        
-        res.contratoServicio.forEach(element => {
+        if (res.contrato.id_responsable_responsable.rete_fuente != null) {
+          this.formulariocontrato.patchValue({ rete_fuente: true });
+        }
+        this.formulariocontrato.patchValue({
+          id_punto_venta: res.contrato.id_punto_venta,
+        });
+
+        res.contratoServicio.forEach((element) => {
           this.serviciosfilter = this.serviciospublicos.filter(
             (i) => i.id_tipo_servicio == element.id_tipo_servicio
           );
           this.serviciostabla.push({
             nombre: this.serviciosfilter[0].tipo_servicio,
             valor: element.porcentaje,
-          });          
+          });
         });
-                                   
-        res.contratoConcepto.forEach(element => {
-          this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == element.id_contrato);
+
+        res.contratoConcepto.forEach((element) => {
+          this.conceptosFilter = this.conceptos.filter(
+            (i) => i.id_concepto == element.id_contrato
+          );
 
           this.conceptosTabla.push({
             id_concepto: this.conceptosFilter[0].id_concepto,
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
           });
-        });        
-             
-
+        });
       },
       (err) => {
-        swal.fire('Contrato no existe','','error');
+        swal.fire("Contrato no existe", "", "error");
         console.log(err.message);
       }
     );
@@ -555,6 +587,11 @@ export class RegistrarpdvComponent implements OnInit {
         .then((result) => {
           if (result.isConfirmed) {
             swal.fire("Guardado con Exito!", "", "success");
+            if (!this.validarTercero(responsable.id_cliente)) {
+              //Falta hacer la validacion en el backend para que no se repita el tercero y el autorizado
+              //si no son los mismo se debe crear un nuevo tercero y/o autorizado
+              //y actualizar el contrato con los nuevos id
+            }
             this.servicio.registrarresponsable(responsable).subscribe(
               (res: any) => {
                 let idresponsable = res.id_responsable;
@@ -601,6 +638,15 @@ export class RegistrarpdvComponent implements OnInit {
     } else {
       console.log(this.formulariocontrato);
       swal.fire("Falta infromación del contrato", "", "question");
+    }
+  }
+  validarTercero(terceroActual: any) {
+    const { id_cliente } = terceroActual;
+    const tercero = this.servicio.traerResponsableByClienteId(id_cliente);
+    if (tercero) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -751,9 +797,22 @@ export class RegistrarpdvComponent implements OnInit {
     });
   }
 
-  deliCon(i) {
+  deliCon(i: number) {
     this.conceptosTabla.splice(i, 1);
     this.listConceptos.splice(i, 1);
+  }
+
+  limpiarConceptos(): void {
+    console.log(this.conceptosTabla, "conceptos");
+    console.log(this.listConceptos, "listconceptos");
+
+    this.conceptosTabla.splice(0, this.conceptosTabla.length);
+    this.listConceptos.splice(0, this.listConceptos.length);
+  }
+  limpiarServicios(): void {
+    this.serviciostabla = [];
+    this.listservicios = [];
+    this.serviciosfilter = [];
   }
 
   // INOFRMACION DE LOS AUTROIZADOS

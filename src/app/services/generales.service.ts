@@ -20,7 +20,12 @@ export class GeneralesService {
   enviarregistrotercero(form) {
     return this.servicio.post(this.api + "cliente", form);
   }
-
+  traerResponsableByClienteId(id: number) {
+    return this.servicio.get(this.api + "/responsable/cliente/" + id);
+  }
+  traerAutorizadoByClienteId(id: number) {
+    return this.servicio.get(this.api + "/autorizado/cliente/" + id);
+  }
   traerzonas() {
     return this.servicio.get(this.api + "zona");
   }
@@ -32,7 +37,6 @@ export class GeneralesService {
   enviarregistropdv(form) {
     return this.servicio.post(this.api + "puntodeventa", form);
   }
-
   traerpuntosdeventa() {
     return this.servicio.get(this.api + "puntodeventa");
   }
@@ -56,7 +60,9 @@ export class GeneralesService {
   registrarcontrato(contrato) {
     return this.servicio.post(this.api + "contrato", contrato);
   }
-
+  actuliarcontrato(contrato) {
+    return this.servicio.patch(this.api + "contrato", contrato);
+  }
   traerserviciospublicos() {
     return this.servicio.get(this.api + "tiposervicio");
   }

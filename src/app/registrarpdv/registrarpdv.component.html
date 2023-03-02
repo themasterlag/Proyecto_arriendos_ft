@@ -531,34 +531,40 @@
                 (opened)="panelOpenState = true"
                 (closed)="panelOpenState = false"
               >
-              
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <h6 class="text-info">Datos del contrato</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div class="row" >                  
-                  <button mat-raised-button class="btn btn-info pull-left"
-                    id="button-consultar" (click)="traeContrato()">
-                      Consultar
+                <div class="row">
+                  <input
+                    class="formdata"
+                    placeholder="Id PDV"
+                    type="number"
+                    [(ngModel)]="consulta_pdv"
+                  />
+                  <button
+                    mat-raised-button
+                    class="btn btn-info pull-left"
+                    id="button-consultar"
+                    (click)="traeContrato()"
+                  >
+                    Consultar
                   </button>
-                  <input class="formdata" placeholder="Id PDV" type="number"
-                  [(ngModel)]="consulta_pdv" />                   
                 </div>
-                
+
                 <hr />
-                                
+
                 <div class="row" *ngIf="conceptosTabla.length > 0">
                   <div class="col-md-2"></div>
                   <div class="col-md-8">
                     <div class="card">
                       <div class="card-header card-header-success">
-                        <h4 class="card-title">
-                          Conceptos de contrato
-                        </h4>
+                        <h4 class="card-title">Conceptos de contrato</h4>
                         <p class="card-category">
-                         Aqui se registran los conceptos presentes en el contrato
+                          Aqui se registran los conceptos presentes en el
+                          contrato
                         </p>
                       </div>
                       <div class="card-body">
@@ -983,7 +989,16 @@
                       </mat-form-field>
                     </div>
                   </div>
-
+                  <button
+                    mat-raised-button
+                    type="reset"
+                    class="btn btn-danger pull-right"
+                    id="button-limpiar"
+                    (click)="limpiarConceptos()"
+                    (click)="limpiarServicios()"
+                  >
+                    Limpiar
+                  </button>
                   <button
                     mat-raised-button
                     type="submit"
@@ -992,9 +1007,7 @@
                   >
                     Guardar
                   </button>
-
-                  
-                </form>                
+                </form>
               </mat-expansion-panel>
             </mat-accordion>
 

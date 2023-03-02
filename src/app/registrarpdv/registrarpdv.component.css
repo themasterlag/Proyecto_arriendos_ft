@@ -36,6 +36,10 @@
     color: #359b68 !important;
     font-weight: 900;
 }
+#button-limpiar{
+    background-color: #1b4f35 !important;
+    border-radius: 25px !important;
+}
 #button-guardar{
     background-color: #1b4f35 !important;
     border-radius: 25px !important;
@@ -45,6 +49,10 @@
     border-radius: 25px !important;
 }
 #button-tarjeta{
+    background-color: #1b4f35 !important;
+    border-radius: 25px !important;
+}
+#button-consultar{
     background-color: #1b4f35 !important;
     border-radius: 25px !important;
 }
