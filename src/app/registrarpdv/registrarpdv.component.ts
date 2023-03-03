@@ -51,6 +51,7 @@ export class RegistrarpdvComponent implements OnInit {
   incremento_anual = null;
   consulta_pdv: any = 32;
   actualizar: boolean = false;
+  id_contrato = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -177,6 +178,8 @@ export class RegistrarpdvComponent implements OnInit {
       (res: any) => {
         // this.pdv = res;
         console.log(res);
+        this.id_contrato = res.contrato.id_contrato;
+
         this.formulariocontrato.patchValue({
           valor_adminstracion: res.contrato.valor_adminstracion,
         });
@@ -244,30 +247,43 @@ export class RegistrarpdvComponent implements OnInit {
             
           );
           
+          this.serviciostabla = [];
+          this.listservicios = [];
+
           this.serviciostabla.push({
             nombre: this.serviciosfilter[0].tipo_servicio,
             valor: element.porcentaje,
+            porcentaje: element.porcentaje,
           });
-           
+
+          this.listservicios.push({
+            id_tipo_servicio: this.serviciosfilter[0].id_tipo_servicio,
+            valor: element.porcentaje,
+            porcentaje: element.porcentaje
+          })
         });
+
+        this.listConceptos = [];
+        this.conceptosTabla = [];
 
         res.contratoConcepto.forEach((element) => {
           this.conceptosFilter = this.conceptos.filter(
             (i) => i.id_concepto == element.id_concepto
           );
 
+          this.listConceptos.push({
+            id_concepto: this.conceptosFilter[0].id_concepto,
+          });
+
           this.conceptosTabla.push({
             id_concepto: this.conceptosFilter[0].id_concepto,
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-          });
-          console.log(this.conceptosFilter[0].id_concepto);
-          console.log(this.conceptosFilter);
-                    
+          });                
         });
       },
       (err) => {
-        swal.fire("Contrato no existe", "", "error");
+        swal.fire("Punto de venta no encontrado", "", "error");
         console.log(err.message);
       }
     );
@@ -431,7 +447,8 @@ export class RegistrarpdvComponent implements OnInit {
       (porcen) => {
         this.listservicios.push({
           id_tipo_servicio: value,
-          valor: porcen,
+          valor: porcen.trim(),
+          porcentaje: porcen.trim()
         });
 
         this.serviciosfilter = this.serviciospublicos.filter(
@@ -442,7 +459,8 @@ export class RegistrarpdvComponent implements OnInit {
 
         this.serviciostabla.push({
           nombre: this.serviciosfilter[0].tipo_servicio,
-          valor: porcen,
+          valor: porcen.trim(),
+          porcentaje: porcen.trim()
         });
       },
       () => {},
@@ -456,31 +474,38 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   registroserviciocontrato(idcontrato) {
+
+    if ( this.listservicios.length < 1) {
+      swal.fire("Guardado con Exito!", "", "success");
+      this.consulta_pdv = null;
+      this.id_contrato = null;
+      Loading.remove();
+      this.limpiarContrato();
+    }
+    
     for (let i = 0; i < this.listservicios.length; i++) {
       const e = this.listservicios[i];
+      console.log(e,i);
 
       e.id_contrato = idcontrato;
       //console.log(e);
 
       this.servicio.registroserviciocontrato(e).subscribe(
         (res: any) => {
-          //console.log(res);
-
-          if (i == this.listservicios.length - 1) {
+          if (i == (this.listservicios.length - 1)) {
+            swal.fire("Guardado con Exito!", "", "success");
+            this.consulta_pdv = null;
+            this.id_contrato = null;
             Loading.remove();
-            // Report.success(
-            //   "Sistema De Gestion De Pagos De Arriendos",
-            //   "Registro Exitoso",
-            //   "Okay"
-            // );
-            this.rutas.navigateByUrl("/dashboard");
+            this.limpiarContrato();
           }
         },
         (err) => {
-          //console.log(err.message);
+          swal.fire("No se pudo realizar el proceso con exito", "", "error");
         }
       );
     }
+    
   }
 
   cambiarModoPago(modo) {
@@ -591,7 +616,6 @@ export class RegistrarpdvComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            swal.fire("Guardado con Exito!", "", "success");
             if (!this.validarTercero(responsable.id_cliente)) {
               //Falta hacer la validacion en el backend para que no se repita el tercero y el autorizado
               //si no son los mismo se debe crear un nuevo tercero y/o autorizado
@@ -614,19 +638,36 @@ export class RegistrarpdvComponent implements OnInit {
                       conceptosLista.push(concepto.id_concepto);
                     });
 
-                    datos.set("contrato", JSON.stringify(contrato));
+                    datos.set("contrato", JSON.stringify(contrato).replace("{",'{"id_contrato":'+this.id_contrato+","));
                     datos.set("conceptos", conceptosLista);
 
-                    this.servicio.registrarcontrato(datos).subscribe(
-                      (res: any) => {
-                        if (res.estado == "1") {
-                          this.registroserviciocontrato(res.id);
+                    if(this.id_contrato != null){
+
+                      this.servicio.actuliarcontrato(datos).subscribe(
+                        (res: any) => {
+                          if (res.estado == "1") {
+                            this.registroserviciocontrato(res.id);
+                          }
+                        },
+                        (err) => {
+                          swal.fire("No se pudo actualizar el contrato", "", "error");
                         }
-                      },
-                      (err) => {
-                        //console.log(err.message);
-                      }
-                    );
+                      );
+                    }
+                    else{
+                      this.servicio.registrarcontrato(datos).subscribe(
+                        (res: any) => {
+                          if (res.estado == "1") {
+                            this.registroserviciocontrato(res.id);
+                          }
+                        },
+                        (err) => {
+                          swal.fire("No se pudo registrar el contrato", "", "error");
+                        }
+                      );
+                    }
+
+                    
                   },
                   (err) => {
                     //console.log(err.message);
@@ -818,6 +859,13 @@ export class RegistrarpdvComponent implements OnInit {
     this.serviciostabla = [];
     this.listservicios = [];
     this.serviciosfilter = [];
+  }
+
+  limpiarContrato(): void {
+    this.formulariocontrato.reset();
+    this.limpiarConceptos();
+    this.limpiarServicios();
+    this.consulta_pdv = null;
   }
 
   // INOFRMACION DE LOS AUTROIZADOS

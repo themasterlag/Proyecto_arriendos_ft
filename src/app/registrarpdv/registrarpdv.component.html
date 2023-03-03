@@ -536,17 +536,19 @@
                     <h6 class="text-info">Datos del contrato</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-
+                <h5><strong>Buscar contrato por punto de venta</strong></h5>
                 <div class="row">
-                  <input
-                    class="formdata"
-                    placeholder="Id PDV"
-                    type="number"
-                    [(ngModel)]="consulta_pdv"
-                  />
+                  <div class="col-3">
+                    <input
+                      class="formdata text-center form-control align-baseline mt-2"
+                      placeholder="Id PDV"
+                      type="number"
+                      [(ngModel)]="consulta_pdv"
+                    />
+                  </div>
+                  
                   <button
-                    mat-raised-button
-                    class="btn btn-info pull-left"
+                    class="btn btn-info text-center col-3"
                     id="button-consultar"
                     (click)="traeContrato()"
                   >
@@ -1007,8 +1009,7 @@
                     type="reset"
                     class="btn btn-danger pull-right"
                     id="button-limpiar"
-                    (click)="limpiarConceptos()"
-                    (click)="limpiarServicios()"
+                    (click)="limpiarContrato()"
                   >
                     Limpiar
                   </button>

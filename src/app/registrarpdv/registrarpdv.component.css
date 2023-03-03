@@ -37,7 +37,7 @@
     font-weight: 900;
 }
 #button-limpiar{
-    background-color: #1b4f35 !important;
+    /* background-color: #1b4f35 !important; */
     border-radius: 25px !important;
 }
 #button-guardar{
