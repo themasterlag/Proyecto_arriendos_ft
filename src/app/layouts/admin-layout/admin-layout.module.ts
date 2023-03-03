@@ -23,6 +23,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
@@ -45,6 +46,7 @@ import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
     MatButtonToggleModule,
     MatAutocompleteModule,
     MatTableModule,
+    MatPaginatorModule,
   ],
   declarations: [
     DashboardComponent,

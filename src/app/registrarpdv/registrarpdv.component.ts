@@ -241,16 +241,19 @@ export class RegistrarpdvComponent implements OnInit {
         res.contratoServicio.forEach((element) => {
           this.serviciosfilter = this.serviciospublicos.filter(
             (i) => i.id_tipo_servicio == element.id_tipo_servicio
+            
           );
+          
           this.serviciostabla.push({
             nombre: this.serviciosfilter[0].tipo_servicio,
             valor: element.porcentaje,
           });
+           
         });
 
         res.contratoConcepto.forEach((element) => {
           this.conceptosFilter = this.conceptos.filter(
-            (i) => i.id_concepto == element.id_contrato
+            (i) => i.id_concepto == element.id_concepto
           );
 
           this.conceptosTabla.push({
@@ -258,6 +261,9 @@ export class RegistrarpdvComponent implements OnInit {
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
           });
+          console.log(this.conceptosFilter[0].id_concepto);
+          console.log(this.conceptosFilter);
+                    
         });
       },
       (err) => {

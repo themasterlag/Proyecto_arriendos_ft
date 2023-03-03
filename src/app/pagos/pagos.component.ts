@@ -7,9 +7,9 @@ import {MatTableDataSource} from '@angular/material/table';
 
 export interface PeriodicElement {
   Check: boolean;
-  // pdv: number;
-  // nombre: string;
-  // total: number;
+  PDV: number;
+  Nombre: string;
+  Total: number;
 }
 
 @Component({
@@ -31,7 +31,7 @@ export class PagosComponent implements OnInit {
   efectivo: boolean = false;
   responsable: boolean = false;
   no_responsable: boolean = false;
-  displayedColumns: string[] = ['Check'];
+  displayedColumns: string[] = ['Check', 'PDV', 'Nombre', 'Total'];
   responsableTabla: PeriodicElement[] = [];
   dataSource:any = null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -111,13 +111,14 @@ this.validaciondatos()
               // console.log(e);
               return{
                 Check: true,
-                // pdv: e.codigo_sitio_venta,
-                // nombre: e.nombre_sitio_venta,
-                // total: e.valor_total
+                PDV: e.codigo_sitio_venta,
+                Nombre: e.nombre_sitio_venta,
+                Total: e.valor_total
               }              
             });            
             console.log(this.responsableTabla);
-            this.dataSource = new MatTableDataSource<PeriodicElement>(this.responsableTabla);                
+            this.dataSource = new MatTableDataSource<PeriodicElement>(this.responsableTabla);  
+            this.dataSource.paginator = this.paginator;              
           },err=>{
             console.log(err.message);            
           }) ;                    

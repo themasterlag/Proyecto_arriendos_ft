@@ -234,24 +234,25 @@
                         <ng-container matColumnDef="Check">
                           <th mat-header-cell *matHeaderCellDef>Check</th>
                           <td mat-cell *matCellDef="let element">
-                            {{element.Check}}
-                            <!-- <mat-checkbox
-                              class="example-margin"
-                              >                                
-                            </mat-checkbox>                             -->
-                          </td>
+                            
+                            <mat-checkbox 
+                              class="example-margin" 
+                              [(ngModel)]="element.Check">                              
+                            </mat-checkbox>                          
+                          </td>                          
                         </ng-container>
-                        <!-- <thead>
-                                    <tr>
-                                        <th>Check</th>
-                                        
-
-                                        <th>PDV</th>
-                                        <th>Nombre</th>
-                                        <th>Total</th>
-                                        <th>Comprobante</th>
-                                    </tr>
-                                </thead> -->
+                        <ng-container matColumnDef="PDV">
+                          <th mat-header-cell *matHeaderCellDef> PDV </th>
+                          <td mat-cell *matCellDef="let element"> {{element.PDV}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Nombre">
+                          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                          <td mat-cell *matCellDef="let element"> {{element.Nombre}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Total" >
+                          <th mat-header-cell *matHeaderCellDef> Total </th>
+                          <td mat-cell *matCellDef="let element"> {{element.Total}} </td>
+                        </ng-container>
                         <!-- <tbody>
                                     <tr *ngFor="let s of responsableTabla; let i = index">                                    
                                         <td>
@@ -282,6 +283,11 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                       </table>
+                      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                        showFirstLastButtons 
+                        aria-label="Select page of periodic elements"
+                        *ngIf="dataSource != null">
+                      </mat-paginator>
                       <!-- <mat-paginator
                         [pageSizeOptions]="[5, 10, 20]"
                         showFirstLastButtons
