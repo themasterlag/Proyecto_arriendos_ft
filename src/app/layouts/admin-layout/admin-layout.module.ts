@@ -22,6 +22,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
+import {MatTableModule} from '@angular/material/table';
 
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
@@ -42,7 +43,8 @@ import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
     MatExpansionModule,
     MatCheckboxModule,
     MatButtonToggleModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatTableModule,
   ],
   declarations: [
     DashboardComponent,

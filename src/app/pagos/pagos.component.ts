@@ -1,7 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { GeneralesService } from 'app/services/generales.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Loading, Report } from 'notiflix';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+
+export interface PeriodicElement {
+  Check: boolean;
+  // pdv: number;
+  // nombre: string;
+  // total: number;
+}
 
 @Component({
   selector: 'app-pagos',
@@ -17,12 +26,26 @@ export class PagosComponent implements OnInit {
   valselects: boolean = false;
   page:number = 0
   search:string=''
+  listarResponsable: any[] = [];
+  iva: any;
+  efectivo: boolean = false;
+  responsable: boolean = false;
+  no_responsable: boolean = false;
+  displayedColumns: string[] = ['Check'];
+  responsableTabla: PeriodicElement[] = [];
+  dataSource:any = null;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(private servicio:GeneralesService) { }
 
   ngOnInit(): void {
     Loading.pulse("Cargando")
     Loading.remove()
+    // this.dataSource.paginator = this.paginator;
+    // this.traerLiquidaciones();
   }
+
+  
 
   preliquidarmes(){
   Loading.pulse("Cargando")
@@ -79,4 +102,32 @@ this.validaciondatos()
     this.search = search
         }
 
+        
+
+        traerLiquidaciones(){ 
+          this.servicio.traerListaPagos().subscribe((res:any)=>{
+            this.responsableTabla = 
+             res.map(e=>{
+              // console.log(e);
+              return{
+                Check: true,
+                // pdv: e.codigo_sitio_venta,
+                // nombre: e.nombre_sitio_venta,
+                // total: e.valor_total
+              }              
+            });            
+            console.log(this.responsableTabla);
+            this.dataSource = new MatTableDataSource<PeriodicElement>(this.responsableTabla);                
+          },err=>{
+            console.log(err.message);            
+          }) ;                    
+        }
+
+        comprobante(i) {
+          this.responsableTabla.splice(i, 1);
+          this.listarResponsable.splice(i, 1);
+        }
+
 }
+
+

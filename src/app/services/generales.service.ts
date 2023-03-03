@@ -102,4 +102,10 @@ export class GeneralesService {
   traerContrato(id) {
     return this.servicio.get(this.api + "contrato/pdv/" + id);
   }
+
+  traerListaPagos() {
+    return this.servicio.get(this.api + "preliquidacion");
+  }
+
 }
+
