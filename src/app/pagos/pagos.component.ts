@@ -10,6 +10,7 @@ export interface PeriodicElement {
   PDV: number;
   Nombre: string;
   Total: number;
+  
 }
 
 @Component({
@@ -31,9 +32,9 @@ export class PagosComponent implements OnInit {
   efectivo: boolean = false;
   responsable: boolean = false;
   no_responsable: boolean = false;
-  displayedColumns: string[] = ['Check', 'PDV', 'Nombre', 'Total'];
+  displayedColumns: string[] = ['Check', 'PDV', 'Nombre', 'Total', 'Boton'];
   responsableTabla: PeriodicElement[] = [];
-  dataSource:any = null;
+  dataSource:MatTableDataSource<PeriodicElement> = new MatTableDataSource<PeriodicElement>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private servicio:GeneralesService) { }
@@ -105,7 +106,24 @@ this.validaciondatos()
         
 
         traerLiquidaciones(){ 
-          this.servicio.traerListaPagos().subscribe((res:any)=>{
+          
+          
+
+          let datosConsulta = 
+          {
+            "no_responsable" : this.no_responsable,
+            "responsable" : this.responsable,
+            "efectivo" : this.efectivo  
+          }; 
+          
+          console.log(datosConsulta);
+          
+            
+          this.servicio.traerListaPagos(datosConsulta).subscribe((res:any)=>{
+            
+            
+            console.log(res);
+            
             this.responsableTabla = 
              res.map(e=>{
               // console.log(e);
@@ -113,20 +131,23 @@ this.validaciondatos()
                 Check: true,
                 PDV: e.codigo_sitio_venta,
                 Nombre: e.nombre_sitio_venta,
-                Total: e.valor_total
+                Total: e.valor_total               
               }              
             });            
-            console.log(this.responsableTabla);
-            this.dataSource = new MatTableDataSource<PeriodicElement>(this.responsableTabla);  
+            console.log(this.responsableTabla);            
             this.dataSource.paginator = this.paginator;              
+            
+            this.dataSource.data = (this.responsableTabla);  
           },err=>{
             console.log(err.message);            
           }) ;                    
         }
 
-        comprobante(i) {
-          this.responsableTabla.splice(i, 1);
-          this.listarResponsable.splice(i, 1);
+        comprobante(element) {
+          console.log(element);
+          
+          // this.dataSource.splice(i, 1);
+          // this.listarResponsable.splice(i, 1);
         }
 
 }

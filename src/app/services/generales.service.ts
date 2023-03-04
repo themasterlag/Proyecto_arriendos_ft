@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Api } from "../config";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -103,8 +103,13 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato/pdv/" + id);
   }
 
-  traerListaPagos() {
-    return this.servicio.get(this.api + "preliquidacion");
+  traerListaPagos(datosConsulta) {
+
+    let datos = new HttpParams();
+    datos = datos.append("datosResponsable",JSON.stringify(datosConsulta));
+
+    return this.servicio.get(this.api + "preliquidacion", {params:datos});
+
   }
 
 }
