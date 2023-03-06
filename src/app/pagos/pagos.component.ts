@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Loading, Report } from 'notiflix';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import Swal from 'sweetalert2';
 
 export interface PeriodicElement {
   Check: boolean;
@@ -20,6 +21,7 @@ export interface PeriodicElement {
 })
 export class PagosComponent implements OnInit {
   panelOpenState = false;
+  tipoConsulta: boolean = false;
   preliquidacion:any
   consulta:boolean = false
   mes: any =0;
@@ -28,6 +30,7 @@ export class PagosComponent implements OnInit {
   page:number = 0
   search:string=''
   listarResponsable: any[] = [];
+  consultaDatos: any;
   iva: any;
   efectivo: boolean = false;
   responsable: boolean = false;
@@ -105,47 +108,39 @@ this.validaciondatos()
 
         
 
-        traerLiquidaciones(){ 
-          
-          
-
-          let datosConsulta = 
-          {
-            "no_responsable" : this.no_responsable,
-            "responsable" : this.responsable,
-            "efectivo" : this.efectivo  
-          }; 
-          
-          console.log(datosConsulta);
-          
+        traerLiquidaciones(){  
+          if(this.no_responsable == false && this.responsable == false && this.efectivo == false){
+            Swal.fire('Debe seleeccionar un recuadro','','info');
+            this.dataSource.data = null;
+          }else{
+            let datosConsulta = 
+                {
+                  "no_responsable" : this.no_responsable,
+                  "responsable" : this.responsable,
+                  "efectivo" : this.efectivo  
+                }; 
             
-          this.servicio.traerListaPagos(datosConsulta).subscribe((res:any)=>{
-            
-            
-            console.log(res);
-            
-            this.responsableTabla = 
-             res.map(e=>{
-              // console.log(e);
-              return{
-                Check: true,
-                PDV: e.codigo_sitio_venta,
-                Nombre: e.nombre_sitio_venta,
-                Total: e.valor_total               
-              }              
-            });            
-            console.log(this.responsableTabla);            
-            this.dataSource.paginator = this.paginator;              
-            
-            this.dataSource.data = (this.responsableTabla);  
-          },err=>{
-            console.log(err.message);            
-          }) ;                    
+            this.servicio.traerListaPagos(datosConsulta).subscribe((res:any)=>{
+              this.consultaDatos = res;            
+              this.responsableTabla = res.map(e=>{
+                // console.log(e);
+                return{
+                  Check: true,
+                  PDV: e.codigo_sitio_venta,
+                  Nombre: e.nombre_sitio_venta,
+                  Total: e.valor_total               
+                }              
+              });                         
+              this.dataSource.paginator = this.paginator; 
+              this.dataSource.data = (this.responsableTabla);  
+            },err=>{
+              console.log(err.message);            
+            }) ;     
+          }  
         }
 
-        comprobante(element) {
-          console.log(element);
-          
+        comprobante() {
+          console.log(this.consultaDatos);          
           // this.dataSource.splice(i, 1);
           // this.listarResponsable.splice(i, 1);
         }
