@@ -182,29 +182,6 @@
                     <h6 class="text-info">Pagos de verdad</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-                <hr />
-                <div class="row">
-                  <div class="col" align="center">
-                    <button class="btn btn-warning" id="button-guardar" (click)="generarPdfBancolombia()">
-                      Bancolombia
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button class="btn btn-warning" id="button-guardar" (click)="traerLiquidaciones()">
-                      Otros bancos
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button class="btn btn-warning" id="button-guardar" (click)="traerLiquidaciones()">
-                      Efectivo
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button class="btn btn-success" id="button-guardar" (click)="traerLiquidaciones()">
-                      Liquidacion
-                    </button>
-                  </div>
-                </div>
 
                 <hr>
 
@@ -307,7 +284,31 @@
                       </mat-paginator> -->
                     </div>
                   </div>
-                </div> </mat-expansion-panel
+                </div> 
+                <hr />
+                <div class="row">
+                  <div class="col" align="center">
+                    <button class="btn btn-warning" id="button-guardar" (click)="generarCsv('bancolombia')">
+                      Bancolombia
+                    </button>
+                  </div>
+                  <div class="col" align="center">
+                    <button class="btn btn-warning" id="button-guardar" (click)="generarCsv('otrosbancos')">
+                      Otros bancos
+                    </button>
+                  </div>
+                  <div class="col" align="center">
+                    <button class="btn btn-warning" id="button-guardar" (click)="generarCsv('efectivo')">
+                      Efectivo
+                    </button>
+                  </div>
+                  <div class="col" align="center">
+                    <button class="btn btn-success" id="button-guardar" (click)="null">
+                      Liquidacion
+                    </button>
+                  </div>
+                </div>
+              </mat-expansion-panel
             ></mat-accordion>
           </div>
         </div>

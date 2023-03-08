@@ -10,6 +10,7 @@ declare var require: any;
 const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 import Swal from 'sweetalert2';
+import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
 
 export interface PeriodicElement {
   Check: boolean;
@@ -157,6 +158,47 @@ this.validaciondatos()
     var html = htmlToPdfmake(pdfTable.innerHTML);
     const documentDefinition = { content: html };
     pdfMake.createPdf(documentDefinition).download(); 
+  }
+
+
+  generarCsv(tipo){
+    let data = [];
+    let puntosV = [];
+
+    this.dataSource.data.forEach(element => {
+      if (element.Check) {
+        puntosV.push(element.PDV)
+      }
+    });
+
+    this.servicio.traerInfoCsv(tipo, puntosV.toString()).subscribe(
+      (res:any)=>{
+        var options = { 
+          fieldSeparator: ',',
+          quoteStrings: '"',
+          decimalseparator: '.',
+          showLabels: true, 
+          // showTitle: true,
+          // title: "titulo",
+          useBom: true,
+          noDownload: false,
+          headers: Object.keys(res[0]),
+          useHeader: true,
+          nullToEmptyString: true,
+        };
+        
+        let nombreExcel = "Listado_" + tipo + "_" +new Date().getMonth() + "_" + new Date().getFullYear();
+    
+        let excel = new AngularCsv(res, nombreExcel, options);
+      },
+      (error)=>{
+        Swal.fire(
+          "Error",
+          "No se pudo obtener los bancos",
+          "error"
+        );
+      }
+    );
   }
 }
 

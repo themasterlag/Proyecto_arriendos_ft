@@ -116,5 +116,13 @@ export class GeneralesService {
 
   }
 
+  traerInfoCsv(opcion, puntos){
+    let ruta = "preliquidacion/"+opcion;
+    let pdv = new HttpParams();
+    pdv = pdv.append("opcion", puntos);
+
+    return this.servicio.get(this.api + ruta, {params:pdv});
+  }
+
 }
 
