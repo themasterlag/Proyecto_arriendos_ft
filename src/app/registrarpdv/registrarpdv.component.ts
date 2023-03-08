@@ -159,10 +159,10 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
   traerpdv() {
-    this.servicio.traerpuntosdeventa().subscribe(
+    this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
         this.pdv = res;
-        //console.log(res);
+        console.log(res);
       },
       (err) => {
         //console.log(err.message);
@@ -171,8 +171,18 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   traeContrato() {
+
     this.actualizar = true;
     let id = this.consulta_pdv;
+
+    this.servicio.traerPuntosDeVenta().subscribe(
+      (resPdv:any) => {
+        this.pdv = resPdv;
+      },
+      (err) => {
+        //console.log(err.message);
+      }
+    );
 
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
@@ -863,9 +873,11 @@ export class RegistrarpdvComponent implements OnInit {
 
   limpiarContrato(): void {
     this.formulariocontrato.reset();
+    this.traerpdv();
     this.limpiarConceptos();
     this.limpiarServicios();
     this.consulta_pdv = null;
+
   }
 
   // INOFRMACION DE LOS AUTROIZADOS

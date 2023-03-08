@@ -37,7 +37,11 @@ export class GeneralesService {
   enviarregistropdv(form) {
     return this.servicio.post(this.api + "puntodeventa", form);
   }
-  traerpuntosdeventa() {
+  traerPuntosDeVentaSinContrato() {
+    return this.servicio.get(this.api + "puntodeventa/sincontrato");
+  }
+
+  traerPuntosDeVenta() {
     return this.servicio.get(this.api + "puntodeventa");
   }
 
