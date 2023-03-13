@@ -693,7 +693,7 @@ export class RegistrarpdvComponent implements OnInit {
         });
     } else {
       //console.log(this.formulariocontrato);
-      swal.fire("Falta infromación del contrato", "", "question");
+      swal.fire("Falta información del contrato", "", "question");
     }
   }
   validarTercero(terceroActual: any) {
@@ -880,37 +880,4 @@ export class RegistrarpdvComponent implements OnInit {
 
   }
 
-  // INOFRMACION DE LOS AUTROIZADOS
-  // traerautorizado() {
-  //   this.servicio.traerAutorizado().subscribe(
-  //     (res) => {
-  //       this.autorizados = res;
-  //       //console.log(res, "autorizados");
-  //     },
-  //     (err) => {
-  //       //console.log(err.message);
-  //     }
-  //   );
-  // }
-  //
-  // addAutorizado(value) {
-  //   this.listAut.push({
-  //     id_autorizado: value,
-  //   });
-
-  //   this.autorizadosFilter = this.autorizados.filter((i) => i.id_autorizado == value);
-
-  //   this.autorizadosTabla.push({
-  //     id_cliente: this.autorizadosFilter[0].id_cliente,
-  //     metodo_pago: this.autorizadosFilter[0].metodo_pago,
-  //     entidad_bancaria: this.autorizadosFilter[0].entidad_bancaria,
-  //     numero_cuenta: this.autorizadosFilter[0].numero_cuenta,
-  //     id_tipo_cuenta: this.autorizadosFilter[0].id_tipo_cuenta,
-  //   });
-  // }
-
-  // deliAut(i) {
-  //   this.autorizadosTabla.splice(i, 1);
-  //   this.listAut.splice(i, 1);
-  // }
 }

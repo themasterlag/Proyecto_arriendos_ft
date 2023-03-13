@@ -713,65 +713,9 @@
                           </mat-button-toggle-group>
                         </div>
 
-                        <!-- <button
-                    mat-raised-button
-                    type="button"
-                    class="btn btn-info"
-                    id="button-efectivo"  
-                    (click)= "cambiarModoPago('efectivo')"            
-                    >
-                    Efecitvo
-                    </button> -->
-
-                        <!-- <button
-                    mat-raised-button
-                    type="button"
-                    class="btn btn-info"
-                    id="button-tarjeta"
-                    (click)= "cambiarModoPago('transferencia')"
-                    >
-                    Transferencia
-                    </button> -->
+                   
                       </div>
 
-                      <!-- <div *ngIf="pago_efectivo">
-              <div class="row">
-                <div class="col-md-6">
-                <mat-form-field class="example-full-width">
-                  <mat-select
-                    placeholder="Entidad Bancaria"
-                    formControlName="entidad_bancaria"
-                  >
-                    <mat-option
-                      [value]="b.id_entidad_bancaria"
-                      *ngFor="let b of bancos"
-                    >
-                      {{b.entidad_bancaria}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                </div>
-    
-    
-                <div class="col-md-6">
-                <mat-form-field class="example-full-width">
-                  <mat-select
-                    placeholder="Tipo de Cuenta"
-                    formControlName="id_tipo_cuenta"
-                    
-                  >
-                    <mat-option
-                      [value]="t.id_tipo_cuenta"
-                      *ngFor="let t of tipocuentas"
-                    >
-                      {{t.tipo_cuenta}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                </div>
-    
-              </div> 
-              </div>   -->
 
                       <div *ngIf="pago_transferencia">
                         <div class="row">
@@ -1025,7 +969,7 @@
               </mat-expansion-panel>
             </mat-accordion>
 
-            <div class="clearfix"></div>
+            <!-- <div class="clearfix"></div> -->
           </div>
         </div>
       </div>

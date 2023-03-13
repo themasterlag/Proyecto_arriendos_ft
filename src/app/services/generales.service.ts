@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Api } from "../config";
 import { HttpClient, HttpParams } from "@angular/common/http";
+import { fromEvent, Observable } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -8,6 +10,22 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 export class GeneralesService {
   api = Api.url;
   constructor(private servicio: HttpClient) {}
+
+  // traerImagen(imageUrl: string): Observable<string> {
+  //   return this.servicio.get<Blob>(imageUrl).pipe(
+  //     switchMap((imageBlob: Blob) => {
+  //       const fileReader = new FileReader();
+  //       fileReader.readAsDataURL(imageBlob);
+
+  //       return fromEvent(fileReader, "loadend").pipe(
+  //         map(() => fileReader.result.toString().split(",")[1])
+  //       );
+  //     })
+  //   );
+  // }
+  traerBase64(imagePath) {
+    return this.servicio.get(imagePath, { responseType: "blob" });
+  }
 
   traerciudades() {
     return this.servicio.get(this.api + "municipios");
@@ -108,21 +126,17 @@ export class GeneralesService {
   }
 
   traerListaPagos(datosConsulta) {
-
     let datos = new HttpParams();
-    datos = datos.append("datosResponsable",JSON.stringify(datosConsulta));
+    datos = datos.append("datosResponsable", JSON.stringify(datosConsulta));
 
-    return this.servicio.get(this.api + "preliquidacion", {params:datos});
-
+    return this.servicio.get(this.api + "preliquidacion", { params: datos });
   }
 
-  traerInfoCsv(opcion, puntos){
-    let ruta = "preliquidacion/"+opcion;
+  traerInfoCsv(opcion, puntos) {
+    let ruta = "preliquidacion/" + opcion;
     let pdv = new HttpParams();
     pdv = pdv.append("opcion", puntos);
 
-    return this.servicio.get(this.api + ruta, {params:pdv});
+    return this.servicio.get(this.api + ruta, { params: pdv });
   }
-
 }
-
