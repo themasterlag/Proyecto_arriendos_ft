@@ -196,13 +196,13 @@ export class PagosComponent implements OnInit {
       reader.onloadend = () => {
         var base64 = reader.result;
 
-        this.comprobantePdf(base64);
+        this.comprobantePdf(base64, element);
       };
     });
   }
 
-  comprobantePdf(base64) {
-    console.log(base64, "base");
+  comprobantePdf(base64, element) {
+    console.log(element, "PDV");
 
     const documentDefinition = {
       content: [
@@ -216,44 +216,96 @@ export class PagosComponent implements OnInit {
             {
               text: "DOCUMENTO SOPORTE EN ADQUISICIONES\n EFECTUADAS A NO OBLIGADOS A FACTURAR",
               alignment: "center",
+              bold: true,
             },
             {
-              text:
-                "SEAPTO S.A" +
-                "\nNIT 890.706.022-2\nCalle 10 # 3-56, Ibagué - Tolima\nresponsable de IVA",
-              alignment: "center",
-              bold: true,
+              text: [
+                {
+                  text: "SEAPTO S.A.\n",
+                  bold: true,
+                  fontSize: 10,
+                  alignment: "center",
+                },
+                {
+                  text: "NIT 890.706.022-2\nCalle 10 # 3-56, Ibagúe - Tolima\nResponsable de IVA",
+                  fontSize: 8,
+                  alignment: "center",
+                },
+              ],
             },
           ],
         },
-        // {
-        //   // html: "<hr>",
-        //   // text: "",
-        //   image: "ganagana",
-        //   width: 100,
-        //   heigth: 100,
-        //   style: "centered",
-        // },
+        {
+          text: "____________________________________________________________________________________________________________________________________________\n____________________________________________________________________________________________________________________________________________",
+        },
         {
           columns: [
             {
               // width: "25%",
               // image: "ganagana",
-              text: "Columna 1\nLínea 2\nLínea 3",
+              text: [
+                {
+                  text: "N° ARRD: \n",
+                  bold: true,
+                },
+                {
+                  text: "N° Cédula:\n",
+                  bold: true,
+                },
+                {
+                  text: "Codigo PDV:\n",
+                  bold: true,
+                },
+                {
+                  text: "N° Cuenta:\n",
+                  bold: true,
+                },
+              ],
               alignment: "center",
               margin: [0, 10, 0, 0],
             },
             {
               width: "50%",
-              text: "Columna 2\nLínea 2\nLínea 3",
+              text: [
+                {
+                  text: "Fecha: \n",
+                  bold: true,
+                },
+                {
+                  text: "Nombre: \n",
+                  bold: true,
+                },
+                {
+                  text: "PDV: \n",
+                  bold: true,
+                },
+                {
+                  text: "Banco: \n",
+                  bold: true,
+                },
+              ],
               alignment: "center",
               margin: [0, 10, 0, 0],
             },
             {
               width: "25%",
-              text: "Columna 3\nLínea 2\nLínea 3",
+              text: "Municipio: \n",
+              bold: true,
               alignment: "center",
               margin: [0, 10, 0, 0],
+            },
+          ],
+        },
+        {
+          text: "_____________________________________________________________________________________________________________________________________________\n",
+          bold: true,
+        },
+        {
+          text: [
+            {
+              text: "\n\nConcepto: \n",
+              bold: true,
+              alignment: "center",
             },
           ],
         },
