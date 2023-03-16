@@ -139,4 +139,8 @@ export class GeneralesService {
 
     return this.servicio.get(this.api + ruta, { params: pdv });
   }
+
+  traerSitioVentaLiquidacion(id: number) {
+    return this.servicio.get(this.api + "preliquidacion/sitioventa/" + id);
+  }
 }

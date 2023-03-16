@@ -196,13 +196,19 @@ export class PagosComponent implements OnInit {
       reader.onloadend = () => {
         var base64 = reader.result;
 
-        this.comprobantePdf(base64, element);
+        this.servicio.traerSitioVentaLiquidacion(element.PDV).subscribe((res: any) => {
+          // console.log(res);
+          var datos = res[0];
+
+          this.comprobantePdf(base64, datos);
+        });
+        
       };
     });
   }
 
-  comprobantePdf(base64, element) {
-    console.log(element, "PDV");
+  comprobantePdf(base64, datos) {
+    console.log(datos);    
 
     const documentDefinition = {
       content: [
@@ -245,55 +251,55 @@ export class PagosComponent implements OnInit {
               // image: "ganagana",
               text: [
                 {
-                  text: "N° ARRD: \n",
+                  text: "N° Cédula: " ,
                   bold: true,
                 },
                 {
-                  text: "N° Cédula:\n",
+                  text: "\nNombre: ",
                   bold: true,
                 },
                 {
-                  text: "Codigo PDV:\n",
+                  text: "\nN° Sitio de Venta: ",
                   bold: true,
                 },
                 {
-                  text: "N° Cuenta:\n",
+                  text: "\nNombre Sitio de Venta: ",
                   bold: true,
                 },
               ],
-              alignment: "center",
-              margin: [0, 10, 0, 0],
+              alignment: "left",
+              margin: [28, 10, 0, 0],
             },
             {
               width: "50%",
               text: [
                 {
-                  text: "Fecha: \n",
+                  text: "Municipio: ",
                   bold: true,
                 },
                 {
-                  text: "Nombre: \n",
+                  text: "\nBanco: ",
                   bold: true,
                 },
                 {
-                  text: "PDV: \n",
+                  text: "\nN° de Cuenta: ",
                   bold: true,
                 },
                 {
-                  text: "Banco: \n",
+                  text: "\nFecha: ",
                   bold: true,
                 },
               ],
-              alignment: "center",
+              alignment: "left",
               margin: [0, 10, 0, 0],
             },
-            {
-              width: "25%",
-              text: "Municipio: \n",
-              bold: true,
-              alignment: "center",
-              margin: [0, 10, 0, 0],
-            },
+            // {
+            //   width: "25%",
+            //   text: "Municipio: \n",
+            //   bold: true,
+            //   alignment: "center",
+            //   margin: [0, 10, 0, 0],
+            // },
           ],
         },
         {
@@ -301,15 +307,70 @@ export class PagosComponent implements OnInit {
           bold: true,
         },
         {
-          text: [
+          columns: [
             {
-              text: "\n\nConcepto: \n",
-              bold: true,
-              alignment: "center",
+              text: 
+                {
+                  text: "Concepto: ",
+                  bold: true,
+                },
+              alignment: "left",
+              margin: [28, 10, 0, 0],
             },
           ],
         },
+        {
+          columns: [
+            {
+              text: "\nConcepto devengado",
+              bold: true,  
+            },
+            {
+              text: "\nValor",
+              bold: true,
+            },
+            {
+              text: "\nConcepto deduccion",
+              bold: true,
+            },
+            {
+              text: "\nValor",
+              bold: true,
+            }
+          ],
+          alignment: "center",
+          margin: [33, 10, 0, 0],
+        },
+        {
+
+        },
+        {
+          columns:[
+            {
+              text: "\nTotal Devengado",
+              bold: true,
+            },
+            {
+              text: "\nTotal Deducción",
+              bold: true,
+            },
+            {
+              text: "\nTotal a Pagar",
+              bold: true,
+            },
+          ],
+          alignment: "center",
+          margin: [33, 10, 0, 0],
+        },        
       ],
+      footer: {
+        columns: [
+          {
+            text: 'Este es el texto que aparecerá al final del documento',
+            alignment: "center",
+          },  
+        ],
+      },
       pageOrientation: "landscape",
       styles: {
         centered: {
@@ -329,7 +390,11 @@ export class PagosComponent implements OnInit {
           height: 50,
         },
       },
+      pageBreakBefore: function(currentNode, followingNodesOnPage) {
+        return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+      }
     };
+
     pdfMake.createPdf(documentDefinition).open();
   }
 }
