@@ -3,6 +3,7 @@ import { GeneralesService } from "app/services/generales.service";
 // import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Loading, Report } from "notiflix";
 import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
@@ -35,6 +36,7 @@ export class PagosComponent implements OnInit {
   page: number = 0;
   search: string = "";
   listarResponsable: any[] = [];
+  yearList: number[] = [];
   consultaDatos: any;
   iva: any;
   efectivo: boolean = false;
@@ -47,12 +49,17 @@ export class PagosComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild("pdfTable") pdfTable: ElementRef;
   @ViewChild("comprobante") comprobante: ElementRef;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private servicio: GeneralesService) {}
 
   ngOnInit(): void {
     Loading.pulse("Cargando");
     Loading.remove();
+    const currentYear = new Date().getFullYear();
+      for (let i = 2000; i <= currentYear; i++) {
+        this.yearList.push(i);
+      }
     // this.dataSource.paginator = this.paginator;
     // this.traerLiquidaciones();
   }
@@ -112,15 +119,21 @@ export class PagosComponent implements OnInit {
     if (
       this.no_responsable == false &&
       this.responsable == false &&
-      this.efectivo == false
+      this.efectivo == false || 
+      this.anio == 0 ||
+      this.mes == 0
     ) {
       Swal.fire("Debe seleeccionar un recuadro", "", "info");
       this.dataSource.data = null;
     } else {
+      console.log(this.anio);
+      
       let datosConsulta = {
         no_responsable: this.no_responsable,
         responsable: this.responsable,
         efectivo: this.efectivo,
+        anio: this.anio,
+        mes: this.mes
       };
 
       this.servicio.traerListaPagos(datosConsulta).subscribe(
@@ -137,6 +150,7 @@ export class PagosComponent implements OnInit {
           });
           this.dataSource.paginator = this.paginator;
           this.dataSource.data = this.responsableTabla;
+          this.dataSource.sort = this.sort;
           console.log(this.responsableTabla);
         },
         (err) => {

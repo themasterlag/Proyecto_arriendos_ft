@@ -24,6 +24,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
@@ -47,6 +48,7 @@ import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
     MatAutocompleteModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSortModule,
   ],
   declarations: [
     DashboardComponent,
