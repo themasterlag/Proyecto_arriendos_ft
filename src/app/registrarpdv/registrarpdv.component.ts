@@ -41,7 +41,7 @@ export class RegistrarpdvComponent implements OnInit {
   autorizadosTabla: any = [];
   conceptosTabla: any = [];
   serviciostabla: any = [];
-  bancos: any;
+  bancos: any;a_ter
   tipocuentas: any;
   pdv: any = [];
   serviciospublicos: any = [];
@@ -50,6 +50,7 @@ export class RegistrarpdvComponent implements OnInit {
   id_pago: any;
   incremento_anual = null;
   consulta_pdv: any = 32;
+  consulta_ter: any = 1234567;
   actualizar: boolean = false;
   id_contrato = null;
 
@@ -170,6 +171,47 @@ export class RegistrarpdvComponent implements OnInit {
     );
   }
 
+  traerTercero(){
+    console.log(this.consulta_ter);
+
+    this.servicio.traerTerceroConsulta(this.consulta_ter).subscribe(
+      (res_Ter:any) => {
+        console.log(res_Ter);
+        
+        console.log(this.departamentos);
+        console.log(this.municipios);
+        const buscar = this.municipios.filter((municipio) => municipio.id_municipio == res_Ter.id_municipio);
+        console.log(buscar);
+         
+        
+        // this.formulariotercero.patchValue({
+        //   numero_documento: res_Ter.numero_documento,
+        //   tipo_documento: res_Ter.tipo_documento,
+        //   id_municipio: res_Ter.id_municipio, 
+        // });  
+        // if (res_Ter.tipo_documento == 'Nit') {
+        //   this.formulariotercero.patchValue({
+        //     digito_verificacion: res_Ter.digito_verificacion,
+        //     razon_social: res_Ter.razon_social,
+        //   })
+        //   this.validartipopersona(res_Ter.tipo_documento);
+        // }else{
+        //   this.formulariotercero.patchValue({
+        //     nombres: res_Ter.nombres,
+        //     apellidos: res_Ter.apellidos,
+        //     genero: res_Ter.genero
+        //   });
+        //   this.validartipopersona(res_Ter.tipo_documento);
+        // }
+        
+      },
+      (err) => {
+
+      }
+    );
+    
+  }
+  
   traeContrato() {
 
     this.actualizar = true;
@@ -192,22 +234,19 @@ export class RegistrarpdvComponent implements OnInit {
 
         this.formulariocontrato.patchValue({
           valor_adminstracion: res.contrato.valor_adminstracion,
-        });
-        this.formulariocontrato.patchValue({
-          valor_canon: res.contrato.valor_canon,
-        });
-        this.formulariocontrato.patchValue({
-          fecha_inicio_contrato: res.contrato.fecha_inicio_contrato,
-        });
-        this.formulariocontrato.patchValue({
-          fecha_fin_contrato: res.contrato.fecha_fin_contrato,
-        });
-        this.formulariocontrato.patchValue({
+          valor_canon: res.contrato.valor_canon,        
+          fecha_inicio_contrato: res.contrato.fecha_inicio_contrato,        
+          fecha_fin_contrato: res.contrato.fecha_fin_contrato,        
           definicion: res.contrato.definicion,
-        });
-        this.formulariocontrato.patchValue({
-          id_clienteautorizado:
-            res.contrato.id_autorizado_autorizado.id_cliente,
+          id_clienteautorizado: res.contrato.id_autorizado_autorizado.id_cliente,
+          entidad_bancaria: res.contrato.id_autorizado_autorizado.entidad_bancaria,        
+          id_tipo_cuenta: res.contrato.id_autorizado_autorizado.id_tipo_cuenta,        
+          numero_cuenta: res.contrato.id_autorizado_autorizado.numero_cuenta,        
+          incremento_adicional: res.contrato.incremento_adicional,        
+          poliza: res.contrato.poliza,        
+          incremento_anual: res.contrato.incremento_anual,        
+          id_clienteresponsable: res.contrato.id_responsable_responsable.id_cliente,
+          id_punto_venta: res.contrato.id_punto_venta,
         });
         if (res.contrato.id_autorizado_autorizado.metodo_pago == 1) {
           this.pago_transferencia = true;
@@ -217,27 +256,7 @@ export class RegistrarpdvComponent implements OnInit {
           this.pago_efectivo = true;
           // this.pago_transferencia = false;
         }
-        this.formulariocontrato.patchValue({
-          entidad_bancaria:
-            res.contrato.id_autorizado_autorizado.entidad_bancaria,
-        });
-        this.formulariocontrato.patchValue({
-          id_tipo_cuenta: res.contrato.id_autorizado_autorizado.id_tipo_cuenta,
-        });
-        this.formulariocontrato.patchValue({
-          numero_cuenta: res.contrato.id_autorizado_autorizado.numero_cuenta,
-        });
-        this.formulariocontrato.patchValue({
-          incremento_adicional: res.contrato.incremento_adicional,
-        });
-        this.formulariocontrato.patchValue({ poliza: res.contrato.poliza });
-        this.formulariocontrato.patchValue({
-          incremento_anual: res.contrato.incremento_anual,
-        });
-        this.formulariocontrato.patchValue({
-          id_clienteresponsable:
-            res.contrato.id_responsable_responsable.id_cliente,
-        });
+
         if (res.contrato.id_responsable_responsable.iva != null) {
           this.formulariocontrato.patchValue({ iva: true });
         }
@@ -247,10 +266,6 @@ export class RegistrarpdvComponent implements OnInit {
         if (res.contrato.id_responsable_responsable.rete_fuente != null) {
           this.formulariocontrato.patchValue({ rete_fuente: true });
         }
-        this.formulariocontrato.patchValue({
-          id_punto_venta: res.contrato.id_punto_venta,
-        });
-
         res.contratoServicio.forEach((element) => {
           this.serviciosfilter = this.serviciospublicos.filter(
             (i) => i.id_tipo_servicio == element.id_tipo_servicio

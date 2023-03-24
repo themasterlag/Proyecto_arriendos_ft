@@ -59,6 +59,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "puntodeventa/sincontrato");
   }
 
+  traerTerceroConsulta(id){
+    return this.servicio.get(this.api + "cliente/numero_documento/" + id);
+  }
+
   traerPuntosDeVenta() {
     return this.servicio.get(this.api + "puntodeventa");
   }
