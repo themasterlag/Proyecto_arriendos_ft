@@ -62,6 +62,9 @@ export class GeneralesService {
   traerTerceroConsulta(id){
     return this.servicio.get(this.api + "cliente/numero_documento/" + id);
   }
+  actualizarTercero(id, contrato_ter){
+    return this.servicio.patch(this.api + "cliente/" + id, contrato_ter);
+  }
 
   traerPuntosDeVenta() {
     return this.servicio.get(this.api + "puntodeventa");

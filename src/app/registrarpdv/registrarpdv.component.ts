@@ -53,6 +53,7 @@ export class RegistrarpdvComponent implements OnInit {
   consulta_ter: any = 1234567;
   actualizar: boolean = false;
   id_contrato = null;
+  id_tercero = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -176,33 +177,40 @@ export class RegistrarpdvComponent implements OnInit {
 
     this.servicio.traerTerceroConsulta(this.consulta_ter).subscribe(
       (res_Ter:any) => {
-        console.log(res_Ter);
+        // console.log(res_Ter);
+        this.id_tercero = res_Ter.id_cliente;
         
-        console.log(this.departamentos);
-        console.log(this.municipios);
         const buscar = this.municipios.filter((municipio) => municipio.id_municipio == res_Ter.id_municipio);
-        console.log(buscar);
-         
-        
-        // this.formulariotercero.patchValue({
-        //   numero_documento: res_Ter.numero_documento,
-        //   tipo_documento: res_Ter.tipo_documento,
-        //   id_municipio: res_Ter.id_municipio, 
-        // });  
-        // if (res_Ter.tipo_documento == 'Nit') {
-        //   this.formulariotercero.patchValue({
-        //     digito_verificacion: res_Ter.digito_verificacion,
-        //     razon_social: res_Ter.razon_social,
-        //   })
-        //   this.validartipopersona(res_Ter.tipo_documento);
-        // }else{
-        //   this.formulariotercero.patchValue({
-        //     nombres: res_Ter.nombres,
-        //     apellidos: res_Ter.apellidos,
-        //     genero: res_Ter.genero
-        //   });
-        //   this.validartipopersona(res_Ter.tipo_documento);
-        // }
+        this.filtrardepar(buscar[0].id_departamento);
+        const municipiosBuscar = this.municipiosfiltro.filter((municipio) => municipio.id_municipio == res_Ter.id_municipio);
+     
+        this.formulariotercero.patchValue({
+          numero_documento: res_Ter.numero_documento,
+          tipo_documento: res_Ter.tipo_documento,
+          id_municipio: municipiosBuscar[0].id_municipio,
+          departamento: buscar[0].id_departamento,
+          direccion: res_Ter.direccion,
+          numero_contacto: res_Ter.numero_contacto,
+          numero_contacto2: res_Ter.numero_contacto2,
+          email: res_Ter.email,
+
+        });  
+        if (res_Ter.tipo_documento == 'Nit') {
+          this.formulariotercero.patchValue({
+            digito_verificacion: res_Ter.digito_verificacion,
+            razon_social: res_Ter.razon_social,
+            fecha_creacion: res_Ter.fecha_creacion_cliente
+          })
+          this.validartipopersona(res_Ter.tipo_documento);
+        }else{
+          this.formulariotercero.patchValue({
+            nombres: res_Ter.nombres,
+            apellidos: res_Ter.apellidos,
+            genero: res_Ter.genero,
+            fecha_nacimiento: res_Ter.fecha_nacimiento
+          });
+          this.validartipopersona(res_Ter.tipo_documento);
+        }
         
       },
       (err) => {
@@ -339,40 +347,24 @@ export class RegistrarpdvComponent implements OnInit {
   validartipopersona(value) {
     if (value == "Nit") {
       this.tipopersona = false;
-      this.formulariocontrato
-        .get("digito_verificaciona")
-        .removeValidators(Validators.required);
-      this.formulariocontrato
-        .get("razon_social")
-        .removeValidators(Validators.required);
-      this.formulariocontrato
-        .get("fecha_creacion")
-        .removeValidators(Validators.required);
+      this.formulariotercero.get("digito_verificacion").removeValidators(Validators.required);
+      this.formulariotercero.get("razon_social").removeValidators(Validators.required);
+      this.formulariotercero.get("fecha_creacion").removeValidators(Validators.required);
 
-      this.formulariocontrato.get("razon_social").updateValueAndValidity();
-      this.formulariocontrato
-        .get("digito_verificaciona")
-        .updateValueAndValidity();
-      this.formulariocontrato.get("fecha_creacion").updateValueAndValidity();
+      this.formulariotercero.get("razon_social").updateValueAndValidity();
+      this.formulariotercero.get("digito_verificacion").updateValueAndValidity();
+      this.formulariotercero.get("fecha_creacion").updateValueAndValidity();
     } else {
       this.tipopersona = true;
-      this.formulariocontrato
-        .get("nombres")
-        .removeValidators(Validators.required);
-      this.formulariocontrato
-        .get("apellidos")
-        .removeValidators(Validators.required);
-      this.formulariocontrato
-        .get("genero")
-        .removeValidators(Validators.required);
-      this.formulariocontrato
-        .get("fecha_nacimiento")
-        .removeValidators(Validators.required);
+      this.formulariotercero.get("nombres").removeValidators(Validators.required);
+      this.formulariotercero.get("apellidos").removeValidators(Validators.required);
+      this.formulariotercero.get("genero").removeValidators(Validators.required);
+      this.formulariotercero.get("fecha_nacimiento").removeValidators(Validators.required);
 
-      this.formulariocontrato.get("nombres").updateValueAndValidity();
-      this.formulariocontrato.get("apellidosa").updateValueAndValidity();
-      this.formulariocontrato.get("genero").updateValueAndValidity();
-      this.formulariocontrato.get("fecha_nacimiento").updateValueAndValidity();
+      this.formulariotercero.get("nombres").updateValueAndValidity();
+      this.formulariotercero.get("apellidos").updateValueAndValidity();
+      this.formulariotercero.get("genero").updateValueAndValidity();
+      this.formulariotercero.get("fecha_nacimiento").updateValueAndValidity();
     }
   }
   validarmetodopago(value) {
@@ -539,19 +531,11 @@ export class RegistrarpdvComponent implements OnInit {
         this.pago_efectivo = true;
         this.pago_transferencia = false;
         this.id_pago = 2;
-        this.formulariocontrato
-          .get("entidad_bancaria")
-          .removeValidators(Validators.required);
-        this.formulariocontrato
-          .get("numero_cuenta")
-          .removeValidators(Validators.required);
-        this.formulariocontrato
-          .get("id_tipo_cuenta")
-          .removeValidators(Validators.required);
+        this.formulariocontrato.get("entidad_bancaria").removeValidators(Validators.required);
+        this.formulariocontrato.get("numero_cuenta").removeValidators(Validators.required);
+        this.formulariocontrato.get("id_tipo_cuenta").removeValidators(Validators.required);
 
-        this.formulariocontrato
-          .get("entidad_bancaria")
-          .updateValueAndValidity();
+        this.formulariocontrato.get("entidad_bancaria").updateValueAndValidity();
         this.formulariocontrato.get("numero_cuenta").updateValueAndValidity();
         this.formulariocontrato.get("id_tipo_cuenta").updateValueAndValidity();
 
@@ -560,15 +544,9 @@ export class RegistrarpdvComponent implements OnInit {
         this.pago_efectivo = false;
         this.pago_transferencia = true;
         this.id_pago = 1;
-        this.formulariocontrato
-          .get("entidad_bancaria")
-          .addValidators(Validators.required);
-        this.formulariocontrato
-          .get("numero_cuenta")
-          .addValidators(Validators.required);
-        this.formulariocontrato
-          .get("id_tipo_cuenta")
-          .addValidators(Validators.required);
+        this.formulariocontrato.get("entidad_bancaria").addValidators(Validators.required);
+        this.formulariocontrato.get("numero_cuenta").addValidators(Validators.required);
+        this.formulariocontrato.get("id_tipo_cuenta").addValidators(Validators.required);
         this.formulariocontrato.updateValueAndValidity();
         //console.log(this.formulariocontrato.get("entidad_bancaria").validator);
         //console.log(this.formulariocontrato.get("numero_cuenta").validator);
@@ -750,6 +728,23 @@ export class RegistrarpdvComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed) {
+            if(this.consulta_ter != null){
+              this.servicio.actualizarTercero(this.id_tercero, formtercer).subscribe(
+                (res) => {
+                  console.log(res);
+                  
+                  swal.fire("Actualizado con Exito!","","success")
+                  .then((isConfirm) => {
+                  this.formulariotercero.reset();
+                  this.formulariotercero.markAsUntouched();
+                  }); 
+                  this.traerclientes();
+                },
+                (error) => {
+                  swal.fire("Error al Actualizar", error.error.menssage, "error");
+                }
+              ) 
+            }else{
             this.servicio.enviarregistrotercero(formtercer).subscribe(
               (res) => {
                 swal
@@ -766,6 +761,7 @@ export class RegistrarpdvComponent implements OnInit {
                 swal.fire("Error al registrar", err.error.menssage, "error");
               }
             );
+            }
           }
         });
     } else {
