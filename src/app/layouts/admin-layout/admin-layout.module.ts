@@ -29,6 +29,7 @@ import {MatSortModule} from '@angular/material/sort';
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
 import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatTabsModule,
   ],
   declarations: [
     DashboardComponent,

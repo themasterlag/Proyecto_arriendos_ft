@@ -12,6 +12,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 import Swal from "sweetalert2";
 import { AngularCsv } from "angular-csv-ext/dist/Angular-csv";
+// import {MatTabsModule} from '@angular/material/tabs';
 
 export interface PeriodicElement {
   Check: boolean;
@@ -43,10 +44,14 @@ export class PagosComponent implements OnInit {
   responsable: boolean = false;
   no_responsable: boolean = false;
   displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"];
-  responsableTabla: PeriodicElement[] = [];
-  dataSource: MatTableDataSource<PeriodicElement> =
+  responsableTablaNoPagados: PeriodicElement[] = [];
+  responsableTablaPagados: PeriodicElement[] = [];
+  dataSourceNoPagados: MatTableDataSource<PeriodicElement> =
     new MatTableDataSource<PeriodicElement>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSourcePagados: MatTableDataSource<PeriodicElement> =
+    new MatTableDataSource<PeriodicElement>();
+  @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator;
+  @ViewChild("paginatorPagados") paginatorPagados: MatPaginator;
   @ViewChild("pdfTable") pdfTable: ElementRef;
   @ViewChild("comprobante") comprobante: ElementRef;
   @ViewChild(MatSort) sort: MatSort;
@@ -124,7 +129,9 @@ export class PagosComponent implements OnInit {
       this.mes == 0
     ) {
       Swal.fire("Debe seleeccionar un recuadro", "", "info");
-      this.dataSource.data = null;
+      this.dataSourceNoPagados.data = null;
+      this.dataSourcePagados.data = null;
+
     } else {
       console.log(this.anio);
       
@@ -139,7 +146,7 @@ export class PagosComponent implements OnInit {
       this.servicio.traerListaPagos(datosConsulta).subscribe(
         (res: any) => {
           this.consultaDatos = res;
-          this.responsableTabla = res.map((e) => {
+          this.responsableTablaNoPagados = res.map((e) => {
             // console.log(e);
             return {
               Check: true,
@@ -148,10 +155,23 @@ export class PagosComponent implements OnInit {
               Total: e.valor_total,
             };
           });
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.data = this.responsableTabla;
-          this.dataSource.sort = this.sort;
-          console.log(this.responsableTabla);
+          this.dataSourceNoPagados.paginator = this.paginatorNoPagados;
+          this.dataSourceNoPagados.data = this.responsableTablaNoPagados;
+          this.dataSourceNoPagados.sort = this.sort;
+
+          this.responsableTablaPagados = res.map((e) => {
+            // console.log(e);
+            return {
+              Check: true,
+              PDV: e.codigo_sitio_venta,
+              Nombre: e.nombre_sitio_venta,
+              Total: e.valor_total,
+            };
+          });
+          this.dataSourcePagados.paginator = this.paginatorPagados;
+          this.dataSourcePagados.data = this.responsableTablaPagados;
+          this.dataSourcePagados.sort = this.sort;
+          console.log(this.responsableTablaPagados);
         },
         (err) => {
           console.log(err.message);
@@ -164,7 +184,7 @@ export class PagosComponent implements OnInit {
     let data = [];
     let puntosV = [];
 
-    this.dataSource.data.forEach((element) => {
+    this.dataSourceNoPagados.data.forEach((element) => {
       if (element.Check) {
         puntosV.push(element.PDV);
       }
