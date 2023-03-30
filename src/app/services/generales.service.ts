@@ -134,9 +134,11 @@ export class GeneralesService {
 
   traerListaPagos(datosConsulta) {
     let datos = new HttpParams();
-    datos = datos.append("datosResponsable", JSON.stringify(datosConsulta));
+    datos = datos.append("datosResponsable", JSON.stringify(datosConsulta.DT))
+    datos = datos.append("tipoDatos", JSON.stringify(datosConsulta.TD));
+    datos = datos.append("rangoFechas", JSON.stringify(datosConsulta.RF))
 
-    return this.servicio.get(this.api + "preliquidacion", { params: datos });
+    return this.servicio.get(this.api + "preliquidacion/", { params: datos });
   }
 
   traerInfoCsv(opcion, puntos) {

@@ -12,6 +12,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 import Swal from "sweetalert2";
 import { AngularCsv } from "angular-csv-ext/dist/Angular-csv";
+import { element } from "protractor";
 // import {MatTabsModule} from '@angular/material/tabs';
 
 export interface PeriodicElement {
@@ -55,6 +56,7 @@ export class PagosComponent implements OnInit {
   @ViewChild("pdfTable") pdfTable: ElementRef;
   @ViewChild("comprobante") comprobante: ElementRef;
   @ViewChild(MatSort) sort: MatSort;
+  tipoPago: number = 0;
 
   constructor(private servicio: GeneralesService) {}
 
@@ -120,7 +122,7 @@ export class PagosComponent implements OnInit {
     this.search = search;
   }
 
-  traerLiquidaciones() {
+  llenarTablas(){
     if (
       this.no_responsable == false &&
       this.responsable == false &&
@@ -131,18 +133,22 @@ export class PagosComponent implements OnInit {
       Swal.fire("Debe seleeccionar un recuadro", "", "info");
       this.dataSourceNoPagados.data = null;
       this.dataSourcePagados.data = null;
-
-    } else {
-      console.log(this.anio);
+    }else{
+      this.traerNoPagados();
+      this.traerPagados();
+    }
+  }
+  traerNoPagados() {
       
       let datosConsulta = {
-        no_responsable: this.no_responsable,
-        responsable: this.responsable,
-        efectivo: this.efectivo,
-        anio: this.anio,
-        mes: this.mes
+        DT:{no_responsable: this.no_responsable,
+          responsable: this.responsable,
+          efectivo: this.efectivo},
+        TD: 1,
+        RF:{anio: this.anio,
+          mes: this.mes
+        }
       };
-
       this.servicio.traerListaPagos(datosConsulta).subscribe(
         (res: any) => {
           this.consultaDatos = res;
@@ -158,26 +164,48 @@ export class PagosComponent implements OnInit {
           this.dataSourceNoPagados.paginator = this.paginatorNoPagados;
           this.dataSourceNoPagados.data = this.responsableTablaNoPagados;
           this.dataSourceNoPagados.sort = this.sort;
-
-          this.responsableTablaPagados = res.map((e) => {
-            // console.log(e);
-            return {
-              Check: true,
-              PDV: e.codigo_sitio_venta,
-              Nombre: e.nombre_sitio_venta,
-              Total: e.valor_total,
-            };
-          });
-          this.dataSourcePagados.paginator = this.paginatorPagados;
-          this.dataSourcePagados.data = this.responsableTablaPagados;
-          this.dataSourcePagados.sort = this.sort;
-          console.log(this.responsableTablaPagados);
+          console.log(this.responsableTablaNoPagados);
+          
         },
         (err) => {
           console.log(err.message);
         }
       );
-    }
+    
+  }
+
+  traerPagados(){
+    let datosConsulta = {
+      DT:{no_responsable: this.no_responsable,
+        responsable: this.responsable,
+        efectivo: this.efectivo},
+      TD: 2,
+      RF:{anio: this.anio,
+        mes: this.mes
+      }
+    };
+    this.servicio.traerListaPagos(datosConsulta).subscribe(
+      (res: any) => {
+        this.consultaDatos = res;
+        
+        this.responsableTablaPagados = res.map((e) => {
+          // console.log(e);
+          return {
+            Check: true,
+            PDV: e.codigo_sitio_venta,
+            Nombre: e.nombre_sitio_venta,
+            Total: e.valor_total,
+          };
+        });
+        this.dataSourcePagados.paginator = this.paginatorPagados;
+        this.dataSourcePagados.data = this.responsableTablaPagados;
+        this.dataSourcePagados.sort = this.sort;
+        console.log(this.responsableTablaPagados);
+      },
+      (err) => {
+        console.log(err.message);
+      }
+    );
   }
 
   generarCsv(tipo) {
