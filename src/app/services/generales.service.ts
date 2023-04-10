@@ -141,6 +141,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/", { params: datos });
   }
 
+  traerListaPagosTodos() {
+    return this.servicio.get(this.api + "preliquidacion/todos");
+  }
+
   traerInfoCsv(opcion, puntos) {
     let ruta = "preliquidacion/" + opcion;
     let pdv = new HttpParams();

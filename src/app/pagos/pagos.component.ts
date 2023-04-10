@@ -208,6 +208,34 @@ export class PagosComponent implements OnInit {
     );
   }
 
+  generarTxt(){
+    let lista = "";
+
+    this.servicio.traerListaPagosTodos().subscribe(
+      (res: any) => {
+        res.forEach(element => {
+          lista += element.cedula + ";";
+          lista += (element.apellido + " " + element.nombre + ";").toUpperCase();
+          lista += element.telefono + ";";
+          lista += "PAGOARRIENDO" + ";";
+          lista += element.codigo_sitio_venta + "\n";
+        });
+
+        const blob = new Blob([lista], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'archivo.txt';
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      },
+      (err) => {
+        console.log(err.message);
+      }
+    );
+  }
+
   generarCsv(tipo) {
     let data = [];
     let puntosV = [];
