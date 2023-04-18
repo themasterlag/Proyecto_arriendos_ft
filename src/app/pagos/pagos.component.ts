@@ -13,6 +13,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 import Swal from "sweetalert2";
 import { AngularCsv } from "angular-csv-ext/dist/Angular-csv";
 import { element } from "protractor";
+import { style } from "@angular/animations";
 // import {MatTabsModule} from '@angular/material/tabs';
 
 export interface PeriodicElement {
@@ -452,27 +453,50 @@ export class PagosComponent implements OnInit {
           alignment: "center",
           margin: [33, 10, 0, 0],
         },        
-      ],
-      footer: {
-        columns: [
-          {
-            text: 'Este es el texto que aparecerá al final del documento',
-            alignment: "center",
-          },  
-        ],
-      },
-      pageOrientation: "landscape",
-      styles: {
-        centered: {
-          alignment: "left",
-        },
-        tableStyle: {
+      ], 
+      footer: (currentPage, pageCount) => {
+        if (currentPage === pageCount) {
+          return {
+            columns:[
+            {
+              width: "30%",
+              text: "Total Devengado",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              columns:[
+                {
+                  width: "110%",
+                  alignment: "center",
+                  stack: [
+                    {text: "Total Deducción\n\n",bold: true},
+                    {text: "\n____________________________________________________________",bold: true},
+                    {text: "Firma el arrendador en señal de aceptación del documento\n",bold: true},
+                    {text: "Autorización numeración documento soporte 189764035091573.",bold: true, fontSize: 8},
+                    {text: "Rango autorizado prefijo ARRD N° 1 al 11000 vigencia 18 meses.",bold: true, fontSize: 8},
+                    {text: "Documento elaborado con base en la Resolución 0042 del 05 mayo del 2020. Articulo 5.",bold: false, fontSize: 8},
+                  ]
+                },
+              ],              
+            },
+            {
+              width: "30%",
+              text: "Total a Pagar",
+              bold: true,
+              alignment: "center",
+            },
+          ],
           alignment: "center",
-          border: [false, false, false, false],
-          fillColor: "#FFFFFF",
-          margin: [0, 5, 0, 0],
-        },
+          // margin: [33, 10, 0, 0],
+            margin: [30, 0, 40, 80] // aumenta el margen inferior a 40 para asegurar que todas las líneas se muestren
+          };
+        }
       },
+     
+      pageMargins: [40, 40, 40, 120], 
+      pageOrientation: "landscape",
+  
       images: {
         ganagana: {
           url: base64,
@@ -480,6 +504,7 @@ export class PagosComponent implements OnInit {
           height: 50,
         },
       },
+      
       pageBreakBefore: function(currentNode, followingNodesOnPage) {
         return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
       }

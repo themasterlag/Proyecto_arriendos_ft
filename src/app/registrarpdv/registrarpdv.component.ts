@@ -132,7 +132,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerbancos();
     this.traertipocuentas();
     this.traerpdv();
-    this.traerserviciospublicos();
+    // this.traerserviciospublicos();
     // this.traerautorizado();
     this.traertipopunto();
     this.traerconceptos();
@@ -148,23 +148,22 @@ export class RegistrarpdvComponent implements OnInit {
       console.error(error.message, this.tipopunto);
     }
   }
-  traerserviciospublicos() {
-    try {
-      //console.log("aqui");
-      this.servicio.traerserviciospublicos().subscribe((res: any) => {
-        this.serviciospublicos = res;
-        //console.log(res);
-        //console.log(this.serviciospublicos, "servicios");
-      });
-    } catch (err) {
-      //console.log(err.message, this.serviciospublicos);
-    }
-  }
+  // traerserviciospublicos() {
+  //   try {
+  //     //console.log("aqui");
+  //     this.servicio.traerserviciospublicos().subscribe((res: any) => {
+  //       this.serviciospublicos = res;
+  //       //console.log(res);
+  //       //console.log(this.serviciospublicos, "servicios");
+  //     });
+  //   } catch (err) {
+  //     //console.log(err.message, this.serviciospublicos);
+  //   }
+  // }
   traerpdv() {
     this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
         this.pdv = res;
-        console.log(res);
       },
       (err) => {
         //console.log(err.message);
@@ -274,27 +273,27 @@ export class RegistrarpdvComponent implements OnInit {
         if (res.contrato.id_responsable_responsable.rete_fuente != null) {
           this.formulariocontrato.patchValue({ rete_fuente: true });
         }
-        res.contratoServicio.forEach((element) => {
-          this.serviciosfilter = this.serviciospublicos.filter(
-            (i) => i.id_tipo_servicio == element.id_tipo_servicio
+        // res.contratoServicio.forEach((element) => {
+        //   this.serviciosfilter = this.serviciospublicos.filter(
+        //     (i) => i.id_tipo_servicio == element.id_tipo_servicio
             
-          );
+        //   );
           
-          this.serviciostabla = [];
-          this.listservicios = [];
+        //   this.serviciostabla = [];
+        //   this.listservicios = [];
 
-          this.serviciostabla.push({
-            nombre: this.serviciosfilter[0].tipo_servicio,
-            valor: element.porcentaje,
-            porcentaje: element.porcentaje,
-          });
+        //   this.serviciostabla.push({
+        //     nombre: this.serviciosfilter[0].tipo_servicio,
+        //     valor: element.porcentaje,
+        //     porcentaje: element.porcentaje,
+        //   });
 
-          this.listservicios.push({
-            id_tipo_servicio: this.serviciosfilter[0].id_tipo_servicio,
-            valor: element.porcentaje,
-            porcentaje: element.porcentaje
-          })
-        });
+        //   this.listservicios.push({
+        //     id_tipo_servicio: this.serviciosfilter[0].id_tipo_servicio,
+        //     valor: element.porcentaje,
+        //     porcentaje: element.porcentaje
+        //   })
+        // });
 
         this.listConceptos = [];
         this.conceptosTabla = [];
@@ -390,7 +389,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        //console.log(res, "conceptos");
+        console.log(res, "conceptos");
       },
       (err) => {
         //console.log(err.message);
@@ -480,8 +479,8 @@ export class RegistrarpdvComponent implements OnInit {
           porcentaje: porcen.trim()
         });
       },
-      () => {},
-      {}
+      // () => {},
+      // {}
     );
   }
 
@@ -637,17 +636,26 @@ export class RegistrarpdvComponent implements OnInit {
 
                     let datos = new FormData();
                     let conceptosLista: any = [];
+
                     this.listConceptos.forEach((concepto) => {
                       conceptosLista.push(concepto.id_concepto);
                     });
+                    console.log(this.listConceptos);
+                    
 
                     datos.set("contrato", JSON.stringify(contrato).replace("{",'{"id_contrato":'+this.id_contrato+","));
                     datos.set("conceptos", conceptosLista);
-
+                    console.log(conceptosLista,  this.conceptosTabla.valor);
+                    let pru = conceptosLista;
+                    pru[0] = {id:pru[0], valor:8787};
+                    console.log(pru)
+                    
                     if(this.id_contrato != null){
 
                       this.servicio.actuliarcontrato(datos).subscribe(
                         (res: any) => {
+                          console.log(res);
+                          
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -851,17 +859,30 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
   addConceptos(value) {
-    this.listConceptos.push({
-      id_concepto: value,
-    });
+    Confirm.prompt(
+      "Sistema De Gestion De Arriendos",
+      "Cual es el valor del concepto?",
+      " ",
+      "OK",
+      "Cancel",
+      (valor) => {
+        this.listConceptos.push({
+          id_concepto: value,
+          valor: valor.trim()
+        });
 
-    this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
+        this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
 
-    this.conceptosTabla.push({
-      id_concepto: this.conceptosFilter[0].id_concepto,
-      codigo_concepto: this.conceptosFilter[0].codigo_concepto,
-      nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-    });
+        this.conceptosTabla.push({
+          id_concepto: this.conceptosFilter[0].id_concepto,
+          codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+          nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+          valor: valor.trim(),
+        });
+
+        console.log(this.conceptosTabla);
+        
+      });
   }
 
   deliCon(i: number) {
