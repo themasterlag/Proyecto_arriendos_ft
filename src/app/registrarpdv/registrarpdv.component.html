@@ -888,7 +888,7 @@
                               >
                                 <td>{{ pt.codigo_concepto }}</td>
                                 <td>{{ pt.nombre_concepto }}</td>
-                                <td contenteditable="true">{{ pt.valor }}</td>
+                                <td><input type="number" class="input" (change)="actualizarValorConcepto(i, $event.target.value)" [value]="pt.valor" [style.width.px]="100"></td>
 
                                 <td>
                                   <button

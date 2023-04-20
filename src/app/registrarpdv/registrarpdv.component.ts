@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
 import swal from "sweetalert2";
+import { throwIfEmpty } from "rxjs";
 
 @Component({
   selector: "app-registrarpdv",
@@ -28,7 +29,6 @@ export class RegistrarpdvComponent implements OnInit {
   formulariocontrato: FormGroup;
   listprop: any[] = [];
   listAut: any[] = [];
-  listConceptos: any[] = [];
   listservicios: any[] = [];
   serviciosfilter: any[];
   clientes: any;
@@ -295,7 +295,7 @@ export class RegistrarpdvComponent implements OnInit {
         //   })
         // });
 
-        this.listConceptos = [];
+
         this.conceptosTabla = [];
 
         res.contratoConcepto.forEach((element) => {
@@ -303,14 +303,11 @@ export class RegistrarpdvComponent implements OnInit {
             (i) => i.id_concepto == element.id_concepto
           );
 
-          this.listConceptos.push({
-            id_concepto: this.conceptosFilter[0].id_concepto,
-          });
-
           this.conceptosTabla.push({
             id_concepto: this.conceptosFilter[0].id_concepto,
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+            valor: this.conceptosFilter[0].tipo_concepto,
           });                
         });
       },
@@ -319,6 +316,20 @@ export class RegistrarpdvComponent implements OnInit {
         console.log(err.message);
       }
     );
+  }
+
+  darTipoConcepto(tipo_concepto){
+    let valor = 
+    tipo_concepto === 1 ? "caluclado devengado":
+    tipo_concepto === 2 ? "calculado deducido":
+    tipo_concepto === 3 ? "ingresado devengado":
+    tipo_concepto === 4 ? "calculado deducido":
+    "def";
+    return valor;
+  }
+
+  actualizarTablaConcepto(){
+    
   }
 
   traerbancos() {
@@ -634,21 +645,19 @@ export class RegistrarpdvComponent implements OnInit {
                     contrato.id_responsable = idresponsable;
                     contrato.id_autorizado = idautorizado;
 
-                    let datos = new FormData();
-                    let conceptosLista: any = [];
-
-                    this.listConceptos.forEach((concepto) => {
-                      conceptosLista.push(concepto.id_concepto);
+                    let datos = new FormData();                    
+                    
+                    let pru = [];
+                    this.conceptosTabla.forEach(element => {                      
+                      pru.push({id_concepto:element.id_concepto, valor:element.valor});                     
                     });
-                    console.log(this.listConceptos);
                     
 
+                    // pru[0] = {id:pru[0], valor:8787};
+
                     datos.set("contrato", JSON.stringify(contrato).replace("{",'{"id_contrato":'+this.id_contrato+","));
-                    datos.set("conceptos", conceptosLista);
-                    console.log(conceptosLista,  this.conceptosTabla.valor);
-                    let pru = conceptosLista;
-                    pru[0] = {id:pru[0], valor:8787};
-                    console.log(pru)
+                    datos.set("conceptos", JSON.stringify(pru));
+                    
                     
                     if(this.id_contrato != null){
 
@@ -859,43 +868,53 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
   addConceptos(value) {
-    Confirm.prompt(
-      "Sistema De Gestion De Arriendos",
-      "Cual es el valor del concepto?",
-      " ",
-      "OK",
-      "Cancel",
-      (valor) => {
-        this.listConceptos.push({
-          id_concepto: value,
-          valor: valor.trim()
+    this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
+    
+    if(this.conceptosFilter[0].tipo_concepto != 1 && this.conceptosFilter[0].tipo_concepto != 2){
+      Confirm.prompt(
+        "Sistema De Gestion De Arriendos",
+        "Cual es el valor del concepto?",
+        " ",
+        "OK",
+        "Cancel",
+        (valor) => {
+          console.log(this.conceptosFilter[0].tipo_concepto );
+          
+          this.conceptosTabla.push({
+            id_concepto: this.conceptosFilter[0].id_concepto,
+            codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+            nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+            valor: valor.trim(),
+          });
+  
+          console.log(this.conceptosTabla);
+          
         });
+    }else{
+      // if(this.conceptosFilter[0].id_concepto == ){
 
-        this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
-
-        this.conceptosTabla.push({
-          id_concepto: this.conceptosFilter[0].id_concepto,
-          codigo_concepto: this.conceptosFilter[0].codigo_concepto,
-          nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-          valor: valor.trim(),
-        });
-
-        console.log(this.conceptosTabla);
-        
-      });
+      // }
+      console.log(this.conceptosFilter[0].id_concepto);
+      
+      console.log(this.conceptos[this.conceptosFilter[0].id_concepto]);
+      
+      this.conceptosTabla.push({
+        id_concepto: this.conceptosFilter[0].id_concepto,
+        codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+        nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+        valor: (this.conceptosFilter[0].porcentaje_operacion * this.formulariocontrato.value.valor_canon),
+      }); 
+    }  
   }
 
   deliCon(i: number) {
     this.conceptosTabla.splice(i, 1);
-    this.listConceptos.splice(i, 1);
   }
 
   limpiarConceptos(): void {
     console.log(this.conceptosTabla, "conceptos");
-    console.log(this.listConceptos, "listconceptos");
 
     this.conceptosTabla.splice(0, this.conceptosTabla.length);
-    this.listConceptos.splice(0, this.listConceptos.length);
   }
   limpiarServicios(): void {
     this.serviciostabla = [];
@@ -910,6 +929,15 @@ export class RegistrarpdvComponent implements OnInit {
     this.limpiarServicios();
     this.consulta_pdv = null;
 
+  }
+
+  actualizarValorConcepto(i, valor){    
+    console.log(i);
+    console.log(valor);
+    
+    this.conceptosTabla[i].valor = valor;
+    console.log(this.conceptosTabla);
+    
   }
 
 }

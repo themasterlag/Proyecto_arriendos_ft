@@ -68,3 +68,19 @@
 ::ng-deep .mat-select-content{
     background-color: #1b4f35;
 }
+
+.input {
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  display: none;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #007bff;
+}
