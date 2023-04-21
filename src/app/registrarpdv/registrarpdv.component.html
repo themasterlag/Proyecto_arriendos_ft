@@ -873,8 +873,8 @@
                           contrato
                         </p>
                       </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
+                      <div class="card-body" [ngClass]="conceptosTabla.length > 2 ? 'scrollCard' : ''">
+                        <div class="table-responsive" >
                           <table class="table" style="text-align:center;">
                             <thead class="text-info">
                               <th>CODIGO</th>

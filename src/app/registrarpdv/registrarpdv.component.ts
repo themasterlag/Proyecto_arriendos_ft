@@ -54,6 +54,7 @@ export class RegistrarpdvComponent implements OnInit {
   actualizar: boolean = false;
   id_contrato = null;
   id_tercero = null;
+  operacion = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -867,43 +868,78 @@ export class RegistrarpdvComponent implements OnInit {
       );
     }
   }
+  operacionConceptos(valor, tipo_id){
+    console.log(valor, tipo_id, "hola");
+    
+    if (tipo_id == 3) {
+      this.operacion = valor;
+      // escribir el codigo para subir al back
+    }
+    else if (tipo_id == 4) {
+      this.operacion = valor;
+    }
+    else if (tipo_id == 1) {
+      let numero_decimal = this.formulariocontrato.value.valor_canon * valor;
+      this.operacion = parseFloat(numero_decimal.toFixed(2));
+    }
+    else if (tipo_id == 2) {
+      let numero_decimal = this.formulariocontrato.value.valor_canon * valor;
+      this.operacion = parseFloat(numero_decimal.toFixed(2));
+    }else{
+      this.operacion = this.formulariocontrato.value.valor_canon;
+    }
+  }
+
   addConceptos(value) {
     this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
     
-    if(this.conceptosFilter[0].tipo_concepto != 1 && this.conceptosFilter[0].tipo_concepto != 2){
+    if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
       Confirm.prompt(
         "Sistema De Gestion De Arriendos",
-        "Cual es el valor del concepto?",
+        `Cual es el valor del concepto ${this.conceptosFilter[0].nombre_concepto}?`  ,
         " ",
         "OK",
         "Cancel",
         (valor) => {
-          console.log(this.conceptosFilter[0].tipo_concepto );
+          let valor_numero = parseInt(valor);
+          console.log(valor_numero, this.conceptosFilter[0].tipo_concepto, "if");
+          
+          this.operacionConceptos(valor_numero, this.conceptosFilter[0].tipo_concepto);;
           
           this.conceptosTabla.push({
             id_concepto: this.conceptosFilter[0].id_concepto,
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-            valor: valor.trim(),
+            valor: this.operacion,
           });
   
           console.log(this.conceptosTabla);
           
         });
-    }else{
-      // if(this.conceptosFilter[0].id_concepto == ){
-
-      // }
-      console.log(this.conceptosFilter[0].id_concepto);
+    }else if (this.conceptosFilter[0].tipo_concepto == 5) {
+      console.log(0, this.conceptosFilter[0].tipo_concepto, "def");
       
-      console.log(this.conceptos[this.conceptosFilter[0].id_concepto]);
+      this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
+
+      this.conceptosTabla.push({
+        id_concepto: this.conceptosFilter[0].id_concepto,
+        codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+        nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+        valor: this.operacion,
+      });
+    }else{
+      console.log(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto, "else");
+      
+      this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
+      console.log(this.conceptosFilter[0].tipo_concepto);
+      
       
       this.conceptosTabla.push({
         id_concepto: this.conceptosFilter[0].id_concepto,
         codigo_concepto: this.conceptosFilter[0].codigo_concepto,
         nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-        valor: (this.conceptosFilter[0].porcentaje_operacion * this.formulariocontrato.value.valor_canon),
-      }); 
+        valor: this.operacion,
+      });       
     }  
   }
 
