@@ -39,9 +39,10 @@
 #button-limpiar{
     /* background-color: #1b4f35 !important; */
     border-radius: 25px !important;
+    background-color: red;
 }
 #button-guardar{
-    background-color: #1b4f35 !important;
+    background-color: green !important;
     border-radius: 25px !important;
 }
 #button-efectivo{
@@ -53,7 +54,7 @@
     border-radius: 25px !important;
 }
 #button-consultar{
-    background-color: #1b4f35 !important;
+    background-color: green !important;
     border-radius: 25px !important;
 }
 .w-75{
@@ -75,6 +76,11 @@
     border-radius: 10px;
     border: 1px solid #ccc;
 }
+
+.btn {
+    border-radius: 10px;
+    background-color : red;
+}
 .input::-webkit-inner-spin-button,
 .input::-webkit-outer-spin-button {
   display: none;
@@ -89,3 +95,17 @@
     height: 50vh; 
     overflow-y: auto;
 }
+
+.card-footer {
+    border: 2px solid #28a745;
+    padding: 12px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #212529;
+    text-align: right;
+    border-radius: 25px;
+  }
+
+  .valor-destacado {
+    color: #323334;
+  }
