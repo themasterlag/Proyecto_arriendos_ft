@@ -635,16 +635,16 @@ export class RegistrarpdvComponent implements OnInit {
 
                     let datos = new FormData();                    
                     
-                    let pru = [];
+                    let conceptoValor = [];
                     this.conceptosTabla.forEach(element => {                      
-                      pru.push({id_concepto:element.id_concepto, valor:element.valor});                     
+                      conceptoValor.push({id_concepto:element.id_concepto, valor:element.valor});                     
                     });
                     
 
                     // pru[0] = {id:pru[0], valor:8787};
 
                     datos.set("contrato", JSON.stringify(contrato).replace("{",'{"id_contrato":'+this.id_contrato+","));
-                    datos.set("conceptos", JSON.stringify(pru));
+                    datos.set("conceptos", JSON.stringify(conceptoValor));
                     
                     
                     if(this.id_contrato != null){
@@ -899,8 +899,7 @@ export class RegistrarpdvComponent implements OnInit {
         codigo_concepto: this.conceptosFilter[0].codigo_concepto,
         nombre_concepto: this.conceptosFilter[0].nombre_concepto,
         valor: this.operacion,
-      };
-      
+      };      
       
       if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
         Confirm.prompt(
@@ -912,22 +911,37 @@ export class RegistrarpdvComponent implements OnInit {
           (valor) => {
             let valor_numero = parseInt(valor);
             
-            this.operacionConceptos(valor_numero, this.conceptosFilter[0].tipo_concepto);;
-            
-            concepto.valor = this.operacion;
-  
-            this.conceptosTabla.push(concepto)   
-            
+            this.operacionConceptos(valor_numero, this.conceptosFilter[0].tipo_concepto);           
+            concepto.valor = this.operacion;  
+            this.conceptosTabla.push(concepto)             
             this.totalValorConceptos()
           }
         );
       }else if (this.conceptosFilter[0].tipo_concepto == 5) {      
-        this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
-  
-        concepto.valor = this.operacion;
-  
+        if (this.conceptosFilter[0].id_concepto == 2) {
+          this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
+          concepto.valor = this.operacion;  
+          console.log(concepto, 'primero');          
+          this.conceptosTabla.push(concepto);
+
+          if (this.conceptosTabla) {
+            let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
+            console.log(consultarIva);
+            
+            this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
+            this.conceptosTabla.push({
+              id_concepto: consultarIva[0].id_concepto,
+              codigo_concepto: consultarIva[0].codigo_concepto,
+              nombre_concepto: consultarIva[0].nombre_concepto,
+              valor: this.operacion,
+            });
+          }          
+          
+        }else{
+        this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);  
+        concepto.valor = this.operacion;  
         this.conceptosTabla.push(concepto)   
-  
+        }
       }else{
         
         this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)      
