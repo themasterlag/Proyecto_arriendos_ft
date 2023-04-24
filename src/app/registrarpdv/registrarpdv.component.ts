@@ -1,11 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { GeneralesService } from "app/services/generales.service";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Loading, Confirm, Report, Notify } from "notiflix";
 import { Router } from "@angular/router";
 import swal from "sweetalert2";
 import { throwIfEmpty } from "rxjs";
 import { element } from "protractor";
+import Swal from "sweetalert2";
 
 
 interface Concepto {
@@ -21,6 +23,7 @@ interface Concepto {
 })
 
 export class RegistrarpdvComponent implements OnInit {
+
   panelOpenState = false;
   tipopersona: boolean = null;
   metodo_pago: boolean = null;
@@ -69,8 +72,9 @@ export class RegistrarpdvComponent implements OnInit {
   constructor(
     public servicio: GeneralesService,
     public formularioter: FormBuilder,
-    private rutas: Router
-  ) {this.formulariotercero = this.formularioter.group({
+    private rutas: Router,
+  )
+   {this.formulariotercero = this.formularioter.group({
       tipo_documento: [null, Validators.required],
       numero_documento: [null, Validators.required],
       nombres: [null],
@@ -284,7 +288,7 @@ export class RegistrarpdvComponent implements OnInit {
           this.formulariocontrato.patchValue({ rete_fuente: true });
         }
         this.conceptosTabla = [];
-
+        
         res.contratoConcepto.forEach((element) => {
           this.conceptosFilter = this.conceptos.filter(
             (i) => i.id_concepto == element.id_concepto
@@ -294,7 +298,7 @@ export class RegistrarpdvComponent implements OnInit {
             id_concepto: this.conceptosFilter[0].id_concepto,
             codigo_concepto: this.conceptosFilter[0].codigo_concepto,
             nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-            valor: this.conceptosFilter[0].tipo_concepto,
+            valor: element.valor,
           });                
         });
         this.totalValorConceptos();
@@ -879,80 +883,92 @@ export class RegistrarpdvComponent implements OnInit {
 
   totalValorConceptos(){
 
-    this.valorTotal = 0
+    this.valorTotal = this.formulariocontrato.value.valor_canon
+    console.log(this.conceptosTabla);
+    
     this.conceptosTabla.forEach((element) => {
-      console.log(element.valor);
-      
+      let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
+      console.log(idconcepto);
+      if ( !(idconcepto.tipo_concepto == 5)  ) {
         this.valorTotal += element.valor 
+      }
+            
+      
       }
     )
   }
 
   addConceptos(value) {
     this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
+    let conceptoIgual = this.conceptosTabla.find((concepto) => concepto.id_concepto == this.conceptosFilter[0].id_concepto);
+    console.log(conceptoIgual);
     
-    if(this.formulariocontrato.value.valor_canon == null){
-      swal.fire("El canon no puede estar vacio", '', "error");
+    if (conceptoIgual) {
+      swal.fire('El concepto ya se encuentra en la lista','','info');   
     }else{
-      let concepto: Concepto = {
-        id_concepto: this.conceptosFilter[0].id_concepto,
-        codigo_concepto: this.conceptosFilter[0].codigo_concepto,
-        nombre_concepto: this.conceptosFilter[0].nombre_concepto,
-        valor: this.operacion,
-      };      
-      
-      if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
-        Confirm.prompt(
-          "Sistema De Gestion De Arriendos",
-          `Cual es el valor del concepto ${this.conceptosFilter[0].nombre_concepto}?`  ,
-          " ",
-          "OK",
-          "Cancel",
-          (valor) => {
-            let valor_numero = parseInt(valor);
-            
-            this.operacionConceptos(valor_numero, this.conceptosFilter[0].tipo_concepto);           
-            concepto.valor = this.operacion;  
-            this.conceptosTabla.push(concepto)             
-            this.totalValorConceptos()
-          }
-        );
-      }else if (this.conceptosFilter[0].tipo_concepto == 5) {      
-        if (this.conceptosFilter[0].id_concepto == 2) {
-          this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
-          concepto.valor = this.operacion;  
-          console.log(concepto, 'primero');          
-          this.conceptosTabla.push(concepto);
-
-          if (this.conceptosTabla) {
-            let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
-            console.log(consultarIva);
-            
-            this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
-            this.conceptosTabla.push({
-              id_concepto: consultarIva[0].id_concepto,
-              codigo_concepto: consultarIva[0].codigo_concepto,
-              nombre_concepto: consultarIva[0].nombre_concepto,
-              valor: this.operacion,
-            });
-          }          
-          
-        }else{
-        this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);  
-        concepto.valor = this.operacion;  
-        this.conceptosTabla.push(concepto)   
-        }
+      if(this.formulariocontrato.value.valor_canon == null){
+        swal.fire("El canon no puede estar vacio", '', "error");
       }else{
+        let concepto: Concepto = {
+          id_concepto: this.conceptosFilter[0].id_concepto,
+          codigo_concepto: this.conceptosFilter[0].codigo_concepto,
+          nombre_concepto: this.conceptosFilter[0].nombre_concepto,
+          valor: this.operacion,
+        };      
         
-        this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)      
-        
-        concepto.valor = this.operacion;
+        if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
+          Confirm.prompt(
+            "Sistema De Gestion De Arriendos",
+            `Cual es el valor del concepto ${this.conceptosFilter[0].nombre_concepto}?`  ,
+            " ",
+            "OK",
+            "Cancel",
+            (valor) => {
+              let valor_numero = parseInt(valor);
+              
+              this.operacionConceptos(valor_numero, this.conceptosFilter[0].tipo_concepto);           
+              concepto.valor = this.operacion;  
+              this.conceptosTabla.push(concepto)             
+              this.totalValorConceptos()
+            }
+          );
+        }else if (this.conceptosFilter[0].tipo_concepto == 5) {      
+          if (this.conceptosFilter[0].id_concepto == 2) {
+            this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
+            concepto.valor = this.operacion;          
+            this.conceptosTabla.push(concepto);
   
-        this.conceptosTabla.push(concepto)         
-      } 
-      
+            if (this.conceptosTabla) {
+              let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
+              console.log(consultarIva);
+              
+              this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
+              this.conceptosTabla.push({
+                id_concepto: consultarIva[0].id_concepto,
+                codigo_concepto: consultarIva[0].codigo_concepto,
+                nombre_concepto: consultarIva[0].nombre_concepto,
+                valor: this.operacion,
+              });
+            }          
+            
+          }else{
+          this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);  
+          concepto.valor = this.operacion;  
+          this.conceptosTabla.push(concepto)   
+          }
+        }else{
+          
+          this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)      
+          
+          concepto.valor = this.operacion;
+    
+          this.conceptosTabla.push(concepto)         
+        } 
+        
+      }  
+      this.totalValorConceptos();  
     }  
-    this.totalValorConceptos();   
+     
   }
 
   deliCon(i: number) {
