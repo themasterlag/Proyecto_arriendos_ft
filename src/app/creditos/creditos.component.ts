@@ -13,6 +13,7 @@ export class CreditosComponent implements OnInit {
   panelLista:boolean;
   panelForm:boolean;
   panelFormEdit:boolean;
+  @ViewChild("formularioCredito") formularioCredito:NgForm ;
   @ViewChild("formularioEditarCredito") formularioEditarCredito:NgForm ;
 
   listaCreditos:any = [];
@@ -42,7 +43,6 @@ export class CreditosComponent implements OnInit {
     this.servicio.traerContratos().subscribe(
       (res:any)=>{
         this.listaContratos = res;
-        this.panelLista = true;
       },
       (err:any)=>{
         swal.fire("No se pudo consultar los creditos", "", "error");
@@ -77,8 +77,8 @@ export class CreditosComponent implements OnInit {
     this.servicio.registrarCredito(formularioCredito.value).subscribe(
       (res:any)=>{
         console.log(res);
-        Swal.fire("registrarCredito", "", "success");
-
+        this.formularioCredito.resetForm();
+        Swal.fire("Registrado correctamente", "", "success");
       },
       (err:any)=>{
         swal.fire("No se pudo registrar el credito", "", "error");
@@ -88,10 +88,16 @@ export class CreditosComponent implements OnInit {
 
   editarCredito(i){
     let credito = this.listaCreditos[i];
+    
+    this.formularioEditarCredito.controls.id_saldo_cretido.setValue(credito.id_saldo_cretido);
     this.formularioEditarCredito.controls.id_contrato_concepto.setValue(credito.id_contrato_concepto);
     this.formularioEditarCredito.controls.credito_total.setValue(credito.credito_total);
-    this.formularioEditarCredito.controls.fecha_fin.setValue(credito.fecha_fin);
-    this.formularioEditarCredito.controls.fecha_inicio.setValue(credito.fecha_inicio);
+    let fecha_fin = new Date(credito.fecha_fin);
+    fecha_fin.setDate(fecha_fin.getDate() + 1);
+    this.formularioEditarCredito.controls.fecha_fin.setValue(fecha_fin);
+    let fecha_inicio = new Date(credito.fecha_inicio);
+    fecha_inicio.setDate(fecha_inicio.getDate() + 1);
+    this.formularioEditarCredito.controls.fecha_inicio.setValue(fecha_inicio);
     this.formularioEditarCredito.controls.id_concepto.setValue(credito.id_concepto);
     this.formularioEditarCredito.controls.id_contrato.setValue(credito.id_contrato);
     this.formularioEditarCredito.controls.valor.setValue(credito.valor);
@@ -105,8 +111,12 @@ export class CreditosComponent implements OnInit {
     this.servicio.actualizarCredito(formularioEditarCredito.value).subscribe(
       (res:any)=>{
         console.log(res);
-        Swal.fire("registrarCredito", "", "success");
-
+        this.formularioEditarCredito.resetForm();
+        this.ejecutarConsultas();
+        this.panelForm = false;
+        this.panelLista = true;
+        this.panelFormEdit = false;
+        Swal.fire("Cambios guardados con exito", "", "success");
       },
       (err:any)=>{
         swal.fire("No se pudo registrar el credito", "", "error");
