@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="row justify-content-end">
                                         <div class="col-3">
-                                            <button type="submit" class="btn btn-success align-middle">
+                                            <button type="submit" class="btn btn-success align-middle rounded-pill">
                                                 Crear credito
                                             </button>
                                         </div>
@@ -157,8 +157,8 @@
                                         </div>
                                     </div>
                                     <div class="row justify-content-end">
-                                        <div class="col-3">
-                                            <button type="submit" class="btn btn-success align-middle">
+                                        <div class="col-2">
+                                            <button type="submit" class="btn btn-success align-middle rounded-pill">
                                                 Guardar
                                             </button>
                                         </div>
@@ -205,7 +205,7 @@
                                             <td>{{credito.credito_total | currency}}</td>
                                             <td>{{credito.credito_saldo | currency}}</td>
                                             <td>
-                                                <button class="btn btn-info" (click)="editarCredito(i)" 
+                                                <button class="btn btn-info rounded-pill" (click)="editarCredito(i)" 
                                                 matTooltip="Editar credito" 
                                                 matTooltipPosition="above"
                                                 matTooltipClass="tooltipText">
