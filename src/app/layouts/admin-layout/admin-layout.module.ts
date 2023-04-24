@@ -21,6 +21,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -28,6 +30,7 @@ import {MatSortModule} from '@angular/material/sort';
 
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
+import { CreditosComponent } from 'app/creditos/creditos.component';
 import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -51,6 +54,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatPaginatorModule,
     MatSortModule,
     MatTabsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   declarations: [
     DashboardComponent,
@@ -63,6 +68,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     UpgradeComponent,
     RegistrarpdvComponent,
     PagosComponent,
+    CreditosComponent,
     FiltroPdvCodigoPipe,
   ]
 })

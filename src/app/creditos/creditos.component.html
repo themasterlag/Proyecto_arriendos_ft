@@ -1,0 +1,217 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info" id="banner">
+                        <h4 class="card-title">Creditos</h4>
+                        <p class="card-category">Aqui podras gestionar los creditos</p>
+                    </div>
+
+                    <div class="card-body">
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="panelForm" (opened)="panelForm = true" (closed)="panelForm = false">
+                                <mat-expansion-panel-header (click)="ejecutarConsultas()">
+                                    <mat-panel-title>
+                                        <h6 class="text-info">CREAR CREDITO</h6>
+                                    </mat-panel-title>
+                                    
+                                </mat-expansion-panel-header>
+
+                                <form #formularioCredito="ngForm" (ngSubmit)="registrarCredito(formularioCredito)" [noValidate]="false">
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Elija un contrato o punto de venta</label>
+                                            <select name="id_contrato" id="contrato" class="form-control" ngModel required>
+                                                <option value="" disabled selected>Seleccione un contrato</option>
+                                                <option [value]="contrato.id_contrato" *ngFor="let contrato of listaContratos">
+                                                    PDV:{{contrato.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
+                                                </option>
+                                            </select>
+                                        </div>
+    
+                                        <div class="form-group col-6">
+                                            <label for="concepto" class="text-black">Elija el concepto sobre el cual se realizara el credito</label>
+                                            <select name="id_concepto" id="contrato" class="form-control" ngModel required>
+                                                <option value="" disabled selected>Seleccione un concepto</option>
+                                                <option [value]="concepto.id_concepto" *ngFor="let concepto of listaConceptos">
+                                                    {{concepto.nombre_concepto}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
+                                            <input type="number" class="form-control" ngModel name="credito_total" placeholder="Ingrese el valor del credito" required>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
+                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" required>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center">
+                                        <div class="col-12">
+                                            <br>
+                                            <label for="fechas" class="text-black mb-0 ">Rango de fechas para el credito</label>
+                                            <div id="fechas" class="row">
+                                                <div class="form-group col-6 mt-0">
+                                                    <mat-form-field appearance="fill">
+                                                        <mat-label>Seleccione fecha de inicio</mat-label>
+                                                        <input matInput [matDatepicker]="pickerInicio" name="fecha_inicio" ngModel required>
+                                                        <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                                                        <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                                        <mat-datepicker #pickerInicio></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="form-group col-6 mt-0">
+                                                    <mat-form-field appearance="fill">
+                                                        <mat-label>Seleccione fecha de fin</mat-label>
+                                                        <input matInput [matDatepicker]="pickerFin" name="fecha_fin" ngModel required>
+                                                        <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                                                        <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                                        <mat-datepicker #pickerFin></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-end">
+                                        <div class="col-3">
+                                            <button type="submit" class="btn btn-success align-middle">
+                                                Crear credito
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+
+                            </mat-expansion-panel>
+                            <mat-expansion-panel [expanded]="panelFormEdit" [hidden]="!panelFormEdit" (opened)="panelFormEdit = true" (closed)="panelFormEdit = false">
+                                <mat-expansion-panel-header (click)="ejecutarConsultas()">
+                                    <mat-panel-title>
+                                        <h6 class="text-info">EDITAR CREDITO</h6>
+                                    </mat-panel-title>
+                                    
+                                </mat-expansion-panel-header>
+
+                                <form #formularioEditarCredito="ngForm" (ngSubmit)="registrarCredito(formularioEditarCredito)" [noValidate]="false">
+                                    <input type="number" class="form-control" ngModel name="id_contrato_concepto" required>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Elija un contrato o punto de venta</label>
+                                            <select name="id_contrato" id="contrato" class="form-control" ngModel required>
+                                                <option value="" disabled selected>Seleccione un contrato</option>
+                                                <option [value]="contrato.id_contrato" *ngFor="let contrato of listaContratos">
+                                                    PDV:{{contrato.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
+                                                </option>
+                                            </select>
+                                        </div>
+    
+                                        <div class="form-group col-6">
+                                            <label for="concepto" class="text-black">Elija el concepto sobre el cual se realizara el credito</label>
+                                            <select name="id_concepto" id="contrato" class="form-control" ngModel required>
+                                                <option value="" disabled selected>Seleccione un concepto</option>
+                                                <option [value]="concepto.id_concepto" *ngFor="let concepto of listaConceptos">
+                                                    {{concepto.nombre_concepto}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
+                                            <input type="number" class="form-control" ngModel name="credito_total" placeholder="Ingrese el valor del credito" required>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
+                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" required>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center">
+                                        <div class="col-12">
+                                            <br>
+                                            <label for="fechas" class="text-black mb-0 ">Rango de fechas para el credito</label>
+                                            <div id="fechas" class="row">
+                                                <div class="form-group col-6 mt-0">
+                                                    <mat-form-field appearance="fill">
+                                                        <mat-label>Seleccione fecha de inicio</mat-label>
+                                                        <input matInput [matDatepicker]="pickerInicioEditar" name="fecha_inicio" ngModel required>
+                                                        <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                                                        <mat-datepicker-toggle matSuffix [for]="pickerInicioEditar"></mat-datepicker-toggle>
+                                                        <mat-datepicker #pickerInicioEditar></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="form-group col-6 mt-0">
+                                                    <mat-form-field appearance="fill">
+                                                        <mat-label>Seleccione fecha de fin</mat-label>
+                                                        <input matInput [matDatepicker]="pickerFinEditar" name="fecha_fin" ngModel required>
+                                                        <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                                                        <mat-datepicker-toggle matSuffix [for]="pickerFinEditar"></mat-datepicker-toggle>
+                                                        <mat-datepicker #pickerFinEditar></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-end">
+                                        <div class="col-3">
+                                            <button type="submit" class="btn btn-success align-middle">
+                                                Crear credito
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+
+                            </mat-expansion-panel>
+
+                            <mat-expansion-panel [expanded]="!panelForm" (opened)="panelLista = true" (closed)="panelLista = false">
+                                <mat-expansion-panel-header (click)="ejecutarConsultas()">
+                                    <mat-panel-title>
+                                        <h6 class="text-info">Lista de creditos</h6>
+                                    </mat-panel-title>
+                                    <button 
+                                    (click)="panelForm = true; panelLista = false;"
+                                    [hidden]="!panelLista" class="btn btn-success px-4 mr-4" 
+                                    matTooltip="Crear nuevo credito" 
+                                    matTooltipPosition="above"
+                                    matTooltipClass="tooltipText">
+                                        <i class="fa fa-plus-square" aria-hidden="true"></i>
+                                    </button>
+                                </mat-expansion-panel-header>
+
+                                <table class="table table-striped table-hover table-success">
+                                    <!-- <thead> -->
+                                        <tr class="text-center">
+                                            <th scope="col">Contrato</th>
+                                            <th scope="col">N. oncepto</th>
+                                            <th scope="col">Concepto</th>
+                                            <th scope="col">Valor mensual</th>
+                                            <th scope="col">Valor</th>
+                                            <th scope="col">Saldo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    <!-- </thead> -->
+                                    
+                                    <tbody>
+                                        <tr class="text-center" *ngFor="let credito of listaCreditos; index as i;">
+                                            <td>{{credito.id_contrato}}</td>
+                                            <td>{{credito.codigo_concepto}}</td>
+                                            <td>{{credito.nombre_concepto}}</td>
+                                            <td>{{credito.valor | currency}}</td>
+                                            <td>{{credito.credito_total | currency}}</td>
+                                            <td>{{credito.credito_saldo | currency}}</td>
+                                            <td><button class="btn btn-info" (click)="editarCredito(i)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

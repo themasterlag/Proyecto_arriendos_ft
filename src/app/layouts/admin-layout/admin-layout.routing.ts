@@ -10,6 +10,8 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
+import { Component } from '@angular/core';
+import { CreditosComponent } from 'app/creditos/creditos.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -62,9 +64,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
     { path: 'upgrade',        component: UpgradeComponent },
-    { path: 'Register',        component: RegistrarpdvComponent },
-    { path: 'Pagos',        component: PagosComponent },
-
+    { path: 'Register',       component: RegistrarpdvComponent },
+    { path: 'Pagos',          component: PagosComponent },
+    { path: 'creditos',       component: CreditosComponent}
 
 
 

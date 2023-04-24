@@ -209,6 +209,21 @@ export class PagosComponent implements OnInit {
     );
   }
 
+  pagar(){
+    Swal.fire({
+      title: "Seguro que desea pagar?",
+      text: "Todos los contratos seleccionados, se marcara como pagados",
+      icon: "question",
+      confirmButtonText: "Pagar",
+      showDenyButton: true,
+      denyButtonText: "Cancelar"
+    }).then((result)=>{
+      if (result.isConfirmed) {
+        console.log(this.responsableTablaNoPagados.filter(responsable => responsable["Check"]));
+      }
+    });
+  }
+
   generarTxt(){
     let lista = "";
 
@@ -232,6 +247,11 @@ export class PagosComponent implements OnInit {
         link.remove();
       },
       (err) => {
+        Swal.fire({
+          title: "Error al generar",
+          text: err.message,
+          icon: "error"
+        })
         console.log(err.message);
       }
     );

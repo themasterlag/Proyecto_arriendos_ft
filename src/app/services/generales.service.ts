@@ -11,18 +11,6 @@ export class GeneralesService {
   api = Api.url;
   constructor(private servicio: HttpClient) {}
 
-  // traerImagen(imageUrl: string): Observable<string> {
-  //   return this.servicio.get<Blob>(imageUrl).pipe(
-  //     switchMap((imageBlob: Blob) => {
-  //       const fileReader = new FileReader();
-  //       fileReader.readAsDataURL(imageBlob);
-
-  //       return fromEvent(fileReader, "loadend").pipe(
-  //         map(() => fileReader.result.toString().split(",")[1])
-  //       );
-  //     })
-  //   );
-  // }
   traerBase64(imagePath) {
     return this.servicio.get(imagePath, { responseType: "blob" });
   }
@@ -86,6 +74,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "conceptos");
   }
 
+  traerConceptosTipo(id) {
+    return this.servicio.get(this.api + "conceptos/tipo/"+id);
+  }
+
   registrarcontrato(contrato) {
     return this.servicio.post(this.api + "contrato", contrato);
   }
@@ -128,6 +120,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "tipocontrato");
   }
 
+  traerContratos() {
+    return this.servicio.get(this.api + "contrato");
+  }
+
   traerContrato(id) {
     return this.servicio.get(this.api + "contrato/pdv/" + id);
   }
@@ -136,7 +132,7 @@ export class GeneralesService {
     let datos = new HttpParams();
     datos = datos.append("datosResponsable", JSON.stringify(datosConsulta.DT))
     datos = datos.append("tipoDatos", JSON.stringify(datosConsulta.TD));
-    datos = datos.append("rangoFechas", JSON.stringify(datosConsulta.RF))
+    datos = datos.append("rangoFechas", JSON.stringify(datosConsulta.RF));
 
     return this.servicio.get(this.api + "preliquidacion/", { params: datos });
   }
@@ -155,5 +151,19 @@ export class GeneralesService {
 
   traerSitioVentaLiquidacion(id: number) {
     return this.servicio.get(this.api + "preliquidacion/sitioventa/" + id);
+  }
+
+
+  // Creditos
+  traerListaCreditos() {
+    return this.servicio.get(this.api + "saldo-credito");
+  }
+
+  registrarCredito(datos: any){
+    return this.servicio.post(this.api + "saldo-credito", datos);
+  }
+
+  actualizarCredito(datos: any){
+    return this.servicio.put(this.api + "saldo-credito", datos);
   }
 }

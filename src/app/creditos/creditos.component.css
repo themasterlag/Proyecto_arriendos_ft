@@ -1,0 +1,43 @@
+.card{
+    background: #e8e8e8; /* por ejemplo */
+    font-size: 18px; /* por ejemplo */
+    border-radius: 25px;
+  }
+#banner{
+    border-radius: 25px;
+    background: #ffe203;
+    
+}
+.card-category{
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 14px;
+}
+.card-title{
+    
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 21px;
+}
+.card-body{
+    border-radius: 25px;
+}
+#mat-expansion-panel-header-1{
+    border-radius: 25px;
+}
+.mat-accordion .mat-expansion-panel{
+    border-radius: 25px;
+    margin-bottom: 1%;
+}
+.text-info{
+    color: #359b68 !important;
+    font-weight: 900;
+}
+
+.text-black{
+    color: #000000;
+}
+::ng-deep .tooltipText{
+    transform: scale(1);
+    font-size: medium;
+}
