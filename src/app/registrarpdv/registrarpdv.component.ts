@@ -186,7 +186,7 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   traerTercero(){
-    console.log(this.consulta_ter);
+    // console.log(this.consulta_ter);
 
     this.servicio.traerTerceroConsulta(this.consulta_ter).subscribe(
       (res_Ter:any) => {
@@ -250,7 +250,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
-        console.log(res);
+        // console.log(res);
         this.id_contrato = res.contrato.id_contrato;
 
         this.formulariocontrato.patchValue({
@@ -392,7 +392,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        console.log(res, "conceptos");
+        // console.log(res, "conceptos");
       },
       (err) => {
         //console.log(err.message);
@@ -504,7 +504,7 @@ export class RegistrarpdvComponent implements OnInit {
     
     for (let i = 0; i < this.listservicios.length; i++) {
       const e = this.listservicios[i];
-      console.log(e,i);
+      // console.log(e,i);
 
       e.id_contrato = idcontrato;
       //console.log(e);
@@ -655,7 +655,7 @@ export class RegistrarpdvComponent implements OnInit {
 
                       this.servicio.actuliarcontrato(datos).subscribe(
                         (res: any) => {
-                          console.log(res);
+                          // console.log(res);
                           
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
@@ -740,7 +740,7 @@ export class RegistrarpdvComponent implements OnInit {
             if(this.consulta_ter != null){
               this.servicio.actualizarTercero(this.id_tercero, formtercer).subscribe(
                 (res) => {
-                  console.log(res);
+                  // console.log(res);
                   
                   swal.fire("Actualizado con Exito!","","success")
                   .then((isConfirm) => {
@@ -860,7 +860,7 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
   operacionConceptos(valor, tipo_id){
-    console.log(valor, tipo_id, "hola");
+    // console.log(valor, tipo_id, "hola");
     
     if (tipo_id == 3) {
       this.operacion = valor;
@@ -884,11 +884,11 @@ export class RegistrarpdvComponent implements OnInit {
   totalValorConceptos(){
 
     this.valorTotal = this.formulariocontrato.value.valor_canon
-    console.log(this.conceptosTabla);
+    // console.log(this.conceptosTabla);
     
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
-      console.log(idconcepto);
+      // console.log(idconcepto);
       if ( !(idconcepto.tipo_concepto == 5)  ) {
         this.valorTotal += element.valor 
       }
@@ -901,7 +901,7 @@ export class RegistrarpdvComponent implements OnInit {
   addConceptos(value) {
     this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
     let conceptoIgual = this.conceptosTabla.find((concepto) => concepto.id_concepto == this.conceptosFilter[0].id_concepto);
-    console.log(conceptoIgual);
+    // console.log(conceptoIgual);
     
     if (conceptoIgual) {
       swal.fire('El concepto ya se encuentra en la lista','','info');   
@@ -940,7 +940,7 @@ export class RegistrarpdvComponent implements OnInit {
   
             if (this.conceptosTabla) {
               let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
-              console.log(consultarIva);
+              // console.log(consultarIva);
               
               this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
               this.conceptosTabla.push({
@@ -977,7 +977,7 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   limpiarConceptos(): void {
-    console.log(this.conceptosTabla, "conceptos");
+    // console.log(this.conceptosTabla, "conceptos");
 
     this.conceptosTabla.splice(0, this.conceptosTabla.length);
   }
@@ -997,11 +997,11 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   actualizarValorConcepto(i, valor){    
-    console.log(i);
-    console.log(valor);
+    // console.log(i);
+    // console.log(valor);
     
     this.conceptosTabla[i].valor = parseInt(valor);
-    console.log(this.conceptosTabla);
+    // console.log(this.conceptosTabla);
 
     this.totalValorConceptos();
     

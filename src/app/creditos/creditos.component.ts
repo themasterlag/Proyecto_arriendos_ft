@@ -78,7 +78,7 @@ export class CreditosComponent implements OnInit {
   }
 
   registrarCredito(formularioCredito: NgForm){
-    console.log(formularioCredito.value);
+    //console.log(formularioCredito.value);
     this.servicio.registrarCredito(formularioCredito.value).subscribe(
       (res:any)=>{
         this.formularioCredito.resetForm();

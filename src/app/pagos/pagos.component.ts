@@ -165,7 +165,7 @@ export class PagosComponent implements OnInit {
           this.dataSourceNoPagados.paginator = this.paginatorNoPagados;
           this.dataSourceNoPagados.data = this.responsableTablaNoPagados;
           this.dataSourceNoPagados.sort = this.sort;
-          console.log(this.responsableTablaNoPagados);
+          // console.log(this.responsableTablaNoPagados);
           
         },
         (err) => {
@@ -201,7 +201,7 @@ export class PagosComponent implements OnInit {
         this.dataSourcePagados.paginator = this.paginatorPagados;
         this.dataSourcePagados.data = this.responsableTablaPagados;
         this.dataSourcePagados.sort = this.sort;
-        console.log(this.responsableTablaPagados);
+        // console.log(this.responsableTablaPagados);
       },
       (err) => {
         console.log(err.message);
@@ -319,7 +319,7 @@ export class PagosComponent implements OnInit {
   }
 
   comprobantePdf(base64, datos) {
-    console.log(datos);    
+    // console.log(datos);    
 
     const documentDefinition = {
       content: [
