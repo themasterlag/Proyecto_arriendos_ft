@@ -173,48 +173,71 @@
                                     <mat-panel-title>
                                         <h6 class="text-info">Lista de creditos</h6>
                                     </mat-panel-title>
-                                    <!-- <button 
-                                    (click)="abrirRegistro()"
-                                    [hidden]="!panelLista" class="btn btn-success px-4 mr-4" 
-                                    matTooltip="Crear nuevo credito" 
-                                    matTooltipPosition="above"
-                                    matTooltipClass="tooltipText">
-                                        <i class="fa fa-plus-square" aria-hidden="true"></i>
-                                    </button> -->
                                 </mat-expansion-panel-header>
 
-                                <table class="table table-striped table-hover table-success">
-                                    <!-- <thead> -->
-                                        <tr class="text-center">
-                                            <th scope="col">Contrato</th>
-                                            <th scope="col">N. oncepto</th>
-                                            <th scope="col">Concepto</th>
-                                            <th scope="col">Valor mensual</th>
-                                            <th scope="col">Valor</th>
-                                            <th scope="col">Saldo</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    <!-- </thead> -->
+                                
+                                    <table mat-table [dataSource]="dataSource" class="w-100 text-center table table-striped table-hover">
+
+                                        <ng-container matColumnDef="Contrato">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center" > Contrato </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.id_contrato}} </td>
+                                        </ng-container>
                                     
-                                    <tbody>
-                                        <tr class="text-center" *ngFor="let credito of listaCreditos; index as i;">
-                                            <td>{{credito.id_contrato}}</td>
-                                            <td>{{credito.codigo_concepto}}</td>
-                                            <td>{{credito.nombre_concepto}}</td>
-                                            <td>{{credito.valor | currency}}</td>
-                                            <td>{{credito.credito_total | currency}}</td>
-                                            <td>{{credito.credito_saldo | currency}}</td>
-                                            <td>
-                                                <button class="btn btn-info rounded-pill" (click)="editarCredito(i)" 
+                                        <ng-container matColumnDef="N_concepto">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> N. concepto </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.codigo_concepto}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Concepto">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> Concepto </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre_concepto}} </td>
+                                        </ng-container>
+                                    
+                                        <ng-container matColumnDef="Valor_mensual">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> Valor mensual </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.valor | currency}} </td>
+                                        </ng-container>
+                                    
+                                        <ng-container matColumnDef="Valor">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> Valor </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.credito_total | currency}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Saldo">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> Saldo </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.credito_saldo | currency}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Acciones">
+                                            <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <button class="btn btn-info rounded-pill" (click)="editarCredito(element)" 
                                                 matTooltip="Editar credito" 
                                                 matTooltipPosition="above"
                                                 matTooltipClass="tooltipText">
                                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                                 </button>
+                                                <button class="btn btn-danger rounded-pill" (click)="eliminarCredito(element)" 
+                                                matTooltip="Eliminar credito" 
+                                                matTooltipPosition="above"
+                                                matTooltipClass="tooltipText">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
                                             </td>
+                                        </ng-container>
+
+                                        <tr class="mat-row" *matNoDataRow>
+                                            <td class="mat-cell" colspan="7">No hay creditos</td>
                                         </tr>
-                                    </tbody>
-                                </table>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                      </table>
+                                    
+                                      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                                                     showFirstLastButtons
+                                                     aria-label="Select page of periodic elements">
+                                      </mat-paginator>
                             </mat-expansion-panel>
                         </mat-accordion>
                     </div>

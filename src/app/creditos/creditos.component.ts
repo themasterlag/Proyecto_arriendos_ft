@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { GeneralesService } from "app/services/generales.service";
-import Swal from 'sweetalert2';
-import swal from "sweetalert2";
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-creditos',
@@ -15,6 +16,10 @@ export class CreditosComponent implements OnInit {
   panelFormEdit:boolean;
   @ViewChild("formularioCredito") formularioCredito:NgForm ;
   @ViewChild("formularioEditarCredito") formularioEditarCredito:NgForm ;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  displayedColumns: string[] = ['Contrato', 'N_concepto', 'Concepto', 'Valor_mensual', 'Valor', 'Saldo', 'Acciones'];
+  dataSource:MatTableDataSource<any> = null;
 
   listaCreditos:any = [];
   listaContratos:any = [];
@@ -39,13 +44,12 @@ export class CreditosComponent implements OnInit {
   }
 
   consultarContratos(){
-    
     this.servicio.traerContratos().subscribe(
       (res:any)=>{
         this.listaContratos = res;
       },
       (err:any)=>{
-        swal.fire("No se pudo consultar los creditos", "", "error");
+        Swal.fire("No se pudo consultar los creditos", "", "error");
       }
     );  
   }
@@ -54,9 +58,10 @@ export class CreditosComponent implements OnInit {
     this.servicio.traerListaCreditos().subscribe(
       (res:any)=>{
         this.listaCreditos = res;
+        this.dataSource = new MatTableDataSource(this.listaCreditos);
       },
       (err:any)=>{
-        swal.fire("No se pudo consultar los creditos", "", "error");
+        Swal.fire("No se pudo consultar los creditos", "", "error");
       }
     );
   }
@@ -67,7 +72,7 @@ export class CreditosComponent implements OnInit {
         this.listaConceptos = res;
       },
       (err:any)=>{
-        swal.fire("No se pudo consultar los conceptos", "", "error");
+        Swal.fire("No se pudo consultar los conceptos", "", "error");
       }
     );
   }
@@ -76,19 +81,16 @@ export class CreditosComponent implements OnInit {
     console.log(formularioCredito.value);
     this.servicio.registrarCredito(formularioCredito.value).subscribe(
       (res:any)=>{
-        console.log(res);
         this.formularioCredito.resetForm();
         Swal.fire("Registrado correctamente", "", "success");
       },
       (err:any)=>{
-        swal.fire("No se pudo registrar el credito", "", "error");
+        Swal.fire("No se pudo registrar el credito", "", "error");
       }
     );
   }
 
-  editarCredito(i){
-    let credito = this.listaCreditos[i];
-    
+  editarCredito(credito){    
     this.formularioEditarCredito.controls.id_saldo_cretido.setValue(credito.id_saldo_cretido);
     this.formularioEditarCredito.controls.id_contrato_concepto.setValue(credito.id_contrato_concepto);
     this.formularioEditarCredito.controls.credito_total.setValue(credito.credito_total);
@@ -110,7 +112,6 @@ export class CreditosComponent implements OnInit {
   GuardarEdicion(formularioEditarCredito: NgForm){
     this.servicio.actualizarCredito(formularioEditarCredito.value).subscribe(
       (res:any)=>{
-        console.log(res);
         this.formularioEditarCredito.resetForm();
         this.ejecutarConsultas();
         this.panelForm = false;
@@ -119,7 +120,18 @@ export class CreditosComponent implements OnInit {
         Swal.fire("Cambios guardados con exito", "", "success");
       },
       (err:any)=>{
-        swal.fire("No se pudo registrar el credito", "", "error");
+        Swal.fire("No se pudo registrar el credito", "", "error");
+      }
+    );
+  }
+
+  eliminarCredito(credito: any){
+    this.servicio.eliminarCredito(credito.id_saldo_cretido).subscribe(
+      (res:any)=>{
+        this.ejecutarConsultas();
+      },
+      (err:any)=>{
+        Swal.fire("No se pudo eliminar el credito", "", "error");
       }
     );
   }

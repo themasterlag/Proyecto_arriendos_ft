@@ -166,4 +166,8 @@ export class GeneralesService {
   actualizarCredito(datos: any){
     return this.servicio.put(this.api + "saldo-credito", datos);
   }
+
+  eliminarCredito(id: number){
+    return this.servicio.delete(this.api + "saldo-credito/" + id);
+  }
 }
