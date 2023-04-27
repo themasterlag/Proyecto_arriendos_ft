@@ -251,12 +251,8 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
-<<<<<<< Updated upstream
-        // console.log(res);
-=======
         console.log(res);
         this.contrato = res;
->>>>>>> Stashed changes
         this.id_contrato = res.contrato.id_contrato;
 
         this.formulariocontrato.patchValue({
@@ -890,25 +886,12 @@ export class RegistrarpdvComponent implements OnInit {
   totalValorConceptos(){
 
     this.valorTotal = this.formulariocontrato.value.valor_canon
-<<<<<<< Updated upstream
-    // console.log(this.conceptosTabla);
-    
-    this.conceptosTabla.forEach((element) => {
-      let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
-      // console.log(idconcepto);
-      if ( !(idconcepto.tipo_concepto == 5)  ) {
-        this.valorTotal += element.valor 
-      }
-            
-      
-=======
     
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
         if ( !(idconcepto.tipo_concepto == 5)  ) {
           this.valorTotal += element.valor 
         }  
->>>>>>> Stashed changes
       }
     )
   }
@@ -956,10 +939,7 @@ export class RegistrarpdvComponent implements OnInit {
             if (this.conceptosTabla) {
               //Se consulta el concepto iba
               let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
-<<<<<<< Updated upstream
               // console.log(consultarIva);
-=======
->>>>>>> Stashed changes
               
               this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
               this.conceptosTabla.push({
@@ -1031,11 +1011,6 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   actualizarValorConcepto(i, valor){    
-<<<<<<< Updated upstream
-    // console.log(i);
-    // console.log(valor);
-=======
->>>>>>> Stashed changes
     
     this.conceptosTabla[i].valor = parseInt(valor);
     // console.log(this.conceptosTabla);
