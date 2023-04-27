@@ -68,6 +68,7 @@ export class RegistrarpdvComponent implements OnInit {
   id_tercero = null;
   operacion = null;
   valorTotal = null;
+  contrato = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -250,7 +251,12 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
+<<<<<<< Updated upstream
         // console.log(res);
+=======
+        console.log(res);
+        this.contrato = res;
+>>>>>>> Stashed changes
         this.id_contrato = res.contrato.id_contrato;
 
         this.formulariocontrato.patchValue({
@@ -884,6 +890,7 @@ export class RegistrarpdvComponent implements OnInit {
   totalValorConceptos(){
 
     this.valorTotal = this.formulariocontrato.value.valor_canon
+<<<<<<< Updated upstream
     // console.log(this.conceptosTabla);
     
     this.conceptosTabla.forEach((element) => {
@@ -894,6 +901,14 @@ export class RegistrarpdvComponent implements OnInit {
       }
             
       
+=======
+    
+    this.conceptosTabla.forEach((element) => {
+      let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
+        if ( !(idconcepto.tipo_concepto == 5)  ) {
+          this.valorTotal += element.valor 
+        }  
+>>>>>>> Stashed changes
       }
     )
   }
@@ -939,8 +954,12 @@ export class RegistrarpdvComponent implements OnInit {
             this.conceptosTabla.push(concepto);
   
             if (this.conceptosTabla) {
+              //Se consulta el concepto iba
               let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
+<<<<<<< Updated upstream
               // console.log(consultarIva);
+=======
+>>>>>>> Stashed changes
               
               this.operacionConceptos(consultarIva[0].porcentaje_operacion, consultarIva[0].tipo_concepto);
               this.conceptosTabla.push({
@@ -949,6 +968,10 @@ export class RegistrarpdvComponent implements OnInit {
                 nombre_concepto: consultarIva[0].nombre_concepto,
                 valor: this.operacion,
               });
+              console.log(this.municipios);
+              
+              console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
+              
             }          
             
           }else{
@@ -972,8 +995,19 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   deliCon(i: number) {
-    this.conceptosTabla.splice(i, 1);
-    this.totalValorConceptos();
+    console.log(i);
+    if(this.conceptosTabla[i].id_concepto == 2){
+      for (let index = 0; index < this.conceptosTabla.length; index++) {
+        const element = this.conceptosTabla[index];
+        if(element.id_concepto == 3){
+          this.conceptosTabla.splice(index,1);
+        }
+        console.log(index);
+        
+      }
+      this.conceptosTabla.splice(i, 1);
+      this.totalValorConceptos();
+    }
   }
 
   limpiarConceptos(): void {
@@ -997,8 +1031,11 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   actualizarValorConcepto(i, valor){    
+<<<<<<< Updated upstream
     // console.log(i);
     // console.log(valor);
+=======
+>>>>>>> Stashed changes
     
     this.conceptosTabla[i].valor = parseInt(valor);
     // console.log(this.conceptosTabla);
