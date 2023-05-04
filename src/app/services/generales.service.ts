@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Api } from "../config";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { fromEvent, Observable } from "rxjs";
+import { asapScheduler, fromEvent, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
+import { DashboardComponent } from "app/dashboard/dashboard.component";
+import { stderr } from "process";
+import { FOCUS_MONITOR_DEFAULT_OPTIONS } from "@angular/cdk/a11y";
 
 @Injectable({
   providedIn: "root",
@@ -96,6 +99,9 @@ export class GeneralesService {
     return this.servicio.get(this.api + "cliente");
   }
 
+  traerConceptoMunicpio(){
+    return this.servicio.get(this.api + "contrato/concepto-municipio");
+  }
   enviarproppdv(datos) {
     return this.servicio.post(this.api + "propietariopunto", datos);
   }

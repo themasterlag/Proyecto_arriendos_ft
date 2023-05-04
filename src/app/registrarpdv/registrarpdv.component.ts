@@ -69,6 +69,7 @@ export class RegistrarpdvComponent implements OnInit {
   operacion = null;
   valorTotal = null;
   contrato = null;
+  concepto_municpio: any = [];
 
   constructor(
     public servicio: GeneralesService,
@@ -152,8 +153,20 @@ export class RegistrarpdvComponent implements OnInit {
     this.traertipopunto();
     this.traerconceptos();
     Loading.remove();
+    this.traerConceptoMunicpios();
   }
 
+  traerConceptoMunicpios(){
+    this.servicio.traerConceptoMunicpio().subscribe(
+      (res: any) => {
+        this.concepto_municpio = res;
+        console.log(this.concepto_municpio);        
+      },
+      (err) => {
+        //console.log(err.message);
+      }
+    );
+  }
   traertipopunto() {
     try {
       this.servicio.traertipodepunto().subscribe((res: any) => {
@@ -394,7 +407,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        // console.log(res, "conceptos");
+        console.log(res);
       },
       (err) => {
         //console.log(err.message);
@@ -406,6 +419,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerciudades().subscribe(
       (res) => {
         this.municipios = res;
+        console.log(this.municipios);        
       },
       (err) => {
         //console.log(err);
@@ -950,7 +964,7 @@ export class RegistrarpdvComponent implements OnInit {
               });
               console.log(this.municipios);
               
-              console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
+              // console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
               
             }          
             
@@ -976,15 +990,28 @@ export class RegistrarpdvComponent implements OnInit {
 
   deliCon(i: number) {
     console.log(i);
-    if(this.conceptosTabla[i].id_concepto == 2){
+    if(this.conceptosTabla[i].id_concepto == 2 || this.conceptosTabla[i].id_concepto == 3){
       for (let index = 0; index < this.conceptosTabla.length; index++) {
         const element = this.conceptosTabla[index];
-        if(element.id_concepto == 3){
-          this.conceptosTabla.splice(index,1);
-        }
-        console.log(index);
+        console.log(element);
         
+        if(this.conceptosTabla[i].id_concepto == 3) {
+          console.log('iva');          
+          if (element.id_concepto == 2) {
+            console.log('denbtro de iva');            
+            this.conceptosTabla.splice(index,1);
+          }
+        }
+        else{
+          this.conceptosTabla.splice(index,1);
+          console.log('responsable');
+        }
+        console.log(index);        
       }
+      this.conceptosTabla.splice(i, 1);
+      this.totalValorConceptos();
+
+    } else {
       this.conceptosTabla.splice(i, 1);
       this.totalValorConceptos();
     }
