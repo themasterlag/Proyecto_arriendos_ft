@@ -1,14 +1,15 @@
-::ng-deep .mat-tab-label:nth-child(1) {
+
+  ::ng-deep .mat-tab-label {
     color:black;
     background-color: #ffe203;
     
   }
-  
-  ::ng-deep .mat-tab-label:nth-child(2) {
+
+  ::ng-deep .mat-tab-label-active{
     color:white;
     background-color: #1b4f35;
-    
   }
+
   ::ng-deep .mat-ink-bar {
     background-color: rgb(0, 0, 0) !important; 
   }

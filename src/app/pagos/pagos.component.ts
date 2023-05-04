@@ -59,6 +59,8 @@ export class PagosComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   tipoPago: number = 0;
 
+  prueba:any;
+
   constructor(private servicio: GeneralesService) {}
 
   ngOnInit(): void {
@@ -135,6 +137,7 @@ export class PagosComponent implements OnInit {
       this.dataSourceNoPagados.data = null;
       this.dataSourcePagados.data = null;
     }else{
+      
       this.traerNoPagados();
       this.traerPagados();
     }
