@@ -160,7 +160,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptoMunicpio().subscribe(
       (res: any) => {
         this.concepto_municpio = res;
-        console.log(this.concepto_municpio);        
+        // console.log(this.concepto_municpio);        
       },
       (err) => {
         //console.log(err.message);
@@ -191,9 +191,7 @@ export class RegistrarpdvComponent implements OnInit {
   traerpdv() {
     this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
-        this.pdv = res;
-        console.log(this.pdv);
-        
+        this.pdv = res;     
       },
       (err) => {
         //console.log(err.message);
@@ -409,7 +407,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        console.log(res);
+        // console.log(res);
       },
       (err) => {
         //console.log(err.message);
@@ -421,7 +419,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerciudades().subscribe(
       (res) => {
         this.municipios = res;
-        console.log(this.municipios);        
+        // console.log(this.municipios);        
       },
       (err) => {
         //console.log(err);
@@ -880,21 +878,14 @@ export class RegistrarpdvComponent implements OnInit {
   operacionConceptos(valor, tipo_id){
     // console.log(valor, tipo_id, "hola");
     
-    if (tipo_id == 3) {
-      this.operacion = valor;
-      // escribir el codigo para subir al back
-    }
-    else if (tipo_id == 4) {
+    if (tipo_id == 3 || tipo_id == 4) {
       this.operacion = valor;
     }
-    else if (tipo_id == 1) {
+    else if (tipo_id == 1 || tipo_id == 2) {
       let numero_decimal = this.formulariocontrato.value.valor_canon * valor;
       this.operacion = parseFloat(numero_decimal.toFixed(2));
     }
-    else if (tipo_id == 2) {
-      let numero_decimal = this.formulariocontrato.value.valor_canon * valor;
-      this.operacion = parseFloat(numero_decimal.toFixed(2));
-    }else{
+    else{
       this.operacion = this.formulariocontrato.value.valor_canon;
     }
   }
@@ -967,9 +958,7 @@ export class RegistrarpdvComponent implements OnInit {
                 codigo_concepto: consultarIva[0].codigo_concepto,
                 nombre_concepto: consultarIva[0].nombre_concepto,
                 valor: this.operacion,
-              });
-              console.log(this.municipios);
-              
+              });              
               // console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
               
             }          
@@ -979,13 +968,22 @@ export class RegistrarpdvComponent implements OnInit {
           concepto.valor = this.operacion;  
           this.conceptosTabla.push(concepto)   
           }
-        }else{
-          
-          this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)      
-          
-          concepto.valor = this.operacion;
-    
-          this.conceptosTabla.push(concepto)         
+        }else{          
+          if (this.conceptosFilter[0].id_concepto == 38) {
+            console.log('Hola reteiva'); 
+            let buscarIva = this.conceptosTabla.find((element) => element.id_concepto == 3);
+            if (!buscarIva) {
+              swal.fire('Debe agregar el concepto IVA', '', 'info');
+            }else{
+              let valorIva = this.conceptosTabla.find((element) => element.id_concepto == 3); 
+              concepto.valor = valorIva.valor * this.conceptosFilter[0].porcentaje_operacion;
+              this.conceptosTabla.push(concepto);
+            }           
+          }else{
+            this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
+            concepto.valor = this.operacion;    
+            this.conceptosTabla.push(concepto)   
+          }      
         } 
         
       }  
