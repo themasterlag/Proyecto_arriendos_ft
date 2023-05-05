@@ -61,7 +61,7 @@ export class RegistrarpdvComponent implements OnInit {
   pago_transferencia: boolean = false;
   id_pago: any;
   incremento_anual = null;
-  consulta_pdv: any = 32;
+  consulta_pdv: any = 55;
   consulta_ter: any = 1234567;
   actualizar: boolean = false;
   id_contrato = null;
@@ -192,6 +192,8 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
         this.pdv = res;
+        console.log(this.pdv);
+        
       },
       (err) => {
         //console.log(err.message);
@@ -904,7 +906,11 @@ export class RegistrarpdvComponent implements OnInit {
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
         if ( !(idconcepto.tipo_concepto == 5)  ) {
-          this.valorTotal += element.valor 
+          if (idconcepto.tipo_concepto == 2 || idconcepto.tipo_concepto == 4){
+            this.valorTotal -= element.valor 
+          }else{
+            this.valorTotal += element.valor 
+          }
         }  
       }
     )
@@ -989,32 +995,33 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   deliCon(i: number) {
-    console.log(i);
-    if(this.conceptosTabla[i].id_concepto == 2 || this.conceptosTabla[i].id_concepto == 3){
-      for (let index = 0; index < this.conceptosTabla.length; index++) {
-        const element = this.conceptosTabla[index];
-        console.log(element);
+    // console.log(i);
+    // if(this.conceptosTabla[i].id_concepto == 2 || this.conceptosTabla[i].id_concepto == 3){
+    //   for (let index = 0; index < this.conceptosTabla.length; index++) {
+    //     const element = this.conceptosTabla[index];
+    //     console.log(this.conceptosTabla[i].id_concepto, `ID Concepto en i: ${i}`);
         
-        if(this.conceptosTabla[i].id_concepto == 3) {
-          console.log('iva');          
-          if (element.id_concepto == 2) {
-            console.log('denbtro de iva');            
-            this.conceptosTabla.splice(index,1);
-          }
-        }
-        else{
-          this.conceptosTabla.splice(index,1);
-          console.log('responsable');
-        }
-        console.log(index);        
-      }
-      this.conceptosTabla.splice(i, 1);
-      this.totalValorConceptos();
+    //     if(this.conceptosTabla[i].id_concepto == 3 && element.id_concepto == 2) {         
+    //       this.conceptosTabla.splice(index,1);
+    //       this.conceptosTabla.splice(i-1, 1);  
+    //       // break;
+    //     }
+    //     else if(element.id_concepto == 3 && this.conceptosTabla[i].id_concepto != 3){
+    //       this.conceptosTabla.splice(index,1);
+    //       console.log('responsable');
+    //       this.conceptosTabla.splice(i, 1);
+    //     }else if(this.conceptosTabla[i].id_concepto == 3 && element.id_concepto == 3){
+    //       this.conceptosTabla.splice(i, 1);
+    //     }
+        
+    //     console.log(index);        
+    //   }
 
-    } else {
+    //   this.totalValorConceptos();
+
+    // } 
       this.conceptosTabla.splice(i, 1);
       this.totalValorConceptos();
-    }
   }
 
   limpiarConceptos(): void {

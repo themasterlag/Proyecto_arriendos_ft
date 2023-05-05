@@ -750,7 +750,7 @@
                             [value]="p.id_punto_venta"
                             *ngFor="let p of pdv"
                           >
-                            {{ p.nombre_comercial }}
+                            {{p.codigo_sitio_venta}} - {{ p.nombre_comercial }}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
@@ -896,6 +896,7 @@
                                 <td>
                                   <button
                                     class="btn btn-danger"
+                                    type="button"
                                     (click)="deliCon(i)"
                                   >
                                     <span class="material-symbols-outlined">
