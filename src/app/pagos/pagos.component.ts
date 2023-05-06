@@ -29,7 +29,7 @@ export interface PeriodicElement {
   styleUrls: ["./pagos.component.css"],
 })
 export class PagosComponent implements OnInit {
-  panelOpenState = false
+  panelOpenState = true
   tipoConsulta: boolean = false
   preliquidacion: any
   consulta: boolean = false
@@ -152,20 +152,27 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        this.consultaDatos = res
-        console.log("Pagados", this.consultaDatos)
+        console.log("No Pagados", res)
 
-        this.responsableTablaNoPagados = res.map((e) => {
-          // console.log(e);
-          return {
-            Check: true,
-            PDV: e.id_contrato_contrato.id_punto_venta_punto_de_ventum
-              .codigo_siti,
-            Nombre:
-              e.id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come,
-            Total: e.valor,
-          }
-        })
+        this.responsableTablaNoPagados = res;
+        for (let i = 0; i < this.responsableTablaNoPagados.length; i++) {
+          this.responsableTablaNoPagados[i]["Check"] = true;
+          this.responsableTablaNoPagados[i]["PDV"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
+          this.responsableTablaNoPagados[i]["Nombre"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
+          this.responsableTablaNoPagados[i]["Total"] = res[i].valor;
+        }
+        
+        // this.responsableTablaNoPagados = res.map((e) => {
+        //   // console.log(e);
+        //   return {
+        //     Check: true,
+        //     PDV: e.id_contrato_contrato.id_punto_venta_punto_de_ventum
+        //       .codigo_siti,
+        //     Nombre:
+        //       e.id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come,
+        //     Total: e.valor,
+        //   }
+        // })
         this.dataSourceNoPagados.paginator = this.paginatorNoPagados
         this.dataSourceNoPagados.data = this.responsableTablaNoPagados
         this.dataSourceNoPagados.sort = this.sort
@@ -189,7 +196,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        this.consultaDatos = res
+        console.log("Pagados", res)
 
         this.responsableTablaPagados = res.map((e) => {
           // console.log(e);
@@ -214,18 +221,18 @@ export class PagosComponent implements OnInit {
   pagar() {
     Swal.fire({
       title: "Seguro que desea pagar?",
-      text: "Todos los contratos seleccionados, se marcara como pagados",
+      text: "Todos los contratos seleccionados, se guardaran como pagados",
       icon: "question",
       confirmButtonText: "Pagar",
       showDenyButton: true,
       denyButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(
-          this.responsableTablaNoPagados.filter(
-            (responsable) => responsable["Check"]
-          )
-        )
+        let listaSeleccionados = this.responsableTablaNoPagados.filter(
+          (responsable) => responsable["Check"]
+        );
+
+        console.log(listaSeleccionados);
       }
     })
   }

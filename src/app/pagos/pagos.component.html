@@ -13,6 +13,7 @@
             <mat-accordion>
               <!-- <mat-expansion-panel hideToggle> </mat-expansion-panel> -->
               <mat-expansion-panel
+                [expanded]="panelOpenState"
                 (opened)="panelOpenState = true"
                 (closed)="panelOpenState = false"
               >
@@ -113,9 +114,9 @@
                       <div class="row">
                         <div class="col-md-12">
                           <table
-                            *ngIf="dataSourcePagados != null"
+                            *ngIf="dataSourceNoPagados != null"
                             mat-table
-                            [dataSource]="dataSourcePagados"
+                            [dataSource]="dataSourceNoPagados"
                             matSort
                             class="table w-100"
                           >
@@ -228,14 +229,14 @@
                       </div>
                     </div>
                   </mat-tab > 
-                  <mat-tab  label = "Pagados"  > 
+                  <mat-tab label="Pagados"> 
                     <div class="container-fluid">
                       <div class="row">
                         <div class="col-md-12">
                           <table
-                            *ngIf="dataSourceNoPagados != null"
+                            *ngIf="dataSourcePagados != null"
                             mat-table
-                            [dataSource]="dataSourceNoPagados"
+                            [dataSource]="dataSourcePagados"
                             matSort
                             class="table w-100"
                           >
@@ -350,33 +351,6 @@
                 </mat-tab-group>
                 <hr />
                 <div class="row">
-                  <!-- <div class="col" align="center">
-                    <button
-                      class="btn btn-warning"
-                      id="button-guardar"
-                      (click)="generarCsv('bancolombia')"
-                    >
-                      Bancolombia
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button
-                      class="btn btn-warning"
-                      id="button-guardar"
-                      (click)="generarCsv('otrosbancos')"
-                    >
-                      Otros bancos
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button
-                      class="btn btn-warning"
-                      id="button-guardar"
-                      (click)="generarCsv('efectivo')"
-                    >
-                      Efectivo
-                    </button>
-                  </div> -->
                   <div class="col" align="center">
                     <button
                       class="btn btn-info"
@@ -388,6 +362,7 @@
                   </div>
                   <div class="col" align="center">
                     <button
+                      [disabled]="responsableTablaNoPagados.length < 1"
                       class="btn btn-success"
                       id="button-guardar"
                       (click)="pagar()"
