@@ -272,6 +272,25 @@
                     <h6 class="text-info">Datos Del Pdv</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
+                <h5><strong>Buscar punto de venta por el codigo</strong></h5>
+                <div class="row">
+                  <div class="col-3">
+                    <input
+                      class="formdata text-center form-control align-baseline mt-2"
+                      placeholder="Codigo PDV"
+                      type="number"
+                      [(ngModel)]="pdv_id"
+                    />
+                  </div>
+                  
+                  <button
+                    class="btn btn-info text-center col-3"
+                    id="button-consultar"
+                    (click)="traerPDV()"
+                  >
+                    Consultar
+                  </button>
+                </div>
                 <div class="row" *ngIf="propietariostabla.length > 0">
                   <div class="col-md-2"></div>
                   <div class="col-md-8">
@@ -1015,6 +1034,27 @@
             </mat-accordion>
 
             <!-- <div class="clearfix"></div> -->
+
+            <!--Gestion Contratos-->
+            <hr>
+            <mat-accordion>
+              <mat-expansion-panel hideToggle> </mat-expansion-panel>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Gestión de contratos</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <h1 class="premium-heading">Versión premium</h1>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+
+
+
           </div>
         </div>
       </div>

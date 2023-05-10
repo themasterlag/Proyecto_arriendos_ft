@@ -65,11 +65,14 @@ export class RegistrarpdvComponent implements OnInit {
   consulta_ter: any = 1234567;
   actualizar: boolean = false;
   id_contrato = null;
+  id_punto_venta = null;
   id_tercero = null;
   operacion = null;
   valorTotal = null;
   contrato = null;
   concepto_municpio: any = [];
+  pdv_busqueda = null;
+  pdv_id = 1578;
 
   constructor(
     public servicio: GeneralesService,
@@ -95,7 +98,7 @@ export class RegistrarpdvComponent implements OnInit {
     });
 
     this.formulariopdv = this.formularioter.group({
-      nombre_comercial: [null, Validators.required],
+      nombre_comercial: [null],
       id_municipio: [null],
       microzona: [null],
       direccion: [null],
@@ -109,11 +112,11 @@ export class RegistrarpdvComponent implements OnInit {
       sanitario: [null],
       lavamanos: [null],
       poceta: [null],
-      codigo_sitio_venta: [null, Validators.required],
-      codigo_oficina: [null, Validators.required],
+      codigo_sitio_venta: [null],
+      codigo_oficina: [null],
       tipo_punto: [null],
       propietario: [null],
-      departamento: [null, Validators.required],
+      departamento: [null],
     });
 
     this.formulariocontrato = this.formularioter.group({
@@ -246,6 +249,49 @@ export class RegistrarpdvComponent implements OnInit {
     );
     
   }
+
+  traerPDV(){
+    this.servicio.traerPDv(this.pdv_id).subscribe(
+      (res:any) => {
+        this.pdv_busqueda = res;
+        console.log('Hola', this.pdv_busqueda);  
+        console.log(this.tipopunto);
+        
+
+        let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
+        
+        let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio)
+        this.filtrardepar(buscarDep[0].id_departamento);
+
+        let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
+        this.addpropietario(this.pdv_busqueda.propietario_punto_venta[0].id_propietario);
+        
+        this.formulariopdv.patchValue({
+          nombre_comercial: this.pdv_busqueda.nombre_comercial,
+          direccion: this.pdv_busqueda.direccion,
+          codigo_gipi: this.pdv_busqueda.codigo_gipi,
+          observaciones: this.pdv_busqueda.observacion,
+          linea_vista: this.pdv_busqueda.linea_vista,
+          sanitario: this.pdv_busqueda.sanitario,
+          lavamanos: this.pdv_busqueda.lavamanos,
+          poceta: this.pdv_busqueda.poceta,
+          latitud: this.pdv_busqueda.latitud,
+          longitud: this.pdv_busqueda.longitud,
+          numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
+          area_local: this.pdv_busqueda.area_local,
+          codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
+          codigo_oficina: this.pdv_busqueda.codigo_oficina,
+          tipo_punto: tipoPunto.id_tipo_contrato,
+          departamento: buscarDep[0].id_departamento,
+          id_municipio: buscaMuni[0].id_municipio
+        })
+        
+      },
+      (error:any) => {
+        console.log(error.message);
+      }
+    );
+  }
   
   traeContrato() {
 
@@ -257,7 +303,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.pdv = resPdv;
       },
       (err) => {
-        //console.log(err.message);
+        console.log(err.message);
       }
     );
 
@@ -829,30 +875,63 @@ export class RegistrarpdvComponent implements OnInit {
         .then((result) => {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
-            swal.fire("Guardado con Exito!", "", "success");
+            // swal.fire("Guardado con Exito!", "", "success");
             //console.log(this.formulariopdv.value);
-            this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
-              (res: any) => {
-                if (res.estado == "1") {
-                  this.resgistropropietarios(res.id);
-                  this.traerpdv();
-                  swal
-                    .fire(
-                      `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`
-                    )
-                    .then((isConfirm) => {
-                      this.formulariopdv.reset();
-                      this.formulariopdv.markAsUntouched();
-                    });
-                } else {
-                  //console.log(res);
+            if(this.pdv_busqueda != null){
+              let formulario = this.formulariopdv.value;
+              formulario.id_punto_venta = this.pdv_busqueda.id_punto_venta
+              this.servicio.actualizrRegistroPdv(formulario).subscribe(
+                (res: any) => {
+                  if (res.estado == "1") {
+                    // this.resgistropropietarios(res.id);
+                    console.log(res);                    
+                    this.traerpdv();
+                    swal
+                      .fire(
+                        `Se actualizó el Punto de venta ${this.formulariopdv.value.nombre_comercial}`,
+                        '',
+                        'success'
+                      )
+                      .then((isConfirm) => {
+                        this.formulariopdv.reset();
+                        this.formulariopdv.markAsUntouched();
+                        this.propietariostabla = [];
+                      });
+                  } else {
+                    //console.log(res);
+                  }
+                },
+                (err) => {
+                  swal.fire("Error al actualizar", err.error.menssage, "error");
                 }
-              },
-              (err) => {
-                swal.fire("Error al registrar", err.error.menssage, "error");
-              }
-            );
-            this.traerpdv;
+              );
+              this.traerpdv;
+            }else{
+              this.servicio.enviarregistropdv(this.formulariopdv.value).subscribe(
+                (res: any) => {
+                  if (res.estado == "1") {
+                    this.resgistropropietarios(res.id);
+                    this.traerpdv();
+                    swal
+                      .fire(
+                        `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`,
+                        '',
+                        'success'
+                      )
+                      .then((isConfirm) => {
+                        this.formulariopdv.reset();
+                        this.formulariopdv.markAsUntouched();
+                      });
+                  } else {
+                    //console.log(res);
+                  }
+                },
+                (err) => {
+                  swal.fire("Error al registrar", err.error.menssage, "error");
+                }
+              );
+              this.traerpdv;
+            }           
           }
         });
     } else {

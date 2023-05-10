@@ -46,6 +46,11 @@ export class GeneralesService {
   enviarregistropdv(form) {
     return this.servicio.post(this.api + "puntodeventa", form);
   }
+
+  actualizrRegistroPdv(form){
+    return this.servicio.patch(this.api + "puntodeventa/update", form);
+  }
+
   traerPuntosDeVentaSinContrato() {
     return this.servicio.get(this.api + "puntodeventa/sincontrato");
   }
@@ -59,6 +64,10 @@ export class GeneralesService {
 
   traerPuntosDeVenta() {
     return this.servicio.get(this.api + "puntodeventa");
+  }
+
+  traerPDv(id) {
+    return this.servicio.get(this.api + "puntodeventa/codigo-sitventa/" + id);
   }
 
   registrarresponsable(responsable) {
@@ -145,6 +154,10 @@ export class GeneralesService {
 
   traerListaPagosTodos() {
     return this.servicio.get(this.api + "preliquidacion/todos");
+  }
+
+  pagarContratos(datos){
+    return this.servicio.post(this.api + "preliquidacion/todos", datos);
   }
 
   traerInfoCsv(opcion, puntos) {

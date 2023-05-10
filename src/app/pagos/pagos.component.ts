@@ -42,6 +42,7 @@ export class PagosComponent implements OnInit {
   yearList: number[] = []
   consultaDatos: any
   iva: any
+  noPagadosLista: any[] = []
   efectivo: boolean = false
   responsable: boolean = false
   no_responsable: boolean = false
@@ -140,7 +141,7 @@ export class PagosComponent implements OnInit {
     }
   }
 
-  traerNoPagados() {
+ traerPagados() {
     let datosConsulta = {
       DT: {
         no_responsable: this.no_responsable,
@@ -152,30 +153,19 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        console.log("No Pagados", res)
+        // console.log("Pagados", res)
 
-        this.responsableTablaNoPagados = res;
-        for (let i = 0; i < this.responsableTablaNoPagados.length; i++) {
-          this.responsableTablaNoPagados[i]["Check"] = true;
-          this.responsableTablaNoPagados[i]["PDV"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
-          this.responsableTablaNoPagados[i]["Nombre"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
-          this.responsableTablaNoPagados[i]["Total"] = res[i].valor;
+        this.responsableTablaPagados = res;
+        for (let i = 0; i < this.responsableTablaPagados.length; i++) {
+          this.responsableTablaPagados[i]["Check"] = true;
+          this.responsableTablaPagados[i]["PDV"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
+          this.responsableTablaPagados[i]["Nombre"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
+          this.responsableTablaPagados[i]["Total"] = res[i].valor;
         }
         
-        // this.responsableTablaNoPagados = res.map((e) => {
-        //   // console.log(e);
-        //   return {
-        //     Check: true,
-        //     PDV: e.id_contrato_contrato.id_punto_venta_punto_de_ventum
-        //       .codigo_siti,
-        //     Nombre:
-        //       e.id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come,
-        //     Total: e.valor,
-        //   }
-        // })
-        this.dataSourceNoPagados.paginator = this.paginatorNoPagados
-        this.dataSourceNoPagados.data = this.responsableTablaNoPagados
-        this.dataSourceNoPagados.sort = this.sort
+        this.dataSourcePagados.paginator = this.paginatorPagados
+        this.dataSourcePagados.data = this.responsableTablaPagados
+        this.dataSourcePagados.sort = this.sort
         // console.log(this.responsableTablaNoPagados);
       },
       (err) => {
@@ -184,7 +174,7 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  traerPagados() {
+  traerNoPagados() {
     let datosConsulta = {
       DT: {
         no_responsable: this.no_responsable,
@@ -196,9 +186,9 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        console.log("Pagados", res)
-
-        this.responsableTablaPagados = res.map((e) => {
+        // console.log("No Pagados", res)
+        this.noPagadosLista = res;
+        this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
           return {
             Check: true,
@@ -207,15 +197,23 @@ export class PagosComponent implements OnInit {
             Total: e.total,
           }
         })
-        this.dataSourcePagados.paginator = this.paginatorPagados
-        this.dataSourcePagados.data = this.responsableTablaPagados
-        this.dataSourcePagados.sort = this.sort
+        this.dataSourceNoPagados.paginator = this.paginatorNoPagados
+        this.dataSourceNoPagados.data = this.responsableTablaNoPagados
+        this.dataSourceNoPagados.sort = this.sort
         // console.log(this.responsableTablaPagados);
       },
       (err) => {
         console.log(err.message)
       }
     )
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
   }
 
   pagar() {
@@ -231,8 +229,29 @@ export class PagosComponent implements OnInit {
         let listaSeleccionados = this.responsableTablaNoPagados.filter(
           (responsable) => responsable["Check"]
         );
+        let nopagados = this.noPagadosLista.filter((noPagados) => 
+          listaSeleccionados.some((seleccion) => noPagados.codigo_punto_venta
+          == seleccion.PDV));
 
-        console.log(listaSeleccionados);
+        const currentDate = new Date();
+        const formattedDate = this.formatDate(currentDate);
+
+        const listaEnviar = nopagados.map((element) => {
+          return {
+            id_contrato: element.id_contrato,
+            valor: element.total,
+            fecha_pago: formattedDate
+          }
+        }) 
+        this.servicio.pagarContratos(listaEnviar).subscribe(
+          (res:any) => {   
+            this.traerNoPagados();
+            this.traerPagados();                 
+          },
+          (err:any) => {
+            console.log(err);            
+          }          
+        )
       }
     })
   }
