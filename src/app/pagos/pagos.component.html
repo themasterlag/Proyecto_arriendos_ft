@@ -227,6 +227,31 @@
                           </mat-paginator> -->
                         </div>
                       </div>
+
+                      <hr>
+                      
+                      <div class="row">
+                        <div class="col" align="center">
+                          <button
+                            
+                            class="btn btn-info"
+                            id="button-guardar"
+                            (click)="generarNomina()"
+                          >
+                            Generar pre-nomina 
+                          </button>
+                        </div>
+                        <div class="col" align="center">
+                          <button
+                            [disabled]="responsableTablaNoPagados.length < 1"
+                            class="btn btn-success"
+                            id="button-guardar"
+                            (click)="pagar()"
+                          >
+                            Pagar
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </mat-tab > 
                   <mat-tab label="Pagados"> 
@@ -349,28 +374,6 @@
                     </div>
                   </mat-tab>
                 </mat-tab-group>
-                <hr />
-                <div class="row">
-                  <div class="col" align="center">
-                    <button
-                      class="btn btn-info"
-                      id="button-guardar"
-                      (click)="null"
-                    >
-                      Generar nomina CSV 
-                    </button>
-                  </div>
-                  <div class="col" align="center">
-                    <button
-                      [disabled]="responsableTablaNoPagados.length < 1"
-                      class="btn btn-success"
-                      id="button-guardar"
-                      (click)="pagar()"
-                    >
-                      Pagar
-                    </button>
-                  </div>
-                </div>
               </mat-expansion-panel></mat-accordion
             >
           </div>

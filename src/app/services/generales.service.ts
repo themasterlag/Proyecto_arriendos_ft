@@ -143,6 +143,13 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato/pdv/" + id);
   }
 
+  traerPrenomina(ids) {
+    let datos = new HttpParams();
+    datos = datos.append("idContratos", JSON.stringify(ids))
+
+    return this.servicio.get(this.api + "preliquidacion/prenomina", { params: datos });
+  }
+
   traerListaPagos(datosConsulta) {
     let datos = new HttpParams();
     datos = datos.append("datosResponsable", JSON.stringify(datosConsulta.DT))

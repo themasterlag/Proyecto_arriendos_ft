@@ -15,6 +15,8 @@ import { AngularCsv } from "angular-csv-ext/dist/Angular-csv"
 import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
+import * as XLSX from 'xlsx';
+
 
 export interface PeriodicElement {
   Check: boolean
@@ -349,6 +351,28 @@ export class PagosComponent implements OnInit {
           })
       }
     })
+  }
+
+  generarNomina(){
+    this.servicio.traerPrenomina([59,60]).subscribe(
+      (res: any) => {
+        console.log(res)
+
+        let workbook = XLSX.utils.book_new();
+        let worksheet = XLSX.utils.json_to_sheet(res);
+
+        // worksheet['!merges'] = [
+        //   { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Fusionar celdas A1 a D1
+        // ];
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
+        XLSX.writeFile(workbook, 'archivo.xlsx');
+
+      },
+      (err) => {
+        console.log(err.message)
+      }
+    )
   }
 
   comprobantePdf(base64, datos) {
