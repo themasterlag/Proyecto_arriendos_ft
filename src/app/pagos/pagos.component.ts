@@ -16,6 +16,7 @@ import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from 'xlsx';
+import { Console } from "console"
 
 
 export interface PeriodicElement {
@@ -359,15 +360,25 @@ export class PagosComponent implements OnInit {
         console.log(res)
 
         let workbook = XLSX.utils.book_new();
-        let worksheet = XLSX.utils.json_to_sheet(res);
+        let worksheet = XLSX.utils.aoa_to_sheet([]);
 
+        for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < res[i].conceptos.length; j++) {
+            XLSX.utils.sheet_add_json(worksheet, [res[i]], ((i < 1) || (j < 1))?{origin: -1}:{skipHeader: true,origin: -1});
+            // Agregar los datos a las celdas
+            const celda = XLSX.utils.encode_cell({ r: j + 1, c: 17 });
+            console.log([res[i].conceptos[j].id_concepto_concepto.nombre_concepto], celda);
+            // worksheet[celda].v = res[i].conceptos[j].id_concepto_concepto.nombre_concepto;
+            console.log("==============");
+          }
+        } 
+        
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
+        XLSX.writeFile(workbook, 'archivo.xlsx');
+        
         // worksheet['!merges'] = [
         //   { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Fusionar celdas A1 a D1
         // ];
-
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
-        XLSX.writeFile(workbook, 'archivo.xlsx');
-
       },
       (err) => {
         console.log(err.message)
