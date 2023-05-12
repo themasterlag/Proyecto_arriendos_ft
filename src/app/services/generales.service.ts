@@ -179,6 +179,13 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/sitioventa/" + id);
   }
 
+  traerTodoContratos(){
+    return this.servicio.get(this.api + "contrato");
+  }
+
+  inhabilitarContratos(datos){
+    return this.servicio.patch(this.api + "contrato/inhabilitar", datos)
+  }
 
   // Creditos
   traerListaCreditos() {

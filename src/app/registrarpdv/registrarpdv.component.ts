@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { GeneralesService } from "app/services/generales.service";
 import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -8,6 +8,9 @@ import swal from "sweetalert2";
 import { throwIfEmpty } from "rxjs";
 import { element } from "protractor";
 import Swal from "sweetalert2";
+import { MatPaginator } from "@angular/material/paginator"
+import { MatSort } from "@angular/material/sort"
+import { MatTableDataSource } from "@angular/material/table"
 
 
 interface Concepto {
@@ -15,6 +18,15 @@ interface Concepto {
   codigo_concepto: string;
   nombre_concepto: string;
   valor: number;
+}
+
+interface Contratos {
+  id_contrato: number;
+  nombre_comercial: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  fecha_inhabilitado: string;
+  codigo_sitio_venta: number;
 }
 @Component({
   selector: "app-registrarpdv",
@@ -61,9 +73,9 @@ export class RegistrarpdvComponent implements OnInit {
   pago_transferencia: boolean = false;
   id_pago: any;
   incremento_anual = null;
-  consulta_pdv: any = 55;
-  consulta_ter: any = 1234567;
-  actualizar: boolean = false;
+  consulta_pdv: any = null;
+  consulta_ter: any = null;
+  actualizar: boolean = null;
   id_contrato = null;
   id_punto_venta = null;
   id_tercero = null;
@@ -72,7 +84,12 @@ export class RegistrarpdvComponent implements OnInit {
   contrato = null;
   concepto_municpio: any = [];
   pdv_busqueda = null;
-  pdv_id = 1578;
+  pdv_id = null;
+  tabla_contratos: any = [];
+  displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
+  dataSourceContratos: MatTableDataSource<Contratos> =
+  new MatTableDataSource<Contratos>();
+  @ViewChild("paginatorContratos") paginatorContratos: MatPaginator
 
   constructor(
     public servicio: GeneralesService,
@@ -157,6 +174,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerconceptos();
     Loading.remove();
     this.traerConceptoMunicpios();
+    this.tablaContratos();
   }
 
   traerConceptoMunicpios(){
@@ -1128,6 +1146,74 @@ export class RegistrarpdvComponent implements OnInit {
 
     this.totalValorConceptos();
     
+  }
+
+  tablaContratos(){
+    this.servicio.traerTodoContratos().subscribe(
+      (res:any) => {
+        console.log(res);
+
+        this.tabla_contratos = res.map((element) => {
+          return {
+            id_contrato: element.id_contrato,
+            fecha_inicio: element.fecha_inicio_contrato,
+            fecha_fin: element.fecha_fin_contrato,
+            fecha_inhabilitado: element.fecha_inactivo,
+            id_punto_venta: element.id_punto_venta_punto_de_ventum.codigo_sitio_venta,
+            nombre_comercial: element.id_punto_venta_punto_de_ventum.nombre_comercial
+          }
+        })
+
+        this.dataSourceContratos.data = this.tabla_contratos;
+        this.dataSourceContratos.paginator = this.paginatorContratos;
+        
+      }
+    )
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
+
+
+  inhabilitarContrato(contrato){
+    console.log(contrato);
+    
+    const currentDate = new Date();
+    const formattedDate = this.formatDate(currentDate);
+
+    swal.fire({
+      title: 'Observación',
+      input: 'text',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      icon: "question",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(result.value);
+        let datos = {
+          id: contrato.id_contrato,
+          fecha_inactivo: formattedDate,
+          razon_inactivo: result.value
+        }
+        console.log(datos);
+        
+        this.servicio.inhabilitarContratos(datos).subscribe(
+            (res:any) => {
+            console.log(res);
+            swal.fire(`Contrato ${contrato.id_contrato} inhabilitado`,'', 'success')            
+        })        
+      }
+    })
+    
+  }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceContratos.filter = filterValue.trim().toLowerCase();
   }
 
 }
