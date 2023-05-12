@@ -357,36 +357,61 @@ export class PagosComponent implements OnInit {
   generarNomina(){
     this.servicio.traerPrenomina([59,60]).subscribe(
       (res: any) => {
-        console.log(res)
-
         let workbook = XLSX.utils.book_new();
-        let worksheet = XLSX.utils.aoa_to_sheet([]);
+        res[0].valor_concepto = 0
+        let headers = Object.keys(res[0]);
+        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
+        let contador = 2;
+        worksheet['!merges'] = [];
 
         for (let i = 0; i < res.length; i++) {
-            for (let j = 0; j < res[i].conceptos.length; j++) {
-            XLSX.utils.sheet_add_json(worksheet, [res[i]], ((i < 1) || (j < 1))?{origin: -1}:{skipHeader: true,origin: -1});
-            // Agregar los datos a las celdas
-            const celda = XLSX.utils.encode_cell({ r: j + 1, c: 17 });
-            console.log([res[i].conceptos[j].id_concepto_concepto.nombre_concepto], celda);
-            // worksheet[celda].v = res[i].conceptos[j].id_concepto_concepto.nombre_concepto;
-            console.log("==============");
+          let conceptos = res[i].conceptos;
+          for (let prop in res[i]) {
+            if (res[i][prop] === null) {
+              res[i][prop] = '----------';
+            }
           }
-        } 
-        
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
-        XLSX.writeFile(workbook, 'archivo.xlsx');
-        
-        // worksheet['!merges'] = [
-        //   { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Fusionar celdas A1 a D1
-        // ];
-      },
-      (err) => {
-        console.log(err.message)
-      }
-    )
-  }
+          for (let j = 0; j < conceptos.length; j++) {
+            console.log(conceptos[j]);
+            res[i].conceptos =  conceptos[j].id_concepto_concepto.nombre_concepto;
+            res[i].valor_concepto =  conceptos[j].valor;
+            XLSX.utils.sheet_add_json(worksheet, [res[i]], {skipHeader:true, origin: -1});
+            contador++;
+          }
+          console.log(contador - conceptos.length, contador-1);
 
-  comprobantePdf(base64, datos) {
+          worksheet['!merges'].push(
+            { s: { r: (contador - conceptos.length-1), c: 0 }, e: { r: (contador-2), c: 0 } },
+            { s: { r: (contador - conceptos.length-1), c: 1 }, e: { r: (contador-2), c: 1 } },
+            { s: { r: (contador - conceptos.length-1), c: 2 }, e: { r: (contador-2), c: 2 } },
+            { s: { r: (contador - conceptos.length-1), c: 3 }, e: { r: (contador-2), c: 3 } },
+            { s: { r: (contador - conceptos.length-1), c: 4 }, e: { r: (contador-2), c: 4 } },
+            { s: { r: (contador - conceptos.length-1), c: 5 }, e: { r: (contador-2), c: 5 } },
+            { s: { r: (contador - conceptos.length-1), c: 6 }, e: { r: (contador-2), c: 6 } },
+            { s: { r: (contador - conceptos.length-1), c: 7 }, e: { r: (contador-2), c: 7 } },
+            { s: { r: (contador - conceptos.length-1), c: 8 }, e: { r: (contador-2), c: 8 } },
+            { s: { r: (contador - conceptos.length-1), c: 9 }, e: { r: (contador-2), c: 9 } },
+            { s: { r: (contador - conceptos.length-1), c: 10 }, e: { r: (contador-2), c: 10 } },
+            { s: { r: (contador - conceptos.length-1), c: 11 }, e: { r: (contador-2), c: 11 } },
+            { s: { r: (contador - conceptos.length-1), c: 12 }, e: { r: (contador-2), c: 12 } },
+            { s: { r: (contador - conceptos.length-1), c: 13 }, e: { r: (contador-2), c: 13 } },
+            { s: { r: (contador - conceptos.length-1), c: 14 }, e: { r: (contador-2), c: 14 } },
+            { s: { r: (contador - conceptos.length-1), c: 15 }, e: { r: (contador-2), c: 15 } },
+            { s: { r: (contador - conceptos.length-1), c: 16 }, e: { r: (contador-2), c: 16 } }
+            );
+          } 
+
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
+          XLSX.writeFile(workbook, 'archivo.xlsx');
+          
+        },
+        (err) => {
+          console.log(err.message)
+        }
+        )
+      }
+
+      comprobantePdf(base64, datos) {
     // console.log(datos);
 
     const documentDefinition = {
