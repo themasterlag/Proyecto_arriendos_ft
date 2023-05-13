@@ -15,9 +15,8 @@ import { AngularCsv } from "angular-csv-ext/dist/Angular-csv"
 import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx"
 import { Console } from "console"
-
 
 export interface PeriodicElement {
   Check: boolean
@@ -139,12 +138,12 @@ export class PagosComponent implements OnInit {
       this.dataSourceNoPagados.data = null
       this.dataSourcePagados.data = null
     } else {
-      this.traerNoPagados();
-      this.traerPagados();
+      this.traerNoPagados()
+      this.traerPagados()
     }
   }
 
- traerPagados() {
+  traerPagados() {
     let datosConsulta = {
       DT: {
         no_responsable: this.no_responsable,
@@ -158,14 +157,20 @@ export class PagosComponent implements OnInit {
       (res: any) => {
         // console.log("Pagados", res)
 
-        this.responsableTablaPagados = res;
+        this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
-          this.responsableTablaPagados[i]["Check"] = true;
-          this.responsableTablaPagados[i]["PDV"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
-          this.responsableTablaPagados[i]["Nombre"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
-          this.responsableTablaPagados[i]["Total"] = res[i].valor;
+          this.responsableTablaPagados[i]["Check"] = true
+          this.responsableTablaPagados[i]["PDV"] =
+            res[
+              i
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti
+          this.responsableTablaPagados[i]["Nombre"] =
+            res[
+              i
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come
+          this.responsableTablaPagados[i]["Total"] = res[i].valor
         }
-        
+
         this.dataSourcePagados.paginator = this.paginatorPagados
         this.dataSourcePagados.data = this.responsableTablaPagados
         this.dataSourcePagados.sort = this.sort
@@ -190,7 +195,7 @@ export class PagosComponent implements OnInit {
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("No Pagados", res)
-        this.noPagadosLista = res;
+        this.noPagadosLista = res
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
           return {
@@ -212,11 +217,11 @@ export class PagosComponent implements OnInit {
   }
 
   formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-  
-    return `${year}-${month}-${day}`;
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, "0")
+    const day = date.getDate().toString().padStart(2, "0")
+
+    return `${year}-${month}-${day}`
   }
 
   pagar() {
@@ -231,36 +236,39 @@ export class PagosComponent implements OnInit {
       if (result.isConfirmed) {
         let listaSeleccionados = this.responsableTablaNoPagados.filter(
           (responsable) => responsable["Check"]
-        );
-        let nopagados = this.noPagadosLista.filter((noPagados) => 
-          listaSeleccionados.some((seleccion) => noPagados.codigo_punto_venta
-          == seleccion.PDV));
+        )
+        let nopagados = this.noPagadosLista.filter((noPagados) =>
+          listaSeleccionados.some(
+            (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
+          )
+        )
 
-        const currentDate = new Date();
-        const formattedDate = this.formatDate(currentDate);
+        const currentDate = new Date()
+        const formattedDate = this.formatDate(currentDate)
 
         // let fecha = new Date(this.anio, this.mes - 1, 1);
-        let fecha_parseada = this.formatDate(new Date(this.anio, this.mes - 1, 1));
+        let fecha_parseada = this.formatDate(
+          new Date(this.anio, this.mes - 1, 1)
+        )
 
         const listaEnviar = nopagados.map((element) => {
           return {
             id_contrato: element.id_contrato,
             valor: element.total,
             fecha_pago: formattedDate,
-            fecha_periodo: fecha_parseada
+            fecha_periodo: fecha_parseada,
           }
-        }) 
-        console.log(listaEnviar);
-        
-        // this.servicio.pagarContratos(listaEnviar).subscribe(
-        //   (res:any) => {   
-        //     this.traerNoPagados();
-        //     this.traerPagados();                 
-        //   },
-        //   (err:any) => {
-        //     console.log(err);            
-        //   }          
-        // )
+        })
+
+        this.servicio.pagarContratos(listaEnviar).subscribe(
+          (res: any) => {
+            this.traerNoPagados()
+            this.traerPagados()
+          },
+          (err: any) => {
+            console.log(err)
+          }
+        )
       }
     })
   }
@@ -360,64 +368,117 @@ export class PagosComponent implements OnInit {
     })
   }
 
-  generarNomina(){
-    this.servicio.traerPrenomina([59,60]).subscribe(
+  generarNomina() {
+    this.servicio.traerPrenomina([59, 60]).subscribe(
       (res: any) => {
-        let workbook = XLSX.utils.book_new();
+        let workbook = XLSX.utils.book_new()
         res[0].valor_concepto = 0
-        let headers = Object.keys(res[0]);
-        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
-        let contador = 2;
-        worksheet['!merges'] = [];
+        let headers = Object.keys(res[0])
+        let worksheet = XLSX.utils.aoa_to_sheet([headers])
+        let contador = 2
+        worksheet["!merges"] = []
 
         for (let i = 0; i < res.length; i++) {
-          let conceptos = res[i].conceptos;
+          let conceptos = res[i].conceptos
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
-              res[i][prop] = '----------';
+              res[i][prop] = "----------"
             }
           }
           for (let j = 0; j < conceptos.length; j++) {
-            console.log(conceptos[j]);
-            res[i].conceptos =  conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto =  conceptos[j].valor;
-            XLSX.utils.sheet_add_json(worksheet, [res[i]], {skipHeader:true, origin: -1});
-            contador++;
+            console.log(conceptos[j])
+            res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto
+            res[i].valor_concepto = conceptos[j].valor
+            XLSX.utils.sheet_add_json(worksheet, [res[i]], {
+              skipHeader: true,
+              origin: -1,
+            })
+            contador++
           }
-          console.log(contador - conceptos.length, contador-1);
+          console.log(contador - conceptos.length, contador - 1)
 
-          worksheet['!merges'].push(
-            { s: { r: (contador - conceptos.length-1), c: 0 }, e: { r: (contador-2), c: 0 } },
-            { s: { r: (contador - conceptos.length-1), c: 1 }, e: { r: (contador-2), c: 1 } },
-            { s: { r: (contador - conceptos.length-1), c: 2 }, e: { r: (contador-2), c: 2 } },
-            { s: { r: (contador - conceptos.length-1), c: 3 }, e: { r: (contador-2), c: 3 } },
-            { s: { r: (contador - conceptos.length-1), c: 4 }, e: { r: (contador-2), c: 4 } },
-            { s: { r: (contador - conceptos.length-1), c: 5 }, e: { r: (contador-2), c: 5 } },
-            { s: { r: (contador - conceptos.length-1), c: 6 }, e: { r: (contador-2), c: 6 } },
-            { s: { r: (contador - conceptos.length-1), c: 7 }, e: { r: (contador-2), c: 7 } },
-            { s: { r: (contador - conceptos.length-1), c: 8 }, e: { r: (contador-2), c: 8 } },
-            { s: { r: (contador - conceptos.length-1), c: 9 }, e: { r: (contador-2), c: 9 } },
-            { s: { r: (contador - conceptos.length-1), c: 10 }, e: { r: (contador-2), c: 10 } },
-            { s: { r: (contador - conceptos.length-1), c: 11 }, e: { r: (contador-2), c: 11 } },
-            { s: { r: (contador - conceptos.length-1), c: 12 }, e: { r: (contador-2), c: 12 } },
-            { s: { r: (contador - conceptos.length-1), c: 13 }, e: { r: (contador-2), c: 13 } },
-            { s: { r: (contador - conceptos.length-1), c: 14 }, e: { r: (contador-2), c: 14 } },
-            { s: { r: (contador - conceptos.length-1), c: 15 }, e: { r: (contador-2), c: 15 } },
-            { s: { r: (contador - conceptos.length-1), c: 16 }, e: { r: (contador-2), c: 16 } }
-            );
-          } 
-
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
-          XLSX.writeFile(workbook, 'archivo.xlsx');
-          
-        },
-        (err) => {
-          console.log(err.message)
+          worksheet["!merges"].push(
+            {
+              s: { r: contador - conceptos.length - 1, c: 0 },
+              e: { r: contador - 2, c: 0 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 1 },
+              e: { r: contador - 2, c: 1 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 2 },
+              e: { r: contador - 2, c: 2 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 3 },
+              e: { r: contador - 2, c: 3 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 4 },
+              e: { r: contador - 2, c: 4 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 5 },
+              e: { r: contador - 2, c: 5 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 6 },
+              e: { r: contador - 2, c: 6 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 7 },
+              e: { r: contador - 2, c: 7 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 8 },
+              e: { r: contador - 2, c: 8 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 9 },
+              e: { r: contador - 2, c: 9 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 10 },
+              e: { r: contador - 2, c: 10 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 11 },
+              e: { r: contador - 2, c: 11 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 12 },
+              e: { r: contador - 2, c: 12 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 13 },
+              e: { r: contador - 2, c: 13 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 14 },
+              e: { r: contador - 2, c: 14 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 15 },
+              e: { r: contador - 2, c: 15 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 16 },
+              e: { r: contador - 2, c: 16 },
+            }
+          )
         }
-        )
-      }
 
-      comprobantePdf(base64, datos) {
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1")
+        XLSX.writeFile(workbook, "archivo.xlsx")
+      },
+      (err) => {
+        console.log(err.message)
+      }
+    )
+  }
+
+  comprobantePdf(base64, datos) {
     // console.log(datos);
 
     const documentDefinition = {
