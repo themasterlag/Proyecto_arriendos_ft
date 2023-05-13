@@ -239,22 +239,28 @@ export class PagosComponent implements OnInit {
         const currentDate = new Date();
         const formattedDate = this.formatDate(currentDate);
 
+        // let fecha = new Date(this.anio, this.mes - 1, 1);
+        let fecha_parseada = this.formatDate(new Date(this.anio, this.mes - 1, 1));
+
         const listaEnviar = nopagados.map((element) => {
           return {
             id_contrato: element.id_contrato,
             valor: element.total,
-            fecha_pago: formattedDate
+            fecha_pago: formattedDate,
+            fecha_periodo: fecha_parseada
           }
         }) 
-        this.servicio.pagarContratos(listaEnviar).subscribe(
-          (res:any) => {   
-            this.traerNoPagados();
-            this.traerPagados();                 
-          },
-          (err:any) => {
-            console.log(err);            
-          }          
-        )
+        console.log(listaEnviar);
+        
+        // this.servicio.pagarContratos(listaEnviar).subscribe(
+        //   (res:any) => {   
+        //     this.traerNoPagados();
+        //     this.traerPagados();                 
+        //   },
+        //   (err:any) => {
+        //     console.log(err);            
+        //   }          
+        // )
       }
     })
   }
