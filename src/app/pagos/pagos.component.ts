@@ -32,99 +32,99 @@ export interface PeriodicElement {
   styleUrls: ["./pagos.component.css"],
 })
 export class PagosComponent implements OnInit {
-  panelOpenState = true
-  tipoConsulta: boolean = false
-  preliquidacion: any
-  consulta: boolean = false
-  mes: any = 0
-  anio: any = 0
-  valselects: boolean = false
-  page: number = 0
-  search: string = ""
-  listarResponsable: any[] = []
-  yearList: number[] = []
-  consultaDatos: any
-  iva: any
-  noPagadosLista: any[] = []
-  efectivo: boolean = false
-  responsable: boolean = false
-  no_responsable: boolean = false
-  displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"]
-  responsableTablaNoPagados: PeriodicElement[] = []
-  responsableTablaPagados: PeriodicElement[] = []
+  panelOpenState = true;
+  tipoConsulta: boolean = false;
+  preliquidacion: any;
+  consulta: boolean = false;
+  mes: any = 0;
+  anio: any = 0;
+  valselects: boolean = false;
+  page: number = 0;
+  search: string = "";
+  listarResponsable: any[] = [];
+  yearList: number[] = [];
+  consultaDatos: any;
+  iva: any;
+  noPagadosLista: any[] = [];
+  efectivo: boolean = false;
+  responsable: boolean = false;
+  no_responsable: boolean = false;
+  displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"];
+  responsableTablaNoPagados: PeriodicElement[] = [];
+  responsableTablaPagados: PeriodicElement[] = [];
   dataSourceNoPagados: MatTableDataSource<PeriodicElement> =
-    new MatTableDataSource<PeriodicElement>()
+    new MatTableDataSource<PeriodicElement>();
   dataSourcePagados: MatTableDataSource<PeriodicElement> =
-    new MatTableDataSource<PeriodicElement>()
-  @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator
-  @ViewChild("paginatorPagados") paginatorPagados: MatPaginator
-  @ViewChild("pdfTable") pdfTable: ElementRef
-  @ViewChild("comprobante") comprobante: ElementRef
-  @ViewChild(MatSort) sort: MatSort
-  tipoPago: number = 0
+    new MatTableDataSource<PeriodicElement>();
+  @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator;
+  @ViewChild("paginatorPagados") paginatorPagados: MatPaginator;
+  @ViewChild("pdfTable") pdfTable: ElementRef;
+  @ViewChild("comprobante") comprobante: ElementRef;
+  @ViewChild(MatSort) sort: MatSort;
+  tipoPago: number = 0;
 
   constructor(private servicio: GeneralesService) {}
 
   ngOnInit(): void {
-    Loading.pulse("Cargando")
-    Loading.remove()
-    const currentYear = new Date().getFullYear()
+    Loading.pulse("Cargando");
+    Loading.remove();
+    const currentYear = new Date().getFullYear();
     for (let i = currentYear; i >= 2000; i--) {
-      this.yearList.push(i)
+      this.yearList.push(i);
     }
     // this.dataSource.paginator = this.paginator;
     // this.traerLiquidaciones();
   }
 
   preliquidarmes() {
-    Loading.pulse("Cargando")
+    Loading.pulse("Cargando");
 
     this.servicio.traerpendientespagoarriendo(this.mes, this.anio).subscribe(
       (res: any) => {
         //console.log(res);
 
-        this.preliquidacion = res
-        this.consulta = true
-        Loading.remove()
+        this.preliquidacion = res;
+        this.consulta = true;
+        Loading.remove();
       },
       (err) => {
-        Loading.remove()
-        Report.failure("Notiflix Failure", err.message, "Okay")
+        Loading.remove();
+        Report.failure("Notiflix Failure", err.message, "Okay");
       }
-    )
+    );
   }
 
   asignarmes(mes) {
-    this.mes = mes
-    this.validaciondatos()
+    this.mes = mes;
+    this.validaciondatos();
   }
 
   asignaranio(anio) {
-    this.anio = anio
-    this.validaciondatos()
+    this.anio = anio;
+    this.validaciondatos();
   }
 
   validaciondatos() {
     if (this.anio != 0 && this.mes != 0) {
-      this.valselects = true
+      this.valselects = true;
     } else {
-      this.valselects = false
+      this.valselects = false;
     }
   }
 
   nextpage() {
-    this.page += 10
+    this.page += 10;
   }
 
   prevpage() {
     if (this.page > 0) {
-      this.page -= 10
+      this.page -= 10;
     }
   }
 
   buscar(search) {
-    this.page = 0
-    this.search = search
+    this.page = 0;
+    this.search = search;
   }
 
   llenarTablas() {
@@ -135,16 +135,16 @@ export class PagosComponent implements OnInit {
       this.anio == 0 ||
       this.mes == 0
     ) {
-      Swal.fire("Debe seleeccionar un recuadro", "", "info")
-      this.dataSourceNoPagados.data = null
-      this.dataSourcePagados.data = null
+      Swal.fire("Debe seleeccionar un recuadro", "", "info");
+      this.dataSourceNoPagados.data = null;
+      this.dataSourcePagados.data = null;
     } else {
       this.traerNoPagados();
       this.traerPagados();
     }
   }
 
- traerPagados() {
+  traerPagados() {
     let datosConsulta = {
       DT: {
         no_responsable: this.no_responsable,
@@ -153,7 +153,7 @@ export class PagosComponent implements OnInit {
       },
       TD: 1,
       RF: { anio: this.anio, mes: this.mes },
-    }
+    };
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("Pagados", res)
@@ -161,20 +161,26 @@ export class PagosComponent implements OnInit {
         this.responsableTablaPagados = res;
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
           this.responsableTablaPagados[i]["Check"] = true;
-          this.responsableTablaPagados[i]["PDV"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
-          this.responsableTablaPagados[i]["Nombre"] = res[i].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
+          this.responsableTablaPagados[i]["PDV"] =
+            res[
+              i
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
+          this.responsableTablaPagados[i]["Nombre"] =
+            res[
+              i
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
           this.responsableTablaPagados[i]["Total"] = res[i].valor;
         }
-        
-        this.dataSourcePagados.paginator = this.paginatorPagados
-        this.dataSourcePagados.data = this.responsableTablaPagados
-        this.dataSourcePagados.sort = this.sort
+
+        this.dataSourcePagados.paginator = this.paginatorPagados;
+        this.dataSourcePagados.data = this.responsableTablaPagados;
+        this.dataSourcePagados.sort = this.sort;
         // console.log(this.responsableTablaNoPagados);
       },
       (err) => {
-        console.log(err.message)
+        console.log(err.message);
       }
-    )
+    );
   }
 
   traerNoPagados() {
@@ -186,7 +192,7 @@ export class PagosComponent implements OnInit {
       },
       TD: 2,
       RF: { anio: this.anio, mes: this.mes },
-    }
+    };
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("No Pagados", res)
@@ -194,28 +200,29 @@ export class PagosComponent implements OnInit {
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
           return {
+            idContrato: e.id_contrato,
             Check: true,
             PDV: e.codigo_punto_venta,
             Nombre: e.nombre_punto_venta,
             Total: e.total,
-          }
-        })
-        this.dataSourceNoPagados.paginator = this.paginatorNoPagados
-        this.dataSourceNoPagados.data = this.responsableTablaNoPagados
-        this.dataSourceNoPagados.sort = this.sort
+          };
+        });
+        this.dataSourceNoPagados.paginator = this.paginatorNoPagados;
+        this.dataSourceNoPagados.data = this.responsableTablaNoPagados;
+        this.dataSourceNoPagados.sort = this.sort;
         // console.log(this.responsableTablaPagados);
       },
       (err) => {
-        console.log(err.message)
+        console.log(err.message);
       }
-    )
+    );
   }
 
   formatDate(date: Date): string {
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-  
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   }
 
@@ -232,75 +239,83 @@ export class PagosComponent implements OnInit {
         let listaSeleccionados = this.responsableTablaNoPagados.filter(
           (responsable) => responsable["Check"]
         );
-        let nopagados = this.noPagadosLista.filter((noPagados) => 
-          listaSeleccionados.some((seleccion) => noPagados.codigo_punto_venta
-          == seleccion.PDV));
+        let nopagados = this.noPagadosLista.filter((noPagados) =>
+          listaSeleccionados.some(
+            (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
+          )
+        );
 
         const currentDate = new Date();
         const formattedDate = this.formatDate(currentDate);
-
+        console.log(new Date().getUTCDate()); 
         const listaEnviar = nopagados.map((element) => {
           return {
             id_contrato: element.id_contrato,
             valor: element.total,
-            fecha_pago: formattedDate
-          }
-        }) 
+            fecha_pago: formattedDate,
+            codigo_verificacion: new Date().valueOf()
+          };
+        });
         this.servicio.pagarContratos(listaEnviar).subscribe(
-          (res:any) => {   
+          (res: any) => {
             this.traerNoPagados();
-            this.traerPagados();                 
+            this.traerPagados();
           },
-          (err:any) => {
-            console.log(err);            
-          }          
-        )
+          (err: any) => {
+            console.log(err);
+          }
+        );
       }
-    })
+    });
   }
 
   generarTxt() {
-    let lista = ""
+    let lista = "";
 
     this.servicio.traerListaPagosTodos().subscribe(
       (res: any) => {
         res.forEach((element) => {
-          lista += element.cedula + ";"
-          lista += (element.apellido + " " + element.nombre + ";").toUpperCase()
-          lista += element.telefono + ";"
-          lista += "PAGOARRIENDO" + ";"
-          lista += element.codigo_sitio_venta + "\n"
-        })
+          lista += element.cedula + ";";
+          lista += (
+            element.apellido +
+            " " +
+            element.nombre +
+            ";"
+          ).toUpperCase();
+          lista += element.telefono + ";";
+          lista += "PAGOARRIENDO" + ";";
+          lista += element.codigo_sitio_venta + "\n";
+        });
 
-        const blob = new Blob([lista], { type: "text/plain" })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement("a")
-        link.href = url
-        link.download = "archivo.txt"
-        link.click()
-        window.URL.revokeObjectURL(url)
-        link.remove()
+        const blob = new Blob([lista], { type: "text/plain" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "archivo.txt";
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();
       },
       (err) => {
         Swal.fire({
           title: "Error al generar",
           text: err.message,
           icon: "error",
-        })
-        console.log(err.message)
+        });
+        console.log(err.message);
       }
-    )
+    );
   }
 
   generarCsv(tipo) {
-    let data = []
-    let puntosV = []
+    let data = [];
+    let puntosV = [];
 
     this.dataSourceNoPagados.data.forEach((element) => {
       if (element.Check) {
-        puntosV.push(element.PDV)
+        puntosV.push(element.PDV);
       }
-    })
+    });
 
     this.servicio.traerInfoCsv(tipo, puntosV.toString()).subscribe(
       (res: any) => {
@@ -316,7 +331,7 @@ export class PagosComponent implements OnInit {
           headers: Object.keys(res[0]),
           useHeader: true,
           nullToEmptyString: true,
-        }
+        };
 
         let nombreExcel =
           "Listado_" +
@@ -324,94 +339,161 @@ export class PagosComponent implements OnInit {
           "_" +
           new Date().getMonth() +
           "_" +
-          new Date().getFullYear()
+          new Date().getFullYear();
 
-        let excel = new AngularCsv(res, nombreExcel, options)
+        let excel = new AngularCsv(res, nombreExcel, options);
       },
       (error) => {
-        Swal.fire("Error", "No se pudo obtener los bancos", "error")
+        Swal.fire("Error", "No se pudo obtener los bancos", "error");
       }
-    )
+    );
   }
 
   generarBase64(element) {
-    const imagePath = "../../assets/img/logo_pie_ganagana.png"
+    const imagePath = "../../assets/img/logo_pie_ganagana.png";
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(blob)
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
       reader.onloadend = () => {
-        var base64 = reader.result
+        var base64 = reader.result;
 
         this.servicio
           .traerSitioVentaLiquidacion(element.PDV)
           .subscribe((res: any) => {
             // console.log(res);
-            var datos = res[0]
+            var datos = res[0];
 
-            this.comprobantePdf(base64, datos)
-          })
-      }
-    })
+            this.comprobantePdf(base64, datos);
+          });
+      };
+    });
   }
 
-  generarNomina(){
-    this.servicio.traerPrenomina([59,60]).subscribe(
+  generarPreNomina(tipo) {
+    let listaSeleccionados = null;
+
+    if (tipo == 0){
+      listaSeleccionados = this.responsableTablaNoPagados
+        .filter((responsable) => responsable["Check"])
+        .map((responsable) => responsable["idContrato"]);
+    }
+    else{
+      listaSeleccionados = this.responsableTablaPagados
+      .filter((responsable) => responsable["Check"])
+      .map((responsable) => responsable["id_pago_arriendo"]);
+    }
+
+    this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any) => {
         let workbook = XLSX.utils.book_new();
-        res[0].valor_concepto = 0
+        res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
         let worksheet = XLSX.utils.aoa_to_sheet([headers]);
         let contador = 2;
-        worksheet['!merges'] = [];
+        worksheet["!merges"] = [];
 
         for (let i = 0; i < res.length; i++) {
           let conceptos = res[i].conceptos;
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
-              res[i][prop] = '----------';
+              res[i][prop] = "----------";
             }
           }
           for (let j = 0; j < conceptos.length; j++) {
             console.log(conceptos[j]);
-            res[i].conceptos =  conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto =  conceptos[j].valor;
-            XLSX.utils.sheet_add_json(worksheet, [res[i]], {skipHeader:true, origin: -1});
+            res[i].conceptos =
+              conceptos[j].id_concepto_concepto.nombre_concepto;
+            res[i].valor_concepto = conceptos[j].valor;
+            XLSX.utils.sheet_add_json(worksheet, [res[i]], {
+              skipHeader: true,
+              origin: -1,
+            });
             contador++;
           }
-          console.log(contador - conceptos.length, contador-1);
+          console.log(contador - conceptos.length, contador - 1);
 
-          worksheet['!merges'].push(
-            { s: { r: (contador - conceptos.length-1), c: 0 }, e: { r: (contador-2), c: 0 } },
-            { s: { r: (contador - conceptos.length-1), c: 1 }, e: { r: (contador-2), c: 1 } },
-            { s: { r: (contador - conceptos.length-1), c: 2 }, e: { r: (contador-2), c: 2 } },
-            { s: { r: (contador - conceptos.length-1), c: 3 }, e: { r: (contador-2), c: 3 } },
-            { s: { r: (contador - conceptos.length-1), c: 4 }, e: { r: (contador-2), c: 4 } },
-            { s: { r: (contador - conceptos.length-1), c: 5 }, e: { r: (contador-2), c: 5 } },
-            { s: { r: (contador - conceptos.length-1), c: 6 }, e: { r: (contador-2), c: 6 } },
-            { s: { r: (contador - conceptos.length-1), c: 7 }, e: { r: (contador-2), c: 7 } },
-            { s: { r: (contador - conceptos.length-1), c: 8 }, e: { r: (contador-2), c: 8 } },
-            { s: { r: (contador - conceptos.length-1), c: 9 }, e: { r: (contador-2), c: 9 } },
-            { s: { r: (contador - conceptos.length-1), c: 10 }, e: { r: (contador-2), c: 10 } },
-            { s: { r: (contador - conceptos.length-1), c: 11 }, e: { r: (contador-2), c: 11 } },
-            { s: { r: (contador - conceptos.length-1), c: 12 }, e: { r: (contador-2), c: 12 } },
-            { s: { r: (contador - conceptos.length-1), c: 13 }, e: { r: (contador-2), c: 13 } },
-            { s: { r: (contador - conceptos.length-1), c: 14 }, e: { r: (contador-2), c: 14 } },
-            { s: { r: (contador - conceptos.length-1), c: 15 }, e: { r: (contador-2), c: 15 } },
-            { s: { r: (contador - conceptos.length-1), c: 16 }, e: { r: (contador-2), c: 16 } }
-            );
-          } 
-
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'Hoja1');
-          XLSX.writeFile(workbook, 'archivo.xlsx');
-          
-        },
-        (err) => {
-          console.log(err.message)
+          worksheet["!merges"].push(
+            {
+              s: { r: contador - conceptos.length - 1, c: 0 },
+              e: { r: contador - 2, c: 0 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 1 },
+              e: { r: contador - 2, c: 1 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 2 },
+              e: { r: contador - 2, c: 2 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 3 },
+              e: { r: contador - 2, c: 3 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 4 },
+              e: { r: contador - 2, c: 4 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 5 },
+              e: { r: contador - 2, c: 5 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 6 },
+              e: { r: contador - 2, c: 6 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 7 },
+              e: { r: contador - 2, c: 7 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 8 },
+              e: { r: contador - 2, c: 8 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 9 },
+              e: { r: contador - 2, c: 9 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 10 },
+              e: { r: contador - 2, c: 10 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 11 },
+              e: { r: contador - 2, c: 11 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 12 },
+              e: { r: contador - 2, c: 12 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 13 },
+              e: { r: contador - 2, c: 13 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 14 },
+              e: { r: contador - 2, c: 14 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 15 },
+              e: { r: contador - 2, c: 15 },
+            },
+            {
+              s: { r: contador - conceptos.length - 1, c: 16 },
+              e: { r: contador - 2, c: 16 },
+            }
+          );
         }
-        )
-      }
 
-      comprobantePdf(base64, datos) {
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1");
+        XLSX.writeFile(workbook, "archivo.xlsx");
+      },
+      (err) => {
+        console.log(err.message);
+      }
+    );
+  }
+
+  comprobantePdf(base64, datos) {
     // console.log(datos);
 
     const documentDefinition = {
@@ -618,7 +700,7 @@ export class PagosComponent implements OnInit {
             alignment: "center",
             // margin: [33, 10, 0, 0],
             margin: [30, 0, 40, 80], // aumenta el margen inferior a 40 para asegurar que todas las líneas se muestren
-          }
+          };
         }
       },
 
@@ -636,10 +718,10 @@ export class PagosComponent implements OnInit {
       pageBreakBefore: function (currentNode, followingNodesOnPage) {
         return (
           currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
-        )
+        );
       },
-    }
+    };
 
-    pdfMake.createPdf(documentDefinition).open()
+    pdfMake.createPdf(documentDefinition).open();
   }
 }

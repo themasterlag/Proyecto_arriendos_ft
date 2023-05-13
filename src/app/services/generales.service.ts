@@ -143,11 +143,16 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato/pdv/" + id);
   }
 
-  traerPrenomina(ids) {
+  traerPrenomina(tipo, ids) {
     let datos = new HttpParams();
-    datos = datos.append("idContratos", JSON.stringify(ids))
-
-    return this.servicio.get(this.api + "preliquidacion/prenomina", { params: datos });
+    if (tipo == 0) {
+      datos = datos.append("idContratos", JSON.stringify(ids))
+      return this.servicio.get(this.api + "preliquidacion/prenomina", { params: datos });
+    }
+    else{
+      datos = datos.append("idPagos", JSON.stringify(ids))
+      return this.servicio.get(this.api + "preliquidacion/nomina", { params: datos });
+    }
   }
 
   traerListaPagos(datosConsulta) {
