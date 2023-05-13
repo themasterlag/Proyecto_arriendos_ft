@@ -15,9 +15,8 @@ import { AngularCsv } from "angular-csv-ext/dist/Angular-csv"
 import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx"
 import { Console } from "console"
-
 
 export interface PeriodicElement {
   Check: boolean
@@ -139,8 +138,8 @@ export class PagosComponent implements OnInit {
       this.dataSourceNoPagados.data = null;
       this.dataSourcePagados.data = null;
     } else {
-      this.traerNoPagados();
-      this.traerPagados();
+      this.traerNoPagados()
+      this.traerPagados()
     }
   }
 
@@ -158,7 +157,7 @@ export class PagosComponent implements OnInit {
       (res: any) => {
         // console.log("Pagados", res)
 
-        this.responsableTablaPagados = res;
+        this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
           this.responsableTablaPagados[i]["Check"] = true;
           this.responsableTablaPagados[i]["PDV"] =
@@ -196,7 +195,7 @@ export class PagosComponent implements OnInit {
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("No Pagados", res)
-        this.noPagadosLista = res;
+        this.noPagadosLista = res
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
           return {
@@ -243,16 +242,22 @@ export class PagosComponent implements OnInit {
           listaSeleccionados.some(
             (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
           )
-        );
+        )
 
-        const currentDate = new Date();
-        const formattedDate = this.formatDate(currentDate);
-        console.log(new Date().getUTCDate()); 
+        const currentDate = new Date()
+        const formattedDate = this.formatDate(currentDate)
+
+        // let fecha = new Date(this.anio, this.mes - 1, 1);
+        let fecha_parseada = this.formatDate(
+          new Date(this.anio, this.mes - 1, 1)
+        )
+
         const listaEnviar = nopagados.map((element) => {
           return {
             id_contrato: element.id_contrato,
             valor: element.total,
             fecha_pago: formattedDate,
+            fecha_periodo: fecha_parseada,
             codigo_verificacion: new Date().valueOf()
           };
         });
@@ -393,7 +398,7 @@ export class PagosComponent implements OnInit {
         worksheet["!merges"] = [];
 
         for (let i = 0; i < res.length; i++) {
-          let conceptos = res[i].conceptos;
+          let conceptos = res[i].conceptos
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
               res[i][prop] = "----------";
