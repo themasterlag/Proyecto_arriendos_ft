@@ -17,6 +17,7 @@ import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from "xlsx"
 import { Console } from "console"
+import { text } from "express"
 
 export interface PeriodicElement {
   Check: boolean
@@ -48,6 +49,9 @@ export class PagosComponent implements OnInit {
   efectivo: boolean = false;
   responsable: boolean = false;
   no_responsable: boolean = false;
+  contatoPDF: any = null;
+  tipoCliente: any = null;
+  Pdv: any = null;
   displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"];
   responsableTablaNoPagados: PeriodicElement[] = [];
   responsableTablaPagados: PeriodicElement[] = [];
@@ -126,6 +130,20 @@ export class PagosComponent implements OnInit {
     this.search = search;
   }
 
+  traerContratoPDF(){
+    this.servicio.traerContratoPdf().subscribe(
+      (res:any) => {
+        this.contatoPDF = res;
+        console.log(this.contatoPDF);
+
+        if (this.contatoPDF == null) {
+          Swal.fire("No hay contratos","","error");
+        }   
+      } 
+    )
+    
+  }
+
   llenarTablas() {
     if (
       (this.no_responsable == false &&
@@ -140,6 +158,7 @@ export class PagosComponent implements OnInit {
     } else {
       this.traerNoPagados()
       this.traerPagados()
+      this.traerContratoPDF();
     }
   }
 
@@ -362,14 +381,7 @@ export class PagosComponent implements OnInit {
       reader.onloadend = () => {
         var base64 = reader.result;
 
-        this.servicio
-          .traerSitioVentaLiquidacion(element.PDV)
-          .subscribe((res: any) => {
-            // console.log(res);
-            var datos = res[0];
-
-            this.comprobantePdf(base64, datos);
-          });
+        this.comprobantePdf(base64, element.PDV);
       };
     });
   }
@@ -498,8 +510,26 @@ export class PagosComponent implements OnInit {
     );
   }
 
+  organizarConceptos(){
+    let lista = [];
+    for (let index = 0; index < 5; index++) {
+      lista.push({text: "\naqui "+index});
+    }
+    return lista;
+  }
+
   comprobantePdf(base64, datos) {
-    // console.log(datos);
+    console.log(datos);
+
+    this.Pdv = this.contatoPDF.filter((pdv) => 
+      pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
+    )
+    if (this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento == "Nit") {
+      this.tipoCliente = this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.razon_social
+    }else{
+      this.tipoCliente = this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
+    }
+    console.log(this.Pdv);    
 
     const documentDefinition = {
       content: [
@@ -542,20 +572,48 @@ export class PagosComponent implements OnInit {
               // image: "ganagana",
               text: [
                 {
-                  text: "N° Cédula: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`N° Cédula: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.numero_documento}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nNombre: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nNombre: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.tipoCliente}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nN° Sitio de Venta: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nN° Sitio de Venta: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.codigo_sitio_venta}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nNombre Sitio de Venta: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nNombre Sitio de Venta: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.nombre_comercial}`,
+                    }
+                  ]
                 },
               ],
               alignment: "left",
@@ -565,20 +623,48 @@ export class PagosComponent implements OnInit {
               width: "50%",
               text: [
                 {
-                  text: "Municipio: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`Municipio: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.id_municipio_municipio.municipio}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nBanco: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nBanco: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_autorizado_autorizado.entidad_bancaria_entidad_bancarium.ent}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nN° de Cuenta: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nN° de Cuenta: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.Pdv[0].id_autorizado_autorizado.numero_cuenta}`,
+                    }
+                  ]
                 },
                 {
-                  text: "\nFecha: ",
-                  bold: true,
+                  text: [
+                    {
+                      text:`\nFecha: `,
+                      bold: true,
+                    },
+                    {
+                      text:`${this.formatDate(new Date())}`,
+                    }
+                  ]
                 },
               ],
               alignment: "left",
@@ -612,8 +698,15 @@ export class PagosComponent implements OnInit {
         {
           columns: [
             {
-              text: "\nConcepto devengado",
-              bold: true,
+              text:[{
+                text: "\nConcepto devengado",
+                bold: true,
+              },
+              {
+                text: this.organizarConceptos()
+              },
+            ]              
+              
             },
             {
               text: "\nValor",
@@ -631,7 +724,6 @@ export class PagosComponent implements OnInit {
           alignment: "center",
           margin: [33, 10, 0, 0],
         },
-        {},
         {
           columns: [
             {

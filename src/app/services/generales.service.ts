@@ -184,6 +184,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/sitioventa/" + id);
   }
 
+  traerContratoPdf(){
+    return this.servicio.get(this.api + "contrato/pdv");
+  }
+
   traerTodoContratos(){
     return this.servicio.get(this.api + "contrato");
   }
