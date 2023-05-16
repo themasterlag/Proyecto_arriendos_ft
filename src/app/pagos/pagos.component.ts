@@ -16,7 +16,7 @@ import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from "xlsx"
-import { Console } from "console"
+import { Console, log } from "console"
 import { text } from "express"
 
 export interface PeriodicElement {
@@ -32,116 +32,113 @@ export interface PeriodicElement {
   styleUrls: ["./pagos.component.css"],
 })
 export class PagosComponent implements OnInit {
-  panelOpenState = true;
-  tipoConsulta: boolean = false;
-  preliquidacion: any;
-  consulta: boolean = false;
-  mes: any = 0;
-  anio: any = 0;
-  valselects: boolean = false;
-  page: number = 0;
-  search: string = "";
-  listarResponsable: any[] = [];
-  yearList: number[] = [];
-  consultaDatos: any;
-  iva: any;
-  noPagadosLista: any[] = [];
-  efectivo: boolean = false;
-  responsable: boolean = false;
-  no_responsable: boolean = false;
-  contatoPDF: any = null;
-  tipoCliente: any = null;
-  Pdv: any = null;
-  displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"];
-  responsableTablaNoPagados: PeriodicElement[] = [];
-  responsableTablaPagados: PeriodicElement[] = [];
+  panelOpenState = true
+  tipoConsulta: boolean = false
+  preliquidacion: any
+  consulta: boolean = false
+  mes: any = 0
+  anio: any = 0
+  valselects: boolean = false
+  page: number = 0
+  search: string = ""
+  listarResponsable: any[] = []
+  yearList: number[] = []
+  consultaDatos: any
+  iva: any
+  noPagadosLista: any[] = []
+  efectivo: boolean = false
+  responsable: boolean = false
+  no_responsable: boolean = false
+  contatoPDF: any = null
+  tipoCliente: any = null
+  Pdv: any = null
+  displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"]
+  responsableTablaNoPagados: PeriodicElement[] = []
+  responsableTablaPagados: PeriodicElement[] = []
   dataSourceNoPagados: MatTableDataSource<PeriodicElement> =
-    new MatTableDataSource<PeriodicElement>();
+    new MatTableDataSource<PeriodicElement>()
   dataSourcePagados: MatTableDataSource<PeriodicElement> =
-    new MatTableDataSource<PeriodicElement>();
-  @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator;
-  @ViewChild("paginatorPagados") paginatorPagados: MatPaginator;
-  @ViewChild("pdfTable") pdfTable: ElementRef;
-  @ViewChild("comprobante") comprobante: ElementRef;
-  @ViewChild(MatSort) sort: MatSort;
-  tipoPago: number = 0;
+    new MatTableDataSource<PeriodicElement>()
+  @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator
+  @ViewChild("paginatorPagados") paginatorPagados: MatPaginator
+  @ViewChild("pdfTable") pdfTable: ElementRef
+  @ViewChild("comprobante") comprobante: ElementRef
+  @ViewChild(MatSort) sort: MatSort
+  tipoPago: number = 0
 
   constructor(private servicio: GeneralesService) {}
 
   ngOnInit(): void {
-    Loading.pulse("Cargando");
-    Loading.remove();
-    const currentYear = new Date().getFullYear();
+    Loading.pulse("Cargando")
+    Loading.remove()
+    const currentYear = new Date().getFullYear()
     for (let i = currentYear; i >= 2000; i--) {
-      this.yearList.push(i);
+      this.yearList.push(i)
     }
     // this.dataSource.paginator = this.paginator;
     // this.traerLiquidaciones();
   }
 
   preliquidarmes() {
-    Loading.pulse("Cargando");
+    Loading.pulse("Cargando")
 
     this.servicio.traerpendientespagoarriendo(this.mes, this.anio).subscribe(
       (res: any) => {
         //console.log(res);
 
-        this.preliquidacion = res;
-        this.consulta = true;
-        Loading.remove();
+        this.preliquidacion = res
+        this.consulta = true
+        Loading.remove()
       },
       (err) => {
-        Loading.remove();
-        Report.failure("Notiflix Failure", err.message, "Okay");
+        Loading.remove()
+        Report.failure("Notiflix Failure", err.message, "Okay")
       }
-    );
+    )
   }
 
   asignarmes(mes) {
-    this.mes = mes;
-    this.validaciondatos();
+    this.mes = mes
+    this.validaciondatos()
   }
 
   asignaranio(anio) {
-    this.anio = anio;
-    this.validaciondatos();
+    this.anio = anio
+    this.validaciondatos()
   }
 
   validaciondatos() {
     if (this.anio != 0 && this.mes != 0) {
-      this.valselects = true;
+      this.valselects = true
     } else {
-      this.valselects = false;
+      this.valselects = false
     }
   }
 
   nextpage() {
-    this.page += 10;
+    this.page += 10
   }
 
   prevpage() {
     if (this.page > 0) {
-      this.page -= 10;
+      this.page -= 10
     }
   }
 
   buscar(search) {
-    this.page = 0;
-    this.search = search;
+    this.page = 0
+    this.search = search
   }
 
-  traerContratoPDF(){
-    this.servicio.traerContratoPdf().subscribe(
-      (res:any) => {
-        this.contatoPDF = res;
-        console.log(this.contatoPDF);
+  traerContratoPDF() {
+    this.servicio.traerContratoPdf().subscribe((res: any) => {
+      this.contatoPDF = res
+      console.log(this.contatoPDF)
 
-        if (this.contatoPDF == null) {
-          Swal.fire("No hay contratos","","error");
-        }   
-      } 
-    )
-    
+      if (this.contatoPDF == null) {
+        Swal.fire("No hay contratos", "", "error")
+      }
+    })
   }
 
   llenarTablas() {
@@ -152,13 +149,13 @@ export class PagosComponent implements OnInit {
       this.anio == 0 ||
       this.mes == 0
     ) {
-      Swal.fire("Debe seleeccionar un recuadro", "", "info");
-      this.dataSourceNoPagados.data = null;
-      this.dataSourcePagados.data = null;
+      Swal.fire("Debe seleeccionar un recuadro", "", "info")
+      this.dataSourceNoPagados.data = null
+      this.dataSourcePagados.data = null
     } else {
       this.traerNoPagados()
       this.traerPagados()
-      this.traerContratoPDF();
+      this.traerContratoPDF()
     }
   }
 
@@ -171,34 +168,34 @@ export class PagosComponent implements OnInit {
       },
       TD: 1,
       RF: { anio: this.anio, mes: this.mes },
-    };
+    }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("Pagados", res)
 
         this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
-          this.responsableTablaPagados[i]["Check"] = true;
+          this.responsableTablaPagados[i]["Check"] = true
           this.responsableTablaPagados[i]["PDV"] =
             res[
               i
-            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti;
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.codigo_siti
           this.responsableTablaPagados[i]["Nombre"] =
             res[
               i
-            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come;
-          this.responsableTablaPagados[i]["Total"] = res[i].valor;
+            ].id_contrato_contrato.id_punto_venta_punto_de_ventum.nombre_come
+          this.responsableTablaPagados[i]["Total"] = res[i].valor
         }
 
-        this.dataSourcePagados.paginator = this.paginatorPagados;
-        this.dataSourcePagados.data = this.responsableTablaPagados;
-        this.dataSourcePagados.sort = this.sort;
+        this.dataSourcePagados.paginator = this.paginatorPagados
+        this.dataSourcePagados.data = this.responsableTablaPagados
+        this.dataSourcePagados.sort = this.sort
         // console.log(this.responsableTablaNoPagados);
       },
       (err) => {
-        console.log(err.message);
+        console.log(err.message)
       }
-    );
+    )
   }
 
   traerNoPagados() {
@@ -210,7 +207,7 @@ export class PagosComponent implements OnInit {
       },
       TD: 2,
       RF: { anio: this.anio, mes: this.mes },
-    };
+    }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
         // console.log("No Pagados", res)
@@ -223,25 +220,25 @@ export class PagosComponent implements OnInit {
             PDV: e.codigo_punto_venta,
             Nombre: e.nombre_punto_venta,
             Total: e.total,
-          };
-        });
-        this.dataSourceNoPagados.paginator = this.paginatorNoPagados;
-        this.dataSourceNoPagados.data = this.responsableTablaNoPagados;
-        this.dataSourceNoPagados.sort = this.sort;
+          }
+        })
+        this.dataSourceNoPagados.paginator = this.paginatorNoPagados
+        this.dataSourceNoPagados.data = this.responsableTablaNoPagados
+        this.dataSourceNoPagados.sort = this.sort
         // console.log(this.responsableTablaPagados);
       },
       (err) => {
-        console.log(err.message);
+        console.log(err.message)
       }
-    );
+    )
   }
 
   formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, "0")
+    const day = date.getDate().toString().padStart(2, "0")
 
-    return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`
   }
 
   pagar() {
@@ -256,7 +253,7 @@ export class PagosComponent implements OnInit {
       if (result.isConfirmed) {
         let listaSeleccionados = this.responsableTablaNoPagados.filter(
           (responsable) => responsable["Check"]
-        );
+        )
         let nopagados = this.noPagadosLista.filter((noPagados) =>
           listaSeleccionados.some(
             (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
@@ -277,69 +274,64 @@ export class PagosComponent implements OnInit {
             valor: element.total,
             fecha_pago: formattedDate,
             fecha_periodo: fecha_parseada,
-            codigo_verificacion: new Date().valueOf()
-          };
-        });
+            codigo_verificacion: new Date().valueOf(),
+          }
+        })
         this.servicio.pagarContratos(listaEnviar).subscribe(
           (res: any) => {
-            this.traerNoPagados();
-            this.traerPagados();
+            this.traerNoPagados()
+            this.traerPagados()
           },
           (err: any) => {
-            console.log(err);
+            console.log(err)
           }
-        );
+        )
       }
-    });
+    })
   }
 
   generarTxt() {
-    let lista = "";
+    let lista = ""
 
     this.servicio.traerListaPagosTodos().subscribe(
       (res: any) => {
         res.forEach((element) => {
-          lista += element.cedula + ";";
-          lista += (
-            element.apellido +
-            " " +
-            element.nombre +
-            ";"
-          ).toUpperCase();
-          lista += element.telefono + ";";
-          lista += "PAGOARRIENDO" + ";";
-          lista += element.codigo_sitio_venta + "\n";
-        });
+          lista += element.cedula + ";"
+          lista += (element.apellido + " " + element.nombre + ";").toUpperCase()
+          lista += element.telefono + ";"
+          lista += "PAGOARRIENDO" + ";"
+          lista += element.codigo_sitio_venta + "\n"
+        })
 
-        const blob = new Blob([lista], { type: "text/plain" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "archivo.txt";
-        link.click();
-        window.URL.revokeObjectURL(url);
-        link.remove();
+        const blob = new Blob([lista], { type: "text/plain" })
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = "archivo.txt"
+        link.click()
+        window.URL.revokeObjectURL(url)
+        link.remove()
       },
       (err) => {
         Swal.fire({
           title: "Error al generar",
           text: err.message,
           icon: "error",
-        });
-        console.log(err.message);
+        })
+        console.log(err.message)
       }
-    );
+    )
   }
 
   generarCsv(tipo) {
-    let data = [];
-    let puntosV = [];
+    let data = []
+    let puntosV = []
 
     this.dataSourceNoPagados.data.forEach((element) => {
       if (element.Check) {
-        puntosV.push(element.PDV);
+        puntosV.push(element.PDV)
       }
-    });
+    })
 
     this.servicio.traerInfoCsv(tipo, puntosV.toString()).subscribe(
       (res: any) => {
@@ -355,7 +347,7 @@ export class PagosComponent implements OnInit {
           headers: Object.keys(res[0]),
           useHeader: true,
           nullToEmptyString: true,
-        };
+        }
 
         let nombreExcel =
           "Listado_" +
@@ -363,71 +355,69 @@ export class PagosComponent implements OnInit {
           "_" +
           new Date().getMonth() +
           "_" +
-          new Date().getFullYear();
+          new Date().getFullYear()
 
-        let excel = new AngularCsv(res, nombreExcel, options);
+        let excel = new AngularCsv(res, nombreExcel, options)
       },
       (error) => {
-        Swal.fire("Error", "No se pudo obtener los bancos", "error");
+        Swal.fire("Error", "No se pudo obtener los bancos", "error")
       }
-    );
+    )
   }
 
   generarBase64(element) {
-    const imagePath = "../../assets/img/logo_pie_ganagana.png";
+    const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
+      const reader = new FileReader()
+      reader.readAsDataURL(blob)
       reader.onloadend = () => {
-        var base64 = reader.result;
+        var base64 = reader.result
 
-        this.comprobantePdf(base64, element.PDV);
-      };
-    });
+        this.comprobantePdf(base64, element.PDV)
+      }
+    })
   }
 
   generarPreNomina(tipo) {
-    let listaSeleccionados = null;
+    let listaSeleccionados = null
 
-    if (tipo == 0){
+    if (tipo == 0) {
       listaSeleccionados = this.responsableTablaNoPagados
         .filter((responsable) => responsable["Check"])
-        .map((responsable) => responsable["idContrato"]);
-    }
-    else{
+        .map((responsable) => responsable["idContrato"])
+    } else {
       listaSeleccionados = this.responsableTablaPagados
-      .filter((responsable) => responsable["Check"])
-      .map((responsable) => responsable["id_pago_arriendo"]);
+        .filter((responsable) => responsable["Check"])
+        .map((responsable) => responsable["id_pago_arriendo"])
     }
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any) => {
-        let workbook = XLSX.utils.book_new();
-        res[0].valor_concepto = 0;
-        let headers = Object.keys(res[0]);
-        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
-        let contador = 2;
-        worksheet["!merges"] = [];
+        let workbook = XLSX.utils.book_new()
+        res[0].valor_concepto = 0
+        let headers = Object.keys(res[0])
+        let worksheet = XLSX.utils.aoa_to_sheet([headers])
+        let contador = 2
+        worksheet["!merges"] = []
 
         for (let i = 0; i < res.length; i++) {
           let conceptos = res[i].conceptos
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
-              res[i][prop] = "----------";
+              res[i][prop] = "----------"
             }
           }
           for (let j = 0; j < conceptos.length; j++) {
-            console.log(conceptos[j]);
-            res[i].conceptos =
-              conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto = conceptos[j].valor;
+            console.log(conceptos[j])
+            res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto
+            res[i].valor_concepto = conceptos[j].valor
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,
-            });
-            contador++;
+            })
+            contador++
           }
-          console.log(contador - conceptos.length, contador - 1);
+          console.log(contador - conceptos.length, contador - 1)
 
           worksheet["!merges"].push(
             {
@@ -498,38 +488,73 @@ export class PagosComponent implements OnInit {
               s: { r: contador - conceptos.length - 1, c: 16 },
               e: { r: contador - 2, c: 16 },
             }
-          );
+          )
         }
 
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1");
-        XLSX.writeFile(workbook, "archivo.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1")
+        XLSX.writeFile(workbook, "archivo.xlsx")
       },
       (err) => {
-        console.log(err.message);
+        console.log(err.message)
       }
-    );
+    )
   }
 
-  organizarConceptos(){
-    let lista = [];
-    for (let index = 0; index < 5; index++) {
-      lista.push({text: "\naqui "+index});
+  organizarConceptos(conceptos) {
+    let lista = []
+    for (let index = 0; index < conceptos.length; index++) {
+      lista.push({
+        text: `\n ${index + 1} ${
+          conceptos[index].id_concepto_concepto.nombre_concepto
+        }`,
+      })
     }
-    return lista;
+    return lista
+  }
+  darvalorConceptos(conceptos) {
+    let lista = []
+    for (let index = 0; index < conceptos.length; index++) {
+      lista.push({
+        text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
+      })
+    }
+    return lista
+  }
+  valorTotalConceptos(conceptos) {
+    let total = 0
+    for (let index = 0; index < conceptos.length; index++) {
+      total += conceptos[index].valor
+    }
+    return total
   }
 
   comprobantePdf(base64, datos) {
-    console.log(datos);
+    console.log(datos)
 
-    this.Pdv = this.contatoPDF.filter((pdv) => 
-      pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
+    this.Pdv = this.contatoPDF.filter(
+      (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
     )
-    if (this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento == "Nit") {
-      this.tipoCliente = this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.razon_social
-    }else{
-      this.tipoCliente = this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
+    if (
+      this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento ==
+      "Nit"
+    ) {
+      this.tipoCliente =
+        this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.razon_social
+    } else {
+      this.tipoCliente =
+        this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
     }
-    console.log(this.Pdv);    
+    let conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
+      (element) => element.id_concepto_concepto.codigo_concepto < 499
+    )
+    let conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
+      (element) => element.id_concepto_concepto.codigo_concepto > 499
+    )
+    let totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
+    console.log(this.Pdv)
+    let totalDevengado = this.valorTotalConceptos(conceptosDevengados)
+
+    let total = totalDevengado - totalDeduccion
 
     const documentDefinition = {
       content: [
@@ -574,46 +599,46 @@ export class PagosComponent implements OnInit {
                 {
                   text: [
                     {
-                      text:`N° Cédula: `,
+                      text: `N° Cédula: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.numero_documento}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.numero_documento}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nNombre: `,
+                      text: `\nNombre: `,
                       bold: true,
                     },
                     {
-                      text:`${this.tipoCliente}`,
-                    }
-                  ]
+                      text: `${this.tipoCliente}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nN° Sitio de Venta: `,
+                      text: `\nN° Sitio de Venta: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.codigo_sitio_venta}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.codigo_sitio_venta}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nNombre Sitio de Venta: `,
+                      text: `\nNombre Sitio de Venta: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.nombre_comercial}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.nombre_comercial}`,
+                    },
+                  ],
                 },
               ],
               alignment: "left",
@@ -625,46 +650,46 @@ export class PagosComponent implements OnInit {
                 {
                   text: [
                     {
-                      text:`Municipio: `,
+                      text: `Municipio: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_punto_venta_punto_de_ventum.id_municipio_municipio.municipio}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.id_municipio_municipio.municipio}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nBanco: `,
+                      text: `\nBanco: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_autorizado_autorizado.entidad_bancaria_entidad_bancarium.ent}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_autorizado_autorizado.entidad_bancaria_entidad_bancarium.ent}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nN° de Cuenta: `,
+                      text: `\nN° de Cuenta: `,
                       bold: true,
                     },
                     {
-                      text:`${this.Pdv[0].id_autorizado_autorizado.numero_cuenta}`,
-                    }
-                  ]
+                      text: `${this.Pdv[0].id_autorizado_autorizado.numero_cuenta}`,
+                    },
+                  ],
                 },
                 {
                   text: [
                     {
-                      text:`\nFecha: `,
+                      text: `\nFecha: `,
                       bold: true,
                     },
                     {
-                      text:`${this.formatDate(new Date())}`,
-                    }
-                  ]
+                      text: `${this.formatDate(new Date())}`,
+                    },
+                  ],
                 },
               ],
               alignment: "left",
@@ -698,27 +723,47 @@ export class PagosComponent implements OnInit {
         {
           columns: [
             {
-              text:[{
-                text: "\nConcepto devengado",
-                bold: true,
-              },
-              {
-                text: this.organizarConceptos()
-              },
-            ]              
-              
+              text: [
+                {
+                  text: "\nConcepto devengado",
+                  bold: true,
+                },
+                {
+                  text: this.organizarConceptos(conceptosDevengados),
+                },
+              ],
             },
             {
-              text: "\nValor",
-              bold: true,
+              text: [
+                {
+                  text: "\nValor",
+                  bold: true,
+                },
+                {
+                  text: this.darvalorConceptos(conceptosDevengados),
+                },
+              ],
             },
             {
-              text: "\nConcepto deduccion",
-              bold: true,
+              text: [
+                {
+                  text: "\nConcepto deduccion",
+                  bold: true,
+                },
+                {
+                  text: this.organizarConceptos(conceptosDeducidos),
+                },
+              ],
             },
             {
-              text: "\nValor",
-              bold: true,
+              text: [
+                {
+                  text: "\nValor",
+                },
+                {
+                  text: this.darvalorConceptos(conceptosDeducidos),
+                },
+              ],
             },
           ],
           alignment: "center",
@@ -727,15 +772,19 @@ export class PagosComponent implements OnInit {
         {
           columns: [
             {
-              text: "\nTotal Devengado",
+              text: `\nTotal Devengado ${totalDevengado.toLocaleString(
+                "es-ES"
+              )}`,
               bold: true,
             },
             {
-              text: "\nTotal Deducción",
+              text: `\nTotal Deducción ${totalDeduccion.toLocaleString(
+                "es-ES"
+              )}`,
               bold: true,
             },
             {
-              text: "\nTotal a Pagar",
+              text: `\nTotal a Pagar ${total.toLocaleString("es-ES")}`,
               bold: true,
             },
           ],
@@ -797,7 +846,7 @@ export class PagosComponent implements OnInit {
             alignment: "center",
             // margin: [33, 10, 0, 0],
             margin: [30, 0, 40, 80], // aumenta el margen inferior a 40 para asegurar que todas las líneas se muestren
-          };
+          }
         }
       },
 
@@ -815,10 +864,10 @@ export class PagosComponent implements OnInit {
       pageBreakBefore: function (currentNode, followingNodesOnPage) {
         return (
           currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
-        );
+        )
       },
-    };
+    }
 
-    pdfMake.createPdf(documentDefinition).open();
+    pdfMake.createPdf(documentDefinition).open()
   }
 }
