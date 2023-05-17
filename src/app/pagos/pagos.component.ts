@@ -16,7 +16,7 @@ import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from "xlsx"
-import { Console } from "console"
+import { Console, count } from "console"
 
 export interface PeriodicElement {
   Check: boolean
@@ -390,6 +390,8 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any) => {
+        console.log(res);
+
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
@@ -404,11 +406,12 @@ export class PagosComponent implements OnInit {
               res[i][prop] = "----------";
             }
           }
+
           for (let j = 0; j < conceptos.length; j++) {
             console.log(conceptos[j]);
             res[i].conceptos =
               conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto = conceptos[j].valor;
+            res[i].valor_concepto = conceptos[j].valor ? conceptos[j].valor: conceptos[j].pago_concepto_valor;
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,
@@ -417,76 +420,13 @@ export class PagosComponent implements OnInit {
           }
           console.log(contador - conceptos.length, contador - 1);
 
-          worksheet["!merges"].push(
-            {
-              s: { r: contador - conceptos.length - 1, c: 0 },
-              e: { r: contador - 2, c: 0 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 1 },
-              e: { r: contador - 2, c: 1 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 2 },
-              e: { r: contador - 2, c: 2 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 3 },
-              e: { r: contador - 2, c: 3 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 4 },
-              e: { r: contador - 2, c: 4 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 5 },
-              e: { r: contador - 2, c: 5 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 6 },
-              e: { r: contador - 2, c: 6 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 7 },
-              e: { r: contador - 2, c: 7 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 8 },
-              e: { r: contador - 2, c: 8 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 9 },
-              e: { r: contador - 2, c: 9 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 10 },
-              e: { r: contador - 2, c: 10 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 11 },
-              e: { r: contador - 2, c: 11 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 12 },
-              e: { r: contador - 2, c: 12 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 13 },
-              e: { r: contador - 2, c: 13 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 14 },
-              e: { r: contador - 2, c: 14 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 15 },
-              e: { r: contador - 2, c: 15 },
-            },
-            {
-              s: { r: contador - conceptos.length - 1, c: 16 },
-              e: { r: contador - 2, c: 16 },
-            }
-          );
+          for (let i = 0; i < (Object.keys(res[0]).length - 2); i++) {
+            worksheet["!merges"].push({
+              s: { r: contador - conceptos.length - 1, c: i },
+              e: { r: contador - 2, c: i },
+            });
+          }
+          
         }
 
         XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1");
