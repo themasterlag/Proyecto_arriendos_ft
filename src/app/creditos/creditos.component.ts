@@ -18,7 +18,7 @@ export class CreditosComponent implements OnInit {
   @ViewChild("formularioEditarCredito") formularioEditarCredito:NgForm ;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  displayedColumns: string[] = ['Contrato', 'N_concepto', 'Concepto', 'Valor_mensual', 'Valor', 'Saldo', 'Acciones'];
+  displayedColumns: string[] = ['Contrato', 'Concepto', 'Valor_mensual', 'Valor', 'Saldo', 'Fecha inicio', 'Fecha fin', 'Acciones'];
   dataSource:MatTableDataSource<any> = null;
 
   listaCreditos:any = [];
@@ -59,6 +59,7 @@ export class CreditosComponent implements OnInit {
       (res:any)=>{
         this.listaCreditos = res;
         this.dataSource = new MatTableDataSource(this.listaCreditos);
+        this.dataSource.paginator = this.paginator;
       },
       (err:any)=>{
         Swal.fire("No se pudo consultar los creditos", "", "error");

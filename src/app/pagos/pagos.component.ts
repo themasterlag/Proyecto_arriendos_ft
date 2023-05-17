@@ -390,9 +390,50 @@ export class PagosComponent implements OnInit {
     }
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
-      (res: any) => {
+      (res: any[]) => {
         console.log(res);
 
+        // res = res.map((element) => {
+        //   return {
+        //     id_contrato: 61,
+        //     id_punto_venta: 58,
+        //     id_usuario: 1,
+        //     valor_canon: 2500000,
+        //     incremento_anual: "----------",
+        //     incremento_adicional: "----------",
+        //     fecha_inicio_contrato: "2023-03-01",
+        //     fecha_fin_contrato: "2029-03-01",
+        //     tipo_contrato: 1,
+        //     valor_adminstracion: "----------",
+        //     definicion: "----------",
+        //     poliza: false,
+        //     id_responsable: 192,
+        //     id_autorizado: 189,
+        //     id_autorizado_adm: "----------",
+        //     fecha_inactivo: "----------",
+        //     razon_inactivo: "----------",
+        //     id_autorizado_autorizado: {
+        //       id_cliente_cliente: {
+        //         id_cliente: 82,
+        //         nombres: null,
+        //         apellidos: null,
+        //         genero: null,
+        //         numero_documento: "12139060",
+        //         direccion: "cra 3 #5-55",
+        //         numero_contacto: "3142965534",
+        //         numero_contacto2: null,
+        //         fecha_nacimiento: null,
+        //         email: "info@alerta247.com",
+        //         id_municipio: 613,
+        //         fecha_creacion_clie: "2023-05-04",
+        //         estado: 1,
+        //         tipo_documento: "Nit",
+        //         razon_social: "administramos software",
+        //         digito_verificacion: "3"
+        //       }
+        //     }
+        //   }
+        // });
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
@@ -401,25 +442,64 @@ export class PagosComponent implements OnInit {
         worksheet["!merges"] = [];
 
         for (let i = 0; i < res.length; i++) {
-          let conceptos = res[i].conceptos
+          
+
+          // if (tipo == 1) {
+          //   // res[i].set(res[i].detalles)
+          // }
+          
+          // if (res[i].id_autorizado_autorizado) {
+          //   res[i].autorizado_nit = res[i].id_autorizado_autorizado.id_cliente_cliente.numero_documento;   
+          //   res[i].autorizado = res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social ? 
+          //                         res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social 
+          //                         : res[i].id_autorizado_autorizado.id_cliente_cliente.nombres 
+          //                           + " " 
+          //                           + res[i].id_autorizado_autorizado.id_cliente_cliente.apellidos; 
+          // }else{
+          //   res[i].autorizado_nit = "----------";
+          //   res[i].autorizado = "----------";
+          // }
+          
+          // if (res[i].id_responsable_responsable) {
+          //   res[i].responsable_nit = res[i].id_responsable_responsable.id_cliente_cliente.numero_documento;
+          //   res[i].responsable = res[i].id_responsable_responsable.id_cliente_cliente.razon_social ? 
+          //                         res[i].id_responsable_responsable.id_cliente_cliente.razon_social 
+          //                         : res[i].id_responsable_responsable.id_cliente_cliente.nombres 
+          //                           + " " 
+          //                           + res[i].id_responsable_responsable.id_cliente_cliente.apellidos; 
+          // }else{
+          //   res[i].responsable_nit = "----------";
+          //   res[i].responsable = "----------";
+          // }
+          
+          // if (res[i].id_autorizado_adm_autorizado_administracion) {
+          //   res[i].responsable_adm_nit = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.numero_documento;
+          //   res[i].responsable_adm = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social ? 
+          //                         res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social 
+          //                         : res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.nombres 
+          //                           + " " 
+          //                           + res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.apellidos; 
+          // }else{
+          //   res[i].responsable_adm_nit = "----------";
+          //   res[i].responsable_adm = "----------";
+          // }
+          
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
               res[i][prop] = "----------"
             }
           }
 
+          let conceptos = res[i].conceptos
           for (let j = 0; j < conceptos.length; j++) {
-            console.log(conceptos[j]);
-            res[i].conceptos =
-              conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto = conceptos[j].valor ? conceptos[j].valor: conceptos[j].pago_concepto_valor;
+            res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto;
+            res[i].valor_concepto = tipo == 0 ? conceptos[j].valor: conceptos[j].pago_concepto_valor;
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,
             })
             contador++
           }
-          console.log(contador - conceptos.length, contador - 1)
 
           for (let i = 0; i < (Object.keys(res[0]).length - 2); i++) {
             worksheet["!merges"].push({
