@@ -212,8 +212,8 @@
                               *matRowDef="let row; columns: displayedColumns"
                             ></tr>
                           </table>
-                          <mat-paginator *ngIf="dataSourcePagados.data.length > 0"
-                            #paginatorPagados
+                          <mat-paginator [hidden]="dataSourcePagados.data.length < 1"
+                            #paginatorNoPagados
                             [pageSizeOptions]="[5, 10, 20]"
                             showFirstLastButtons
                             aria-label="Select page of periodic elements"
@@ -351,8 +351,8 @@
                               *matRowDef="let row; columns: displayedColumns"
                             ></tr>
                           </table>
-                          <mat-paginator *ngIf="dataSourcePagados.data.length > 0"
-                            #paginatorNoPagados
+                          <mat-paginator [hidden]="dataSourcePagados.data.length < 1"
+                            #paginatorPagados
                             [pageSizeOptions]="[5, 10, 20]"
                             showFirstLastButtons
                           >
