@@ -133,7 +133,6 @@ export class PagosComponent implements OnInit {
   traerContratoPDF() {
     this.servicio.traerContratoPdf().subscribe((res: any) => {
       this.contatoPDF = res
-      console.log(this.contatoPDF)
 
       if (this.contatoPDF == null) {
         Swal.fire("No hay contratos", "", "error")
@@ -504,9 +503,7 @@ export class PagosComponent implements OnInit {
     let lista = []
     for (let index = 0; index < conceptos.length; index++) {
       lista.push({
-        text: `\n ${index + 1} ${
-          conceptos[index].id_concepto_concepto.nombre_concepto
-        }`,
+        text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
       })
     }
     return lista
@@ -523,7 +520,8 @@ export class PagosComponent implements OnInit {
   valorTotalConceptos(conceptos) {
     let total = 0
     for (let index = 0; index < conceptos.length; index++) {
-      total += conceptos[index].valor
+      if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+        total += conceptos[index].valor
     }
     return total
   }
@@ -552,7 +550,8 @@ export class PagosComponent implements OnInit {
     )
     let totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
     console.log(this.Pdv)
-    let totalDevengado = this.valorTotalConceptos(conceptosDevengados)
+    let totalDevengado =
+      this.valorTotalConceptos(conceptosDevengados) + this.Pdv[0].valor_canon
 
     let total = totalDevengado - totalDeduccion
 
@@ -695,13 +694,6 @@ export class PagosComponent implements OnInit {
               alignment: "left",
               margin: [0, 10, 0, 0],
             },
-            // {
-            //   width: "25%",
-            //   text: "Municipio: \n",
-            //   bold: true,
-            //   alignment: "center",
-            //   margin: [0, 10, 0, 0],
-            // },
           ],
         },
         {
@@ -728,19 +720,14 @@ export class PagosComponent implements OnInit {
                   text: "\nConcepto devengado",
                   bold: true,
                 },
-                {
-                  text: this.organizarConceptos(conceptosDevengados),
-                },
               ],
             },
             {
+              width: "10%",
               text: [
                 {
                   text: "\nValor",
                   bold: true,
-                },
-                {
-                  text: this.darvalorConceptos(conceptosDevengados),
                 },
               ],
             },
@@ -750,46 +737,56 @@ export class PagosComponent implements OnInit {
                   text: "\nConcepto deduccion",
                   bold: true,
                 },
+              ],
+            },
+            {
+              width: "10%",
+              text: [
                 {
-                  text: this.organizarConceptos(conceptosDeducidos),
+                  text: "\nValor",
+                  bold: true,
+                },
+              ],
+            },
+          ],
+          alignment: "left",
+          margin: [50, 10, 20, 0],
+        },
+        {
+          columns: [
+            {
+              text: [
+                {
+                  text: this.organizarConceptos(conceptosDevengados),
+                },
+              ],
+            },
+            {
+              width: "10%",
+              text: [
+                {
+                  text: this.darvalorConceptos(conceptosDevengados),
                 },
               ],
             },
             {
               text: [
                 {
-                  text: "\nValor",
+                  text: this.organizarConceptos(conceptosDeducidos),
                 },
+              ],
+            },
+            {
+              width: "10%",
+              text: [
                 {
                   text: this.darvalorConceptos(conceptosDeducidos),
                 },
               ],
             },
           ],
-          alignment: "center",
-          margin: [33, 10, 0, 0],
-        },
-        {
-          columns: [
-            {
-              text: `\nTotal Devengado ${totalDevengado.toLocaleString(
-                "es-ES"
-              )}`,
-              bold: true,
-            },
-            {
-              text: `\nTotal Deducción ${totalDeduccion.toLocaleString(
-                "es-ES"
-              )}`,
-              bold: true,
-            },
-            {
-              text: `\nTotal a Pagar ${total.toLocaleString("es-ES")}`,
-              bold: true,
-            },
-          ],
-          alignment: "center",
-          margin: [33, 10, 0, 0],
+          alignment: "left",
+          margin: [50, 10, 20, 0],
         },
       ],
       footer: (currentPage, pageCount) => {
@@ -798,19 +795,45 @@ export class PagosComponent implements OnInit {
             columns: [
               {
                 width: "30%",
-                text: "Total Devengado",
+                text: `\nTotal Devengado:      $ ${totalDevengado.toLocaleString(
+                  "es-ES"
+                )}`,
                 bold: true,
-                alignment: "center",
               },
+              // {
+              //   text: `\n$ ${totalDevengado.toLocaleString("es-ES")}`,
+              // },
+              // {
+              //   text: `\nTotal Deducción:`,
+              //   bold: true,
+              // },
+              // {
+              //   text: `\n$ ${totalDeduccion.toLocaleString("es-ES")}`,
+              // },
+              // {
+              //   width: "15%",
+              //   text: `\nTotal Devengado:`,
+              //   bold: true,
+              //   alignment: "center",
+              // },
+              // {
+              //   width: "15%",
+              //   text: `\n$ ${totalDevengado.toLocaleString("es-ES")}`,
+              // },
               {
                 columns: [
                   {
                     width: "110%",
                     alignment: "center",
                     stack: [
-                      { text: "Total Deducción\n\n", bold: true },
                       {
-                        text: "\n____________________________________________________________",
+                        text: `\nTotal Deducción:      $ ${totalDeduccion.toLocaleString(
+                          "es-ES"
+                        )}`,
+                        bold: true,
+                      },
+                      {
+                        text: "\n\n\n____________________________________________________________",
                         bold: true,
                       },
                       {
@@ -836,21 +859,31 @@ export class PagosComponent implements OnInit {
                   },
                 ],
               },
+              // {
+              //   width: "30%",
+              //   text: "\nTotal a Pagar",
+              //   bold: true,
+              //   alignment: "center",
+              // },
               {
                 width: "30%",
-                text: "Total a Pagar",
+                text: `\nTotal a Pagar:      $ ${total.toLocaleString(
+                  "es-ES"
+                )}`,
                 bold: true,
-                alignment: "center",
               },
+              // {
+              //   text: `\n$ ${total.toLocaleString("es-ES")}`,
+              // },
             ],
             alignment: "center",
             // margin: [33, 10, 0, 0],
-            margin: [30, 0, 40, 80], // aumenta el margen inferior a 40 para asegurar que todas las líneas se muestren
+            margin: [50, 0, 40, 0], // aumenta el margen inferior a 40 para asegurar que todas las líneas se muestren
           }
         }
       },
 
-      pageMargins: [40, 40, 40, 120],
+      pageMargins: [40, 40, 40, 150],
       pageOrientation: "landscape",
 
       images: {
