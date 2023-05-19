@@ -376,6 +376,78 @@ export class PagosComponent implements OnInit {
     })
   }
 
+  darEstructuraNomina(tipo, datos){
+    if (tipo == 0) {
+      datos = datos.map((element) => {
+        return {
+          // NO PAGADOS
+          num_contrato: element.id_contrato,
+  
+          cod_punto_venta: element.id_punto_venta_punto_de_ventum.codigo_sitio_venta,
+          punto_venta: element.id_punto_venta_punto_de_ventum.nombre_comercial,
+  
+          valor_canon: element.valor_canon,
+          // incremento_anual: element.incremento_anual,
+          // incremento_adicional: element.incremento_adicional,
+          fecha_inicio_contrato: element.fecha_inicio_contrato,
+          fecha_fin_contrato: element.fecha_fin_contrato,
+          tipo_contrato: element.tipo_contrato,
+          valor_adminstracion: element.valor_adminstracion,
+          definicion: element.definicion,
+          poliza: element.poliza,
+  
+          responsable_nit: element.id_responsable_responsable.id_cliente_cliente.numero_documento,
+          responsable: element.id_responsable_responsable.id_cliente_cliente.razon_social 
+            ? element.id_responsable_responsable.id_cliente_cliente.razon_social 
+            : element.id_responsable_responsable.id_cliente_cliente.nombres + element.id_responsable_responsable.id_cliente_cliente.apellidos,
+  
+          autorizado_nit: element.id_autorizado_autorizado.id_cliente_cliente.numero_documento,
+          autorizado: element.id_autorizado_autorizado.id_cliente_cliente.razon_social ? element.id_autorizado_autorizado.id_cliente_cliente.razon_social : element.id_autorizado_autorizado.id_cliente_cliente.nombres + element.id_autorizado_autorizado.id_cliente_cliente.apellidos,
+          
+          fecha_inactivo: element.fecha_inactivo,
+          razon_inactivo: element.razon_inactivo,
+          
+          conceptos: element.conceptos
+        }
+      });
+    }else{
+      datos = datos.map((element) => {
+        return {
+          // PAGADOS
+          codigo_verificacion: element.codigo_verificacion,
+          num_contrato: element.id_contrato,
+  
+          cod_punto_venta: element.pago_detalles[0].punto_venta_punto_de_ventum.codigo_sitio_venta,
+          punto_venta: element.pago_detalles[0].punto_venta_punto_de_ventum.nombre_comercial,
+  
+          valor_canon: element.valor_canon,
+          // incremento_anual: element.incremento_anual,
+          // incremento_adicional: element.incremento_adicional,
+          fecha_inicio_contrato: element.fecha_inicio_contrato,
+          fecha_fin_contrato: element.fecha_fin_contrato,
+          tipo_contrato: element.id_tipo_contrato,
+          valor_adminstracion: element.valor_adminstracion,
+          definicion: element.definicion,
+          poliza: element.poliza,
+          
+          responsable_nit: element.pago_detalles[0].responsable.id_cliente_cliente.numero_documento,
+          responsable: element.pago_detalles[0].responsable.id_cliente_cliente.razon_social 
+            ? element.pago_detalles[0].responsable.id_cliente_cliente.razon_social 
+            : element.pago_detalles[0].responsable.id_cliente_cliente.nombres + element.pago_detalles[0].responsable.id_cliente_cliente.apellidos,
+  
+          autorizado_nit: element.pago_detalles[0].autorizado.id_cliente_cliente.numero_documento,
+          autorizado: element.pago_detalles[0].autorizado.id_cliente_cliente.razon_social 
+            ? element.pago_detalles[0].autorizado.id_cliente_cliente.razon_social 
+            : element.pago_detalles[0].autorizado.id_cliente_cliente.nombres + element.pago_detalles[0].autorizado.id_cliente_cliente.apellidos,          
+
+          conceptos: element.conceptos
+        }
+      });
+    }
+
+    return datos;
+  }
+
   generarPreNomina(tipo) {
     let listaSeleccionados = null
 
@@ -383,57 +455,29 @@ export class PagosComponent implements OnInit {
       listaSeleccionados = this.responsableTablaNoPagados
         .filter((responsable) => responsable["Check"])
         .map((responsable) => responsable["idContrato"])
-    } else {
-      listaSeleccionados = this.responsableTablaPagados
-        .filter((responsable) => responsable["Check"])
-        .map((responsable) => responsable["id_pago_arriendo"])
+    } else { 
+      if (this.responsableTablaNoPagados.length < 100) {
+        listaSeleccionados = this.responsableTablaPagados
+          .filter((responsable) => responsable["Check"])
+          .map((responsable) => responsable["id_pago_arriendo"])
+      }
+      else{
+        Swal.fire(
+          "Primero debe pagar todos los contratos",
+          "",
+          "info"
+        );
+        throw new Error("No se ha pagado todos los contratos");
+      }
     }
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
         console.log(res);
 
-        // res = res.map((element) => {
-        //   return {
-        //     id_contrato: 61,
-        //     id_punto_venta: 58,
-        //     id_usuario: 1,
-        //     valor_canon: 2500000,
-        //     incremento_anual: "----------",
-        //     incremento_adicional: "----------",
-        //     fecha_inicio_contrato: "2023-03-01",
-        //     fecha_fin_contrato: "2029-03-01",
-        //     tipo_contrato: 1,
-        //     valor_adminstracion: "----------",
-        //     definicion: "----------",
-        //     poliza: false,
-        //     id_responsable: 192,
-        //     id_autorizado: 189,
-        //     id_autorizado_adm: "----------",
-        //     fecha_inactivo: "----------",
-        //     razon_inactivo: "----------",
-        //     id_autorizado_autorizado: {
-        //       id_cliente_cliente: {
-        //         id_cliente: 82,
-        //         nombres: null,
-        //         apellidos: null,
-        //         genero: null,
-        //         numero_documento: "12139060",
-        //         direccion: "cra 3 #5-55",
-        //         numero_contacto: "3142965534",
-        //         numero_contacto2: null,
-        //         fecha_nacimiento: null,
-        //         email: "info@alerta247.com",
-        //         id_municipio: 613,
-        //         fecha_creacion_clie: "2023-05-04",
-        //         estado: 1,
-        //         tipo_documento: "Nit",
-        //         razon_social: "administramos software",
-        //         digito_verificacion: "3"
-        //       }
-        //     }
-        //   }
-        // });
+        res = this.darEstructuraNomina(tipo, res);
+        console.log(res);
+
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
@@ -443,49 +487,8 @@ export class PagosComponent implements OnInit {
 
         for (let i = 0; i < res.length; i++) {
           
-
-          // if (tipo == 1) {
-          //   // res[i].set(res[i].detalles)
-          // }
-          
-          // if (res[i].id_autorizado_autorizado) {
-          //   res[i].autorizado_nit = res[i].id_autorizado_autorizado.id_cliente_cliente.numero_documento;   
-          //   res[i].autorizado = res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social 
-          //                         : res[i].id_autorizado_autorizado.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_autorizado_autorizado.id_cliente_cliente.apellidos; 
-          // }else{
-          //   res[i].autorizado_nit = "----------";
-          //   res[i].autorizado = "----------";
-          // }
-          
-          // if (res[i].id_responsable_responsable) {
-          //   res[i].responsable_nit = res[i].id_responsable_responsable.id_cliente_cliente.numero_documento;
-          //   res[i].responsable = res[i].id_responsable_responsable.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_responsable_responsable.id_cliente_cliente.razon_social 
-          //                         : res[i].id_responsable_responsable.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_responsable_responsable.id_cliente_cliente.apellidos; 
-          // }else{
-          //   res[i].responsable_nit = "----------";
-          //   res[i].responsable = "----------";
-          // }
-          
-          // if (res[i].id_autorizado_adm_autorizado_administracion) {
-          //   res[i].responsable_adm_nit = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.numero_documento;
-          //   res[i].responsable_adm = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social 
-          //                         : res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.apellidos; 
-          // }else{
-          //   res[i].responsable_adm_nit = "----------";
-          //   res[i].responsable_adm = "----------";
-          // }
-          
           for (let prop in res[i]) {
-            if (res[i][prop] === null) {
+            if (res[i][prop] == null) {
               res[i][prop] = "----------"
             }
           }
@@ -509,9 +512,12 @@ export class PagosComponent implements OnInit {
           }
           
         }
+        if (tipo == 1) {
+          worksheet['!protect'] = { password: 'arriendosAdmin' };
+        }
 
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1")
-        XLSX.writeFile(workbook, "archivo.xlsx")
+        XLSX.utils.book_append_sheet(workbook, worksheet, tipo == 0? "PreNomina_"+this.mes+"_"+this.anio : "Pagados_"+this.mes+"_"+this.anio)
+        XLSX.writeFile(workbook, (tipo == 0? "PreNomina_"+this.mes+"_"+this.anio : "Pagados_"+this.mes+"_"+this.anio)+".xlsx")
       },
       (err) => {
         console.log(err.message)
