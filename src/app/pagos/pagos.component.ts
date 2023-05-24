@@ -45,9 +45,9 @@ export class PagosComponent implements OnInit {
   consultaDatos: any
   iva: any
   noPagadosLista: any[] = []
-  efectivo: boolean = false
-  responsable: boolean = false
-  no_responsable: boolean = false
+  efectivo: boolean = true
+  responsable: boolean = true
+  no_responsable: boolean = true
   contatoPDF: any = null
   tipoCliente: any = null
   Pdv: any = null
@@ -129,16 +129,16 @@ export class PagosComponent implements OnInit {
     this.search = search
   }
 
-  traerContratoPDF(sitioVenta, base64) {
+  traerContratoPDF(sitioVenta, base64, tipoPago) {
     this.servicio.traerContratoPdf(sitioVenta).subscribe((res: any) => {
       this.contatoPDF = res
 
       if (this.contatoPDF == null) {
         Swal.fire("No hay contratos", "", "error")
-      } else this.comprobantePdf(base64, sitioVenta)
+      } else this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
     })
   }
-  traerContratoPagadoPDF(sitioVenta, base64) {
+  traerContratoPagadoPDF(sitioVenta, base64, tipoPago) {
     let stringPeriodo = this.formatDate(new Date(this.anio, this.mes - 1, 1))
     let data = {
       id: sitioVenta,
@@ -147,6 +147,7 @@ export class PagosComponent implements OnInit {
     this.servicio.traerContratoPdfPagado(data).subscribe((res: any) => {
       this.contatoPDF = res
       console.log(this.contatoPDF)
+      this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
     })
   }
   llenarTablas() {
@@ -381,8 +382,8 @@ export class PagosComponent implements OnInit {
         var base64 = reader.result
         console.log("Tipo del pago: ", tipoPago)
         if (tipoPago == 1) {
-          this.traerContratoPDF(element.PDV, base64)
-        } else this.traerContratoPagadoPDF(element.PDV, base64)
+          this.traerContratoPDF(element.PDV, base64, tipoPago)
+        } else this.traerContratoPagadoPDF(element.PDV, base64, tipoPago)
       }
     })
   }
@@ -566,34 +567,60 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  organizarConceptos(conceptos) {
+  organizarConceptos(conceptos, tipoPago) {
     let lista = []
-    for (let index = 0; index < conceptos.length; index++) {
-      lista.push({
-        text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
-      })
+    if (tipoPago == 1) {
+      for (let index = 0; index < conceptos.length; index++) {
+        lista.push({
+          text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
+        })
+      }
+      return lista
+    } else {
+      for (let index = 0; index < conceptos.length; index++) {
+        lista.push({
+          text: `\n${conceptos[index].id_concepto_concepto.codigo_conce}  ${conceptos[index].id_concepto_concepto.nombre_conce}`,
+        })
+      }
+      return lista
     }
-    return lista
   }
-  darvalorConceptos(conceptos) {
+  darvalorConceptos(conceptos, tipoPago) {
     let lista = []
-    for (let index = 0; index < conceptos.length; index++) {
-      lista.push({
-        text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
-      })
+    if(tipoPago == 1){
+      for (let index = 0; index < conceptos.length; index++) {
+        lista.push({
+          text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
+        })
+      }
+      return lista
+    } else {
+      for (let index = 0; index < conceptos.length; index++) {
+        lista.push({
+          text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString("es-ES")}`,
+        })
+      }
+      return lista
     }
-    return lista
   }
-  valorTotalConceptos(conceptos) {
+  valorTotalConceptos(conceptos, tipoPago) {
     let total = 0
-    for (let index = 0; index < conceptos.length; index++) {
-      if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-        total += conceptos[index].valor
+    if (tipoPago == 1) {
+      for (let index = 0; index < conceptos.length; index++) {
+        if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+          total += conceptos[index].valor
+      }
+      return total  
+    } else {
+      for (let index = 0; index < conceptos.length; index++) {
+        if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+          total += conceptos[index].pago_concepto_valor
+      }
+      return total  
     }
-    return total
   }
 
-  comprobantePdf(base64, datos) {
+  comprobantePdfNoPagados(base64, datos, tipoPago) {
     console.log(datos)
 
     this.Pdv = this.contatoPDF.filter(
@@ -609,18 +636,39 @@ export class PagosComponent implements OnInit {
       this.tipoCliente =
         this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
     }
-    let conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-      (element) => element.id_concepto_concepto.codigo_concepto < 499
-    )
-    let conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-      (element) => element.id_concepto_concepto.codigo_concepto > 499
-    )
-    let totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
-    console.log(this.Pdv)
-    let totalDevengado =
-      this.valorTotalConceptos(conceptosDevengados) + this.Pdv[0].valor_canon
 
-    let total = totalDevengado - totalDeduccion
+    let conceptosDevengados = {};
+    let conceptosDeducidos = {};
+    let totalDeduccion = 0;
+    let totalDevengado = 0;
+    let total = 0;
+
+    if(tipoPago == 1){
+      conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
+        (element) => element.id_concepto_concepto.codigo_concepto <= 499)
+
+      conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
+        (element) => element.id_concepto_concepto.codigo_concepto > 499)
+
+      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
+      console.log(this.Pdv)
+      totalDevengado = this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.Pdv[0].valor_canon
+  
+      total = totalDevengado - totalDeduccion
+    } else {
+      console.log('Hola');
+      conceptosDevengados = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter((element) => 
+        element.id_concepto_concepto.codigo_conce <= 499)
+      
+      conceptosDeducidos = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter((element) => 
+      element.id_concepto_concepto.codigo_conce > 499)
+
+      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
+
+      totalDevengado = totalDevengado = this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.Pdv[0].valor_canon
+
+      total = totalDevengado - totalDeduccion
+    }    
 
     const documentDefinition = {
       content: [
@@ -824,7 +872,7 @@ export class PagosComponent implements OnInit {
             {
               text: [
                 {
-                  text: this.organizarConceptos(conceptosDevengados),
+                  text: this.organizarConceptos(conceptosDevengados, tipoPago),
                 },
               ],
             },
@@ -832,14 +880,14 @@ export class PagosComponent implements OnInit {
               width: "10%",
               text: [
                 {
-                  text: this.darvalorConceptos(conceptosDevengados),
+                  text: this.darvalorConceptos(conceptosDevengados, tipoPago),
                 },
               ],
             },
             {
               text: [
                 {
-                  text: this.organizarConceptos(conceptosDeducidos),
+                  text: this.organizarConceptos(conceptosDeducidos, tipoPago),
                 },
               ],
             },
@@ -847,7 +895,7 @@ export class PagosComponent implements OnInit {
               width: "10%",
               text: [
                 {
-                  text: this.darvalorConceptos(conceptosDeducidos),
+                  text: this.darvalorConceptos(conceptosDeducidos, tipoPago),
                 },
               ],
             },
@@ -867,26 +915,6 @@ export class PagosComponent implements OnInit {
                 )}`,
                 bold: true,
               },
-              // {
-              //   text: `\n$ ${totalDevengado.toLocaleString("es-ES")}`,
-              // },
-              // {
-              //   text: `\nTotal Deducción:`,
-              //   bold: true,
-              // },
-              // {
-              //   text: `\n$ ${totalDeduccion.toLocaleString("es-ES")}`,
-              // },
-              // {
-              //   width: "15%",
-              //   text: `\nTotal Devengado:`,
-              //   bold: true,
-              //   alignment: "center",
-              // },
-              // {
-              //   width: "15%",
-              //   text: `\n$ ${totalDevengado.toLocaleString("es-ES")}`,
-              // },
               {
                 columns: [
                   {
@@ -969,5 +997,10 @@ export class PagosComponent implements OnInit {
     }
 
     pdfMake.createPdf(documentDefinition).open()
+  }
+
+  comprobantePDFPagados(contrato, imagen){
+    console.log('hola');    
+
   }
 }
