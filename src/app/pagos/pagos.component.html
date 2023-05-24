@@ -8,7 +8,6 @@
             <p class="card-category">¿Que quieres Validar?</p>
           </div>
 
-          
           <div class="card-body">
             <mat-accordion>
               <!-- <mat-expansion-panel hideToggle> </mat-expansion-panel> -->
@@ -105,10 +104,7 @@
                   </div>
                 </div>
                 <hr />
-                <mat-tab-group
-                  mat-align-tabs="start"
-                  animationDuration="0ms"
-                >
+                <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
                   <mat-tab label="No Pagados">
                     <div class="container-fluid">
                       <div class="row">
@@ -193,7 +189,7 @@
                               >
                                 <a
                                   class="btn btn-info"
-                                  (click)="generarBase64(row)"
+                                  (click)="generarBase64(row, 1)"
                                   >Comprobante
                                 </a>
                               </td>
@@ -212,7 +208,8 @@
                               *matRowDef="let row; columns: displayedColumns"
                             ></tr>
                           </table>
-                          <mat-paginator [hidden]="dataSourcePagados.data.length < 1"
+                          <mat-paginator
+                            [hidden]="dataSourcePagados.data.length < 1"
                             #paginatorNoPagados
                             [pageSizeOptions]="[5, 10, 20]"
                             showFirstLastButtons
@@ -222,8 +219,8 @@
                         </div>
                       </div>
 
-                      <hr>
-                      
+                      <hr />
+
                       <div class="row">
                         <div class="col" align="center">
                           <button
@@ -232,7 +229,7 @@
                             id="button-guardar"
                             (click)="generarPreNomina(0)"
                           >
-                            Generar pre-nomina 
+                            Generar pre-nomina
                           </button>
                         </div>
                         <div class="col" align="center">
@@ -247,8 +244,8 @@
                         </div>
                       </div>
                     </div>
-                  </mat-tab > 
-                  <mat-tab label="Pagados"> 
+                  </mat-tab>
+                  <mat-tab label="Pagados">
                     <div class="container-fluid">
                       <div class="row">
                         <div class="col-md-12">
@@ -332,7 +329,7 @@
                               >
                                 <a
                                   class="btn btn-info"
-                                  (click)="generarBase64(row)"
+                                  (click)="generarBase64(row, 2)"
                                   >Comprobante
                                 </a>
                               </td>
@@ -351,7 +348,8 @@
                               *matRowDef="let row; columns: displayedColumns"
                             ></tr>
                           </table>
-                          <mat-paginator [hidden]="dataSourcePagados.data.length < 1"
+                          <mat-paginator
+                            [hidden]="dataSourcePagados.data.length < 1"
                             #paginatorPagados
                             [pageSizeOptions]="[5, 10, 20]"
                             showFirstLastButtons
@@ -359,7 +357,7 @@
                           </mat-paginator>
                         </div>
                       </div>
-                      <hr>
+                      <hr />
                       <div class="row">
                         <div class="col" align="center">
                           <button
@@ -368,7 +366,7 @@
                             id="button-guardar"
                             (click)="generarPreNomina(1)"
                           >
-                            Generar docuemto nomina 
+                            Generar docuemto nomina
                           </button>
                         </div>
                       </div>

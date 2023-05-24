@@ -16,7 +16,7 @@ import { element } from "protractor"
 import { style } from "@angular/animations"
 // import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from "xlsx"
-import { Console, count } from "console"
+import { Console, count, log } from "console"
 
 export interface PeriodicElement {
   Check: boolean
@@ -129,16 +129,26 @@ export class PagosComponent implements OnInit {
     this.search = search
   }
 
-  traerContratoPDF() {
-    this.servicio.traerContratoPdf().subscribe((res: any) => {
+  traerContratoPDF(sitioVenta, base64) {
+    this.servicio.traerContratoPdf(sitioVenta).subscribe((res: any) => {
       this.contatoPDF = res
 
       if (this.contatoPDF == null) {
         Swal.fire("No hay contratos", "", "error")
-      }
+      } else this.comprobantePdf(base64, sitioVenta)
     })
   }
-
+  traerContratoPagadoPDF(sitioVenta, base64) {
+    let stringPeriodo = this.formatDate(new Date(this.anio, this.mes - 1, 1))
+    let data = {
+      id: sitioVenta,
+      periodo: stringPeriodo,
+    }
+    this.servicio.traerContratoPdfPagado(data).subscribe((res: any) => {
+      this.contatoPDF = res
+      console.log(this.contatoPDF)
+    })
+  }
   llenarTablas() {
     if (
       (this.no_responsable == false &&
@@ -153,7 +163,6 @@ export class PagosComponent implements OnInit {
     } else {
       this.traerNoPagados()
       this.traerPagados()
-      this.traerContratoPDF()
     }
   }
 
@@ -363,15 +372,17 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  generarBase64(element) {
+  generarBase64(element, tipoPago) {
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
       const reader = new FileReader()
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-
-        this.comprobantePdf(base64, element.PDV)
+        console.log("Tipo del pago: ", tipoPago)
+        if (tipoPago == 1) {
+          this.traerContratoPDF(element.PDV, base64)
+        } else this.traerContratoPagadoPDF(element.PDV, base64)
       }
     })
   }
@@ -391,7 +402,7 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        console.log(res);
+        console.log(res)
 
         // res = res.map((element) => {
         //   return {
@@ -434,56 +445,54 @@ export class PagosComponent implements OnInit {
         //     }
         //   }
         // });
-        let workbook = XLSX.utils.book_new();
-        res[0].valor_concepto = 0;
-        let headers = Object.keys(res[0]);
-        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
-        let contador = 2;
-        worksheet["!merges"] = [];
+        let workbook = XLSX.utils.book_new()
+        res[0].valor_concepto = 0
+        let headers = Object.keys(res[0])
+        let worksheet = XLSX.utils.aoa_to_sheet([headers])
+        let contador = 2
+        worksheet["!merges"] = []
 
         for (let i = 0; i < res.length; i++) {
-          
-
           // if (tipo == 1) {
           //   // res[i].set(res[i].detalles)
           // }
-          
+
           // if (res[i].id_autorizado_autorizado) {
-          //   res[i].autorizado_nit = res[i].id_autorizado_autorizado.id_cliente_cliente.numero_documento;   
-          //   res[i].autorizado = res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social 
-          //                         : res[i].id_autorizado_autorizado.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_autorizado_autorizado.id_cliente_cliente.apellidos; 
+          //   res[i].autorizado_nit = res[i].id_autorizado_autorizado.id_cliente_cliente.numero_documento;
+          //   res[i].autorizado = res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social ?
+          //                         res[i].id_autorizado_autorizado.id_cliente_cliente.razon_social
+          //                         : res[i].id_autorizado_autorizado.id_cliente_cliente.nombres
+          //                           + " "
+          //                           + res[i].id_autorizado_autorizado.id_cliente_cliente.apellidos;
           // }else{
           //   res[i].autorizado_nit = "----------";
           //   res[i].autorizado = "----------";
           // }
-          
+
           // if (res[i].id_responsable_responsable) {
           //   res[i].responsable_nit = res[i].id_responsable_responsable.id_cliente_cliente.numero_documento;
-          //   res[i].responsable = res[i].id_responsable_responsable.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_responsable_responsable.id_cliente_cliente.razon_social 
-          //                         : res[i].id_responsable_responsable.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_responsable_responsable.id_cliente_cliente.apellidos; 
+          //   res[i].responsable = res[i].id_responsable_responsable.id_cliente_cliente.razon_social ?
+          //                         res[i].id_responsable_responsable.id_cliente_cliente.razon_social
+          //                         : res[i].id_responsable_responsable.id_cliente_cliente.nombres
+          //                           + " "
+          //                           + res[i].id_responsable_responsable.id_cliente_cliente.apellidos;
           // }else{
           //   res[i].responsable_nit = "----------";
           //   res[i].responsable = "----------";
           // }
-          
+
           // if (res[i].id_autorizado_adm_autorizado_administracion) {
           //   res[i].responsable_adm_nit = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.numero_documento;
-          //   res[i].responsable_adm = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social ? 
-          //                         res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social 
-          //                         : res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.nombres 
-          //                           + " " 
-          //                           + res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.apellidos; 
+          //   res[i].responsable_adm = res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social ?
+          //                         res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.razon_social
+          //                         : res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.nombres
+          //                           + " "
+          //                           + res[i].id_autorizado_adm_autorizado_administracion.id_cliente_cliente.apellidos;
           // }else{
           //   res[i].responsable_adm_nit = "----------";
           //   res[i].responsable_adm = "----------";
           // }
-          
+
           for (let prop in res[i]) {
             if (res[i][prop] === null) {
               res[i][prop] = "----------"
@@ -492,8 +501,9 @@ export class PagosComponent implements OnInit {
 
           let conceptos = res[i].conceptos
           for (let j = 0; j < conceptos.length; j++) {
-            res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto;
-            res[i].valor_concepto = tipo == 0 ? conceptos[j].valor: conceptos[j].pago_concepto_valor;
+            res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto
+            res[i].valor_concepto =
+              tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,
@@ -501,13 +511,12 @@ export class PagosComponent implements OnInit {
             contador++
           }
 
-          for (let i = 0; i < (Object.keys(res[0]).length - 2); i++) {
+          for (let i = 0; i < Object.keys(res[0]).length - 2; i++) {
             worksheet["!merges"].push({
               s: { r: contador - conceptos.length - 1, c: i },
               e: { r: contador - 2, c: i },
-            });
+            })
           }
-          
         }
 
         XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1")
