@@ -587,7 +587,7 @@ export class PagosComponent implements OnInit {
   }
   darvalorConceptos(conceptos, tipoPago) {
     let lista = []
-    if(tipoPago == 1){
+    if (tipoPago == 1) {
       for (let index = 0; index < conceptos.length; index++) {
         lista.push({
           text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
@@ -597,7 +597,9 @@ export class PagosComponent implements OnInit {
     } else {
       for (let index = 0; index < conceptos.length; index++) {
         lista.push({
-          text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString("es-ES")}`,
+          text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString(
+            "es-ES"
+          )}`,
         })
       }
       return lista
@@ -610,13 +612,13 @@ export class PagosComponent implements OnInit {
         if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
           total += conceptos[index].valor
       }
-      return total  
+      return total
     } else {
       for (let index = 0; index < conceptos.length; index++) {
         if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
           total += conceptos[index].pago_concepto_valor
       }
-      return total  
+      return total
     }
   }
 
@@ -637,38 +639,47 @@ export class PagosComponent implements OnInit {
         this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
     }
 
-    let conceptosDevengados = {};
-    let conceptosDeducidos = {};
-    let totalDeduccion = 0;
-    let totalDevengado = 0;
-    let total = 0;
-
-    if(tipoPago == 1){
+    let conceptosDevengados = {}
+    let conceptosDeducidos = {}
+    let totalDeduccion = 0
+    let totalDevengado = 0
+    let total = 0
+    let fechaPago = ""
+    if (tipoPago == 1) {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto <= 499)
+        (element) => element.id_concepto_concepto.codigo_concepto <= 499
+      )
 
       conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto > 499)
+        (element) => element.id_concepto_concepto.codigo_concepto > 499
+      )
 
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
       console.log(this.Pdv)
-      totalDevengado = this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.Pdv[0].valor_canon
-  
+      totalDevengado =
+        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+        this.Pdv[0].valor_canon
+
       total = totalDevengado - totalDeduccion
     } else {
-      console.log('Hola');
-      conceptosDevengados = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter((element) => 
-        element.id_concepto_concepto.codigo_conce <= 499)
-      
-      conceptosDeducidos = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter((element) => 
-      element.id_concepto_concepto.codigo_conce > 499)
+      console.log("Hola")
+      conceptosDevengados = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter(
+        (element) => element.id_concepto_concepto.codigo_conce <= 499
+      )
+
+      conceptosDeducidos = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter(
+        (element) => element.id_concepto_concepto.codigo_conce > 499
+      )
 
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
 
-      totalDevengado = totalDevengado = this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.Pdv[0].valor_canon
+      totalDevengado = totalDevengado =
+        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+        this.Pdv[0].valor_canon
 
       total = totalDevengado - totalDeduccion
-    }    
+      fechaPago = this.Pdv[0].pago_arriendos[0].fecha_pago
+    }
 
     const documentDefinition = {
       content: [
@@ -797,11 +808,13 @@ export class PagosComponent implements OnInit {
                 {
                   text: [
                     {
-                      text: `\nFecha: `,
+                      text: `\n ${tipoPago == 1 ? "Fecha: " : "Fecha Pago: "} `,
                       bold: true,
                     },
                     {
-                      text: `${this.formatDate(new Date())}`,
+                      text: `${
+                        tipoPago == 1 ? this.formatDate(new Date()) : fechaPago
+                      }`,
                     },
                   ],
                 },
@@ -999,8 +1012,7 @@ export class PagosComponent implements OnInit {
     pdfMake.createPdf(documentDefinition).open()
   }
 
-  comprobantePDFPagados(contrato, imagen){
-    console.log('hola');    
-
+  comprobantePDFPagados(contrato, imagen) {
+    console.log("hola")
   }
 }
