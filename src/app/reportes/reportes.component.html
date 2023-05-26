@@ -1,0 +1,51 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info" id="banner">
+                        <h4 class="card-title">Reportes</h4>
+                        <p class="card-category">Aqui podras generar tus reportes</p>
+                    </div>
+
+                    <div class="card-body">
+                        <mat-accordion>
+                            <table mat-table [dataSource]="dataSource"
+                                class="w-100 text-center table table-striped table-hover">
+
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center">#</th>
+                                    <td mat-cell *matCellDef="let element; let i = index"> {{i+1}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Reporte">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center"> Reporte </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Acciones">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button class="btn btn-success rounded-pill" (click)="generarReporte(element.reporte)"
+                                            matTooltip="Generar reporte {{element.nombre}}" matTooltipPosition="above"
+                                            matTooltipClass="tooltipText">
+                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <tr class="mat-row" *matNoDataRow>
+                                    <td class="mat-cell" colspan="7">No hay creditos</td>
+                                </tr>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+
+                        </mat-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -21,7 +21,8 @@ export const ROUTES: RouteInfo[] = [
     //{ path: '/notifications', title: 'Notifications',  icon:'notifications', class: '' },
   //  { path: '/upgrade', title: 'Upgrade to PRO',  icon:'unarchive', class: 'active-pro' },
   { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:"creditos" },
-  { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
+  { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:"reportes" },
+  // { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
 ];
 
 @Component({

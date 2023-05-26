@@ -12,6 +12,7 @@ import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
 import { Component } from '@angular/core';
 import { CreditosComponent } from 'app/creditos/creditos.component';
+import { ReportesComponent } from 'app/reportes/reportes.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -66,7 +67,8 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'upgrade',        component: UpgradeComponent },
     { path: 'Register',       component: RegistrarpdvComponent },
     { path: 'Pagos',          component: PagosComponent },
-    { path: 'creditos',       component: CreditosComponent}
+    { path: 'creditos',       component: CreditosComponent},
+    { path: 'reportes',       component: ReportesComponent}
 
 
 

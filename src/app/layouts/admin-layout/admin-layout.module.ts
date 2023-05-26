@@ -31,6 +31,7 @@ import {MatSortModule} from '@angular/material/sort';
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
 import { CreditosComponent } from 'app/creditos/creditos.component';
+import { ReportesComponent } from 'app/reportes/reportes.component';
 import { FiltroPdvCodigoPipe } from 'app/pipes/filtro-pdv-codigo.pipe';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -69,6 +70,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     RegistrarpdvComponent,
     PagosComponent,
     CreditosComponent,
+    ReportesComponent,
     FiltroPdvCodigoPipe,
   ]
 })
