@@ -607,19 +607,44 @@ export class PagosComponent implements OnInit {
   }
   valorTotalConceptos(conceptos, tipoPago) {
     let total = 0
-    if (tipoPago == 1) {
-      for (let index = 0; index < conceptos.length; index++) {
-        if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-          total += conceptos[index].valor
+    
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    fechaFinContrato.setDate(fechaFinContrato.getDate()+1)
+    
+    let diasTrabajar = 30 - fechaFinContrato.getDate();    
+    
+    if (fechaFinContrato.getFullYear() == this.anio && (fechaFinContrato.getMonth() + 1) == this.mes) {
+      if (tipoPago == 1) {
+        console.log("Hola");
+        for (let index = 0; index < conceptos.length; index++) {
+          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+            total += (conceptos[index].valor / 30) * diasTrabajar
+            
+        }
+        return total
+      } else {
+        for (let index = 0; index < conceptos.length; index++) {
+          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+            total += conceptos[index].pago_concepto_valor
+        }
+        return total
       }
-      return total
-    } else {
-      for (let index = 0; index < conceptos.length; index++) {
-        if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-          total += conceptos[index].pago_concepto_valor
+      
+    }else{
+      if (tipoPago == 1) {
+        for (let index = 0; index < conceptos.length; index++) {
+          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+            total += conceptos[index].valor
+        }
+        return total
+      } else {
+        for (let index = 0; index < conceptos.length; index++) {
+          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+            total += conceptos[index].pago_concepto_valor
+        }
+        return total
       }
-      return total
-    }
+    }    
   }
 
   comprobantePdfNoPagados(base64, datos, tipoPago) {
@@ -645,6 +670,7 @@ export class PagosComponent implements OnInit {
     let totalDevengado = 0
     let total = 0
     let fechaPago = ""
+
     if (tipoPago == 1) {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto <= 499
@@ -655,7 +681,6 @@ export class PagosComponent implements OnInit {
       )
 
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
-      console.log(this.Pdv)
       totalDevengado =
         this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.Pdv[0].valor_canon
@@ -673,7 +698,7 @@ export class PagosComponent implements OnInit {
 
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
 
-      totalDevengado = totalDevengado =
+      totalDevengado = 
         this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.Pdv[0].valor_canon
 
