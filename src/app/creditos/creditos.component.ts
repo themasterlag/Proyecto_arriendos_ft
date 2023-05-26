@@ -92,7 +92,7 @@ export class CreditosComponent implements OnInit {
   }
 
   editarCredito(credito){    
-    this.formularioEditarCredito.controls.id_saldo_cretido.setValue(credito.id_saldo_cretido);
+    this.formularioEditarCredito.controls.id_saldo_credito.setValue(credito.id_saldo_credito);
     this.formularioEditarCredito.controls.id_contrato_concepto.setValue(credito.id_contrato_concepto);
     this.formularioEditarCredito.controls.credito_total.setValue(credito.credito_total);
     let fecha_fin = new Date(credito.fecha_fin);
@@ -127,7 +127,7 @@ export class CreditosComponent implements OnInit {
   }
 
   eliminarCredito(credito: any){
-    this.servicio.eliminarCredito(credito.id_saldo_cretido).subscribe(
+    this.servicio.eliminarCredito(credito.id_saldo_credito).subscribe(
       (res:any)=>{
         this.ejecutarConsultas();
       },

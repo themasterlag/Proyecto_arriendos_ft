@@ -25,7 +25,7 @@
                                             <select name="id_contrato" id="contrato" class="form-control" ngModel required>
                                                 <option value="null" disabled selected>Seleccione un contrato</option>
                                                 <option [value]="contrato.id_contrato" *ngFor="let contrato of listaContratos">
-                                                    PDV:{{contrato.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
+                                                    PDV:{{contrato.id_punto_venta_punto_de_ventum.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
                                                 </option>
                                             </select>
                                         </div>
@@ -97,7 +97,7 @@
 
                                 <form #formularioEditarCredito="ngForm" (ngSubmit)="GuardarEdicion(formularioEditarCredito)" [noValidate]="false">
                                     <input type="number" class="form-control" ngModel name="id_contrato_concepto" hidden required>
-                                    <input type="number" class="form-control" ngModel name="id_saldo_cretido" hidden required>
+                                    <input type="number" class="form-control" ngModel name="id_saldo_credito" hidden required>
 
                                     <div class="row">
                                         <div class="form-group col-6">
