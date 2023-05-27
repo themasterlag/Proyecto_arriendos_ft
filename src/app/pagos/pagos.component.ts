@@ -607,46 +607,92 @@ export class PagosComponent implements OnInit {
   }
   valorTotalConceptos(conceptos, tipoPago) {
     let total = 0
-    
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate()+1)
-    
-    let diasTrabajar = 30 - fechaFinContrato.getDate();    
-    
-    if (fechaFinContrato.getFullYear() == this.anio && (fechaFinContrato.getMonth() + 1) == this.mes) {
-      if (tipoPago == 1) {
-        console.log("Hola");
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-            total += (conceptos[index].valor / 30) * diasTrabajar
-            
-        }
-        return total
-      } else {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-            total += conceptos[index].pago_concepto_valor
-        }
-        return total
-      }
-      
-    }else{
-      if (tipoPago == 1) {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-            total += conceptos[index].valor
-        }
-        return total
-      } else {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-            total += conceptos[index].pago_concepto_valor
-        }
-        return total
-      }
-    }    
-  }
 
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
+
+    let diasTrabajar = 30 - fechaFinContrato.getDate()
+
+    // if (
+    //   fechaFinContrato.getFullYear() == this.anio &&
+    //   fechaFinContrato.getMonth() + 1 == this.mes
+    // ) {
+    //   if (tipoPago == 1) {
+    //     for (let index = 0; index < conceptos.length; index++) {
+    //       if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+    //         total += (conceptos[index].valor / 30) * diasTrabajar
+    //     }
+    //     return total
+    //   } else {
+    //     for (let index = 0; index < conceptos.length; index++) {
+    //       if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+    //         total += conceptos[index].pago_concepto_valor
+    //     }
+    //     return total
+    //   }
+    // } else {
+    //   if (tipoPago == 1) {
+    //     for (let index = 0; index < conceptos.length; index++) {
+    //       if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+    //         total += conceptos[index].valor
+    //     }
+    //     return total
+    //   } else {
+    //     for (let index = 0; index < conceptos.length; index++) {
+    //       if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+    //         total += conceptos[index].pago_concepto_valor
+    //     }
+    //     return total
+    //   }
+    // }
+    if (tipoPago == 1) {
+      for (let index = 0; index < conceptos.length; index++) {
+        if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+          total += conceptos[index].valor
+      }
+      return total
+    } else {
+      for (let index = 0; index < conceptos.length; index++) {
+        if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
+          total += conceptos[index].pago_concepto_valor
+      }
+      return total
+    }
+  }
+  valorCanon(valorCanon) {
+    let total = 0
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
+    let diasTrabajar = 30 - fechaFinContrato.getDate()
+    if (
+      fechaFinContrato.getFullYear() == this.anio &&
+      fechaFinContrato.getMonth() + 1 == this.mes
+    ) {
+      total = (valorCanon / 30) * diasTrabajar
+    } else {
+      total = valorCanon
+    }
+    return total
+  }
+  validarValorTrabajarConceptos(conceptos) {
+    let conceptosValidados = []
+    let total = 0
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
+    let diasTrabajar = 30 - fechaFinContrato.getDate()
+    if (
+      fechaFinContrato.getFullYear() == this.anio &&
+      fechaFinContrato.getMonth() + 1 == this.mes
+    ) {
+      for (let i = 0; i < conceptos.length; i++) {
+        conceptos[i].valor = (conceptos[i].valor / 30) * diasTrabajar
+      }
+      conceptosValidados = conceptos
+    } else {
+      conceptosValidados = conceptos
+    }
+    return conceptosValidados
+  }
   comprobantePdfNoPagados(base64, datos, tipoPago) {
     console.log(datos)
 
@@ -675,15 +721,17 @@ export class PagosComponent implements OnInit {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto <= 499
       )
-
+      conceptosDevengados =
+        this.validarValorTrabajarConceptos(conceptosDevengados)
       conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto > 499
       )
-
+      conceptosDeducidos =
+        this.validarValorTrabajarConceptos(conceptosDeducidos)
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
       totalDevengado =
         this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon
+        this.valorCanon(this.Pdv[0].valor_canon)
 
       total = totalDevengado - totalDeduccion
     } else {
@@ -698,7 +746,7 @@ export class PagosComponent implements OnInit {
 
       totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
 
-      totalDevengado = 
+      totalDevengado =
         this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.Pdv[0].valor_canon
 
