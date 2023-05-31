@@ -51,6 +51,7 @@ export class PagosComponent implements OnInit {
   contatoPDF: any = null
   tipoCliente: any = null
   Pdv: any = null
+  pagoArriendo: any = null
   displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"]
   responsableTablaNoPagados: PeriodicElement[] = []
   responsableTablaPagados: PeriodicElement[] = []
@@ -151,20 +152,20 @@ export class PagosComponent implements OnInit {
     })
   }
   llenarTablas() {
-    if (
+    if(
       (this.no_responsable == false &&
         this.responsable == false &&
         this.efectivo == false) ||
-      this.anio == 0 ||
-      this.mes == 0
-    ) {
-      Swal.fire("Debe seleeccionar un recuadro", "", "info")
-      this.dataSourceNoPagados.data = null
-      this.dataSourcePagados.data = null
-    } else {
-      this.traerNoPagados()
-      this.traerPagados()
-    }
+        this.anio == 0 ||
+        this.mes == 0
+      ) {
+        Swal.fire("Debe seleeccionar un recuadro", "", "info")
+        this.dataSourceNoPagados.data = null
+        this.dataSourcePagados.data = null
+      }else{
+        this.traerNoPagados()
+        this.traerPagados()
+      }
   }
 
   traerPagados() {
@@ -220,6 +221,8 @@ export class PagosComponent implements OnInit {
       (res: any) => {
         // console.log("No Pagados", res)
         this.noPagadosLista = res
+        console.log(this.noPagadosLista);
+        
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
           return {
@@ -233,6 +236,7 @@ export class PagosComponent implements OnInit {
         this.dataSourceNoPagados.paginator = this.paginatorNoPagados
         this.dataSourceNoPagados.data = this.responsableTablaNoPagados
         this.dataSourceNoPagados.sort = this.sort
+        // this.informacionContrato();]
         // console.log(this.responsableTablaPagados);
       },
       (err) => {
@@ -240,6 +244,42 @@ export class PagosComponent implements OnInit {
       }
     )
   }
+
+  informacionContrato(){
+    let operacionConcepto;
+    let conceptosActualizar = [];
+    for (let index = 0; index < this.noPagadosLista.length; index++) {
+      const elementLista = this.noPagadosLista[index];
+      const fecha_inicio = new Date(this.noPagadosLista[index].fecha_inicio_contrato)
+      fecha_inicio.setDate(fecha_inicio.getDate())
+      let diasTrabajar = 30 - fecha_inicio.getDate()
+
+      for (let i = 0; i < elementLista.conceptos.length; i++) {
+        const conceptos = elementLista.conceptos[i];
+
+        if(fecha_inicio.getFullYear() == this.anio && (fecha_inicio.getMonth() +1) == this.mes){
+          operacionConcepto = ((conceptos.valor / 30) * diasTrabajar).toFixed(1);  
+
+          let idPagoarriendo = this.pagoArriendo.filter((element) => element.id_contrato == elementLista.id_contrato)
+          console.log(idPagoarriendo, "Filtro");
+          
+          conceptosActualizar.push({
+            id_concepto: conceptos.id_concepto,
+            valor: Math.round(parseFloat(operacionConcepto)),
+            id_pago_arriendo: idPagoarriendo[0].id_pago_arriendo
+          })
+
+        }                
+      }             
+    }
+    this.servicio.actuallizarContratos(conceptosActualizar).subscribe(
+      (res:any) => {
+        console.log(res);        
+      }
+    )    
+    console.log(conceptosActualizar);    
+  }
+
 
   formatDate(date: Date): string {
     const year = date.getFullYear()
@@ -271,7 +311,6 @@ export class PagosComponent implements OnInit {
         const currentDate = new Date()
         const formattedDate = this.formatDate(currentDate)
 
-        // let fecha = new Date(this.anio, this.mes - 1, 1);
         let fecha_parseada = this.formatDate(
           new Date(this.anio, this.mes - 1, 1)
         )
@@ -287,8 +326,10 @@ export class PagosComponent implements OnInit {
         })
         this.servicio.pagarContratos(listaEnviar).subscribe(
           (res: any) => {
+            this.pagoArriendo = res.id
             this.traerNoPagados()
-            this.traerPagados()
+            this.traerPagados()        
+            this.informacionContrato()
           },
           (err: any) => {
             console.log(err)
@@ -625,13 +666,13 @@ export class PagosComponent implements OnInit {
   valorCanon(valorCanon) {
     let total = 0
     let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
+    fechaFinContrato.setDate(fechaFinContrato.getDate())
     let diasTrabajar = 30 - fechaFinContrato.getDate()
     if (
       fechaFinContrato.getFullYear() == this.anio &&
       fechaFinContrato.getMonth() + 1 == this.mes
     ) {
-      total = (valorCanon / 30) * diasTrabajar
+      total = Math.round((valorCanon / 30) * diasTrabajar)
     } else {
       total = valorCanon
     }
@@ -641,8 +682,8 @@ export class PagosComponent implements OnInit {
     let conceptosValidados = []
     let total = 0
     let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
-    let diasTrabajar = 30 - fechaFinContrato.getDate()
+    fechaFinContrato.setDate(fechaFinContrato.getDate())
+    let diasTrabajar = 30 - fechaFinContrato.getDate()    
     if (
       fechaFinContrato.getFullYear() == this.anio &&
       fechaFinContrato.getMonth() + 1 == this.mes
@@ -707,7 +748,7 @@ export class PagosComponent implements OnInit {
       totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
 
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon)
+        this.Pdv[0].valor_canon) 
 
       total = totalDevengado - totalDeduccion
       fechaPago = this.Pdv[0].pago_arriendos[0].fecha_pago

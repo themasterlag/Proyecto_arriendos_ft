@@ -2,8 +2,8 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <div class="card">
-          <div class="card-header card-header-info">
+        <div class="card" id="tarjeta">
+          <div class="card-header card-header-info" id="banner">
             <h4 class="card-title">Pagos</h4>
             <p class="card-category">¿Que quieres Validar?</p>
           </div>
@@ -13,8 +13,6 @@
               <!-- <mat-expansion-panel hideToggle> </mat-expansion-panel> -->
               <mat-expansion-panel
                 [expanded]="panelOpenState"
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
               >
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -186,6 +184,7 @@
                               >
                                 <a
                                   class="btn btn-info"
+                                  id="Comprobante"
                                   (click)="generarBase64(row, 1)"
                                   >Comprobante
                                 </a>

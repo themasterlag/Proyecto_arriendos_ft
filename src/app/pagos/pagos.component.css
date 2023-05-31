@@ -14,5 +14,35 @@
     background-color: rgb(0, 0, 0) !important; 
   }
 
+  #tarjeta{
+    border-radius: 25px;
+    background: #e8e8e8;
+  }
+
+  #banner{
+    border-radius: 25px;
+    background: #ffe203;
+  }
   
-  
+  .card-category{
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 12px;
+}
+  .card-title{
+      color: #1b4f35 !important;
+      font-weight: 900;
+      font-size: 18px;
+  }
+  .mat-accordion .mat-expansion-panel:last-of-type{
+    border-radius: 25px;
+} 
+
+  #button-guardar{
+    border-radius: 25px;
+  }
+
+  #Comprobante{
+    border-radius: 25px;
+  }
+
