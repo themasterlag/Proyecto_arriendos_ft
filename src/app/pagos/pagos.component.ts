@@ -608,55 +608,18 @@ export class PagosComponent implements OnInit {
   valorTotalConceptos(conceptos, tipoPago) {
     let total = 0
 
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate() + 1)
-
-    let diasTrabajar = 30 - fechaFinContrato.getDate()
-
-    // if (
-    //   fechaFinContrato.getFullYear() == this.anio &&
-    //   fechaFinContrato.getMonth() + 1 == this.mes
-    // ) {
-    //   if (tipoPago == 1) {
-    //     for (let index = 0; index < conceptos.length; index++) {
-    //       if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-    //         total += (conceptos[index].valor / 30) * diasTrabajar
-    //     }
-    //     return total
-    //   } else {
-    //     for (let index = 0; index < conceptos.length; index++) {
-    //       if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-    //         total += conceptos[index].pago_concepto_valor
-    //     }
-    //     return total
-    //   }
-    // } else {
-    //   if (tipoPago == 1) {
-    //     for (let index = 0; index < conceptos.length; index++) {
-    //       if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-    //         total += conceptos[index].valor
-    //     }
-    //     return total
-    //   } else {
-    //     for (let index = 0; index < conceptos.length; index++) {
-    //       if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-    //         total += conceptos[index].pago_concepto_valor
-    //     }
-    //     return total
-    //   }
-    // }
     if (tipoPago == 1) {
       for (let index = 0; index < conceptos.length; index++) {
         if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
           total += conceptos[index].valor
       }
-      return total
+      return Math.round(total)
     } else {
       for (let index = 0; index < conceptos.length; index++) {
         if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
           total += conceptos[index].pago_concepto_valor
       }
-      return total
+      return Math.round(total)
     }
   }
   valorCanon(valorCanon) {
@@ -685,7 +648,7 @@ export class PagosComponent implements OnInit {
       fechaFinContrato.getMonth() + 1 == this.mes
     ) {
       for (let i = 0; i < conceptos.length; i++) {
-        conceptos[i].valor = (conceptos[i].valor / 30) * diasTrabajar
+        conceptos[i].valor = Math.round((conceptos[i].valor / 30) * diasTrabajar)
       }
       conceptosValidados = conceptos
     } else {
@@ -721,21 +684,18 @@ export class PagosComponent implements OnInit {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto <= 499
       )
-      conceptosDevengados =
-        this.validarValorTrabajarConceptos(conceptosDevengados)
+      conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
       conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto > 499
       )
-      conceptosDeducidos =
-        this.validarValorTrabajarConceptos(conceptosDeducidos)
-      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
-      totalDevengado =
-        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.valorCanon(this.Pdv[0].valor_canon)
+      conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
+      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
+      totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+        this.valorCanon(this.Pdv[0].valor_canon))
 
       total = totalDevengado - totalDeduccion
     } else {
-      console.log("Hola")
+
       conceptosDevengados = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_conce <= 499
       )
@@ -744,11 +704,10 @@ export class PagosComponent implements OnInit {
         (element) => element.id_concepto_concepto.codigo_conce > 499
       )
 
-      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
+      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
 
-      totalDevengado =
-        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon
+      totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+        this.Pdv[0].valor_canon)
 
       total = totalDevengado - totalDeduccion
       fechaPago = this.Pdv[0].pago_arriendos[0].fecha_pago
