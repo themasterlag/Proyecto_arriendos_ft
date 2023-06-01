@@ -46,25 +46,26 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporte(reporte){
+    console.log(reporte);
     switch(reporte){
       case "bancolombia":
-        return "Bancolombia";
+        this.generarBase64("bancolombia");
         break;
       case "otrosBancos":
-        return "Otros bancos";
+        this.generarBase64("otros-bancos");
         break;
       case "efectivo":
-        return "Efectivo";
+        this.generarBase64("efectivo");
         break;
       case "todosBancos":
-        return "Todos los bancos";
+        this.generarBase64("todos-bancos");
         break;
       default:
         break;
     }
   }
 
-  generarBase64(element, tipoPago) {
+  generarBase64(filtro) {
     this.datosPdf = [];
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
@@ -72,14 +73,22 @@ export class ReportesComponent implements OnInit {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-        this.servicio.traerPuntosDeVenta().subscribe(
+        this.servicio.traerPdvReporte(filtro).subscribe(
           async (res:any) => {
             for (let i = 0; i < res.length; i++) {
               const element = res[i];
-              await this.traerContratoPDF(element.codigo_sitio_venta, base64, tipoPago);
+              await this.traerContratoPDF(element, base64);
             }
-
-            this.generarPdf(this.datosPdf);
+            if (res.length > 0) {
+              this.generarPdf(this.datosPdf);
+            }
+            else {
+              Swal.fire({
+                icon: 'error',
+                title: 'No se encontraron resultados',
+                text: 'No se encontraton contratos que cumplan los requisitos',
+              })
+            }
           },
           (error) => {
             console.log(error)
@@ -97,7 +106,7 @@ export class ReportesComponent implements OnInit {
     return `${year}-${month}-${day}`
   }
   
-  async traerContratoPDF(sitioVenta, base64, tipoPago) {
+  async traerContratoPDF(sitioVenta, base64) {
     return new Promise((resolve, reject) => {
       this.servicio.traerContratoPdf(sitioVenta).subscribe(async (res: any) => {
         this.contatoPDF = res
@@ -106,7 +115,7 @@ export class ReportesComponent implements OnInit {
           Swal.fire("No hay contratos", "", "error");
           reject("No hay contratos");
         } else {
-          let datos = await this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
+          let datos = await this.comprobantePdfNoPagados(base64, sitioVenta)
           this.datosPdf.push(datos);
           resolve(true);
         }
@@ -114,7 +123,7 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-  async comprobantePdfNoPagados(base64, datos, tipoPago) {
+  async comprobantePdfNoPagados(base64, datos) {
 
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
@@ -135,42 +144,22 @@ export class ReportesComponent implements OnInit {
     let totalDeduccion = 0
     let totalDevengado = 0
     let total = 0
-    let fechaPago = ""
 
-    if (tipoPago == 1) {
-      conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto <= 499
-      )
+    conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
+      (element) => element.id_concepto_concepto.codigo_concepto <= 499
+    )
 
-      conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto > 499
-      )
+    conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
+      (element) => element.id_concepto_concepto.codigo_concepto > 499
+    )
 
-      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
-      totalDevengado =
-        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon
+    totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
+    totalDevengado =
+      this.valorTotalConceptos(conceptosDevengados) +
+      this.Pdv[0].valor_canon
 
-      total = totalDevengado - totalDeduccion
-    } else {
-      console.log("Hola")
-      conceptosDevengados = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_conce <= 499
-      )
-
-      conceptosDeducidos = this.Pdv[0].pago_arriendos[0].pago_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_conce > 499
-      )
-
-      totalDeduccion = this.valorTotalConceptos(conceptosDeducidos, tipoPago)
-
-      totalDevengado = 
-        this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon
-
-      total = totalDevengado - totalDeduccion
-      fechaPago = this.Pdv[0].pago_arriendos[0].fecha_pago
-    }
+    total = totalDevengado - totalDeduccion
+    
 
     const documentDefinition = {
       content: [
@@ -297,12 +286,12 @@ export class ReportesComponent implements OnInit {
                 {
                   text: [
                     {
-                      text: `\n ${tipoPago == 1 ? "Fecha: " : "Fecha Pago: "} `,
+                      text: `\n "Fecha: " `,
                       bold: true,
                     },
                     {
                       text: `${
-                        tipoPago == 1 ? this.formatDate(new Date()) : fechaPago
+                        this.formatDate(new Date())
                       }`,
                     },
                   ],
@@ -362,7 +351,7 @@ export class ReportesComponent implements OnInit {
             {
               text: [
                 {
-                  text: this.organizarConceptos(conceptosDevengados, tipoPago),
+                  text: this.organizarConceptos(conceptosDevengados),
                 },
               ],
             },
@@ -370,14 +359,14 @@ export class ReportesComponent implements OnInit {
               width: "10%",
               text: [
                 {
-                  text: this.darvalorConceptos(conceptosDevengados, tipoPago),
+                  text: this.darvalorConceptos(conceptosDevengados),
                 },
               ],
             },
             {
               text: [
                 {
-                  text: this.organizarConceptos(conceptosDeducidos, tipoPago),
+                  text: this.organizarConceptos(conceptosDeducidos),
                 },
               ],
             },
@@ -385,7 +374,7 @@ export class ReportesComponent implements OnInit {
               width: "10%",
               text: [
                 {
-                  text: this.darvalorConceptos(conceptosDeducidos, tipoPago),
+                  text: this.darvalorConceptos(conceptosDeducidos),
                 },
               ],
             },
@@ -538,7 +527,7 @@ export class ReportesComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  valorTotalConceptos(conceptos, tipoPago) {
+  valorTotalConceptos(conceptos) {
     let total = 0
     
     let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
@@ -547,75 +536,39 @@ export class ReportesComponent implements OnInit {
     let diasTrabajar = 30 - fechaFinContrato.getDate();    
     
     if (fechaFinContrato.getFullYear() == this.anio && (fechaFinContrato.getMonth() + 1) == this.mes) {
-      if (tipoPago == 1) {
-        console.log("Hola");
         for (let index = 0; index < conceptos.length; index++) {
           if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
             total += (conceptos[index].valor / 30) * diasTrabajar
             
         }
         return total
-      } else {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-            total += conceptos[index].pago_concepto_valor
-        }
-        return total
-      }
       
     }else{
-      if (tipoPago == 1) {
         for (let index = 0; index < conceptos.length; index++) {
           if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
             total += conceptos[index].valor
         }
         return total
-      } else {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concept == 5))
-            total += conceptos[index].pago_concepto_valor
-        }
-        return total
-      }
     }    
   }
 
-  organizarConceptos(conceptos, tipoPago) {
+  organizarConceptos(conceptos) {
     let lista = []
-    if (tipoPago == 1) {
-      for (let index = 0; index < conceptos.length; index++) {
-        lista.push({
-          text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
-        })
-      }
-      return lista
-    } else {
-      for (let index = 0; index < conceptos.length; index++) {
-        lista.push({
-          text: `\n${conceptos[index].id_concepto_concepto.codigo_conce}  ${conceptos[index].id_concepto_concepto.nombre_conce}`,
-        })
-      }
-      return lista
+    for (let index = 0; index < conceptos.length; index++) {
+      lista.push({
+        text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
+      })
     }
+    return lista
   }
-  darvalorConceptos(conceptos, tipoPago) {
+
+  darvalorConceptos(conceptos) {
     let lista = []
-    if (tipoPago == 1) {
-      for (let index = 0; index < conceptos.length; index++) {
-        lista.push({
-          text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
-        })
-      }
-      return lista
-    } else {
-      for (let index = 0; index < conceptos.length; index++) {
-        lista.push({
-          text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString(
-            "es-ES"
-          )}`,
-        })
-      }
-      return lista
+    for (let index = 0; index < conceptos.length; index++) {
+      lista.push({
+        text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
+      })
     }
+    return lista
   }
 }

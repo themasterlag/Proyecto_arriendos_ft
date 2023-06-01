@@ -224,4 +224,8 @@ export class GeneralesService {
   eliminarCredito(id: number) {
     return this.servicio.delete(this.api + "saldo-credito/" + id)
   }
+
+  traerPdvReporte(filtro: any){
+    return this.servicio.get(this.api + "reportes/"+filtro)
+  }
 }
