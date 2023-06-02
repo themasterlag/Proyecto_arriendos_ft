@@ -195,6 +195,11 @@ export class GeneralesService {
       params: data,
     })
   }
+
+  actuallizarContratos(datos){
+    return this.servicio.patch(this.api + "pago-conceptos/update-conceptos", datos);
+  }
+
   traerTodoContratos() {
     return this.servicio.get(this.api + "contrato")
   }
@@ -218,5 +223,9 @@ export class GeneralesService {
 
   eliminarCredito(id: number) {
     return this.servicio.delete(this.api + "saldo-credito/" + id)
+  }
+
+  traerPdvReporte(filtro: any){
+    return this.servicio.get(this.api + "reportes/"+filtro)
   }
 }
