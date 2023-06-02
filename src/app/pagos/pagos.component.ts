@@ -570,6 +570,7 @@ export class PagosComponent implements OnInit {
             res[i].conceptos = conceptos[j].id_concepto_concepto.nombre_concepto
             res[i].valor_concepto =
               tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
+            res[i].valor_concepto = conceptos[j].id_concepto_concepto.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,

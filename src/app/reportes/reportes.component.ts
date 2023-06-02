@@ -5,9 +5,7 @@ import Swal from "sweetalert2";
 import * as pdfMake from "pdfmake/build/pdfmake"
 import * as pdfFonts from "pdfmake/build/vfs_fonts"
 import { GeneralesService } from 'app/services/generales.service';
-import { element } from 'protractor';
 declare var require: any
-const htmlToPdfmake = require("html-to-pdfmake")
 ;(pdfMake as any).vfs = pdfFonts.pdfMake.vfs
 import { PDFDocument } from 'pdf-lib';
 
@@ -46,7 +44,6 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporte(reporte){
-    console.log(reporte);
     switch(reporte){
       case "bancolombia":
         this.generarBase64("bancolombia");
