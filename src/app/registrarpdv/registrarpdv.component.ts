@@ -1215,5 +1215,4 @@ export class RegistrarpdvComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceContratos.filter = filterValue.trim().toLowerCase();
   }
-
 }

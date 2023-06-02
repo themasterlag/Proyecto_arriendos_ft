@@ -666,14 +666,15 @@ export class PagosComponent implements OnInit {
   }
   valorCanon(valorCanon) {
     let total = 0
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato)
     fechaFinContrato.setDate(fechaFinContrato.getDate())
-    let diasTrabajar = 30 - fechaFinContrato.getDate()
-    if (
-      fechaFinContrato.getFullYear() == this.anio &&
-      fechaFinContrato.getMonth() + 1 == this.mes
-    ) {
+    fechaInicioContrato.setDate(fechaInicioContrato.getDate())
+    let diasTrabajar = 30 - fechaInicioContrato.getDate()
+    if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       total = Math.round((valorCanon / 30) * diasTrabajar)
+    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
+      total = Math.round((valorCanon / 30) * (fechaFinContrato.getDate()+1))
     } else {
       total = valorCanon
     }
@@ -682,16 +683,24 @@ export class PagosComponent implements OnInit {
   validarValorTrabajarConceptos(conceptos) {
     let conceptosValidados = []
     let total = 0
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate())
-    let diasTrabajar = 30 - fechaFinContrato.getDate()    
-    if (
-      fechaFinContrato.getFullYear() == this.anio &&
-      fechaFinContrato.getMonth() + 1 == this.mes
-    ) {
+    let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    fechaInicioContrato.setDate(fechaInicioContrato.getDate())
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato)
+    fechaFinContrato.setDate(fechaFinContrato.getDate())    
+    let diasTrabajar = 30 - fechaInicioContrato.getDate()
+
+    if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       for (let i = 0; i < conceptos.length; i++) {
         conceptos[i].valor = Math.round((conceptos[i].valor / 30) * diasTrabajar)
       }
+      conceptosValidados = conceptos
+    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
+      // total = Math.round((valorCanon / 30) * fechaFinContrato.getDate()+1)
+      for (let i = 0; i < conceptos.length; i++) {     
+        conceptos[i].valor = Math.round((conceptos[i].valor / 30) * (fechaFinContrato.getDate() + 1))
+        console.log(conceptos[i].valor);   
+      }
+      console.log("fecha fin", fechaFinContrato.getDate()+1);      
       conceptosValidados = conceptos
     } else {
       conceptosValidados = conceptos
