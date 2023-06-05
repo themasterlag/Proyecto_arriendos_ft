@@ -1006,6 +1006,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   addConceptos(value) {
     this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
+    
     let conceptoIgual = this.conceptosTabla.find((concepto) => concepto.id_concepto == this.conceptosFilter[0].id_concepto);
     // console.log(conceptoIgual);
     
@@ -1020,7 +1021,7 @@ export class RegistrarpdvComponent implements OnInit {
           codigo_concepto: this.conceptosFilter[0].codigo_concepto,
           nombre_concepto: this.conceptosFilter[0].nombre_concepto,
           valor: this.operacion,
-        };      
+        }; 
         
         if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
           Confirm.prompt(
@@ -1057,9 +1058,17 @@ export class RegistrarpdvComponent implements OnInit {
                 valor: this.operacion,
               });              
               // console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
-              
-            }          
-            
+              if (this.formulariocontrato.value.valor_canon > 1145000) {
+                let consultarRTF = this.conceptos.filter((concepto) => concepto.codigo_concepto == 503)
+                this.operacionConceptos(consultarRTF[0].porcentaje_operacion, consultarRTF[0].tipo_concepto);
+                this.conceptosTabla.push({
+                  id_concepto: consultarRTF[0].id_concepto,
+                  codigo_concepto: consultarRTF[0].codigo_concepto,
+                  nombre_concepto: consultarRTF[0].nombre_concepto,
+                  valor: this.operacion,
+                });                 
+              }              
+            }               
           }else{
           this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);  
           concepto.valor = this.operacion;  
@@ -1090,31 +1099,6 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   deliCon(i: number) {
-    // console.log(i);
-    // if(this.conceptosTabla[i].id_concepto == 2 || this.conceptosTabla[i].id_concepto == 3){
-    //   for (let index = 0; index < this.conceptosTabla.length; index++) {
-    //     const element = this.conceptosTabla[index];
-    //     console.log(this.conceptosTabla[i].id_concepto, `ID Concepto en i: ${i}`);
-        
-    //     if(this.conceptosTabla[i].id_concepto == 3 && element.id_concepto == 2) {         
-    //       this.conceptosTabla.splice(index,1);
-    //       this.conceptosTabla.splice(i-1, 1);  
-    //       // break;
-    //     }
-    //     else if(element.id_concepto == 3 && this.conceptosTabla[i].id_concepto != 3){
-    //       this.conceptosTabla.splice(index,1);
-    //       console.log('responsable');
-    //       this.conceptosTabla.splice(i, 1);
-    //     }else if(this.conceptosTabla[i].id_concepto == 3 && element.id_concepto == 3){
-    //       this.conceptosTabla.splice(i, 1);
-    //     }
-        
-    //     console.log(index);        
-    //   }
-
-    //   this.totalValorConceptos();
-
-    // } 
       this.conceptosTabla.splice(i, 1);
       this.totalValorConceptos();
   }
@@ -1151,7 +1135,7 @@ export class RegistrarpdvComponent implements OnInit {
   tablaContratos(){
     this.servicio.traerTodoContratos().subscribe(
       (res:any) => {
-        console.log(res);
+        // console.log(res);
 
         this.tabla_contratos = res.map((element) => {
           return {
