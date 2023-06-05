@@ -167,6 +167,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/", { params: datos })
   }
 
+  traerIncremento(id){
+    return this.servicio.get(this.api + "reportes/valor-incremento/" + id)
+  }
+
   traerListaPagosTodos() {
     return this.servicio.get(this.api + "preliquidacion/todos")
   }

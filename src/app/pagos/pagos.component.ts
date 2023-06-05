@@ -52,6 +52,7 @@ export class PagosComponent implements OnInit {
   tipoCliente: any = null
   Pdv: any = null
   pagoArriendo: any = null
+  contratoIncremento: any
   displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"]
   responsableTablaNoPagados: PeriodicElement[] = []
   responsableTablaPagados: PeriodicElement[] = []
@@ -72,7 +73,7 @@ export class PagosComponent implements OnInit {
     Loading.pulse("Cargando")
     Loading.remove()
     const currentYear = new Date().getFullYear()
-    for (let i = currentYear; i >= 2000; i--) {
+    for (let i = currentYear + 5; i >= 2000; i--) {
       this.yearList.push(i)
     }
     // this.dataSource.paginator = this.paginator;
@@ -147,7 +148,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerContratoPdfPagado(data).subscribe((res: any) => {
       this.contatoPDF = res
-      console.log(this.contatoPDF)
+      // console.log(this.contatoPDF)
       this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
     })
   }
@@ -219,9 +220,9 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        // console.log("No Pagados", res)
+        console.log("No Pagados", res)
         this.noPagadosLista = res
-        console.log(this.noPagadosLista);
+        // console.log(this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
@@ -261,7 +262,7 @@ export class PagosComponent implements OnInit {
           operacionConcepto = ((conceptos.valor / 30) * diasTrabajar).toFixed(1);  
 
           let idPagoarriendo = this.pagoArriendo.filter((element) => element.id_contrato == elementLista.id_contrato)
-          console.log(idPagoarriendo, "Filtro");
+          // console.log(idPagoarriendo, "Filtro");
           
           conceptosActualizar.push({
             id_concepto: conceptos.id_concepto,
@@ -274,7 +275,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.actuallizarContratos(conceptosActualizar).subscribe(
       (res:any) => {
-        console.log(res);        
+        // console.log(res);        
       }
     )    
     console.log(conceptosActualizar);    
@@ -414,6 +415,16 @@ export class PagosComponent implements OnInit {
     )
   }
 
+  // traerInformacionIncremento(element){
+  //   // console.log(element);
+  //   this.servicio.traerIncremento(element.idContrato).subscribe(
+  //     (res:any) => {
+  //       // console.log(res);
+  //       this.contratoIncremento = res     
+  //     }
+  //   )    
+  // }
+
   generarBase64(element, tipoPago) {
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
@@ -421,12 +432,13 @@ export class PagosComponent implements OnInit {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-        console.log("Tipo del pago: ", tipoPago)
+        // console.log("Tipo del pago: ", tipoPago)
         if (tipoPago == 1) {
           this.traerContratoPDF(element.PDV, base64, tipoPago)
         } else this.traerContratoPagadoPDF(element.PDV, base64, tipoPago)
       }
     })
+    // this.traerInformacionIncremento(element);
   }
 
   darEstructuraNomina(tipo, datos) {
@@ -546,10 +558,10 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        console.log(res)
+        // console.log(res)
 
         res = this.darEstructuraNomina(tipo, res)
-        console.log(res)
+        // console.log(res)
 
         let workbook = XLSX.utils.book_new()
         res[0].valor_concepto = 0
@@ -670,7 +682,9 @@ export class PagosComponent implements OnInit {
     let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato)
     fechaFinContrato.setDate(fechaFinContrato.getDate())
     fechaInicioContrato.setDate(fechaInicioContrato.getDate())
+
     let diasTrabajar = 30 - fechaInicioContrato.getDate()
+
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       total = Math.round((valorCanon / 30) * diasTrabajar)
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
@@ -698,18 +712,25 @@ export class PagosComponent implements OnInit {
       // total = Math.round((valorCanon / 30) * fechaFinContrato.getDate()+1)
       for (let i = 0; i < conceptos.length; i++) {     
         conceptos[i].valor = Math.round((conceptos[i].valor / 30) * (fechaFinContrato.getDate() + 1))
-        console.log(conceptos[i].valor);   
+        // console.log(conceptos[i].valor);   
       }
-      console.log("fecha fin", fechaFinContrato.getDate()+1);      
+      // console.log("fecha fin", fechaFinContrato.getDate()+1);      
       conceptosValidados = conceptos
     } else {
       conceptosValidados = conceptos
     }
     return conceptosValidados
   }
-  comprobantePdfNoPagados(base64, datos, tipoPago) {
-    console.log(datos)
 
+  aplicarIncremento(){
+    console.log(this.contratoIncremento);
+    console.log(this.contatoPDF)
+  }
+
+
+  comprobantePdfNoPagados(base64, datos, tipoPago) {
+    // console.log(datos)
+    this.aplicarIncremento();
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
     )
@@ -730,6 +751,15 @@ export class PagosComponent implements OnInit {
     let totalDevengado = 0
     let total = 0
     let fechaPago = ""
+
+    let fechaIn = new Date(this.contatoPDF[0].fecha_inicio_contrato)
+    fechaIn.setDate(fechaIn.getDate())
+    console.log(fechaIn.getFullYear());
+    
+    if(fechaIn.getFullYear()+1 == this.anio && fechaIn.getMonth() == this.mes){
+      console.log("Hola");      
+    }
+    
 
     if (tipoPago == 1) {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
@@ -848,6 +878,28 @@ export class PagosComponent implements OnInit {
                     },
                   ],
                 },
+                {
+                  text: [
+                    {
+                      text: `\nCanon: `,
+                      bold: true,
+                    },
+                    {
+                      text: `${this.Pdv[0].valor_canon}`,
+                    },
+                  ],
+                },
+                // {
+                //   text: [
+                //     {
+                //       text: `\nIPC: `,
+                //       bold: true,
+                //     },
+                //     {
+                //       text: `${this.contratoIncremento[0].incremento_porcentaje}`,
+                //     },
+                //   ],
+                // },
               ],
               alignment: "left",
               margin: [28, 10, 0, 0],
@@ -901,6 +953,17 @@ export class PagosComponent implements OnInit {
                     },
                   ],
                 },
+                // {
+                //   text: [
+                //     {
+                //       text: `\nIncremento acicional: `,
+                //       bold: true,
+                //     },
+                //     {
+                //       text: `${this.contratoIncremento[0].incremento_adicional_porcentaje}`,
+                //     },
+                //   ],
+                // },
               ],
               alignment: "left",
               margin: [0, 10, 0, 0],
