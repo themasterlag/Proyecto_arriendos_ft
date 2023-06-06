@@ -53,6 +53,7 @@ export class PagosComponent implements OnInit {
   Pdv: any = null
   pagoArriendo: any = null
   contratoIncremento: any
+  conceptosInc: any
   displayedColumns: string[] = ["Check", "PDV", "Nombre", "Total", "Boton"]
   responsableTablaNoPagados: PeriodicElement[] = []
   responsableTablaPagados: PeriodicElement[] = []
@@ -73,7 +74,7 @@ export class PagosComponent implements OnInit {
     Loading.pulse("Cargando")
     Loading.remove()
     const currentYear = new Date().getFullYear()
-    for (let i = currentYear + 5; i >= 2000; i--) {
+    for (let i = currentYear ; i >= 2000; i--) {
       this.yearList.push(i)
     }
     // this.dataSource.paginator = this.paginator;
@@ -135,9 +136,12 @@ export class PagosComponent implements OnInit {
     this.servicio.traerContratoPdf(sitioVenta).subscribe((res: any) => {
       this.contatoPDF = res
 
-      if (this.contatoPDF == null) {
-        Swal.fire("No hay contratos", "", "error")
-      } else this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
+      if(tipoPago == 4){
+        console.log("ir a incremento");        
+        this.aplicarIncremento(sitioVenta)
+      } else if (this.contatoPDF != null && tipoPago != 4) {
+        this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)        
+      } else Swal.fire("No hay contratos", "", "error")
     })
   }
   traerContratoPagadoPDF(sitioVenta, base64, tipoPago) {
@@ -308,6 +312,15 @@ export class PagosComponent implements OnInit {
             (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
           )
         )
+        
+        console.log(nopagados);
+        let tipoPago = 4
+        let base64 = null
+        for (let index = 0; index < nopagados.length; index++) {
+          const element = nopagados[index].codigo_punto_venta;
+          this.traerContratoPDF(element, base64, tipoPago);
+          console.log("pagar");          
+        }
 
         const currentDate = new Date()
         const formattedDate = this.formatDate(currentDate)
@@ -325,17 +338,17 @@ export class PagosComponent implements OnInit {
             codigo_verificacion: new Date().valueOf(),
           }
         })
-        this.servicio.pagarContratos(listaEnviar).subscribe(
-          (res: any) => {
-            this.pagoArriendo = res.id
-            this.traerNoPagados()
-            this.traerPagados()        
-            this.informacionContrato()
-          },
-          (err: any) => {
-            console.log(err)
-          }
-        )
+        // this.servicio.pagarContratos(listaEnviar).subscribe(
+        //   (res: any) => {
+        //     this.pagoArriendo = res.id
+        //     this.traerNoPagados()
+        //     this.traerPagados()        
+        //     this.informacionContrato()
+        //   },
+        //   (err: any) => {
+        //     console.log(err)
+        //   }
+        // )
       }
     })
   }
@@ -623,7 +636,7 @@ export class PagosComponent implements OnInit {
 
   organizarConceptos(conceptos, tipoPago) {
     let lista = []
-    if (tipoPago == 1) {
+    if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
         lista.push({
           text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
@@ -641,19 +654,27 @@ export class PagosComponent implements OnInit {
   }
   darvalorConceptos(conceptos, tipoPago) {
     let lista = []
-    if (tipoPago == 1) {
+    if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
-        lista.push({
-          text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
-        })
+        if(tipoPago == 3){
+          let valorSinDecimales = Math.floor(conceptos[index].valor_incremento);
+          console.log(valorSinDecimales);          
+          lista.push({
+            text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
+          })
+        } else {
+          let valorSinDecimales = Math.floor(conceptos[index].valor);
+          lista.push({
+            text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
+          })
+        }        
       }
       return lista
     } else {
       for (let index = 0; index < conceptos.length; index++) {
+        let valorSinDecimales = Math.floor(conceptos[index].pago_concepto_valor);
         lista.push({
-          text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString(
-            "es-ES"
-          )}`,
+        text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
         })
       }
       return lista
@@ -662,10 +683,15 @@ export class PagosComponent implements OnInit {
   valorTotalConceptos(conceptos, tipoPago) {
     let total = 0
 
-    if (tipoPago == 1) {
+    if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
-        if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+        if (tipoPago == 3){
+          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
+          total += conceptos[index].valor_incremento
+        } else {
+          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
           total += conceptos[index].valor
+        }
       }
       return Math.round(total)
     } else {
@@ -722,15 +748,91 @@ export class PagosComponent implements OnInit {
     return conceptosValidados
   }
 
-  aplicarIncremento(){
-    console.log(this.contratoIncremento);
-    console.log(this.contatoPDF)
+  aplicarIncremento(pdv){
+    let listaInc = []
+    console.log("se aplica incremento");
+    
+    let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.codigo_punto_venta == pdv)
+    console.log(contratoIncremento);
+    
+    let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato)
+    FechaInicio.setDate(FechaInicio.getDate())
+    
+    if(FechaInicio.getFullYear()+1 == this.anio && FechaInicio.getMonth()+1 == this.mes)
+      {              
+        let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()+1))
+        let diaspost = 30 - (FechaInicio.getDate()+1)
+        let operacionIncremento = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100
+        let calcularpost = (((contratoIncremento[0].valor_canon / 30) * diaspost) * (operacionIncremento)) + ((contratoIncremento[0].valor_canon / 30) * diaspost)       
+        let sumaValores = calcularpre + calcularpost; 
+        let conceptosDeducidos = 0
+        this.contratoIncremento = sumaValores
+
+        // console.log(sumaValores);        
+        
+        let conceptoPre
+        let conceptoPost 
+        let sumaConceptoDev
+        let sumaConceptoDed
+        let totalConceptosDev = 0
+        let totalConceptosDed = 0
+        let totalContrato
+
+        this.conceptosInc = contratoIncremento[0].conceptos
+
+        for (let index = 0; index < contratoIncremento[0].conceptos.length; index++) {
+          const element = contratoIncremento[0].conceptos;
+
+          if(element[index].id_concepto_concepto.incremento == 1 && element[index].id_concepto_concepto.tipo_concepto != 5){
+            if(element[index].id_concepto_concepto.incremento.codigo_concepto <= 499){
+              let actual = element[index]
+              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate()+1)
+              conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento)) + ((element[index].valor / 30) * diaspost)
+              sumaConceptoDev = conceptoPre + conceptoPost
+              totalConceptosDev += sumaConceptoDev
+              actual.valor_incremento = parseInt(sumaConceptoDev.toFixed(0))
+              listaInc.push(actual)
+              console.log(totalConceptosDev, "incremento dev");              
+            } else {
+              let actual = element[index]
+              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate()+1)
+              conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento)) + ((element[index].valor / 30) * diaspost)
+              sumaConceptoDed = conceptoPre + conceptoPost
+              totalConceptosDed += sumaConceptoDed
+              actual.valor_incremento = parseInt(sumaConceptoDed.toFixed(0))
+              listaInc.push(actual)
+              console.log(totalConceptosDed, "incremento ded");              
+            }
+          } else if (element[index].id_concepto_concepto.tipo_concepto != 5 && element[index].id_concepto_concepto.codigo_concepto <= 499) {
+            let actual = element[index]
+            sumaValores += element[index].valor
+            actual.valor_incremento = parseInt(element[index].valor.toFixed(0))
+            listaInc.push(actual)
+            console.log(sumaValores, "concepto dev");            
+          } else if (element[index].id_concepto_concepto.tipo_concepto != 5 && element[index].id_concepto_concepto.codigo_concepto > 499){
+            let actual = element[index]
+            actual.valor_incremento = parseInt(element[index].valor.toFixed(0))
+            conceptosDeducidos += element[index].valor
+            listaInc.push(actual)
+            console.log(conceptosDeducidos, "concepto ded");            
+          } else if (element[index].id_concepto_concepto.tipo_concepto == 5) {
+            let actual = element[index]
+            actual.valor_incremento = parseInt(this.contratoIncremento.toFixed(0))
+            listaInc.push(actual)
+          } 
+        }
+        totalContrato = (sumaValores + totalConceptosDev) - (totalConceptosDed + conceptosDeducidos)
+        console.log(totalContrato.toFixed(0), "valor total");        
+      }
+
+      // console.log(listaInc);
+      
+      return listaInc 
   }
 
 
   comprobantePdfNoPagados(base64, datos, tipoPago) {
     // console.log(datos)
-    this.aplicarIncremento();
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
     )
@@ -754,14 +856,31 @@ export class PagosComponent implements OnInit {
 
     let fechaIn = new Date(this.contatoPDF[0].fecha_inicio_contrato)
     fechaIn.setDate(fechaIn.getDate())
-    console.log(fechaIn.getFullYear());
+    // console.log(fechaIn.getFullYear()+1, fechaIn.getMonth());
     
-    if(fechaIn.getFullYear()+1 == this.anio && fechaIn.getMonth() == this.mes){
-      console.log("Hola");      
-    }
-    
+    if(fechaIn.getFullYear()+1 == this.anio && fechaIn.getMonth()+1 == this.mes){
+      let lista = this.aplicarIncremento(datos);
+      console.log(lista);
 
-    if (tipoPago == 1) {
+      tipoPago = 3;
+          
+      conceptosDevengados = lista.filter(
+        (element) => element.id_concepto_concepto.codigo_concepto <= 499        
+      )
+      console.log(conceptosDevengados);      
+      
+      conceptosDeducidos = lista.filter(
+        (element) => element.id_concepto_concepto.codigo_concepto > 499        
+      )
+
+      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
+
+      totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+        this.contratoIncremento) 
+
+      total = totalDevengado - totalDeduccion
+
+    } else if (tipoPago == 1) {
       conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto <= 499
       )
