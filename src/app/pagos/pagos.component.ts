@@ -185,7 +185,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        // console.log("Pagados", res)
+        console.log("Pagados", res)
 
         this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
@@ -224,18 +224,20 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        console.log("No Pagados", res)
+        // console.log("No Pagados", res)
         this.noPagadosLista = res
         // console.log(this.noPagadosLista);
+       
         
         this.responsableTablaNoPagados = res.map((e) => {
           // console.log(e);
+          let totalValor = this.CalcularValorTablas(e); 
           return {
             idContrato: e.id_contrato,
             Check: true,
             PDV: e.codigo_punto_venta,
             Nombre: e.nombre_punto_venta,
-            Total: e.total,
+            Total: totalValor,
           }
         })
         this.dataSourceNoPagados.paginator = this.paginatorNoPagados
@@ -248,6 +250,50 @@ export class PagosComponent implements OnInit {
         console.log(err.message)
       }
     )
+  }
+
+  CalcularValorTablas(datos){
+    console.log("Datos", datos);
+
+    let total = 0
+    let fechaInicioContrato = new Date(datos.fecha_inicio_contrato)
+    let fechaFinContrato = new Date(datos.fecha_fin_contrato)
+    let fechaIncremento = false
+    let conceptosDEV = []
+    let conceptosDeC = []
+
+    fechaFinContrato.setDate(fechaFinContrato.getDate())
+    fechaInicioContrato.setDate(fechaInicioContrato.getDate())
+
+    let diasTrabajar = 30 - fechaInicioContrato.getDate()
+
+    if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
+      total = Math.round((datos.valor_canon / 30) * diasTrabajar)
+      for (let i = 0; i < datos.conceptos.length; i++) {
+        datos.conceptos[i].valor = Math.round((datos.conceptos[i].valor / 30) * diasTrabajar)        
+      }
+      conceptosDEV = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      conceptosDeC = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
+
+    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
+      total = Math.round((datos.valor_canon / 30) * (fechaFinContrato.getDate()+1))
+      for (let i = 0; i < datos.conceptos.length; i++) {
+        datos.conceptos[i].valor = Math.round((datos.conceptos[i].valor / 30) * (fechaFinContrato.getDate() + 1))      
+      }
+      conceptosDEV = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      conceptosDeC = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
+    } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
+      
+      
+    } else {
+      total = datos.valor_canon
+
+      conceptosDEV = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      conceptosDeC = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
+    }
+
+
+    return total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)
   }
 
   informacionContrato(){
@@ -732,19 +778,23 @@ export class PagosComponent implements OnInit {
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       for (let i = 0; i < conceptos.length; i++) {
         conceptos[i].valor = Math.round((conceptos[i].valor / 30) * diasTrabajar)
+        conceptosValidados = conceptos
       }
-      conceptosValidados = conceptos
+      // conceptosValidados = conceptos
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
       // total = Math.round((valorCanon / 30) * fechaFinContrato.getDate()+1)
       for (let i = 0; i < conceptos.length; i++) {     
         conceptos[i].valor = Math.round((conceptos[i].valor / 30) * (fechaFinContrato.getDate() + 1))
-        // console.log(conceptos[i].valor);   
+        // console.log(conceptos[i].valor); 
+        conceptosValidados = conceptos  
       }
       // console.log("fecha fin", fechaFinContrato.getDate()+1);      
-      conceptosValidados = conceptos
+      
     } else {
       conceptosValidados = conceptos
     }
+    console.log(conceptosValidados);
+    
     return conceptosValidados
   }
 
@@ -823,10 +873,7 @@ export class PagosComponent implements OnInit {
         }
         totalContrato = (sumaValores + totalConceptosDev) - (totalConceptosDed + conceptosDeducidos)
         console.log(totalContrato.toFixed(0), "valor total");        
-      }
-
-      // console.log(listaInc);
-      
+    }      
       return listaInc 
   }
 
@@ -836,6 +883,8 @@ export class PagosComponent implements OnInit {
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
     )
+    console.log(this.Pdv, "hola");
+    
     if (
       this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento ==
       "Nit"
