@@ -261,7 +261,11 @@ export class PagosComponent implements OnInit {
     let fechaIncremento = false
     let conceptosDEV = []
     let conceptosDeC = []
-
+    // conceptos deducidos y devengados despues del incremento
+    let conceptosDEVIncremento = []
+    let conceptosDeCIncremento = []
+    let conceptosAntesIncremento = datos.conceptos
+    let conceptosDespuesIncremento = datos.conceptos
     fechaFinContrato.setDate(fechaFinContrato.getDate())
     fechaInicioContrato.setDate(fechaInicioContrato.getDate())
 
@@ -283,8 +287,39 @@ export class PagosComponent implements OnInit {
       conceptosDEV = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
     } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
-      
-      
+      // Calcular la parte antes del incremento
+      // el valor del canon
+      total = Math.round((datos.valor_canon / 30) * (fechaFinContrato.getDate() + 1))
+      // valor de los conceptos antes del incremento
+      for (let i = 0; i < datos.conceptos.length; i++) {
+        conceptosAntesIncremento[i].valor = Math.round((conceptosAntesIncremento[i].valor / 30) * diasTrabajar)        
+      }
+
+      conceptosDEV = conceptosAntesIncremento.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      conceptosDeC = conceptosAntesIncremento.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
+      // Calcular la parte donde se aplica el incremento
+      // Valor del Canon con el incremento
+      let valorCanonConIncremento = (((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon+datos.valor_canon)
+      // Ahora se calcula los conceptos que dependen del valor del canon, cada uno tiene su porcentaje de operacion
+      //Se recorre datos.conceptos para aplicar el cambio del valor y tambien aplicar los dias que se deben pagar
+      for(let i = 0; i<conceptosDespuesIncremento.length;i++){
+        //Primero se aplica el incremento
+        if(conceptosDespuesIncremento[i].id_concepto_concepto.tipo_concepto==5){
+          conceptosDespuesIncremento.valor = valorCanonConIncremento
+        }else if(conceptosDespuesIncremento[i].id_concepto_concepto.tipo_concepto== 2||conceptosDespuesIncremento[i].id_concepto_concepto.tipo_concepto==1){
+          console.log('TipoConcepto',conceptosDespuesIncremento[i].id_concepto_concepto.tipo_concepto );
+          
+          conceptosDespuesIncremento.valor = valorCanonConIncremento * conceptosDespuesIncremento[i].id_concepto_concepto.porcentaje_operacion
+        }
+
+        //despues se calcula en base a los dias restantes despues del incremento
+        conceptosDespuesIncremento.valor=Math.round((conceptosAntesIncremento[i].valor / 30) * diasTrabajar)
+      }
+      // Se le suma la parte del canon con el incremento
+      total+=((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon+datos.valor_canon)/30)* diasTrabajar;
+      // ahora se le setea los valores de los conceptos incrementados dependiendo si son dev o dec
+      conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
     } else {
       total = datos.valor_canon
 
@@ -292,8 +327,9 @@ export class PagosComponent implements OnInit {
       conceptosDeC = datos.conceptos.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
     }
 
+    let valorConceptosIncrementados = this.valorTotalConceptos(conceptosDEVIncremento,1)-this.valorTotalConceptos(conceptosDeCIncremento,1)+0
 
-    return total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)
+    return total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)+ valorConceptosIncrementados
   }
 
   informacionContrato(){
