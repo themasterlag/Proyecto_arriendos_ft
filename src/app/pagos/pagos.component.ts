@@ -295,7 +295,7 @@ export class PagosComponent implements OnInit {
       // Calcular la parte antes del incremento
       // el valor del canon
       total = Math.round((datos.valor_canon / 30) * (fechaInicioContrato.getDate() + 1))
-      // console.log("canon antes de incremento", total, fechaInicioContrato.getDate() + 1);
+      console.log("canon antes de incremento", total, fechaInicioContrato.getDate() + 1);
       
       // valor de los conceptos antes del incremento
       for (let i = 0; i < conceptosAntesIncremento.length; i++) {
@@ -306,8 +306,10 @@ export class PagosComponent implements OnInit {
       }
 
       conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      console.log('Conceptos devengados antes de incremento',conceptosDEV );
       
       conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
+      console.log('Conceptos deducidos antes de incremento',conceptosDeC );
       // Calcular la parte donde se aplica el incremento
       // Valor del Canon con el incremento
       let valorCanonConIncremento = ((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon) + datos.valor_canon)
@@ -327,10 +329,16 @@ export class PagosComponent implements OnInit {
         conceptosDespuesIncremento[i].valor=Math.round((conceptosAntesIncremento[i].valor / 30) * diasTrabajar)
       }
       // Se le suma la parte del canon con el incremento
+      console.log('Canon a trabajar con el incremento',(((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon) + datos.valor_canon)/30)* diasTrabajar);
+      
       total+=(((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon) + datos.valor_canon)/30)* diasTrabajar;
       // ahora se le setea los valores de los conceptos incrementados dependiendo si son dev o dec
       conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
+      console.log('Conceptos devengados con el incremento y a trabajar', conceptosDEVIncremento);
+      
       conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
+      console.log('Conceptos deducidos con incremento y dias a trabajar', conceptosDeCIncremento);
+      
     } else {
       console.log('Entro Al mes regular');
       total = datos.valor_canon
