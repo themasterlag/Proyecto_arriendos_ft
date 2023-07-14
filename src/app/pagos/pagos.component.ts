@@ -62,6 +62,8 @@ export class PagosComponent implements OnInit {
     new MatTableDataSource<PeriodicElement>()
   dataSourcePagados: MatTableDataSource<PeriodicElement> =
     new MatTableDataSource<PeriodicElement>()
+  noPagadosEnviarNormal : any[] = []
+  noPagadosEnviarIncremento : any[] = []
   @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator
   @ViewChild("paginatorPagados") paginatorPagados: MatPaginator
   @ViewChild("pdfTable") pdfTable: ElementRef
@@ -266,7 +268,8 @@ export class PagosComponent implements OnInit {
     let conceptosAntesIncremento: any[] = _.cloneDeep(datos.conceptos)
     let conceptosDespuesIncremento: any[] = _.cloneDeep(datos.conceptos)
     let conceptosAjuste: any[] = _.cloneDeep(datos.conceptos)
-     
+     //prueba copiando datos a otra variable para aplicar el incremento nada mas
+     let datosConIncremento = _.cloneDeep(datos)
 
     let diasTrabajar = 30 - (fechaInicioContrato.getDate() + 1) 
     let diasPago = (fechaInicioContrato.getDate() + 1)
@@ -275,7 +278,7 @@ export class PagosComponent implements OnInit {
 
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       // console.log('Entro Al primer mes');
-      
+      this.noPagadosEnviarNormal.push(datos)
       total = Math.round((datos.valor_canon / 30) * diasTrabajar)
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos,diasTrabajar)
       conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
@@ -283,6 +286,7 @@ export class PagosComponent implements OnInit {
 
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
       // console.log('Entro Al ultimo mes');
+      this.noPagadosEnviarNormal.push(datos)
       total = Math.round((datos.valor_canon / 30) * (fechaFinContrato.getDate()+1))
       for (let i = 0; i < conceptosAjuste.length; i++) {
         conceptosAjuste[i].valor = Math.round((conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1))      
@@ -290,6 +294,7 @@ export class PagosComponent implements OnInit {
       conceptosDEV = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
     } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
+    
       // console.log('Entro Al mes de incremento');
       // Calcular la parte antes del incremento
       // el valor del canon
@@ -310,7 +315,9 @@ export class PagosComponent implements OnInit {
       // console.log('Conceptos deducidos antes de incremento',conceptosDeC );
       // Calcular la parte donde se aplica el incremento
       // Valor del Canon con el incremento
-      //let valorCanonConIncremento = ((((datos.incremento + datos.incremento_adicional) / 100) * datos.valor_canon) + datos.valor_canon)
+      
+      let valorCanonConIncremento = ((((datos.incremento + datos.incremento_adicional) / 100) * datos.valor_canon) + datos.valor_canon)
+      datosConIncremento.valor_canon = valorCanonConIncremento
       //  console.log(valorCanonConIncremento, "valor canon con incremento");
       
       // Ahora se calcula los conceptos que dependen del valor del canon, cada uno tiene su porcentaje de operacion
@@ -330,6 +337,8 @@ export class PagosComponent implements OnInit {
         
       // }
       let porcentaje = ((datos.incremento+datos.incremento_adicional) / 100)+1
+      datosConIncremento.conceptos = this.incrementoConceptos(datosConIncremento.conceptos,porcentaje)
+      this.noPagadosEnviarIncremento.push(datosConIncremento)
       // console.log(porcentaje);
        
       conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasTrabajar);
@@ -358,6 +367,7 @@ export class PagosComponent implements OnInit {
 
       conceptosDEV = datos.conceptos.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = datos.conceptos.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
+      this.noPagadosEnviarNormal.push(datos)
     }
 
     let valorConceptosIncrementados = this.valorTotalConceptos(conceptosDEVIncremento,1)-this.valorTotalConceptos(conceptosDeCIncremento,1)+0
@@ -480,7 +490,19 @@ export class PagosComponent implements OnInit {
             codigo_verificacion: new Date().valueOf(),
           }
         })
-        console.log(listaEnviar);
+
+        this.noPagadosEnviarNormal = this.noPagadosEnviarNormal.filter((noPagados) =>
+        nopagados.some(
+          (element) =>
+            noPagados.codigo_punto_venta == element.codigo_punto_venta
+        )
+      )
+        this.noPagadosEnviarIncremento = this.noPagadosEnviarIncremento.filter((noPagados) =>
+        nopagados.some(
+          (element) =>
+            noPagados.codigo_punto_venta == element.codigo_punto_venta
+        )
+      )
         
         // this.servicio.pagarContratos(listaEnviar).subscribe(
         //   (res: any) => {
