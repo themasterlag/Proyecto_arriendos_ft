@@ -208,6 +208,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato")
   }
 
+  ActualizarContrato(datos) {
+    return this.servicio.patch(this.api + "contrato", datos)
+  }
+
   inhabilitarContratos(datos) {
     return this.servicio.patch(this.api + "contrato/inhabilitar", datos)
   }
@@ -232,4 +236,6 @@ export class GeneralesService {
   traerPdvReporte(filtro: any){
     return this.servicio.get(this.api + "reportes/"+filtro)
   }
+
+
 }
