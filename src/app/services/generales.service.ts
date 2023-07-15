@@ -208,8 +208,8 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato")
   }
 
-  ActualizarContrato(datos) {
-    return this.servicio.patch(this.api + "contrato", datos)
+  actualizarContrato(datos) {
+    return this.servicio.patch(this.api + "contrato/actualizar-contrato-incremento", datos)
   }
 
   inhabilitarContratos(datos) {
