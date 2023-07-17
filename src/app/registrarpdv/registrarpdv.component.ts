@@ -86,6 +86,7 @@ export class RegistrarpdvComponent implements OnInit {
   pdv_busqueda = null;
   pdv_id = null;
   tabla_contratos: any = [];
+  valorCanon = null;
   displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Contratos> =
   new MatTableDataSource<Contratos>();
@@ -316,6 +317,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.actualizar = true;
     let id = this.consulta_pdv;
 
+
     this.servicio.traerPuntosDeVenta().subscribe(
       (resPdv:any) => {
         this.pdv = resPdv;
@@ -348,6 +350,9 @@ export class RegistrarpdvComponent implements OnInit {
           id_clienteresponsable: res.contrato.id_responsable_responsable.id_cliente,
           id_punto_venta: res.contrato.id_punto_venta,
         });
+
+        this.valorCanon = this.formulariocontrato.get('valor_canon').value
+        
         if (res.contrato.id_autorizado_autorizado.metodo_pago == 1) {
           this.pago_transferencia = true;
           // this.pago_efectivo = false;
@@ -387,6 +392,7 @@ export class RegistrarpdvComponent implements OnInit {
         console.log(err.message);
       }
     );
+      this.formulariocontrato.get('valor_canon').disable()
   }
 
   darTipoConcepto(tipo_concepto){
@@ -989,7 +995,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   totalValorConceptos(){
 
-    this.valorTotal = this.formulariocontrato.value.valor_canon
+    this.valorTotal = this.valorCanon    
     
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
@@ -1120,7 +1126,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.limpiarConceptos();
     this.limpiarServicios();
     this.consulta_pdv = null;
-
+    this.formulariocontrato.get('valor_canon').enable()
   }
 
   actualizarValorConcepto(i, valor){    
