@@ -64,6 +64,9 @@ export class PagosComponent implements OnInit {
   dataSourcePagados: MatTableDataSource<PeriodicElement> =
     new MatTableDataSource<PeriodicElement>()
   noPagadosEnviar : any[] = []
+  concepPre: any[] = []
+  concepPos: any[] = []
+  pagoConcepto: any[] = []
   @ViewChild("paginatorNoPagados") paginatorNoPagados: MatPaginator
   @ViewChild("paginatorPagados") paginatorPagados: MatPaginator
   @ViewChild("pdfTable") pdfTable: ElementRef
@@ -228,8 +231,8 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        console.log("No Pagados", res)
-        this.noPagadosLista = res
+        console.log("No Pagados", _.cloneDeep(res))
+        this.noPagadosLista = _.cloneDeep(res)
         // console.log(this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e) => {
@@ -280,16 +283,23 @@ export class PagosComponent implements OnInit {
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       
       total = (datos.valor_canon / 30) * diasTrabajar
+      console.log(datos.conceptos);
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos,diasTrabajar)
+      this.concepPre = _.cloneDeep(conceptosAntesIncremento)
+
+      
       conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.id_concepto_concepto.codigo_concepto > 499)
 
+      
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
       
       total = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
       for (let i = 0; i < conceptosAjuste.length; i++) {
         conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)    
       }
+      this.concepPre = _.cloneDeep(conceptosAjuste)
+      
       conceptosDEV = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
     } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
@@ -300,7 +310,9 @@ export class PagosComponent implements OnInit {
 
       // valor de los conceptos antes del incremento
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento,diasPago)
-
+      this.concepPre = _.cloneDeep(conceptosAntesIncremento)
+      console.log(this.concepPre);
+      
       conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       
       conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
@@ -318,8 +330,10 @@ export class PagosComponent implements OnInit {
        
       conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasTrabajar);
      
+     
       conceptosDespuesIncremento = this.incrementoConceptos(conceptosDespuesIncremento,porcentaje)
-
+      this.concepPos = _.cloneDeep(conceptosDespuesIncremento)
+      console.log(this.concepPos);
       // Se le suma la parte del canon con el incremento
 
       total+=(((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon) + datos.valor_canon)/30)* diasTrabajar;
@@ -329,7 +343,7 @@ export class PagosComponent implements OnInit {
       conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       
       conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
-
+      this.concepPre.push()
     } else {
       total = datos.valor_canon
 
@@ -444,16 +458,19 @@ export class PagosComponent implements OnInit {
           new Date(this.anio, this.mes - 1, 1)
         )
 
-        // const listaEnviar = nopagados.map((element) => {
-        //   return {
-        //     id_contrato: element.id_contrato,
-        //     valor: Math.round(element.total),
-        //     fecha_pago: formattedDate,
-        //     fecha_periodo: fecha_parseada,
-        //     codigo_verificacion: new Date().valueOf(),
-        //   }
-        // })
-        // console.log(listaEnviar);        
+        this.pagoConcepto = this.sumaPagoConcepto(this.concepPre, this.concepPos)
+
+        const listaEnviar = nopagados.map((element, index) => {
+          return {
+            id_contrato: element.id_contrato,
+            valor: Math.round(element.total),
+            fecha_pago: formattedDate,
+            fecha_periodo: fecha_parseada,
+            codigo_verificacion: new Date().valueOf(),
+            conceptos: element.conceptos
+          }
+        })
+        console.log(listaEnviar);        
 
         this.noPagadosEnviar = this.noPagadosEnviar.filter((noPagados) =>
         nopagados.some(
@@ -466,7 +483,8 @@ export class PagosComponent implements OnInit {
         // Servicio que guarda los contratos en Pago arriendos
         // this.servicio.pagarContratos(listaEnviar).subscribe(
         //   (res: any) => {
-        //     this.pagoArriendo = res.id
+        //     this.pagoArriendo = res
+        //     console.log(this.pagoArriendo);            
         //     this.traerNoPagados()
         //     this.traerPagados()        
         //     this.informacionContrato()
@@ -479,14 +497,23 @@ export class PagosComponent implements OnInit {
         //Servicio que actualiza el servicio el contrato que tuvo incremento
         console.log(this.noPagadosEnviar);
         
-        this.servicio.actualizarContrato(this.noPagadosEnviar).subscribe(
-          (res:any) => {
-            console.log(res);              
-          }
-        )
+        // this.servicio.actualizarContrato(this.noPagadosEnviar).subscribe(
+        //   (res:any) => {
+        //     console.log(res);              
+        //   }
+        // )
 
       }
     })
+  }
+
+  sumaPagoConcepto(pre, post){
+    let total = []
+
+    console.log(pre, post);
+    
+    
+    return total
   }
 
   generarTxt() {
@@ -1039,27 +1066,29 @@ export class PagosComponent implements OnInit {
 
       total = totalDevengado - totalDeduccion
      
-    } else if(fechaFin.getFullYear() == this.anio && fechaFin.getMonth()+1 == this.mes){
+    }
+    //  else if(fechaFin.getFullYear() == this.anio && fechaFin.getMonth()+1 == this.mes){
 
-      console.log("Blue labbel");   
+    //   console.log("Blue labbel");   
       
-      conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto <= 499
-      )
-      conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
+    //   conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
+    //     (element) => element.id_concepto_concepto.codigo_concepto <= 499
+    //   )
+    //   conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
 
-      conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-        (element) => element.id_concepto_concepto.codigo_concepto > 499
-      )
-      conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
+    //   conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
+    //     (element) => element.id_concepto_concepto.codigo_concepto > 499
+    //   )
+    //   conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
 
-      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
-      totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.valorCanon(this.Pdv[0].valor_canon))
+    //   totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
+    //   totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
+    //     this.valorCanon(this.Pdv[0].valor_canon))
 
-      total = totalDevengado - totalDeduccion
+    //   total = totalDevengado - totalDeduccion
 
-    } else if (tipoPago == 1) {
+    // }
+     else if (tipoPago == 1) {
       // Se calculo el valor a pagar para el primer mes del contrato
       // console.log("aquii el tipo pago 1");
       
@@ -1067,10 +1096,12 @@ export class PagosComponent implements OnInit {
         (element) => element.id_concepto_concepto.codigo_concepto <= 499
       )
       conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
+
       conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
         (element) => element.id_concepto_concepto.codigo_concepto > 499
       )
       conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
+
       totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.valorCanon(this.Pdv[0].valor_canon))

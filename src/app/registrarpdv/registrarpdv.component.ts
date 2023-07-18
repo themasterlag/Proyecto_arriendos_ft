@@ -351,7 +351,7 @@ export class RegistrarpdvComponent implements OnInit {
           id_punto_venta: res.contrato.id_punto_venta,
         });
 
-        this.valorCanon = this.formulariocontrato.get('valor_canon').value
+        this.formulariocontrato.value.valor_canon = this.formulariocontrato.get('valor_canon').value
         
         if (res.contrato.id_autorizado_autorizado.metodo_pago == 1) {
           this.pago_transferencia = true;
@@ -995,7 +995,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   totalValorConceptos(){
 
-    this.valorTotal = this.valorCanon    
+    this.valorTotal = this.formulariocontrato.value.valor_canon  
     
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
