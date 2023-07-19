@@ -235,7 +235,7 @@ export class PagosComponent implements OnInit {
         this.noPagadosLista = _.cloneDeep(res)
         // console.log(this.noPagadosLista);
         
-        this.responsableTablaNoPagados = res.map((e) => {
+        this.responsableTablaNoPagados = res.map((e:any) => {
           
           let totalValor = this.CalcularValorTablas(e); 
           return {
@@ -283,22 +283,18 @@ export class PagosComponent implements OnInit {
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       
       total = (datos.valor_canon / 30) * diasTrabajar
-      console.log(datos.conceptos);
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos,diasTrabajar)
-      this.concepPre = _.cloneDeep(conceptosAntesIncremento)
-
-      
+          
       conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.id_concepto_concepto.codigo_concepto > 499)
 
-      
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
       
       total = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
       for (let i = 0; i < conceptosAjuste.length; i++) {
         conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)    
       }
-      this.concepPre = _.cloneDeep(conceptosAjuste)
+      
       
       conceptosDEV = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       conceptosDeC = conceptosAjuste.filter((concepto) => concepto.id_concepto_concepto.codigo_concepto > 499)
@@ -309,8 +305,10 @@ export class PagosComponent implements OnInit {
       total = (datos.valor_canon / 30) * (fechaInicioContrato.getDate() + 1)
 
       // valor de los conceptos antes del incremento
+      console.log(conceptosAntesIncremento);
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento,diasPago)
-      this.concepPre = _.cloneDeep(conceptosAntesIncremento)
+    
+      this.concepPre.push(conceptosAntesIncremento)
       console.log(this.concepPre);
       
       conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
@@ -326,13 +324,13 @@ export class PagosComponent implements OnInit {
 
       let porcentaje = ((datos.incremento+datos.incremento_adicional) / 100)+1
       datosConIncremento.conceptos = this.incrementoConceptos(datosConIncremento.conceptos,porcentaje)
-      this.noPagadosEnviar.push(datosConIncremento)
+     
        
       conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasTrabajar);
      
      
       conceptosDespuesIncremento = this.incrementoConceptos(conceptosDespuesIncremento,porcentaje)
-      this.concepPos = _.cloneDeep(conceptosDespuesIncremento)
+      this.concepPos.push(conceptosDespuesIncremento)
       console.log(this.concepPos);
       // Se le suma la parte del canon con el incremento
 
@@ -343,7 +341,7 @@ export class PagosComponent implements OnInit {
       conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
       
       conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto > 499)
-      this.concepPre.push()
+     
     } else {
       total = datos.valor_canon
 
@@ -467,7 +465,7 @@ export class PagosComponent implements OnInit {
             fecha_pago: formattedDate,
             fecha_periodo: fecha_parseada,
             codigo_verificacion: new Date().valueOf(),
-            conceptos: element.conceptos
+            conceptos: this.pagoConcepto
           }
         })
         console.log(listaEnviar);        
@@ -507,10 +505,18 @@ export class PagosComponent implements OnInit {
     })
   }
 
-  sumaPagoConcepto(pre, post){
-    let total = []
-
-    console.log(pre, post);
+  sumaPagoConcepto(pre:any[], post:any[]){
+    let total:any[] = []
+    // sumar pre[i][j].valor + post[i][j].valor => pre[i][j].id_contrato == post[i][j].id_contrato
+    // almacenar total =[{ id_concepto, valor}]
+    for (let i = 0; i < pre.length; i++) {
+      for (let j = 0; j < pre[i].length; j++) {
+          let sum = pre[i][j].valor + post[i][j].valor;
+          total.push({ id_contrato: pre[i][j].id_contrato, id_concepto:  pre[i][j].id_concepto, valor: sum });
+      }
+  }
+   console.log(total);
+   
     
     
     return total
