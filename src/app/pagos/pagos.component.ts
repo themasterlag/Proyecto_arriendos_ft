@@ -234,7 +234,7 @@ export class PagosComponent implements OnInit {
       (res: any) => {
        this.concepPre = []
        this.concepPos = []
-        this.noPagadosLista = _.cloneDeep(res)
+        this.noPagadosLista = res
         console.log(this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e:any) => {
@@ -284,7 +284,7 @@ export class PagosComponent implements OnInit {
     
 
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
-      
+      datos.canon = Math.round((datos.valor_canon / 30) * diasTrabajar)
       total = (datos.valor_canon / 30) * diasTrabajar
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos,diasTrabajar)
 
@@ -299,7 +299,7 @@ export class PagosComponent implements OnInit {
       
 
     } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
-      
+      datos.canon = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
       total = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
       for (let i = 0; i < conceptosAjuste.length; i++) {
         conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)    
@@ -355,6 +355,7 @@ export class PagosComponent implements OnInit {
 
       total+=(((((datos.incremento+datos.incremento_adicional)/100)*datos.valor_canon) + datos.valor_canon)/30)* diasTrabajar;
       console.log(total, "canon")
+      datos.canon = total
       this.canonIncremento = total
       
       // ahora se le setea los valores de los conceptos incrementados dependiendo si son dev o dec
@@ -364,7 +365,7 @@ export class PagosComponent implements OnInit {
       console.log(conceptosDeCIncremento, "incre")
     } else {
       total = datos.valor_canon
-
+      datos.canon = total
       this.pagoConcepto.push(datos.conceptos)
 
       conceptosDEV = datos.conceptos.filter((concepto:any) => concepto.id_concepto_concepto.codigo_concepto <= 499)
@@ -492,6 +493,7 @@ export class PagosComponent implements OnInit {
             fecha_pago: formattedDate,
             fecha_periodo: fecha_parseada,
             codigo_verificacion: new Date().valueOf(),
+            canon: element.canon,
             conceptos: this.pagoConcepto[index]
           }
         })
@@ -506,18 +508,18 @@ export class PagosComponent implements OnInit {
         // console.log(this.noPagadosEnviar);
         
         // Servicio que guarda los contratos en Pago arriendos
-        // this.servicio.pagarContratos(listaEnviar).subscribe(
-        //   (res: any) => {
-        //     this.pagoArriendo = res
-        //     console.log(this.pagoArriendo);            
-        //     this.traerNoPagados()
-        //     this.traerPagados()        
-        //     this.informacionContrato()
-        //   },
-        //   (err: any) => {
-        //     console.log(err)
-        //   }
-        // )
+        this.servicio.pagarContratos(listaEnviar).subscribe(
+          (res: any) => {
+            this.pagoArriendo = res
+            console.log(this.pagoArriendo);            
+            this.traerNoPagados()
+            this.traerPagados()        
+            this.informacionContrato()
+          },
+          (err: any) => {
+            console.log(err)
+          }
+        )
 
         //Servicio que actualiza el servicio el contrato que tuvo incremento
         
