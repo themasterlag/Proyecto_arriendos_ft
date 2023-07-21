@@ -494,6 +494,8 @@ export class PagosComponent implements OnInit {
             fecha_periodo: fecha_parseada,
             codigo_verificacion: new Date().valueOf(),
             canon: element.canon,
+            ipc: element.incremento || 0,
+            inc_adicional: element.incremento_adicional || 0,
             conceptos: this.pagoConcepto[index]
           }
         })
@@ -524,14 +526,14 @@ export class PagosComponent implements OnInit {
         //Servicio que actualiza el servicio el contrato que tuvo incremento
         
         
-        // this.servicio.actualizarContrato(this.noPagadosEnviar).subscribe(
-        //   (res:any) => {
-        //     console.log(res);              
-        //   },
-        //   (err: any) => {
-        //     console.log(err)
-        //   }
-        // )
+        this.servicio.actualizarContrato(this.noPagadosEnviar).subscribe(
+          (res:any) => {
+            console.log(res);              
+          },
+          (err: any) => {
+            console.log(err)
+          }
+        )
 
       }
     })
