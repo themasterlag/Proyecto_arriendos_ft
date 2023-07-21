@@ -768,7 +768,7 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        // console.log(res)
+        console.log(res)
 
         res = this.darEstructuraNomina(tipo, res)
         // console.log(res)
@@ -969,9 +969,7 @@ export class PagosComponent implements OnInit {
         let conceptosDeducidos = 0
         let conceptosDevengados = 0
         // console.log(this.contratoIncremento);   
-        this.contratoIncremento = sumaValoresCanon
-
-     
+        this.contratoIncremento = sumaValoresCanon     
         
         let conceptoPre
         let conceptoPost 
@@ -1049,7 +1047,7 @@ export class PagosComponent implements OnInit {
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
     )
-    // console.log(this.Pdv, "hola");
+    console.log(this.Pdv, "hola");
     
     if (
       this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento ==
@@ -1074,7 +1072,7 @@ export class PagosComponent implements OnInit {
     let fechaFin = new Date(this.contatoPDF[0].fecha_fin_contrato)
 
     
-    if(fechaIn.getFullYear() < this.anio && fechaIn.getMonth()+1 == this.mes && fechaFin.getFullYear() > this.anio){
+    if(fechaIn.getFullYear() < this.anio && fechaIn.getMonth()+1 == this.mes && fechaFin.getFullYear() > this.anio && tipoPago == 1){
       let lista = this.aplicarIncremento(datos);
       // console.log(lista);
       // console.log(fechaIn.getFullYear()+1);      
@@ -1098,30 +1096,8 @@ export class PagosComponent implements OnInit {
       //  console.log('ded', totalDeduccion, '\n dev', totalDevengado);
        
 
-      total = totalDevengado - totalDeduccion
-     
+      total = totalDevengado - totalDeduccion     
     }
-    //  else if(fechaFin.getFullYear() == this.anio && fechaFin.getMonth()+1 == this.mes){
-
-    //   console.log("Blue labbel");   
-      
-    //   conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-    //     (element) => element.id_concepto_concepto.codigo_concepto <= 499
-    //   )
-    //   conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
-
-    //   conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-    //     (element) => element.id_concepto_concepto.codigo_concepto > 499
-    //   )
-    //   conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
-
-    //   totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
-    //   totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-    //     this.valorCanon(this.Pdv[0].valor_canon))
-
-    //   total = totalDevengado - totalDeduccion
-
-    // }
      else if (tipoPago == 1) {
       // Se calculo el valor a pagar para el primer mes del contrato
       // console.log("aquii el tipo pago 1");
@@ -1159,7 +1135,7 @@ export class PagosComponent implements OnInit {
       console.log(totalDeduccion);      
 
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].valor_canon) 
+        this.Pdv[0].pago_arriendos[0].canon) 
       console.log(totalDevengado)  
 
       total = totalDevengado - totalDeduccion
@@ -1258,7 +1234,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].valor_canon}`,
+                      text: `${tipoPago == 2? this.Pdv[0].pago_arriendos[0].canon: this.Pdv[0].valor_canon}`,
                     },
                   ],
                 },
