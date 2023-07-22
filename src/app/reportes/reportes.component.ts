@@ -20,16 +20,26 @@ export class ReportesComponent implements OnInit {
   displayedColumns: string[] = ['Id','Reporte', 'Acciones'];
   dataSource:MatTableDataSource<any> = null;
   contatoPDF: any = null
-  mes: any = 0
-  anio: any = 0
+  mes: any = null
+  anio: any = null
   Pdv: any = null
   tipoCliente: any = null
   datosPdf: any = [];
+  valselects: boolean = false
+  yearList: number[] = []
 
   constructor(private servicio: GeneralesService) { }
 
   ngOnInit(): void {
     this.generarListaReportes();
+    this.llenarListaMes();
+  }
+
+  llenarListaMes(){
+    const currentYear = new Date().getFullYear()
+    for (let i = currentYear ; i >= 2000; i--) {
+      this.yearList.push(i)
+    }
   }
 
   generarListaReportes(){
@@ -44,26 +54,50 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporte(reporte){
-    switch(reporte){
-      case "bancolombia":
-        this.generarBase64("bancolombia");
-        break;
-      case "otrosBancos":
-        this.generarBase64("otros-bancos");
-        break;
-      case "efectivo":
-        this.generarBase64("efectivo");
-        break;
-      case "todosBancos":
-        this.generarBase64("todos-bancos");
-        break;
-      default:
-        break;
+    if(this.mes == null && this.anio == null){
+      Swal.fire('El periodo no puede estar vacio','','info')
+    }else{
+      switch(reporte){
+        case "bancolombia":
+          this.generarBase64("bancolombia");
+          break;
+        case "otrosBancos":
+          this.generarBase64("otros-bancos");
+          break;
+        case "efectivo":
+          this.generarBase64("efectivo");
+          break;
+        case "todosBancos":
+          this.generarBase64("todos-bancos");
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  asignarmes(mes) {
+    this.mes = mes
+    this.validaciondatos()
+  }
+
+  asignaranio(anio) {
+    this.anio = anio
+    this.validaciondatos()
+  }
+
+  validaciondatos() {
+    if (this.anio != 0 && this.mes != 0) {
+      this.valselects = true
+    } else {
+      this.valselects = false
     }
   }
 
   generarBase64(filtro) {
     this.datosPdf = [];
+    console.log(this.mes, this.anio);
+    
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
       const reader = new FileReader()
@@ -107,6 +141,8 @@ export class ReportesComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.servicio.traerContratoPdf(sitioVenta).subscribe(async (res: any) => {
         this.contatoPDF = res
+        console.log(this.contatoPDF);
+        
 
         if (this.contatoPDF == null) {
           Swal.fire("No hay contratos", "", "error");
