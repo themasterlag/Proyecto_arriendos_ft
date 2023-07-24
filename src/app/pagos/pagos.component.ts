@@ -74,6 +74,7 @@ export class PagosComponent implements OnInit {
   @ViewChild("comprobante") comprobante: ElementRef
   @ViewChild(MatSort) sort: MatSort
   tipoPago: number = 0
+  spinnerNomina: boolean = false;
 
   constructor(private servicio: GeneralesService) {}
 
@@ -176,6 +177,7 @@ export class PagosComponent implements OnInit {
         this.dataSourceNoPagados.data = null
         this.dataSourcePagados.data = null
       }else{
+        this.pagoConcepto = []
         this.traerNoPagados()
         this.traerPagados()
       }
@@ -652,7 +654,11 @@ export class PagosComponent implements OnInit {
 
   darEstructuraNomina(tipo:any, datos:any) {
     if (tipo == 0) {
-      datos = datos.map((element) => {
+      datos = datos.map((element, i) => {
+        this.Pdv = [element.id_punto_venta_punto_de_ventum]
+        for (let j = 0; j < element.conceptos.length; j++) {
+          element.conceptos[j].valor = this.pagoConcepto[i][j].valor;
+        }
         return {
           // NO PAGADOS
           num_contrato: element.id_contrato,
@@ -661,7 +667,7 @@ export class PagosComponent implements OnInit {
             element.id_punto_venta_punto_de_ventum.codigo_sitio_venta,
           punto_venta: element.id_punto_venta_punto_de_ventum.nombre_comercial,
 
-          valor_canon: element.valor_canon,
+          valor_canon: this.valorCanon(element.valor_canon),
           // incremento_anual: element.incremento_anual,
           // incremento_adicional: element.incremento_adicional,
           fecha_inicio_contrato: element.fecha_inicio_contrato,
@@ -709,14 +715,15 @@ export class PagosComponent implements OnInit {
             element.pago_detalles[0].punto_venta_punto_de_ventum
               .nombre_comercial,
 
-          valor_canon: element.valor_canon,
+          valor_canon: element.canon,
+          fecha_pago: element.fecha_pago,
           // incremento_anual: element.incremento_anual,
           // incremento_adicional: element.incremento_adicional,
           fecha_inicio_contrato: element.fecha_inicio_contrato,
           fecha_fin_contrato: element.fecha_fin_contrato,
           tipo_contrato: element.id_tipo_contrato,
           valor_adminstracion: element.valor_adminstracion,
-          definicion: element.definicion,
+          definicion: element.defiicion,
           poliza: element.poliza,
 
           responsable_nit:
@@ -748,6 +755,7 @@ export class PagosComponent implements OnInit {
   }
 
   generarPreNomina(tipo:any) {
+    this.spinnerNomina = true;
     let listaSeleccionados = null
 
     if (tipo == 0) {
@@ -806,6 +814,12 @@ export class PagosComponent implements OnInit {
             })
           }
         }
+
+        workbook["Props"] = { 
+          Author: "Generado por Sofware arriendos",
+          CreatedDate: new Date()
+        };
+        
         if (tipo == 1) {
           worksheet["!protect"] = { password: "arriendosAdmin" }
         }
@@ -822,9 +836,11 @@ export class PagosComponent implements OnInit {
           (tipo == 0
             ? "PreNomina_" + this.mes + "_" + this.anio
             : "Pagados_" + this.mes + "_" + this.anio) + ".xlsx"
-        )
+        );
+        this.spinnerNomina = false;
       },
       (err) => {
+        this.spinnerNomina = false;
         console.log(err.message)
       }
     )
@@ -1503,6 +1519,7 @@ export class PagosComponent implements OnInit {
       },
     }
 
+    
     pdfMake.createPdf(documentDefinition).open()
   }
 

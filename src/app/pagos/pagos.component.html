@@ -220,12 +220,22 @@
                       <div class="row">
                         <div class="col" align="center">
                           <button
+                            *ngIf="!spinnerNomina"
                             [disabled]="responsableTablaNoPagados.length < 1"
                             class="btn btn-info"
                             id="button-guardar"
                             (click)="generarPreNomina(0)"
                           >
                             Generar pre-nomina
+                          </button>
+                          <button
+                            *ngIf="spinnerNomina"
+                            class="btn btn-info"
+                            disabled
+                          > Generando...
+                            <div class="spinner-border" role="status">
+                              <span class="sr-only">Loading...</span>
+                            </div>
                           </button>
                         </div>
                         <div class="col" align="center">
@@ -357,12 +367,22 @@
                       <div class="row">
                         <div class="col" align="center">
                           <button
+                            *ngIf="!spinnerNomina"
                             [disabled]="responsableTablaPagados.length < 1"
                             class="btn btn-info"
                             id="button-guardar"
                             (click)="generarPreNomina(1)"
                           >
                             Generar docuemto nomina
+                          </button>
+                          <button
+                            *ngIf="spinnerNomina"
+                            class="btn btn-info"
+                            disabled
+                          > Generando...
+                            <div class="spinner-border" role="status">
+                              <span class="sr-only">Loading...</span>
+                            </div>
                           </button>
                         </div>
                       </div>
