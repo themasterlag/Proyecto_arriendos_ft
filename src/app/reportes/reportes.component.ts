@@ -19,7 +19,6 @@ export class ReportesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: string[] = ['Id','Reporte', 'Acciones'];
   dataSource:MatTableDataSource<any> = null;
-  contatoPDF: any = null
   mes: any = null
   anio: any = null
   Pdv: any = null
@@ -104,11 +103,12 @@ export class ReportesComponent implements OnInit {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-        this.servicio.traerPdvReporte(filtro).subscribe(
+        this.servicio.traerPdvReporte(this.mes,this.anio,filtro).subscribe(
           async (res:any) => {
+            console.log(res);            
             for (let i = 0; i < res.length; i++) {
               const element = res[i];
-              await this.traerContratoPDF(element, base64);
+              await this.comprobantePdfNoPagados(base64,element);
             }
             if (res.length > 0) {
               this.generarPdf(this.datosPdf);
@@ -137,39 +137,37 @@ export class ReportesComponent implements OnInit {
     return `${year}-${month}-${day}`
   }
   
-  async traerContratoPDF(sitioVenta, base64) {
-    return new Promise((resolve, reject) => {
-      this.servicio.traerContratoPdf(sitioVenta).subscribe(async (res: any) => {
-        this.contatoPDF = res
-        console.log(this.contatoPDF);
-        
+  // async traerContratoPDF(sitioVenta, base64) {
+  //   return new Promise((resolve, reject) => {
+  //     this.servicio.traerContratoPdfPagado(sitioVenta).subscribe(async (res: any) => {
+  //       this.contatoPDF = res
+  //       console.log(this.contatoPDF);        
 
-        if (this.contatoPDF == null) {
-          Swal.fire("No hay contratos", "", "error");
-          reject("No hay contratos");
-        } else {
-          let datos = await this.comprobantePdfNoPagados(base64, sitioVenta)
-          this.datosPdf.push(datos);
-          resolve(true);
-        }
-      });
-    });
-  }
+  //       if (this.contatoPDF == null) {
+  //         Swal.fire("No hay contratos", "", "error");
+  //         reject("No hay contratos");
+  //       } else {
+  //         let datos = await this.comprobantePdfNoPagados(base64, sitioVenta)
+  //         this.datosPdf.push(datos);
+  //         resolve(true);
+  //       }
+  //     });
+  //   });
+  // }
 
   async comprobantePdfNoPagados(base64, datos) {
 
-    this.Pdv = this.contatoPDF.filter(
-      (pdv) => pdv.id_punto_venta_punto_de_ventum.codigo_sitio_venta == datos
-    )
+    this.Pdv = datos
+
     if (
-      this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.tipo_documento ==
+      this.Pdv.contratodetalle.autdetalle.clientedetalle.tipo_documento ==
       "Nit"
     ) {
       this.tipoCliente =
-        this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.razon_social
+        this.Pdv.contratodetalle.autdetalle.clientedetalle.razon_social
     } else {
       this.tipoCliente =
-        this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.nombres
+        this.Pdv.contratodetalle.autdetalle.clientedetalle.nombres
     }
 
     let conceptosDevengados = {}
@@ -178,18 +176,18 @@ export class ReportesComponent implements OnInit {
     let totalDevengado = 0
     let total = 0
 
-    conceptosDevengados = this.Pdv[0].contrato_conceptos.filter(
-      (element) => element.id_concepto_concepto.codigo_concepto <= 499
+    conceptosDevengados = this.Pdv.contconceptos.filter(
+      (element) => element.conceptodetalle.codigo_concepto <= 499
     )
 
-    conceptosDeducidos = this.Pdv[0].contrato_conceptos.filter(
-      (element) => element.id_concepto_concepto.codigo_concepto > 499
+    conceptosDeducidos = this.Pdv.contconceptos.filter(
+      (element) => element.conceptodetalle.codigo_concepto > 499
     )
 
     totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
     totalDevengado =
       this.valorTotalConceptos(conceptosDevengados) +
-      this.Pdv[0].valor_canon
+      this.Pdv.valor_canon
 
     total = totalDevengado - totalDeduccion
     
@@ -239,7 +237,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_autorizado_autorizado.id_cliente_cliente.numero_documento}`,
+                      text: `${this.Pdv.contratodetalle.autdetalle.clientedetalle.numero_documento}`,
                     },
                   ],
                 },
@@ -261,7 +259,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.codigo_sitio_venta}`,
+                      text: `${this.Pdv.contratodetalle.pvdetalle.codigo_sitio_venta}`,
                     },
                   ],
                 },
@@ -272,7 +270,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.nombre_comercial}`,
+                      text: `${this.Pdv.contratodetalle.pvdetalle.nombre_comercial}`,
                     },
                   ],
                 },
@@ -290,7 +288,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_punto_venta_punto_de_ventum.id_municipio_municipio.municipio}`,
+                      text: `${this.Pdv.contratodetalle.pvdetalle.municipiodetalle.municipio}`,
                     },
                   ],
                 },
@@ -301,7 +299,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_autorizado_autorizado.entidad_bancaria_entidad_bancarium.ent}`,
+                      text: `${this.Pdv.contratodetalle.autdetalle.entidadbancaria.entidad_bancaria}`,
                     },
                   ],
                 },
@@ -312,7 +310,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].id_autorizado_autorizado.numero_cuenta}`,
+                      text: `${this.Pdv.contratodetalle.autdetalle.numero_cuenta}`,
                     },
                   ],
                 },
@@ -563,33 +561,24 @@ export class ReportesComponent implements OnInit {
   valorTotalConceptos(conceptos) {
     let total = 0
     
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_inicio_contrato)
+    let fechaFinContrato = new Date(this.Pdv.fecha_inicio_contrato)
     fechaFinContrato.setDate(fechaFinContrato.getDate()+1)
     
     let diasTrabajar = 30 - fechaFinContrato.getDate();    
-    
-    if (fechaFinContrato.getFullYear() == this.anio && (fechaFinContrato.getMonth() + 1) == this.mes) {
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-            total += (conceptos[index].valor / 30) * diasTrabajar
-            
-        }
-        return total
-      
-    }else{
-        for (let index = 0; index < conceptos.length; index++) {
-          if (!(conceptos[index].id_concepto_concepto.tipo_concepto == 5))
-            total += conceptos[index].valor
-        }
-        return total
-    }    
+
+    for (let index = 0; index < conceptos.length; index++) {
+      if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
+        total += conceptos[index].valor
+    }
+    return total;
+ 
   }
 
   organizarConceptos(conceptos) {
     let lista = []
     for (let index = 0; index < conceptos.length; index++) {
       lista.push({
-        text: `\n${conceptos[index].id_concepto_concepto.codigo_concepto}  ${conceptos[index].id_concepto_concepto.nombre_concepto}`,
+        text: `\n${conceptos[index].conceptodetalle.codigo_concepto}  ${conceptos[index].conceptodetalle.nombre_concepto}`,
       })
     }
     return lista
@@ -599,7 +588,7 @@ export class ReportesComponent implements OnInit {
     let lista = []
     for (let index = 0; index < conceptos.length; index++) {
       lista.push({
-        text: `\n  ${conceptos[index].valor.toLocaleString("es-ES")}`,
+        text: `\n  ${conceptos[index].pago_concepto_valor.toLocaleString("es-ES")}`,
       })
     }
     return lista

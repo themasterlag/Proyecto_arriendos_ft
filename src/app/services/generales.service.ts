@@ -233,8 +233,8 @@ export class GeneralesService {
     return this.servicio.delete(this.api + "saldo-credito/" + id)
   }
 
-  traerPdvReporte(filtro: any){
-    return this.servicio.get(this.api + "reportes/"+filtro)
+  traerPdvReporte(mes:any,anio:any,filtro: any){
+    return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
 
