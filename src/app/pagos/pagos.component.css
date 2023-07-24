@@ -1,8 +1,12 @@
-
   ::ng-deep .mat-tab-label {
     color:black;
     background-color: #ffe203;
-    
+    border-top-left-radius: 15%;
+    border-top-right-radius: 15%;
+  }
+
+  ::ng-deep .mat-checkbox-background{
+    background-color: #00bcd4 !important;
   }
 
   ::ng-deep .mat-tab-label-active{

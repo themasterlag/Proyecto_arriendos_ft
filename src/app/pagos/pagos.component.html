@@ -56,6 +56,9 @@
                         >
                           {{ year }}
                         </mat-option>
+                        <!-- <mat-option> -->
+                          <!-- <input type="number" (change)="asignaranio($event.value)" placeholder="Otro" class="ml-3 w-auto form-control"> -->
+                        <!-- </mat-option> -->
                       </mat-select>
                     </mat-form-field>
                   </div>
@@ -66,7 +69,6 @@
                   <div class="col-md-3" align="center">
                     <br />
                     <mat-checkbox
-                      class="example-margin"
                       [(ngModel)]="no_responsable"
                       >No Responsable</mat-checkbox
                     >
@@ -335,6 +337,7 @@
                               >
                                 <a
                                   class="btn btn-info"
+                                  id="Comprobante"
                                   (click)="generarBase64(row, 2)"
                                   >Comprobante
                                 </a>

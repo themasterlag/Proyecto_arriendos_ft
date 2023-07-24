@@ -82,7 +82,7 @@ export class PagosComponent implements OnInit {
     Loading.pulse("Cargando")
     Loading.remove()
     const currentYear = new Date().getFullYear()
-    for (let i = currentYear ; i >= 2000; i--) {
+    for (let i = currentYear ; i >= currentYear-10; i--) {
       this.yearList.push(i)
     }
     // this.dataSource.paginator = this.paginator;
@@ -819,7 +819,7 @@ export class PagosComponent implements OnInit {
           Author: "Generado por Sofware arriendos",
           CreatedDate: new Date()
         };
-        
+
         if (tipo == 1) {
           worksheet["!protect"] = { password: "arriendosAdmin" }
         }
