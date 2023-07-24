@@ -8,12 +8,19 @@
                 <div class="modal-body">
                     <div *ngIf="errorLogin" class="alert" style="color: #8d363f; background-color: #f5c6cb;" role="alert">
                         <h5 class="m-0"><strong>{{errorLogin}}</strong></h5>
-                    </div>                    
-                    <input type="text" class="form-control" placeholder="usuario" [(ngModel)]="usuario"/>
-                    <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="clave"/>
+                    </div>        
+                    <div>
+                        <label for="usuario" class="ml-2">Usuario</label>
+                        <input id="usuario" type="text" class="form-control border" placeholder="Escibe aqui tu usuario" [(ngModel)]="usuario"/>
+                    </div>      
+                    
+                    <div>
+                        <label for="clave" class="ml-2 mt-2">Contraseña</label>
+                        <input id="clave" type="password" class="form-control border" placeholder="Contraseña" [(ngModel)]="clave"/>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
+                    <button class="btn rounded" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
                 </div>
             </div>
         </div>
