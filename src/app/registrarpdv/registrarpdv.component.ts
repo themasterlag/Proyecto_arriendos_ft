@@ -226,7 +226,7 @@ export class RegistrarpdvComponent implements OnInit {
 
     this.servicio.traerTerceroConsulta(this.consulta_ter).subscribe(
       (res_Ter:any) => {
-        // console.log(res_Ter);
+         console.log(res_Ter);
         this.id_tercero = res_Ter.id_cliente;
         
         const buscar = this.municipios.filter((municipio) => municipio.id_municipio == res_Ter.id_municipio);
@@ -272,6 +272,8 @@ export class RegistrarpdvComponent implements OnInit {
   traerPDV(){
     this.servicio.traerPDv(this.pdv_id).subscribe(
       (res:any) => {
+        console.log(res);
+        
         this.pdv_busqueda = res;
         console.log('Hola', this.pdv_busqueda);  
         console.log(this.tipopunto);
@@ -283,7 +285,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.filtrardepar(buscarDep[0].id_departamento);
 
         let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
-        this.addpropietario(this.pdv_busqueda.propietario_punto_venta[0].id_propietario);
+        this.addpropietario(this.pdv_busqueda.proppv[0].id_propietario);
         
         this.formulariopdv.patchValue({
           nombre_comercial: this.pdv_busqueda.nombre_comercial,
@@ -340,35 +342,35 @@ export class RegistrarpdvComponent implements OnInit {
           fecha_inicio_contrato: res.contrato.fecha_inicio_contrato,        
           fecha_fin_contrato: res.contrato.fecha_fin_contrato,        
           definicion: res.contrato.definicion,
-          id_clienteautorizado: res.contrato.id_autorizado_autorizado.id_cliente,
-          entidad_bancaria: res.contrato.id_autorizado_autorizado.entidad_bancaria,        
-          id_tipo_cuenta: res.contrato.id_autorizado_autorizado.id_tipo_cuenta,        
-          numero_cuenta: res.contrato.id_autorizado_autorizado.numero_cuenta,        
+          id_clienteautorizado: res.contrato.autdetalle.id_cliente,
+          entidad_bancaria: res.contrato.autdetalle.entidad_bancaria,        
+          id_tipo_cuenta: res.contrato.autdetalle.id_tipo_cuenta,        
+          numero_cuenta: res.contrato.autdetalle.numero_cuenta,        
           incremento_adicional: res.contrato.incremento_adicional,        
           poliza: res.contrato.poliza,        
           incremento_anual: res.contrato.incremento_anual,        
-          id_clienteresponsable: res.contrato.id_responsable_responsable.id_cliente,
+          id_clienteresponsable: res.contrato.responsabledetalle.id_cliente,
           id_punto_venta: res.contrato.id_punto_venta,
         });
 
         this.formulariocontrato.value.valor_canon = this.formulariocontrato.get('valor_canon').value
         
-        if (res.contrato.id_autorizado_autorizado.metodo_pago == 1) {
+        if (res.contrato.autdetalle.metodo_pago == 1) {
           this.pago_transferencia = true;
           // this.pago_efectivo = false;
-        } else res.contrato.id_autorizado_autorizado.metodo_pago == 2;
+        } else res.contrato.autdetalle.metodo_pago == 2;
         {
           this.pago_efectivo = true;
           // this.pago_transferencia = false;
         }
 
-        if (res.contrato.id_responsable_responsable.iva != null) {
+        if (res.contrato.responsabledetalle.iva != null) {
           this.formulariocontrato.patchValue({ iva: true });
         }
-        if (res.contrato.id_responsable_responsable.rete_iva != null) {
+        if (res.contrato.responsabledetalle.rete_iva != null) {
           this.formulariocontrato.patchValue({ rete_iva: true });
         }
-        if (res.contrato.id_responsable_responsable.rete_fuente != null) {
+        if (res.contrato.responsabledetalle.rete_fuente != null) {
           this.formulariocontrato.patchValue({ rete_fuente: true });
         }
         this.conceptosTabla = [];
@@ -1019,6 +1021,8 @@ export class RegistrarpdvComponent implements OnInit {
     if (conceptoIgual) {
       swal.fire('El concepto ya se encuentra en la lista','','info');   
     }else{
+      console.log(this.formulariocontrato.value.valor_canon);
+      
       if(this.formulariocontrato.value.valor_canon == null){
         swal.fire("El canon no puede estar vacio", '', "error");
       }else{
@@ -1144,13 +1148,15 @@ export class RegistrarpdvComponent implements OnInit {
         // console.log(res);
 
         this.tabla_contratos = res.map((element) => {
+          
+          
           return {
             id_contrato: element.id_contrato,
             fecha_inicio: element.fecha_inicio_contrato,
             fecha_fin: element.fecha_fin_contrato,
             fecha_inhabilitado: element.fecha_inactivo,
-            id_punto_venta: element.id_punto_venta_punto_de_ventum.codigo_sitio_venta,
-            nombre_comercial: element.id_punto_venta_punto_de_ventum.nombre_comercial
+            id_punto_venta: element.pvdetalle.codigo_sitio_venta,
+            nombre_comercial: element.pvdetalle.nombre_comercial
           }
         })
 

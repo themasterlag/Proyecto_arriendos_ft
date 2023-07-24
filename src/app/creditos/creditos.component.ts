@@ -46,6 +46,8 @@ export class CreditosComponent implements OnInit {
   consultarContratos(){
     this.servicio.traerContratos().subscribe(
       (res:any)=>{
+        console.log(res);
+        
         this.listaContratos = res;
       },
       (err:any)=>{
@@ -57,6 +59,8 @@ export class CreditosComponent implements OnInit {
   consultarListaCreditos(){
     this.servicio.traerListaCreditos().subscribe(
       (res:any)=>{
+        console.log(res);
+        
         this.listaCreditos = res;
         this.dataSource = new MatTableDataSource(this.listaCreditos);
         this.dataSource.paginator = this.paginator;
@@ -92,6 +96,7 @@ export class CreditosComponent implements OnInit {
   }
 
   editarCredito(credito){    
+    
     this.formularioEditarCredito.controls.id_saldo_credito.setValue(credito.id_saldo_credito);
     this.formularioEditarCredito.controls.id_contrato_concepto.setValue(credito.id_contrato_concepto);
     this.formularioEditarCredito.controls.credito_total.setValue(credito.credito_total);

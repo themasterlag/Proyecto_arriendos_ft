@@ -25,7 +25,7 @@
                                             <select name="id_contrato" id="contrato" class="form-control" ngModel required>
                                                 <option value="null" disabled selected>Seleccione un contrato</option>
                                                 <option [value]="contrato.id_contrato" *ngFor="let contrato of listaContratos">
-                                                    PDV:{{contrato.id_punto_venta_punto_de_ventum.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
+                                                    PDV:{{contrato.pvdetalle.codigo_sitio_venta}} - Contrato:{{contrato.id_contrato}}
                                                 </option>
                                             </select>
                                         </div>
