@@ -558,6 +558,7 @@
                     type="reset"
                     class="btn btn-danger pull-right"
                     id="button-limpiar"
+                    (click)="limpiarPdv()"
                   >
                     Limpiar
                   </button>
@@ -864,6 +865,7 @@
                         <mat-select
                           placeholder="Conceptos"
                           (selectionChange)="addConceptos($event.value)"
+                          formControlName="Conceptos"
                         >
                           <mat-option
                             [value]="a.id_concepto"

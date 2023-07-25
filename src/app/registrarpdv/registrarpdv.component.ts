@@ -155,6 +155,7 @@ export class RegistrarpdvComponent implements OnInit {
       incremento_adicional: [null],
       poliza: [false],
       definicion: [null],
+      Conceptos: [null]
       // conceptos: [null, Validators.required]
     });
   }
@@ -947,6 +948,7 @@ export class RegistrarpdvComponent implements OnInit {
                       .then((isConfirm) => {
                         this.formulariopdv.reset();
                         this.formulariopdv.markAsUntouched();
+                        this.propietariostabla = []
                       });
                   } else {
                     //console.log(res);
@@ -1115,7 +1117,6 @@ export class RegistrarpdvComponent implements OnInit {
 
   limpiarConceptos(): void {
     // console.log(this.conceptosTabla, "conceptos");
-
     this.conceptosTabla.splice(0, this.conceptosTabla.length);
   }
   limpiarServicios(): void {
@@ -1129,8 +1130,13 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerpdv();
     this.limpiarConceptos();
     this.limpiarServicios();
+    this.conceptosTabla = []
     this.consulta_pdv = null;
     this.formulariocontrato.get('valor_canon').enable()
+  }
+
+  limpiarPdv(): void {
+    this.propietariostabla = []
   }
 
   actualizarValorConcepto(i, valor){    
