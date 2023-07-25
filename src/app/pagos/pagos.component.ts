@@ -1304,7 +1304,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].autdetalle.entidadbancaria.entidad_bancaria}`,
+                      text: `${(this.Pdv[0].autdetalle.entidadbancaria != null?this.Pdv[0].autdetalle.entidadbancaria.entidad_bancaria: "Efectivo")}`,
                     },
                   ],
                 },
