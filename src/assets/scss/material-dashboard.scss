@@ -63,3 +63,9 @@
 .cdk-overlay-pane{
     margin-top: 4% !important;
 }
+
+.mat-checkbox-checked{
+    .mat-checkbox-background{
+      background-color: #00bcd4 !important;
+    }
+}
