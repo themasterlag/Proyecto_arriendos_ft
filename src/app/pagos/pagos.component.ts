@@ -161,7 +161,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerContratoPdfPagado(data).subscribe((res: any) => {
       this.contatoPDF = res
-      console.log(this.contatoPDF)
+      // console.log(this.contatoPDF)
       this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)
     })
   }
@@ -177,6 +177,7 @@ export class PagosComponent implements OnInit {
         this.dataSourceNoPagados.data = null
         this.dataSourcePagados.data = null
       }else{
+        this.noPagadosEnviar = [];
         this.pagoConcepto = []
         this.traerNoPagados()
         this.traerPagados()
@@ -195,7 +196,7 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        console.log("Pagados", res)
+        // console.log("Pagados", res)
 
         this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
@@ -217,7 +218,7 @@ export class PagosComponent implements OnInit {
         // console.log(this.responsableTablaNoPagados);
       },
       (err) => {
-        console.log(err.message)
+        console.error(err.message)
       }
     )
   }
@@ -237,7 +238,7 @@ export class PagosComponent implements OnInit {
        this.concepPre = []
        this.concepPos = []
         this.noPagadosLista = res
-        console.log(this.noPagadosLista);
+        // console.log(this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e:any) => {
           
@@ -257,7 +258,7 @@ export class PagosComponent implements OnInit {
         // console.log(this.responsableTablaPagados);
       },
       (err) => {
-        console.log(err.message)
+        console.error(err.message)
       }
     )
   }
@@ -466,8 +467,7 @@ export class PagosComponent implements OnInit {
             (seleccion) => noPagados.codigo_punto_venta == seleccion.PDV
           )
         )
-        
-        // console.log(nopagados);
+        console.log(nopagados);
         // let tipoPago = 4
         // let base64 = null
         // for (let index = 0; index < nopagados.length; index++) {
@@ -482,10 +482,10 @@ export class PagosComponent implements OnInit {
         let fecha_parseada = this.formatDate(
           new Date(this.anio, this.mes - 1, 1)
         )
-        console.log(nopagados);
+        // console.log(nopagados);
         
 
-        const listaEnviar = nopagados.map((element, index) => {
+        const listaEnviar = nopagados.map((element) => {
           return {
             id_contrato: element.id_contrato,
             valor: Math.round(element.total),
@@ -495,59 +495,68 @@ export class PagosComponent implements OnInit {
             canon: Math.round(element.canon),
             ipc: element.incremento || 0,
             inc_adicional: element.incremento_adicional || 0,
-            conceptos: this.pagoConcepto[index]
+            conceptos: this.encontrarConceptosContrato(element.id_contrato)
           }
         })
-        console.log(listaEnviar);        
-
-        this.noPagadosEnviar = this.noPagadosEnviar.filter((noPagados) =>
-        nopagados.some(
-          (element) =>
-            noPagados.codigo_punto_venta == element.codigo_punto_venta
+        // console.log(listaEnviar);
+        let noPagadosActualizar = this.noPagadosEnviar.filter((noPagadoEnv) =>
+          { 
+            let che =
+            nopagados.find((noPagado) => 
+            noPagado.codigo_punto_venta == noPagadoEnv.codigo_punto_venta );
+            return che
+          }          
         )
-      )
-         console.log(this.noPagadosEnviar);
-        
+        console.log(listaEnviar);
+        // return true;
         // Servicio que guarda los contratos en Pago arriendos
         this.servicio.pagarContratos(listaEnviar).subscribe(
           (res: any) => {
-            this.pagoArriendo = res
-            console.log(this.pagoArriendo);            
-            this.traerNoPagados()
-            this.traerPagados()        
-            this.informacionContrato()
+            this.pagoArriendo = res;
+            // this.traerNoPagados()
+            // this.traerPagados()        
+            // this.informacionContrato()
+            this.llenarTablas();
+            //Servicio que actualiza el servicio el contrato que tuvo incremento
+            this.servicio.actualizarContrato(noPagadosActualizar).subscribe(
+              (res:any) => {
+              },
+              (err: any) => {
+                console.error(err)
+              }
+            )
           },
           (err: any) => {
-            console.log(err)
+            console.error(err)
           }
-        )
-
-        //Servicio que actualiza el servicio el contrato que tuvo incremento
-        
-        
-        // this.servicio.actualizarContrato(this.noPagadosEnviar).subscribe(
-        //   (res:any) => {
-        //     console.log(res);              
-        //   },
-        //   (err: any) => {
-        //     console.log(err)
-        //   }
-        // )
-
+        );
       }
     })
   }
 
+  encontrarConceptosContrato(idContrato){
+    let encontrado =  false;
+    let listaConceptos = [];
+    for (let i = 0; i < this.pagoConcepto.length && !encontrado; i++) {
+      if(idContrato == this.pagoConcepto[i][0]["id_contrato"]){
+        listaConceptos.push(this.pagoConcepto[i])
+      }
+    }
+    return listaConceptos;
+  }
+
   sumaPagoConcepto(pre:any[], post:any[]){
+    
+    
     let total:any[] = []
     // sumar pre[i][j].valor + post[i][j].valor => pre[i][j].id_contrato == post[i][j].id_contrato
     // almacenar total =[{ id_concepto, valor}]
     for (let i = 0; i < pre.length; i++) {
       for (let j = 0; j < pre[i].length; j++) {
           let sum = Math.floor(pre[i][j].valor + post[i][j].valor);
-          total.push({ id_contrato: pre[i][j].id_contrato, id_concepto:  pre[i][j].id_concepto, valor: sum });
+          total.push({ conceptodetalle:post[i][j]["conceptodetalle"], id_contrato_concepto:post[i][j]["id_contrato_concepto"], id_contrato: pre[i][j].id_contrato, id_concepto:  pre[i][j].id_concepto, valor: sum });
       }
-    }       
+    }   
     this.pagoConcepto.push(total)
   }
 
@@ -579,7 +588,7 @@ export class PagosComponent implements OnInit {
           text: err.message,
           icon: "error",
         })
-        console.log(err.message)
+        console.error(err.message)
       }
     )
   }
@@ -775,7 +784,7 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        console.log(res)
+        // console.log(res)
 
         res = this.darEstructuraNomina(tipo, res)
         // console.log(res)
@@ -841,7 +850,7 @@ export class PagosComponent implements OnInit {
       },
       (err) => {
         this.spinnerNomina = false;
-        console.log(err.message)
+        console.error(err.message)
       }
     )
   }
@@ -1049,9 +1058,9 @@ export class PagosComponent implements OnInit {
         
         
         totalContrato = (sumaValoresCanon + totalConceptosDev + conceptosDevengados) - (totalConceptosDed + conceptosDeducidos)
-        console.log(totalContrato.toFixed(0), "valor total");        
+        // console.log(totalContrato.toFixed(0), "valor total");        
     }  
-      console.log(listaInc);
+      // console.log(listaInc);
           
       return listaInc 
   }
@@ -1062,7 +1071,7 @@ export class PagosComponent implements OnInit {
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.pvdetalle.codigo_sitio_venta == datos
     )
-    console.log(this.Pdv, "hola");
+    // console.log(this.Pdv, "hola");
     
     if (
       this.Pdv[0].autdetalle.clientedetalle.tipo_documento ==
@@ -1137,25 +1146,25 @@ export class PagosComponent implements OnInit {
       totalDeduccion = Math.round(totalDeduccion);
       totalDevengado = Math.round(totalDevengado);
     } else if (tipoPago == 2) {
-      console.log("Pagados blue label");
+      // console.log("Pagados blue label");
       
       conceptosDevengados = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499
       )
-      console.log(conceptosDevengados);
+      // console.log(conceptosDevengados);
       
       conceptosDeducidos = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto > 499
       )
 
-      console.log(conceptosDeducidos);      
+      // console.log(conceptosDeducidos);      
 
       totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
-      console.log(totalDeduccion);      
+      // console.log(totalDeduccion);      
 
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.Pdv[0].pagoarrdetalle[0].canon) 
-      console.log(totalDevengado)  
+      // console.log(totalDevengado)  
 
       total = Math.round(totalDevengado - totalDeduccion);
       
