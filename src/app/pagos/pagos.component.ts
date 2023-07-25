@@ -664,7 +664,7 @@ export class PagosComponent implements OnInit {
   darEstructuraNomina(tipo:any, datos:any) {
     if (tipo == 0) {
       datos = datos.map((element, i) => {
-        this.Pdv = [element.id_punto_venta_punto_de_ventum]
+        this.Pdv = [element.pvdetalle]
         for (let j = 0; j < element.conceptos.length; j++) {
           element.conceptos[j].valor = this.pagoConcepto[i][j].valor;
         }
