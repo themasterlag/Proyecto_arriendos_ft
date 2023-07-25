@@ -1081,7 +1081,7 @@ export class PagosComponent implements OnInit {
         this.Pdv[0].autdetalle.clientedetalle.razon_social
     } else {
       this.tipoCliente =
-        this.Pdv[0].autdetalle.clientedetalle.nombres
+        this.Pdv[0].autdetalle.clientedetalle.nombres+' '+this.Pdv[0].autdetalle.clientedetalle.apellidos
     }
 
     let conceptosDevengados = {}
