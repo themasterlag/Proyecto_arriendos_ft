@@ -108,9 +108,9 @@ export class ReportesComponent implements OnInit {
             console.log(res);            
             for (let i = 0; i < res.length; i++) {
               const element = res[i];
-              await this.comprobantePdfNoPagados(base64,element);
+              this.datosPdf.push(await this.comprobantePdfNoPagados(base64,element));
             }
-            if (res.length > 0) {
+            if (this.datosPdf.length > 0) {
               this.generarPdf(this.datosPdf);
             }
             else {
@@ -137,24 +137,6 @@ export class ReportesComponent implements OnInit {
     return `${year}-${month}-${day}`
   }
   
-  // async traerContratoPDF(sitioVenta, base64) {
-  //   return new Promise((resolve, reject) => {
-  //     this.servicio.traerContratoPdfPagado(sitioVenta).subscribe(async (res: any) => {
-  //       this.contatoPDF = res
-  //       console.log(this.contatoPDF);        
-
-  //       if (this.contatoPDF == null) {
-  //         Swal.fire("No hay contratos", "", "error");
-  //         reject("No hay contratos");
-  //       } else {
-  //         let datos = await this.comprobantePdfNoPagados(base64, sitioVenta)
-  //         this.datosPdf.push(datos);
-  //         resolve(true);
-  //       }
-  //     });
-  //   });
-  // }
-
   async comprobantePdfNoPagados(base64, datos) {
 
     this.Pdv = datos
@@ -187,10 +169,10 @@ export class ReportesComponent implements OnInit {
     totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
     totalDevengado =
       this.valorTotalConceptos(conceptosDevengados) +
-      this.Pdv.valor_canon
+      this.Pdv.canon
 
     total = totalDevengado - totalDeduccion
-    
+    console.log(totalDeduccion, totalDevengado, total, "aqui")
 
     const documentDefinition = {
       content: [
@@ -504,7 +486,7 @@ export class ReportesComponent implements OnInit {
     documentos.forEach(element =>{
       pdfs.push(pdfMake.createPdf(element));
     });
-
+    console.log(pdfs, "blue label");    
     let archivos = [];
 
     for (let i = 0; i < pdfs.length; i++) {
@@ -535,6 +517,7 @@ export class ReportesComponent implements OnInit {
   }
 
   async combinarPDFDocuments(pdfDocs: PDFDocument[]): Promise<PDFDocument> {
+    console.log(pdfDocs);    
     const mergedDoc = await PDFDocument.create();
   
     for (const pdfDoc of pdfDocs) {
@@ -560,15 +543,10 @@ export class ReportesComponent implements OnInit {
 
   valorTotalConceptos(conceptos) {
     let total = 0
-    
-    let fechaFinContrato = new Date(this.Pdv.fecha_inicio_contrato)
-    fechaFinContrato.setDate(fechaFinContrato.getDate()+1)
-    
-    let diasTrabajar = 30 - fechaFinContrato.getDate();    
 
     for (let index = 0; index < conceptos.length; index++) {
       if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
-        total += conceptos[index].valor
+        total += conceptos[index].pago_concepto_valor
     }
     return total;
  
