@@ -1315,7 +1315,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv[0].autdetalle.numero_cuenta}`,
+                      text: `${(this.Pdv[0].autdetalle.numero_cuenta != null?this.Pdv[0].autdetalle.numero_cuenta:"No aplica")}`,
                     },
                   ],
                 },

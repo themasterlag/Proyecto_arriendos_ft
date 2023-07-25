@@ -87,6 +87,7 @@ export class RegistrarpdvComponent implements OnInit {
   pdv_id = null;
   tabla_contratos: any = [];
   valorCanon = null;
+  canonGlobal = null;
   displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Contratos> =
   new MatTableDataSource<Contratos>();
@@ -353,8 +354,9 @@ export class RegistrarpdvComponent implements OnInit {
           id_clienteresponsable: res.contrato.responsabledetalle.id_cliente,
           id_punto_venta: res.contrato.id_punto_venta,
         });
-
+        console.log(this.formulariocontrato.get('valor_canon').value)
         this.formulariocontrato.value.valor_canon = this.formulariocontrato.get('valor_canon').value
+        this.canonGlobal = this.formulariocontrato.get('valor_canon').value
         
         if (res.contrato.autdetalle.metodo_pago == 1) {
           this.pago_transferencia = true;
@@ -685,7 +687,7 @@ export class RegistrarpdvComponent implements OnInit {
       let contrato = {
         id_punto_venta: this.formulariocontrato.value.id_punto_venta,
         id_usuario: 1,
-        valor_canon: this.formulariocontrato.value.valor_canon,
+        valor_canon: this.formulariocontrato.get('valor_canon').value,
         incremento_anual: this.checkIpc(
           this.formulariocontrato.value.incremento_anual
         ),
@@ -989,17 +991,17 @@ export class RegistrarpdvComponent implements OnInit {
       this.operacion = valor;
     }
     else if (tipo_id == 1 || tipo_id == 2) {
-      let numero_decimal = this.formulariocontrato.value.valor_canon * valor;
+      let numero_decimal = this.formulariocontrato.get('valor_canon').value * valor;
       this.operacion = parseFloat(numero_decimal.toFixed(2));
     }
     else{
-      this.operacion = this.formulariocontrato.value.valor_canon;
+      this.operacion = this.formulariocontrato.get('valor_canon').value;
     }
   }
 
   totalValorConceptos(){
 
-    this.valorTotal = this.formulariocontrato.value.valor_canon  
+    this.valorTotal = this.formulariocontrato.get('valor_canon').value
     
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
@@ -1023,9 +1025,9 @@ export class RegistrarpdvComponent implements OnInit {
     if (conceptoIgual) {
       swal.fire('El concepto ya se encuentra en la lista','','info');   
     }else{
-      console.log(this.formulariocontrato.value.valor_canon);
+      console.log(this.formulariocontrato.get('valor_canon').value);
       
-      if(this.formulariocontrato.value.valor_canon == null){
+      if(this.formulariocontrato.get('valor_canon').value == null){
         swal.fire("El canon no puede estar vacio", '', "error");
       }else{
         let concepto: Concepto = {
@@ -1051,13 +1053,16 @@ export class RegistrarpdvComponent implements OnInit {
               this.totalValorConceptos()
             }
           );
-        }else if (this.conceptosFilter[0].tipo_concepto == 5) {      
+        }else if (this.conceptosFilter[0].tipo_concepto == 5) {  
+          console.log(this.conceptosFilter)    
           if (this.conceptosFilter[0].id_concepto == 2) {
             this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
             concepto.valor = this.operacion;          
             this.conceptosTabla.push(concepto);
-  
-            if (this.conceptosTabla) {
+            console.log(this.conceptosTabla.find((e) => e.id_concepto ==2))
+            if (!(this.conceptosTabla.find((e) => e.id_concepto == 3))) {
+              console.log(this.conceptosTabla.find((e) => e.id_concepto ==3))
+
               //Se consulta el concepto iba
               let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
               // console.log(consultarIva);
@@ -1070,7 +1075,7 @@ export class RegistrarpdvComponent implements OnInit {
                 valor: this.operacion,
               });              
               // console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
-              if (this.formulariocontrato.value.valor_canon > 1145000) {
+              if (this.formulariocontrato.get('valor_canon').value > 1145000) {
                 let consultarRTF = this.conceptos.filter((concepto) => concepto.codigo_concepto == 503)
                 this.operacionConceptos(consultarRTF[0].porcentaje_operacion, consultarRTF[0].tipo_concepto);
                 this.conceptosTabla.push({
@@ -1085,6 +1090,24 @@ export class RegistrarpdvComponent implements OnInit {
           this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);  
           concepto.valor = this.operacion;  
           this.conceptosTabla.push(concepto)   
+          }
+        }else if(this.conceptosFilter[0].id_concepto == 3){
+          this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
+          concepto.valor = this.operacion;    
+          this.conceptosTabla.push(concepto)
+          
+          if(!(this.conceptosTabla.find((e) => e.id_concepto == 2))){
+            console.log("hola")
+            let consultarResponsableIva = this.conceptos.filter((concepto) => concepto.id_concepto == 2);
+              // console.log(consultarIva);
+              
+              this.operacionConceptos(0, consultarResponsableIva[0].tipo_concepto);
+              this.conceptosTabla.push({
+                id_concepto: consultarResponsableIva[0].id_concepto,
+                codigo_concepto: consultarResponsableIva[0].codigo_concepto,
+                nombre_concepto: consultarResponsableIva[0].nombre_concepto,
+                valor: this.operacion,
+              });              
           }
         }else{          
           if (this.conceptosFilter[0].id_concepto == 38) {
