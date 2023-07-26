@@ -149,7 +149,7 @@ export class ReportesComponent implements OnInit {
         this.Pdv.contratodetalle.autdetalle.clientedetalle.razon_social
     } else {
       this.tipoCliente =
-        this.Pdv.contratodetalle.autdetalle.clientedetalle.nombres
+        this.Pdv.contratodetalle.autdetalle.clientedetalle.nombres+" "+this.Pdv.contratodetalle.autdetalle.clientedetalle.apellidos;
     }
 
     let conceptosDevengados = {}
