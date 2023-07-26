@@ -1059,10 +1059,7 @@ export class RegistrarpdvComponent implements OnInit {
             this.operacionConceptos(0, this.conceptosFilter[0].tipo_concepto);
             concepto.valor = this.operacion;          
             this.conceptosTabla.push(concepto);
-            console.log(this.conceptosTabla.find((e) => e.id_concepto ==2))
             if (!(this.conceptosTabla.find((e) => e.id_concepto == 3))) {
-              console.log(this.conceptosTabla.find((e) => e.id_concepto ==3))
-
               //Se consulta el concepto iba
               let consultarIva = this.conceptos.filter((concepto) => concepto.id_concepto == 3);
               // console.log(consultarIva);
@@ -1109,6 +1106,16 @@ export class RegistrarpdvComponent implements OnInit {
                 valor: this.operacion,
               });              
           }
+          if (this.formulariocontrato.get('valor_canon').value > 1145000) {
+            let consultarRTF = this.conceptos.filter((concepto) => concepto.codigo_concepto == 503)
+            this.operacionConceptos(consultarRTF[0].porcentaje_operacion, consultarRTF[0].tipo_concepto);
+            this.conceptosTabla.push({
+              id_concepto: consultarRTF[0].id_concepto,
+              codigo_concepto: consultarRTF[0].codigo_concepto,
+              nombre_concepto: consultarRTF[0].nombre_concepto,
+              valor: this.operacion,
+            });                 
+          }  
         }else{          
           if (this.conceptosFilter[0].id_concepto == 38) {
             console.log('Hola reteiva'); 

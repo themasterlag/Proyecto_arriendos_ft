@@ -772,6 +772,9 @@
                           >
                             {{p.codigo_sitio_venta}} - {{ p.nombre_comercial }}
                           </mat-option>
+                          <mat-option  *ngIf="pdv.length < 1" disabled>
+                            No hay sitio disponibles
+                          </mat-option>
                         </mat-select>
                       </mat-form-field>
                     </div>
