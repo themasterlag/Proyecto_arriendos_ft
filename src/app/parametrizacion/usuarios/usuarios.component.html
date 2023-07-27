@@ -1,0 +1,264 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info" id="banner">
+                        <h4 class="card-title">Registrar usuarios</h4>
+                    </div>
+                    <div class="card-body">
+                        <mat-accordion>
+                            <mat-expansion-panel hideToggle> </mat-expansion-panel>
+                            <mat-expansion-panel
+                              (opened)="panelOpenState = true"
+                              (closed)="panelOpenState = false"
+                            >
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  <h6 class="text-info">Datos del Tercero</h6>
+                                </mat-panel-title>
+                              </mat-expansion-panel-header>
+                              <h5><strong>Buscar tercero por su número de documento</strong></h5>
+                              <div class="row">
+                                <div class="col-3">
+                                  <input
+                                    class="formdata text-center form-control align-baseline mt-2"
+                                    placeholder="Cedula Tercero"
+                                    type="number"
+                                    [(ngModel)]="consulta_usuario"
+                                  />
+                                </div>
+                                
+                                <button
+                                  class="btn btn-info text-center col-3"
+                                  id="button-consultar"
+                                  (click)="traerUsuario()"
+                                >
+                                  Consultar
+                                </button>
+                                
+                              </div>
+              
+                              <hr />
+                              <!--formulario del tercero-->
+                              <form
+                                [formGroup]="formularioUsuarios"
+                                (ngSubmit)="registrartercero()"
+                              >
+                                <div class="row">
+                                  <div class="col-md-2">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Tipo documento"
+                                        (selectionChange)="validartipopersona($event.value)"
+                                        formControlName="tipo_documento"
+                                      >
+                                        <mat-option value="Cedula"> Cedula </mat-option>
+                                        <mat-option value="Cedula_Extrangeria">
+                                          Cedula extranjería
+                                        </mat-option>
+                                        <mat-option value="Nit"> Nit </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-2">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Numero De Documento"
+                                        type="number"
+                                        formControlName="numero_documento"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="natural col-md-8" *ngIf="tipoUsuario">
+                                    <div class="row">
+                                      <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Nombre Del Tercero"
+                                            type="text"
+                                            formControlName="nombres"
+                                          />
+                                        </mat-form-field>
+                                      </div>
+                                      <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Apellidos Del Tercero"
+                                            type="text"
+                                            formControlName="apellidos"
+                                          />
+                                        </mat-form-field>
+                                      </div>
+                                      <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                          <mat-select
+                                            placeholder="Género"
+                                            formControlName="genero"
+                                          >
+                                            <mat-option value="Masculino">
+                                              Masculino
+                                            </mat-option>
+                                            <mat-option value="Femenino">
+                                              Femenino
+                                            </mat-option>
+                                          </mat-select>
+                                        </mat-form-field>
+                                      </div>
+                                    </div>
+                                  </div>
+              
+                                  <div class="juridica col-md-8" *ngIf="!tipoUsuario">
+                                    <div class="row">
+                                      <div class="col-md-2">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="DV"
+                                            type="number"
+                                            formControlName="digito_verificacion"
+                                          />
+                                        </mat-form-field>
+                                      </div>
+                                      <div class="col-md-10">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Razon social"
+                                            type="text"
+                                            formControlName="razon_social"
+                                          />
+                                        </mat-form-field>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+              
+                                <div class="row">
+                                  <div class="col-md-4">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Departamento"
+                                        formControlName="departamento"
+                                        (selectionChange)="filtrardepar($event.value)"
+                                      >
+                                        <mat-option
+                                          [value]="d.id_departamento"
+                                          *ngFor="let d of departamentos"
+                                        >
+                                          {{ d.departamento }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-4" *ngIf="filtermuni">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Municipio"
+                                        formControlName="id_municipio"
+                                      >
+                                        <mat-option
+                                          [value]="m.id_municipio"
+                                          *ngFor="let m of municipiosfiltro"
+                                        >
+                                          {{ m.municipio }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Dirección"
+                                        type="text"
+                                        formControlName="direccion"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                </div>
+              
+                                <div class="row">
+                                  <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Número Contacto 1"
+                                        type="number"
+                                        formControlName="numero_contacto"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Número Contacto 2"
+                                        type="number"
+                                        formControlName="numero_contacto2"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Correo Electronico"
+                                        type="email"
+                                        formControlName="email"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <mat-form-field
+                                      class="example-full-width"
+                                      *ngIf="tipoUsuario"
+                                    >
+                                      <input
+                                        matInput
+                                        placeholder="Fecha De Nacimiento"
+                                        type="date"
+                                        formControlName="fecha_nacimiento"
+                                      />
+                                    </mat-form-field>
+                                    <mat-form-field
+                                      class="example-full-width"
+                                      *ngIf="!tipoUsuario"
+                                    >
+                                      <input
+                                        matInput
+                                        placeholder="Fecha De Creación"
+                                        type="date"
+                                        formControlName="fecha_creacion"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                </div>
+                                <button
+                                  mat-raised-button
+                                  type="submit"
+                                  class="btn btn-info pull-right"
+                                  id="button-guardar"
+                                >
+                                  Guardar
+                                </button>
+                                <button
+                                  mat-raised-button
+                                  type="reset"
+                                  class="btn btn-danger pull-right"
+                                  id="button-limpiar"
+                                >
+                                  Limpiar
+                                </button>
+                              </form>
+                            </mat-expansion-panel>
+                          </mat-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

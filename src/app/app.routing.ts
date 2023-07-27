@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './inicio/login/login.component';
 import { AuthGuard } from './auth/guard/authguard.guard';
+import { ParametrizacionModule } from './parametrizacion/parametrizacion.module'
 
 const routes: Routes =[
   {
@@ -33,7 +34,7 @@ const routes: Routes =[
       canActivateChild:[AuthGuard],
       loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
     }]
-  }
+  },
 ];
 
 @NgModule({
