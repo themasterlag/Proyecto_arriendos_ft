@@ -237,5 +237,17 @@ export class GeneralesService {
     return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
+  //USUARIOS
 
+  traerProcesos(){
+    return this.servicio.get(this.api + "procesos");
+  }
+
+  traerSubProcesos(){
+    return this.servicio.get(this.api + "procesos/subprocesos/");
+  }
+
+  enviarUsuarios(formUsuario){
+    return this.servicio.post(this.api + "usuarios/", formUsuario);
+  }
 }

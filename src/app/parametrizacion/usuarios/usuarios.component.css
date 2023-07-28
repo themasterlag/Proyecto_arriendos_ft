@@ -1,0 +1,42 @@
+.tabla-usuarios {
+    text-align: center;
+    width: 100%;    
+}
+#banner{
+    border-radius: 25px;
+    background: #ffe203;    
+}
+/* .card-category{
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 12px;
+} */
+.card-title{
+    color: #1b4f35 !important;
+    font-weight: 900;
+    font-size: 18px;
+}
+.card-body{
+    border-radius: 25px;
+}
+.mat-accordion .mat-expansion-panel:last-of-type{
+    border-radius: 25px;
+}
+.card{
+    background: #e8e8e8; /* por ejemplo */
+    font-size: 18px; /* por ejemplo */
+    border-radius: 25px;
+}
+#button-limpiar{
+    /* background-color: #1b4f35 !important; */
+    border-radius: 25px !important;
+    background-color: red;
+}
+#button-guardar{
+    background-color: green !important;
+    border-radius: 25px !important;
+}
+#button-consultar{
+    background-color: green !important;
+    border-radius: 25px !important;
+}
