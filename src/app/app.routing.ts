@@ -6,6 +6,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { LoginComponent } from './inicio/login/login.component';
 import { AuthGuard } from './auth/guard/authguard.guard';
 import { ParametrizacionModule } from './parametrizacion/parametrizacion.module'
+import { Pagina404Component } from './paginas-error/pagina404/pagina404.component';
 
 const routes: Routes =[
   {
@@ -35,6 +36,10 @@ const routes: Routes =[
       loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
     }]
   },
+
+  {
+    path: '**', component: Pagina404Component
+  }
 ];
 
 @NgModule({

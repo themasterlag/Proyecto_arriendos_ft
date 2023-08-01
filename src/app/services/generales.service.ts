@@ -194,6 +194,7 @@ export class GeneralesService {
   traerContratoPdf(sitioVenta) {
     return this.servicio.get(this.api + "contrato/pdv-nopagado/" + sitioVenta)
   }
+  
   traerContratoPdfPagado(data) {
     return this.servicio.get(this.api + "contrato/pdv-pagado/", {
       params: data,
@@ -249,5 +250,13 @@ export class GeneralesService {
 
   enviarUsuarios(formUsuario){
     return this.servicio.post(this.api + "usuarios/", formUsuario);
+  }
+
+  traerPermisos(){
+    return this.servicio.get(this.api + "/permisos");
+  }
+
+  traerCargos(){
+    return this.servicio.get(this.api + "/cargos");
   }
 }

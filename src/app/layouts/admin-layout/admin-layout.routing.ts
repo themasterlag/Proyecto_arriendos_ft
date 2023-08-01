@@ -17,6 +17,7 @@ import { CreditosComponent } from 'app/creditos/creditos.component';
 import { ReportesComponent } from 'app/reportes/reportes.component';
 import { ParametrizacionModule } from 'app/parametrizacion/parametrizacion.module';
 import { AuthGuard } from 'app/auth/guard/authguard.guard';
+import { Pagina404Component } from 'app/paginas-error/pagina404/pagina404.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -86,8 +87,10 @@ export const AdminLayoutRoutes: Routes = [
             canActivateChild: [AuthGuard],
             loadChildren: () => import('../../parametrizacion/parametrizacion.module').then(m => m.ParametrizacionModule)
         }]
+    },
+
+    {
+        path: '**', component: Pagina404Component
     }
-
-
     
 ];

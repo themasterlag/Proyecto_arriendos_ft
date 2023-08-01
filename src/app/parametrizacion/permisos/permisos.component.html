@@ -1,0 +1,131 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info" id="banner">
+                        <h4 class="card-title">Gestion de permisos</h4>
+                        <p class="card-category">Panel de administracion de permisos de usuarios</p>
+                    </div>
+
+                    <div class="card-body">
+                        <mat-accordion>
+                            <mat-expansion-panel [expanded]="panelPermisos" (opened)="panelPermisos = true"
+                                (closed)="panelPermisos = false">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <h6 class="text-info">Panel de permisos</h6>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                
+                                <div class="row text-center justify-content-center">
+                                    <div class="col-5 row align-items-center">
+                                        <div class="col-auto">
+                                            <p for="tipoElemento" class="text-black mt-2">Tipo de permiso:</p>
+                                        </div>
+                                        <div class="col">
+                                            <mat-form-field>
+                                                <mat-select name="tipoElemento" id="tipoElemento" [(ngModel)]="tipoPermiso" (selectionChange)="cargarDatos()">
+                                                    <mat-option [value]="0" selected disabled>Seleccione un tipo</mat-option>
+                                                    <mat-option [value]="1">Cargos</mat-option>
+                                                    <mat-option [value]="2">Procesos</mat-option>
+                                                    <!-- <mat-option [value]="3">Modulos</mat-option> -->
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="tipoPermiso == 2" class="col-5 row align-items-center">
+                                        <div class="col-auto">
+                                            <p for="tipoElemento" class="text-black mt-2">Procesos:</p>
+                                        </div>
+                                        <div class="col">
+                                            <mat-form-field>
+                                                <mat-select name="tipoElemento" id="tipoElemento" [(ngModel)]="tipoPermiso" (ngModelChange)="cargarDatos()">
+                                                    <mat-option [value]="0" selected disabled>Seleccione un
+                                                        tipo</mat-option>
+                                                    <mat-option [value]="1">Cargos</mat-option>
+                                                    <mat-option [value]="2">Procesos</mat-option>
+                                                    <!-- <mat-option [value]="3">Modulos</mat-option> -->
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="mt-0">
+                                <br>
+
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div class="alert alert-info py-1 align-middle alertWarning text-black text-center" role="alert">
+                                            <h4 *ngIf="tipoPermiso==0" class="my-0">Tipos</h4>
+                                            <h4 *ngIf="tipoPermiso==1" class="my-0">Cargos</h4>
+                                            <h4 *ngIf="tipoPermiso==2" class="my-0">Subprocesos</h4>
+                                            <!-- <h4 *ngIf="tipoPermiso==3" class="my-0">Modulos</h4> -->
+                                        </div>
+
+                                        <table mat-table [dataSource]="dataSource"
+                                            class="w-100 text-center table table-striped table-hover">
+
+                                            <ng-container matColumnDef="nombre">
+                                                <th mat-header-cell *matHeaderCellDef class="text-center"> Nombre </th>
+                                                <td mat-cell *matCellDef="let element" class="py-4"> {{element.nombre}} </td>
+                                            </ng-container>
+
+                                            <tr class="mat-row" *matNoDataRow>
+                                                <td class="mat-cell" colspan="7">No hay creditos</td>
+                                            </tr>
+
+                                            <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                                        </table>
+                                    </div>
+                                    <hr class="hrVertical h-auto">
+                                    <div class="col-5">
+                                        <div class="alert alert-info py-1 align-middle alertWarning text-black text-center" role="alert">
+                                            <h4 class="my-0">Modulos</h4>
+                                        </div>
+
+                                        <table mat-table [dataSource]="dataSourcePermiso"
+                                            class="w-100 text-center table table-striped table-hover">
+
+                                            <ng-container matColumnDef="nombre">
+                                                <th mat-header-cell *matHeaderCellDef class="text-center"> Nombre </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.permiso}} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="acciones">
+                                                <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <button class="btn btn-success rounded-pill px-4 py-2"
+                                                        (click)="null" matTooltip="Editar credito"
+                                                        matTooltipPosition="above" matTooltipClass="tooltipText">
+                                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                                    </button>
+
+                                                    <button class="btn btn-danger rounded-pill px-4 py-2"
+                                                        (click)="null" matTooltip="Editar credito"
+                                                        matTooltipPosition="above" matTooltipClass="tooltipText">
+                                                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr class="mat-row" *matNoDataRow>
+                                                <td class="mat-cell" colspan="7">No hay creditos</td>
+                                            </tr>
+
+                                            <tr mat-header-row *matHeaderRowDef="columnasPermiso"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: columnasPermiso;"></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
