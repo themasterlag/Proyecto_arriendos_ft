@@ -167,9 +167,6 @@ export class PagosComponent implements OnInit {
   }
   llenarTablas() {
     if(
-      (this.no_responsable == false &&
-        this.responsable == false &&
-        this.efectivo == false) ||
         this.anio == 0 ||
         this.mes == 0
       ) {
@@ -226,9 +223,9 @@ export class PagosComponent implements OnInit {
   traerNoPagados() {
     let datosConsulta = {
       DT: {
-        no_responsable: this.no_responsable,
-        responsable: this.responsable,
-        efectivo: this.efectivo,
+        no_responsable: true,
+        responsable: true,
+        efectivo: true,
       },
       TD: 2,
       RF: { anio: this.anio, mes: this.mes },

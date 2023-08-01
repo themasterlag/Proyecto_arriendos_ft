@@ -21,9 +21,9 @@
                 </mat-expansion-panel-header>
 
                 <hr />
-                <div class="row">
-                  <div class="col-md-6">
-                    <mat-form-field class="w-50 float-right">
+                <div class="row justify-content-center">
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100 float-right">
                       <mat-select
                         placeholder="Periodo"
                         (selectionChange)="asignarmes($event.value)"
@@ -44,8 +44,8 @@
                     </mat-form-field>
                   </div>
 
-                  <div class="col-md-6">
-                    <mat-form-field class="w-50 float-left">
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100 float-left">
                       <mat-select
                         placeholder="Año"
                         (selectionChange)="asignaranio($event.value)"
@@ -62,11 +62,21 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
+                  <div class="col-md-2" align="center">
+                    <button
+                      mat-raised-button
+                      class="btn btn-info "
+                      id="button-guardar"
+                      (click)="llenarTablas()"
+                    >
+                      Consultar
+                    </button>
+                  </div>
                 </div>
                 <hr />
 
-                <div class="row">
-                  <div class="col-md-3" align="center">
+                <div class="row align-items-center" >
+                  <!-- <div class="col-md-3" align="center">
                     <br />
                     <mat-checkbox
                       [(ngModel)]="no_responsable"
@@ -88,17 +98,8 @@
                       [(ngModel)]="efectivo"
                       >Efectivo</mat-checkbox
                     >
-                  </div>
-                  <div class="col-md-3" align="center">
-                    <button
-                      mat-raised-button
-                      class="btn btn-info"
-                      id="button-guardar"
-                      (click)="llenarTablas()"
-                    >
-                      Consultar
-                    </button>
-                  </div>
+                  </div> -->
+                  
                 </div>
                 <hr />
                 <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
