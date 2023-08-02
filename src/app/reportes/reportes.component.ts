@@ -281,7 +281,7 @@ export class ReportesComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${this.Pdv.contratodetalle.autdetalle.entidadbancaria.entidad_bancaria}`,
+                      text: `${this.Pdv.contratodetalle.autdetalle.entidadbancaria == null ? "Efectivo":this.Pdv.contratodetalle.autdetalle.entidadbancaria.entidad_bancaria}`,
                     },
                   ],
                 },

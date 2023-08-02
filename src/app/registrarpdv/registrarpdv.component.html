@@ -44,6 +44,7 @@
                 <!--formulario del tercero-->
                 <form
                   [formGroup]="formulariotercero"
+                  #formularioTerceroReset="ngForm"
                   (ngSubmit)="registrartercero()"
                 >
                   <div class="row">
@@ -349,7 +350,7 @@
                   </div>
                 </div>
                 
-                <form [formGroup]="formulariopdv" (ngSubmit)="registropdv()">
+                <form [formGroup]="formulariopdv" #formularioPdvReset="ngForm" (ngSubmit)="registropdv()">
                   <div class="row">
                     <div class="col-md-12">
                       <mat-form-field class="example-full-width">
@@ -370,11 +371,11 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                       <mat-form-field class="example-full-width">
                         <input
                           matInput
-                          placeholder="Sitio de venta"
+                          placeholder="Código sitio de venta"
                           type="number"
                           formControlName="codigo_sitio_venta"
                         />
@@ -394,7 +395,7 @@
                       <mat-form-field class="example-full-width">
                         <input
                           matInput
-                          placeholder="Nombre Comercial"
+                          placeholder="Nombre punto de venta"
                           type="text"
                           formControlName="nombre_comercial"
                         />
@@ -498,7 +499,7 @@
                       <mat-form-field class="example-full-width">
                         <input
                           matInput
-                          placeholder="Codigo Glpi"
+                          placeholder="Codigo GLPI"
                           type="number"
                           formControlName="codigo_glpi"
                         />
@@ -615,6 +616,7 @@
 
                 <form
                   [formGroup]="formulariocontrato"
+                  #formularioContratoReset="ngForm"
                   (ngSubmit)="registrocontrato()"
                 >
                   <div class="row">
@@ -992,13 +994,18 @@
                 
                 <table mat-table [dataSource]="dataSourceContratos" class="mat-elevation-z8 tabla-contratos">
                 
-                  <ng-container matColumnDef="Id_Punto_Venta">
-                    <th mat-header-cell *matHeaderCellDef> Id Punto de Venta </th>
+                  <ng-container matColumnDef="Codigo_Punto_Venta">
+                    <th mat-header-cell *matHeaderCellDef> Codigo Punto de Venta </th>
                     <td mat-cell *matCellDef="let element"> {{element.id_punto_venta}} </td>
                   </ng-container>
 
+                  <ng-container matColumnDef="Numero_documento">
+                    <th mat-header-cell *matHeaderCellDef> Cedula Responsable </th>
+                    <td mat-cell *matCellDef="let element"> {{element.numero_documento}} </td>
+                  </ng-container>
+
                   <ng-container matColumnDef="Nombre_Comertcial">
-                    <th mat-header-cell *matHeaderCellDef> Nombre Comercial </th>
+                    <th mat-header-cell *matHeaderCellDef> Nombre Punto De Venta </th>
                     <td mat-cell *matCellDef="let element"> {{element.nombre_comercial}} </td>
                   </ng-container>
                 
@@ -1014,13 +1021,15 @@
 
                   <ng-container matColumnDef="Acciones">
                     <th mat-header-cell *matHeaderCellDef> Acciones </th>
-                    <td mat-cell *matCellDef="let element">
+                    <td mat-cell *matCellDef="let element" >
                       <button
                         class="btn btn-info"
                         (click)="inhabilitarContrato(element)"
+                        *ngIf="element.fecha_inhabilitado == null"
                         [disabled]="element.fecha_inhabilitado"
                         >Inhabilitar
                     </button>
+                    <p  class="mb-0"  *ngIf="element.fecha_inhabilitado != null">Inhabilitado</p>
                     </td>
                   </ng-container>
                 
@@ -1041,7 +1050,7 @@
                     [hidden]="dataSourceContratos.data.length < 1"
                     class="mat-elevation-z8"
                     #paginatorContratos
-                    [pageSizeOptions]="[5, 10, 20]"
+                    [pageSizeOptions]="[20]"
                     showFirstLastButtons
                   >
                 </mat-paginator>

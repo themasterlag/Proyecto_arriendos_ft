@@ -27,6 +27,7 @@ interface Contratos {
   fecha_fin: string;
   fecha_inhabilitado: string;
   codigo_sitio_venta: number;
+  numero_documento: number;
 }
 @Component({
   selector: "app-registrarpdv",
@@ -88,10 +89,13 @@ export class RegistrarpdvComponent implements OnInit {
   tabla_contratos: any = [];
   valorCanon = null;
   canonGlobal = null;
-  displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
+  displayedColumns: string[] = ["Codigo_Punto_Venta", "Numero_documento" ,"Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Contratos> =
   new MatTableDataSource<Contratos>();
   @ViewChild("paginatorContratos") paginatorContratos: MatPaginator
+  @ViewChild('formularioTerceroReset') formularioTerceroReset: any;
+  @ViewChild('formularioPdvReset') formularioPdvReset: any;
+  @ViewChild('formularioContratoReset') formularioContratoReset: any;
 
   constructor(
     public servicio: GeneralesService,
@@ -482,7 +486,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        // console.log(res);
+        console.log(res);
       },
       (err) => {
         //console.log(err.message);
@@ -591,6 +595,7 @@ export class RegistrarpdvComponent implements OnInit {
       this.id_contrato = null;
       Loading.remove();
       this.limpiarContrato();
+      this.formularioContratoReset.resetForm();
     }
     
     for (let i = 0; i < this.listservicios.length; i++) {
@@ -608,6 +613,7 @@ export class RegistrarpdvComponent implements OnInit {
             this.id_contrato = null;
             Loading.remove();
             this.limpiarContrato();
+            this.formularioContratoReset.resetForm();
           }
         },
         (err) => {
@@ -749,10 +755,10 @@ export class RegistrarpdvComponent implements OnInit {
                       this.servicio.actuliarcontrato(datos).subscribe(
                         (res: any) => {
                           // console.log(res);
-                          this.formulariocontrato.markAsPristine(); // Marcar el formulario como "intocado"
-                          this.formulariocontrato.markAsUntouched(); // Marcar el formulario como "no modificado"
-                          this.formulariocontrato.reset();
-                          
+                          // this.formulariocontrato.markAsPristine(); // Marcar el formulario como "intocado"
+                          // this.formulariocontrato.markAsUntouched(); // Marcar el formulario como "no modificado"
+                          // this.formulariocontrato.reset();
+                          this.formularioContratoReset.resetForm();
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -840,9 +846,10 @@ export class RegistrarpdvComponent implements OnInit {
                   
                   swal.fire("Actualizado con Exito!","","success")
                   .then((isConfirm) => {
-                  this.formulariotercero.reset();
-                  this.formulariotercero.markAsUntouched();
-                  this.formulariotercero.markAsPristine(); // Marcar el formulario como "intocado"
+                  // this.formulariotercero.reset();
+                  // this.formulariotercero.markAsUntouched();
+                  // this.formulariotercero.markAsPristine(); // Marcar el formulario como "intocado"
+                  this.formularioTerceroReset.resetForm();
                   }); 
                   this.traerclientes();
                 },
@@ -854,10 +861,12 @@ export class RegistrarpdvComponent implements OnInit {
             this.servicio.enviarregistrotercero(formtercer).subscribe(
               (res) => {
                 swal
-                  .fire("Guardados con Exito!", "", "success")
+                  .fire("Guardado con Exito!", "", "success")
                   .then((isConfirm) => {
-                    this.formulariotercero.reset();
-                    this.formulariotercero.markAsUntouched();
+                    // this.formulariotercero.reset();
+                    // this.formulariotercero.markAsUntouched();
+                    // this.formulariotercero.markAsPristine();
+                    this.formularioTerceroReset.resetForm();
                   });
                 //console.log(formtercer);
                 //console.log(res);
@@ -928,8 +937,9 @@ export class RegistrarpdvComponent implements OnInit {
                         'success'
                       )
                       .then((isConfirm) => {
-                        this.formulariopdv.reset();
-                        this.formulariopdv.markAsUntouched();
+                        // this.formulariopdv.reset();
+                        // this.formulariopdv.markAsUntouched();
+                        this.formularioPdvReset.resetForm();
                         this.propietariostabla = [];
                       });
                   } else {
@@ -1095,6 +1105,7 @@ export class RegistrarpdvComponent implements OnInit {
           concepto.valor = this.operacion;  
           this.conceptosTabla.push(concepto)   
           }
+          
         }else if(this.conceptosFilter[0].id_concepto == 3){
           this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
           concepto.valor = this.operacion;    
@@ -1133,11 +1144,17 @@ export class RegistrarpdvComponent implements OnInit {
               let valorIva = this.conceptosTabla.find((element) => element.id_concepto == 3); 
               concepto.valor = valorIva.valor * this.conceptosFilter[0].porcentaje_operacion;
               this.conceptosTabla.push(concepto);
-            }           
-          }else{
+            }
+          }
+          else if(this.conceptosFilter[0].concepto_asociado != null){
+            this.calcularAsociado(this.conceptosFilter[0]);
+          }          
+          
+          
+          else{
             this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
             concepto.valor = this.operacion;    
-            this.conceptosTabla.push(concepto)   
+            this.conceptosTabla.push(concepto)    
           }      
         } 
         
@@ -1145,6 +1162,12 @@ export class RegistrarpdvComponent implements OnInit {
       this.totalValorConceptos();  
     }  
      
+  }
+
+  calcularAsociado(concepto){
+    console.log(concepto, "Blue label");
+    let arrayAsociado = concepto.concepto_asociado.split("_");
+    console.log(arrayAsociado);
   }
 
   deliCon(i: number) {
@@ -1161,6 +1184,8 @@ export class RegistrarpdvComponent implements OnInit {
     this.listservicios = [];
     this.serviciosfilter = [];
   }
+
+  
 
   limpiarContrato(): void {
     this.formulariocontrato.reset();
@@ -1190,8 +1215,7 @@ export class RegistrarpdvComponent implements OnInit {
       (res:any) => {
         // console.log(res);
 
-        this.tabla_contratos = res.map((element) => {
-          
+        this.tabla_contratos = res.map((element) => {          
           
           return {
             id_contrato: element.id_contrato,
@@ -1199,9 +1223,12 @@ export class RegistrarpdvComponent implements OnInit {
             fecha_fin: element.fecha_fin_contrato,
             fecha_inhabilitado: element.fecha_inactivo,
             id_punto_venta: element.pvdetalle.codigo_sitio_venta,
-            nombre_comercial: element.pvdetalle.nombre_comercial
+            nombre_comercial: element.pvdetalle.nombre_comercial,
+            numero_documento: element.responsabledetalle.clientedetalle.numero_documento
           }
         })
+
+        // console.log(this.tabla_contratos)
 
         this.dataSourceContratos.data = this.tabla_contratos;
         this.dataSourceContratos.paginator = this.paginatorContratos;
@@ -1220,7 +1247,7 @@ export class RegistrarpdvComponent implements OnInit {
 
 
   inhabilitarContrato(contrato){
-    console.log(contrato);
+    // console.log(contrato);
     
     const currentDate = new Date();
     const formattedDate = this.formatDate(currentDate);
@@ -1233,18 +1260,19 @@ export class RegistrarpdvComponent implements OnInit {
       icon: "question",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(result.value);
+        // console.log(result.value);
         let datos = {
           id: contrato.id_contrato,
           fecha_inactivo: formattedDate,
           razon_inactivo: result.value
         }
-        console.log(datos);
+        // console.log(datos);
         
         this.servicio.inhabilitarContratos(datos).subscribe(
             (res:any) => {
-            console.log(res);
-            swal.fire(`Contrato ${contrato.id_contrato} inhabilitado`,'', 'success')            
+            // console.log(res);
+            swal.fire(`Contrato ${contrato.id_contrato} inhabilitado`,'', 'success') 
+            this.tablaContratos();           
         })        
       }
     })
