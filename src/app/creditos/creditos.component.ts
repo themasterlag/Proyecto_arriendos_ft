@@ -18,7 +18,7 @@ export class CreditosComponent implements OnInit {
   @ViewChild("formularioEditarCredito") formularioEditarCredito:NgForm ;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  displayedColumns: string[] = ['Contrato', 'Concepto', 'Valor_mensual', 'Valor', 'Saldo', 'Fecha inicio', 'Fecha fin', 'Acciones'];
+  displayedColumns: string[] = ['PDV', 'Concepto', 'Valor_mensual', 'Valor', 'Saldo', 'Fecha inicio', 'Fecha fin', 'Acciones'];
   dataSource:MatTableDataSource<any> = null;
 
   listaCreditos:any = [];
