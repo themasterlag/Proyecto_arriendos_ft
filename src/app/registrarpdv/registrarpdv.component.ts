@@ -665,8 +665,10 @@ export class RegistrarpdvComponent implements OnInit {
 
   registrocontrato(): void {
     // Loading.pulse("Cargando");
-
-    if (this.formulariocontrato.valid) {
+    if (this.conceptosTabla.length == 0) {
+      swal.fire('La tabla conceptos no puede estar vacia','', 'warning');
+    }
+    else if (this.formulariocontrato.valid) {
       let responsable = {
         id_cliente: this.formulariocontrato.value.id_clienteresponsable,
         estado: "1",
@@ -747,6 +749,9 @@ export class RegistrarpdvComponent implements OnInit {
                       this.servicio.actuliarcontrato(datos).subscribe(
                         (res: any) => {
                           // console.log(res);
+                          this.formulariocontrato.markAsPristine(); // Marcar el formulario como "intocado"
+                          this.formulariocontrato.markAsUntouched(); // Marcar el formulario como "no modificado"
+                          this.formulariocontrato.reset();
                           
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
@@ -837,6 +842,7 @@ export class RegistrarpdvComponent implements OnInit {
                   .then((isConfirm) => {
                   this.formulariotercero.reset();
                   this.formulariotercero.markAsUntouched();
+                  this.formulariotercero.markAsPristine(); // Marcar el formulario como "intocado"
                   }); 
                   this.traerclientes();
                 },
@@ -950,6 +956,7 @@ export class RegistrarpdvComponent implements OnInit {
                       .then((isConfirm) => {
                         this.formulariopdv.reset();
                         this.formulariopdv.markAsUntouched();
+                        this.formulariopdv.markAsPristine(); // Marcar el formulario como "intocado"
                         this.propietariostabla = []
                       });
                   } else {

@@ -495,7 +495,7 @@ export class PagosComponent implements OnInit {
             conceptos: this.encontrarConceptosContrato(element.id_contrato)
           }
         })
-        // console.log(listaEnviar);
+        console.log(listaEnviar);
         let noPagadosActualizar = this.noPagadosEnviar.filter((noPagadoEnv) =>
           { 
             let che =
@@ -536,6 +536,7 @@ export class PagosComponent implements OnInit {
     let listaConceptos = [];
     for (let i = 0; i < this.pagoConcepto.length && !encontrado; i++) {
       if(idContrato == this.pagoConcepto[i][0]["id_contrato"]){
+        encontrado = true;
         listaConceptos.push(this.pagoConcepto[i])
       }
     }

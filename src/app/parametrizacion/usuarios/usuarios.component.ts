@@ -50,7 +50,7 @@ export class UsuariosComponent implements OnInit {
   }
 
   traerUsuario(){
-
+    console.log(this.consulta_usuario);
   }
 
   registrarUsuario(){
