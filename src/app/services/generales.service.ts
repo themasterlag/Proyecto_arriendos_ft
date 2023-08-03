@@ -259,4 +259,10 @@ export class GeneralesService {
   traerCargos(){
     return this.servicio.get(this.api + "/cargos");
   }
+
+  // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS
+  traerConceptosAsociados(){
+    return this.servicio.get(this.api + "/conceptos/asociados");
+  }
+
 }

@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { MatPaginator } from "@angular/material/paginator"
 import { MatSort } from "@angular/material/sort"
 import { MatTableDataSource } from "@angular/material/table"
+import { error, log } from "console";
 
 
 interface Concepto {
@@ -771,6 +772,7 @@ export class RegistrarpdvComponent implements OnInit {
                     else{
                       this.servicio.registrarcontrato(datos).subscribe(
                         (res: any) => {
+                          this.formularioContratoReset.resetForm();
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -964,9 +966,10 @@ export class RegistrarpdvComponent implements OnInit {
                         'success'
                       )
                       .then((isConfirm) => {
-                        this.formulariopdv.reset();
-                        this.formulariopdv.markAsUntouched();
-                        this.formulariopdv.markAsPristine(); // Marcar el formulario como "intocado"
+                        // this.formulariopdv.reset();
+                        // this.formulariopdv.markAsUntouched();
+                        // this.formulariopdv.markAsPristine(); 
+                        this.formularioPdvReset.resetForm();// Marcar el formulario como "intocado"
                         this.propietariostabla = []
                       });
                   } else {
@@ -1042,7 +1045,7 @@ export class RegistrarpdvComponent implements OnInit {
     if (conceptoIgual) {
       swal.fire('El concepto ya se encuentra en la lista','','info');   
     }else{
-      console.log(this.formulariocontrato.get('valor_canon').value);
+      // console.log(this.formulariocontrato.get('valor_canon').value);
       
       if(this.formulariocontrato.get('valor_canon').value == null){
         swal.fire("El canon no puede estar vacio", '', "error");
@@ -1112,7 +1115,7 @@ export class RegistrarpdvComponent implements OnInit {
           this.conceptosTabla.push(concepto)
           
           if(!(this.conceptosTabla.find((e) => e.id_concepto == 2))){
-            console.log("hola")
+            // console.log("hola")
             let consultarResponsableIva = this.conceptos.filter((concepto) => concepto.id_concepto == 2);
               // console.log(consultarIva);
               
@@ -1148,8 +1151,7 @@ export class RegistrarpdvComponent implements OnInit {
           }
           else if(this.conceptosFilter[0].concepto_asociado != null){
             this.calcularAsociado(this.conceptosFilter[0]);
-          }          
-          
+          } 
           
           else{
             this.operacionConceptos(this.conceptosFilter[0].porcentaje_operacion, this.conceptosFilter[0].tipo_concepto)
@@ -1165,9 +1167,76 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   calcularAsociado(concepto){
-    console.log(concepto, "Blue label");
-    let arrayAsociado = concepto.concepto_asociado.split("_");
-    console.log(arrayAsociado);
+    this.servicio.traerConceptosAsociados().subscribe(
+      (res:any) => {
+        console.log(res);
+        this.ordenConceptoAsociado(concepto, res);
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
+
+  ordenConceptoAsociado(concepto, asociados){
+    let asociado = false;
+    let primero = false;
+    let concepto_asociado = (concepto.concepto_asociado.split("_")[1]);
+    let concepto_codigo = concepto.codigo_concepto;
+    let valorNuevo = 0
+
+
+    for (let i = 0; i < asociados.length && asociado == false; i++) {
+      let cadena = null;
+      if(concepto_asociado == asociados[i].codigo_concepto && primero == false){
+        concepto_asociado = (asociados[i].concepto_asociado.split("_")[1])    
+        if((asociados[i].concepto_asociado.split("_")[0]) == 1){
+          concepto_asociado = (asociados[i].concepto_asociado.split("_")[1]);
+          concepto_codigo = asociados[i].codigo_concepto
+
+          this.operacionConceptos(asociados[i].porcentaje_operacion, asociados[0].tipo_concepto);
+          cadena = {
+            id_concepto: asociados[i].id_concepto,
+            codigo_concepto: asociados[i].codigo_concepto,
+            nombre_concepto: asociados[i].nombre_concepto,
+            valor: this.operacion,
+          }; 
+          valorNuevo = this.operacion
+          primero = true
+        }
+      }
+
+      if(primero == true && concepto_asociado == asociados[i].codigo_concepto){
+        concepto_asociado = (asociados[i].concepto_asociado.split("_")[1])
+
+        let numero_decimal = valorNuevo * asociados[i].porcentaje_operacion;
+        this.operacion = parseFloat(numero_decimal.toFixed(2));
+        
+        cadena = {
+          id_concepto: asociados[i].id_concepto,
+          codigo_concepto: asociados[i].codigo_concepto,
+          nombre_concepto: asociados[i].nombre_concepto,
+          valor: this.operacion,
+        }; 
+        valorNuevo = this.operacion;
+
+        if(concepto_asociado == concepto_codigo){
+          asociado = true;
+          console.log("termina");
+        }
+      }
+
+      if((i == asociados.length-1)){
+        i = 0; 
+      }
+
+      if(cadena && !(this.conceptosTabla.find((concepto) => concepto.id_concepto == cadena["id_concepto"]))){
+        this.conceptosTabla.push(cadena);
+      }
+
+    }
+
+    this.totalValorConceptos();  
   }
 
   deliCon(i: number) {
