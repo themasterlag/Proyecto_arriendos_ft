@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  spinner: boolean = false;
   usuario: string;
   clave: string;
   errorLogin: string = null;
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit {
   }
 
   iniciarSesion(){
+    this.spinner = true;
     let datos = new FormData();
 
     datos.append('email', this.usuario);
@@ -32,12 +34,15 @@ export class LoginComponent implements OnInit {
     this.servicio.iniciarSesion(datos).subscribe(
       (respuesta:any) => {
         if(respuesta.token){
+          this.errorLogin = null;
           this.servicioAut.almacenarSesion(respuesta.token);
           this.route.navigateByUrl("/dashboard");
+          this.spinner = false;
         }
       },
       (error) => {
         this.errorLogin = error.error.message;
+        this.spinner = false;
       }
     );
   }
