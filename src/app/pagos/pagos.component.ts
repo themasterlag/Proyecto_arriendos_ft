@@ -140,16 +140,16 @@ export class PagosComponent implements OnInit {
     this.search = search
   }
 
-  traerContratoPDF(sitioVenta, base64, tipoPago) {
-    this.servicio.traerContratoPdf(sitioVenta).subscribe((res: any) => {
+  traerContratoPDF(idContrato, base64, tipoPago) {
+    this.servicio.traerContratoPdf(idContrato).subscribe((res: any) => {
       this.contatoPDF = res
-
+      console.log(this.contatoPDF, "blue label");
       // if(tipoPago == 4){
       //   console.log("ir a incremento");        
       //   this.aplicarIncremento(sitioVenta)
       // } else 
       if (this.contatoPDF != null && tipoPago != 4) {
-        this.comprobantePdfNoPagados(base64, sitioVenta, tipoPago)        
+        this.comprobantePdfNoPagados(base64, idContrato, tipoPago)        
       } else Swal.fire("No hay contratos", "", "error")
     })
   }
@@ -235,11 +235,11 @@ export class PagosComponent implements OnInit {
        this.concepPre = []
        this.concepPos = []
         this.noPagadosLista = res
-        // console.log(this.noPagadosLista);
+        console.log(this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e:any) => {
           
-          let totalValor =this.CalcularValorTablas(e); 
+          let totalValor = this.CalcularValorTablas(e); 
           return {
             idContrato: e.id_contrato,
             Check: true,
@@ -292,7 +292,7 @@ export class PagosComponent implements OnInit {
           
       conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499)
    
-      conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499)
+      conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
       
       
 
@@ -305,9 +305,9 @@ export class PagosComponent implements OnInit {
       
       this.pagoConcepto.push(conceptosAjuste)
 
-      conceptosDEV = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto <= 499)
+      conceptosDEV = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
      
-      conceptosDeC = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto > 499)
+      conceptosDeC = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
      
     } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
       
@@ -324,9 +324,9 @@ export class PagosComponent implements OnInit {
       this.concepPre.push(conceptosAntesIncremento)
       
       
-      conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499)
+      conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
         
-      conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499)
+      conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
       
       // Calcular la parte donde se aplica el incremento
       // Valor del Canon con el incremento
@@ -356,18 +356,18 @@ export class PagosComponent implements OnInit {
       this.canonIncremento = total
       
       // ahora se le setea los valores de los conceptos incrementados dependiendo si son dev o dec
-      conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499)
+      conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
      
-      conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499)
+      conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
      
     } else {
       total = datos.valor_canon
       datos.canon = total
       this.pagoConcepto.push(datos.conceptos)
 
-      conceptosDEV = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499)
+      conceptosDEV = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
      
-      conceptosDeC = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499)
+      conceptosDeC = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
       
     }
 
@@ -650,10 +650,10 @@ export class PagosComponent implements OnInit {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-        // console.log("Tipo del pago: ", tipoPago)
+        // console.log("Tipo del pago: ", element.idContrato)
         if (tipoPago == 1) {
-          this.traerContratoPDF(element.PDV, base64, tipoPago)
-        } else this.traerContratoPagadoPDF(element.PDV, base64, tipoPago)
+          this.traerContratoPDF(element.idContrato, base64, tipoPago)
+        } else this.traerContratoPagadoPDF(element.idContrato, base64, tipoPago)
       }
     })
     // this.traerInformacionIncremento(element);
@@ -1065,11 +1065,12 @@ export class PagosComponent implements OnInit {
 
 
   comprobantePdfNoPagados(base64, datos, tipoPago) {
-    // console.log(datos)
+    console.log(datos, this.contatoPDF)
+
     this.Pdv = this.contatoPDF.filter(
-      (pdv) => pdv.pvdetalle.codigo_sitio_venta == datos
+      (pdv) => pdv.id_contrato == datos
     )
-    // console.log(this.Pdv, "hola");
+    console.log(this.Pdv, "hola");
     
     if (
       this.Pdv[0].autdetalle.clientedetalle.tipo_documento ==
@@ -1102,12 +1103,12 @@ export class PagosComponent implements OnInit {
       tipoPago = 3;
           
       conceptosDevengados = lista.filter(
-        (element) => element.conceptodetalle.codigo_concepto <= 499        
+        (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6        
       )
       //  console.log(conceptosDevengados);      
       
       conceptosDeducidos = lista.filter(
-        (element) => element.conceptodetalle.codigo_concepto > 499        
+        (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6      
       )
 
       totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
@@ -1126,12 +1127,12 @@ export class PagosComponent implements OnInit {
       // console.log("aquii el tipo pago 1");
       
       conceptosDevengados = this.Pdv[0].contconceptos.filter(
-        (element) => element.conceptodetalle.codigo_concepto <= 499
+        (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
       )
       conceptosDevengados = this.validarValorTrabajarConceptos(conceptosDevengados)
 
       conceptosDeducidos = this.Pdv[0].contconceptos.filter(
-        (element) => element.conceptodetalle.codigo_concepto > 499
+        (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6
       )
       conceptosDeducidos = this.validarValorTrabajarConceptos(conceptosDeducidos)
 
@@ -1147,12 +1148,12 @@ export class PagosComponent implements OnInit {
       // console.log("Pagados blue label");
       
       conceptosDevengados = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
-        (element) => element.conceptodetalle.codigo_concepto <= 499
+        (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
       )
       // console.log(conceptosDevengados);
       
       conceptosDeducidos = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
-        (element) => element.conceptodetalle.codigo_concepto > 499
+        (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6
       )
 
       // console.log(conceptosDeducidos);      

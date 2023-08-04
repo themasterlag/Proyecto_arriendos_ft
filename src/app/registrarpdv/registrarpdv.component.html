@@ -694,11 +694,15 @@
                           >
                             <mat-button-toggle
                               class="w-50"
+                              value="true"
+                              [checked]="pago_efectivo" 
                               (click)="cambiarModoPago('efectivo')"
                               >Efecitvo</mat-button-toggle
                             >
                             <mat-button-toggle
                               class="w-50"
+                              value="false"
+                              [checked]="pago_transferencia" 
                               (click)="cambiarModoPago('transferencia')"
                               >Transferencia</mat-button-toggle
                             >

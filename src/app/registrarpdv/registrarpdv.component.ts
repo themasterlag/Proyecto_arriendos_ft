@@ -71,7 +71,7 @@ export class RegistrarpdvComponent implements OnInit {
   tipocuentas: any;
   pdv: any = [];
   serviciospublicos: any = [];
-  pago_efectivo: boolean = false;
+  pago_efectivo: boolean = true;
   pago_transferencia: boolean = false;
   id_pago: any;
   incremento_anual = null;
@@ -162,7 +162,7 @@ export class RegistrarpdvComponent implements OnInit {
       incremento_adicional: [null],
       poliza: [false],
       definicion: [null],
-      Conceptos: [null]
+      Conceptos: [null],
       // conceptos: [null, Validators.required]
     });
   }
@@ -389,7 +389,7 @@ export class RegistrarpdvComponent implements OnInit {
   cargarDatosContrato(res){
     this.contrato = res;
         this.id_contrato = res.contrato.id_contrato;
-
+        console.log(res)
         this.formulariocontrato.patchValue({
           valor_adminstracion: res.contrato.valor_adminstracion,
           valor_canon: res.contrato.valor_canon,        
@@ -411,12 +411,12 @@ export class RegistrarpdvComponent implements OnInit {
         this.canonGlobal = this.formulariocontrato.get('valor_canon').value
         
         if (res.contrato.autdetalle.metodo_pago == 1) {
-          this.pago_transferencia = true;
-          // this.pago_efectivo = false;
-        } else res.contrato.autdetalle.metodo_pago == 2;
-        {
+          this.pago_transferencia = false;
           this.pago_efectivo = true;
-          // this.pago_transferencia = false;
+        } else
+        {
+          this.pago_efectivo = false;
+          this.pago_transferencia = true;
         }
 
         if (res.contrato.responsabledetalle.iva != null) {
@@ -1067,7 +1067,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.conceptosTabla.forEach((element) => {
       let idconcepto = this.conceptos.find((concepto) => concepto.id_concepto == element.id_concepto);
         if ( !(idconcepto.tipo_concepto == 5)  ) {
-          if (idconcepto.tipo_concepto == 2 || idconcepto.tipo_concepto == 4){
+          if (idconcepto.tipo_concepto == 2 || idconcepto.tipo_concepto == 4 || idconcepto.tipo_concepto == 6){
             this.valorTotal -= element.valor 
           }else{
             this.valorTotal += element.valor 
@@ -1224,14 +1224,16 @@ export class RegistrarpdvComponent implements OnInit {
     let primero = false;
     let concepto_asociado = (concepto.concepto_asociado.split("_")[1]);
     let concepto_codigo = concepto.codigo_concepto;
-    let valorNuevo = 0
+    let valorNuevo = 0;
+    let vueltas = 0;  
 
-
-    for (let i = 0; i < asociados.length && asociado == false; i++) {
+    for (let i = 0; i < asociados.length && asociado == false && vueltas < 5; i++) {
       let cadena = null;
       if(concepto_asociado == asociados[i].codigo_concepto && primero == false){
-        concepto_asociado = (asociados[i].concepto_asociado.split("_")[1])    
+        concepto_asociado = (asociados[i].concepto_asociado.split("_")[1])
+        // console.log((asociados[i].concepto_asociado.split("_")), "aquii",concepto_asociado);    
         if((asociados[i].concepto_asociado.split("_")[0]) == 1){
+          // console.log("aquii2");
           concepto_asociado = (asociados[i].concepto_asociado.split("_")[1]);
           concepto_codigo = asociados[i].codigo_concepto
 
@@ -1244,8 +1246,11 @@ export class RegistrarpdvComponent implements OnInit {
           }; 
           valorNuevo = this.operacion
           primero = true
+          // console.log("aquii3");
+
         }
       }
+      console.log(primero , concepto_asociado, asociados[i].codigo_concepto);
 
       if(primero == true && concepto_asociado == asociados[i].codigo_concepto){
         concepto_asociado = (asociados[i].concepto_asociado.split("_")[1])
@@ -1265,18 +1270,20 @@ export class RegistrarpdvComponent implements OnInit {
           asociado = true;
           console.log("termina");
         }
+        console.log(concepto_asociado , concepto_codigo);
       }
-
+      
       if((i == asociados.length-1)){
         i = 0; 
+        vueltas++;
       }
 
       if(cadena && !(this.conceptosTabla.find((concepto) => concepto.id_concepto == cadena["id_concepto"]))){
         this.conceptosTabla.push(cadena);
       }
-
+      
     }
-
+    console.log(vueltas);
     this.totalValorConceptos();  
   }
 

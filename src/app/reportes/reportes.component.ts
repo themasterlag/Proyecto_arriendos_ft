@@ -159,11 +159,11 @@ export class ReportesComponent implements OnInit {
     let total = 0
 
     conceptosDevengados = this.Pdv.contconceptos.filter(
-      (element) => element.conceptodetalle.codigo_concepto <= 499
+      (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6 
     )
 
     conceptosDeducidos = this.Pdv.contconceptos.filter(
-      (element) => element.conceptodetalle.codigo_concepto > 499
+      (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6    
     )
 
     totalDeduccion = this.valorTotalConceptos(conceptosDeducidos)
