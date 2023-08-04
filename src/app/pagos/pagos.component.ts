@@ -650,10 +650,10 @@ export class PagosComponent implements OnInit {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
         var base64 = reader.result
-        // console.log("Tipo del pago: ", element.idContrato)
+        console.log("Tipo del pago: ", element)
         if (tipoPago == 1) {
           this.traerContratoPDF(element.idContrato, base64, tipoPago)
-        } else this.traerContratoPagadoPDF(element.idContrato, base64, tipoPago)
+        } else {this.traerContratoPagadoPDF(element.id_contrato, base64, tipoPago)}
       }
     })
     // this.traerInformacionIncremento(element);
