@@ -373,6 +373,9 @@ export class RegistrarpdvComponent implements OnInit {
             }
           });
         }
+        else {
+          this.cargarDatosContrato(res[0]);
+        }
         
         
 
