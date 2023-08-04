@@ -78,6 +78,7 @@ export class RegistrarpdvComponent implements OnInit {
   consulta_pdv: any = null;
   consulta_ter: any = null;
   actualizar: boolean = null;
+  contratos_pdv: any = [];
   id_contrato = null;
   id_punto_venta = null;
   id_tercero = null;
@@ -320,6 +321,23 @@ export class RegistrarpdvComponent implements OnInit {
       }
     );
   }
+
+  buscarPuntosDeVenta(traerTodos = false){
+    console.log(traerTodos);
+    if (this.actualizar || traerTodos) {
+      this.servicio.traerPuntosDeVenta().subscribe(
+        (resPdv:any) => {
+          this.pdv = resPdv;
+        },
+        (err) => {
+          console.log(err.message);
+        }
+      );
+    }
+    else{
+      this.traerpdv();
+    }
+  }
   
   traeContrato() {
 
@@ -327,20 +345,49 @@ export class RegistrarpdvComponent implements OnInit {
     let id = this.consulta_pdv;
 
 
-    this.servicio.traerPuntosDeVenta().subscribe(
-      (resPdv:any) => {
-        this.pdv = resPdv;
-      },
-      (err) => {
-        console.log(err.message);
-      }
-    );
+    this.buscarPuntosDeVenta();
 
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
-        console.log(res);
-        this.contrato = res;
+        if (res.length > 1) {
+          this.contratos_pdv = res.map((datoConsulta) =>{
+            let responsable = datoConsulta.contrato.responsabledetalle.clientedetalle;
+            let nombre = responsable.razon_social == null? responsable.nombres+" "+responsable.apellidos: responsable.razon_social
+
+            return nombre
+          });
+
+          Swal.fire({
+            title: 'Punto de venta con varios contratos',
+            input: 'select',
+            inputOptions: this.contratos_pdv,
+            inputPlaceholder: 'Seleccione un contrato por responsable',
+            confirmButtonText: 'Cargar contrato',
+            showCancelButton: true,
+            inputValidator: (value) => {
+              return new Promise((resolve) => {
+                this.cargarDatosContrato(res[value]);
+                resolve("");
+              })
+            }
+          });
+        }
+        
+        
+
+        
+      },
+      (err) => {
+        swal.fire("Punto de venta no encontrado", "", "error");
+        console.log(err.message);
+      }
+    );
+      this.formulariocontrato.get('valor_canon').disable()
+  }
+
+  cargarDatosContrato(res){
+    this.contrato = res;
         this.id_contrato = res.contrato.id_contrato;
 
         this.formulariocontrato.patchValue({
@@ -396,14 +443,8 @@ export class RegistrarpdvComponent implements OnInit {
           });                
         });
         this.totalValorConceptos();
-      },
-      (err) => {
-        swal.fire("Punto de venta no encontrado", "", "error");
-        console.log(err.message);
-      }
-    );
-      this.formulariocontrato.get('valor_canon').disable()
   }
+
 
   darTipoConcepto(tipo_concepto){
     let valor = 
