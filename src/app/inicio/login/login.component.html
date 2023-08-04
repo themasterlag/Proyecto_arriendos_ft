@@ -20,7 +20,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn rounded" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
+                    <button *ngIf="!spinner" class="btn rounded" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
+                    <button *ngIf="spinner" class="btn rounded" style="background-color: #1b4f35;" disabled> 
+                        <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
+                            <span class="sr-only">Ingresando...</span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
