@@ -428,7 +428,7 @@ export class ReportesComponent implements OnInit {
                         bold: true,
                       },
                       {
-                        text: "Autorización numeración documento soporte 189764035091573.",
+                        text: "Autorización numeración documento soporte 18764035091573, Agosto 30 de 2022",
                         bold: true,
                         fontSize: 8,
                       },
