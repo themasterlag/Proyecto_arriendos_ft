@@ -277,6 +277,10 @@ export class RegistrarpdvComponent implements OnInit {
     
   }
 
+  limpiarTercero(){
+    this.consulta_ter = null;
+  }
+
   traerPDV(){
     this.servicio.traerPDv(this.pdv_id).subscribe(
       (res:any) => {
@@ -909,9 +913,6 @@ export class RegistrarpdvComponent implements OnInit {
                 swal
                   .fire("Guardado con Exito!", "", "success")
                   .then((isConfirm) => {
-                    // this.formulariotercero.reset();
-                    // this.formulariotercero.markAsUntouched();
-                    // this.formulariotercero.markAsPristine();
                     this.formularioTerceroReset.resetForm();
                   });
                 //console.log(formtercer);
@@ -919,7 +920,7 @@ export class RegistrarpdvComponent implements OnInit {
                 this.traerclientes();
               },
               (err) => {
-                swal.fire("Error al registrar", err.error.menssage, "error");
+                swal.fire("Error al registrar", err.error.message, "error");
               }
             );
             }
