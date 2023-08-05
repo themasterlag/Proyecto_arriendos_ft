@@ -11,12 +11,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CargosComponent } from './cargos/cargos.component';
 
 
 @NgModule({
   declarations: [
     UsuariosComponent,
-    PermisosComponent
+    PermisosComponent,
+    CargosComponent
   ],
   imports: [
     CommonModule,
