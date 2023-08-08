@@ -30,7 +30,7 @@ export const ROUTES: RouteInfo[] = [
   // }
   { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:"cargos", children:[]},
   
-  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'admin_panel_settings', class:'', id:"bancos", children:[]}
+  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:"bancos", children:[]}
   // { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
 ];
 
