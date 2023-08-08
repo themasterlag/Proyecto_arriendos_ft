@@ -52,10 +52,25 @@
     
             <ul class="nav" id="navigation">
                 <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-                    <a class="nav-link" [routerLink]="[menuItem.path]">
+                    <a *ngIf="menuItem.children.length < 1" class="nav-link" [routerLink]="[menuItem.path]">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
                     </a>
+                    <div *ngIf="menuItem.children.length > 0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                {{menuItem.title}}
+                              </a>
+                              <div class="dropdown-menu">
+                                
+                                
+                                <a *ngFor="let Item of menuItem.children" class="nav-link dropdown-item" [routerLink]="[Item.path]">
+                                    <i class="material-icons">{{Item.icon}}</i>
+                                    <p>{{Item.title}}</p>
+                                </a>
+                              </div>
+                        </li>
+                    </div>
                 </li>
             </ul>
         </div>
