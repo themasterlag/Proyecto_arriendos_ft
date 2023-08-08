@@ -12,13 +12,15 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CargosComponent } from './cargos/cargos.component';
+import { BancoComponent } from './bancos/banco.component';
 
 
 @NgModule({
   declarations: [
     UsuariosComponent,
     PermisosComponent,
-    CargosComponent
+    CargosComponent,
+    BancoComponent
   ],
   imports: [
     CommonModule,

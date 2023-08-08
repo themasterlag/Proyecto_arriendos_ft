@@ -13,6 +13,7 @@ declare interface RouteInfo {
 export const ROUTES: RouteInfo[] = [
  //   { path: '/dashboard', title: 'Dashboard',  icon: 'dashboard', class: '' },
  
+<<<<<<< Updated upstream
   { path: '/dashboard/Register', title: 'Registro',  icon:'app_registration', class: '', id:"register", children:[]},
   { path: '/dashboard/Pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:"pagos", children:[]},
   { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:"creditos", children:[] },
@@ -29,6 +30,15 @@ export const ROUTES: RouteInfo[] = [
   //   ]
   // }
 
+=======
+  { path: '/dashboard/Register', title: 'Registro',  icon:'app_registration', class: '', id:"register" },
+  { path: '/dashboard/Pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:"pagos"},
+  { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:"creditos" },
+  { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:"reportes" },
+  { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:"usuarios"},
+  { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos"},
+  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'admin_panel_settings', class:'', id:"bancos"}
+>>>>>>> Stashed changes
   // { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
 ];
 
