@@ -16,8 +16,14 @@
 }
 .sidebar .nav li a, .sidebar .nav li .dropdown-menu a{
     border-radius: 25px !important;
+    overflow-y: scroll !important;
 }
 #logogana {
     border-radius: 35px;
     width: 180px;
+}
+
+#navigation {
+    max-height: 51vh;
+    /* overflow-y: scroll !important; */
 }
