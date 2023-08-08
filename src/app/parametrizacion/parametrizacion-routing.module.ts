@@ -6,6 +6,7 @@ import { UsuariosComponent } from  './usuarios/usuarios.component';
 import { AuthGuard } from 'app/auth/guard/authguard.guard';
 import { PermisosComponent } from './permisos/permisos.component';
 import { BancoComponent } from './bancos/banco.component';
+import { CargosComponent } from './cargos/cargos.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,11 @@ const routes: Routes = [
   {
     path: 'bancos',
     component: BancoComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'cargos',
+    component: CargosComponent,
     canActivate: [AuthGuard]
   }
   

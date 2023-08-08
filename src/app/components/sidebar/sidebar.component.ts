@@ -17,8 +17,8 @@ export const ROUTES: RouteInfo[] = [
   { path: '/dashboard/Pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:"pagos", children:[]},
   { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:"creditos", children:[] },
   { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:"reportes", children:[] },
-  // { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:"usuarios", children:[]},
-  // { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos", children:[]},
+  { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:"usuarios", children:[]},
+  { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos", children:[]},
   // { path: '', 
   //   title: 'Parametrizaciones', 
   //   icon:'admin_panel_settings', 
@@ -28,7 +28,7 @@ export const ROUTES: RouteInfo[] = [
   //     { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos", children:[]}
   //   ]
   // }
-
+  { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:"cargos", children:[]},
   
   { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'admin_panel_settings', class:'', id:"bancos", children:[]}
   // { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
