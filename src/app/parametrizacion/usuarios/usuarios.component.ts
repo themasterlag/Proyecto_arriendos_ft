@@ -81,19 +81,19 @@ export class UsuariosComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed){
-            this.servicio.enviarUsuarios(formUsuarios).subscribe(
-              (res:any) => {
-                // console.log(res);
-                Swal.fire('Usuario guardado con exito','','success');
-                this.subProcesosFilter = [];
-                this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
-                this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
-                this.formularioUsuarios.resetForm();
-              },
-              (error) => {
-                console.log(error);
-              }
-            )
+            // this.servicio.enviarUsuarios(formUsuarios).subscribe(
+            //   (res:any) => {
+            //     // console.log(res);
+            //     Swal.fire('Usuario guardado con exito','','success');
+            //     this.subProcesosFilter = [];
+            //     this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
+            //     this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+            //     this.formularioUsuarios.resetForm();
+            //   },
+            //   (error) => {
+            //     console.log(error);
+            //   }
+            // )
           } })
       
       console.log(formUsuarios);
