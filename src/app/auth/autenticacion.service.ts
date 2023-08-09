@@ -8,6 +8,7 @@ import jwt_decode from "jwt-decode";
 export class AutenticacionService {
 
   token:any = null;
+  cargaUtil:any = null;
 
   constructor(public route:Router) { }
 
@@ -20,10 +21,10 @@ export class AutenticacionService {
     this.token = sessionStorage.getItem("token");
 
     if (this.token != null) {
-      let cargaUtil:any = jwt_decode(this.token)
-      cargaUtil.exp = new Date(cargaUtil.exp * 1000);
+      this.cargaUtil = jwt_decode(this.token)
+      this.cargaUtil.exp = new Date(this.cargaUtil.exp * 1000);
       let ahora:any = new Date();
-      let difTiempo = (Math.abs(cargaUtil.exp - ahora)/1000)/60;
+      let difTiempo = (Math.abs(this.cargaUtil.exp - ahora)/1000)/60;
 
       if(difTiempo < 0){
         return false;
@@ -40,4 +41,7 @@ export class AutenticacionService {
     this.route.navigate(["/login"]);
   }
 
+  getCargaUtil(){
+    return this.cargaUtil;
+  }
 }
