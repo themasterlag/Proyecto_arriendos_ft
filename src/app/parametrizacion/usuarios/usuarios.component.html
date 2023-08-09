@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header card-header-info" id="banner">
                         <h4 class="card-title">Registrar usuarios</h4>
@@ -47,7 +47,7 @@
                                 [noValidate]="false"
                               >
                                 <div class="row">
-                                  <div class="col-md-2">
+                                  <div class="col-2">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Tipo documento"
@@ -65,7 +65,7 @@
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-md-3">
+                                  <div class="col-3">
                                     <mat-form-field class="example-full-width">
                                       <input
                                         matInput
@@ -78,13 +78,13 @@
                                       />
                                     </mat-form-field>
                                   </div>
-                                  <div class="natural col-md-7">
+                                  <div class="col-7">
                                     <div class="row">
-                                      <div class="col-md-6">
+                                      <div class="col-6">
                                         <mat-form-field class="example-full-width">
                                           <input
                                             matInput
-                                            placeholder="Nombre Completo"
+                                            placeholder="Nombres"
                                             type="text"
                                             id="Nombre"
                                             name="Nombre"
@@ -93,30 +93,28 @@
                                           />
                                         </mat-form-field>
                                       </div>
-                                      <div class="col-md-4">
+                                      <div class="col-6">
                                         <mat-form-field class="example-full-width">
-                                          <mat-select
-                                            placeholder="Sexo"
-                                            id="sexo"
-                                            name="sexo"
+                                          <input
+                                            matInput
+                                            placeholder="Apellidos"
+                                            type="text"
+                                            id="Apellidos"
+                                            name="apellidos"
                                             ngModel
                                             required
-                                          >
-                                            <mat-option value="Masculino">
-                                              Masculino
-                                            </mat-option>
-                                            <mat-option value="Femenino">
-                                              Femenino
-                                            </mat-option>
-                                          </mat-select>
+                                          />
                                         </mat-form-field>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
               
+                                <!-- <div class="row">
+                                  
+                                </div> -->
                                  <div class="row">
-                                  <div class="col-md-4">
+                                  <div class="col-4">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Procesos"
@@ -135,7 +133,7 @@
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-md-4">
+                                  <div class="col-4">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Sub-procesos"
@@ -156,47 +154,86 @@
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  
+                                  <div class="col-4">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Cargo"
+                                        id="cargos"
+                                        name="cargos"
+                                        ngModel
+                                        required
+                                      >
+                                        <mat-option
+                                          [value]="m.id_cargo"
+                                          *ngFor="let m of Cargos"
+                                        >
+                                          {{ m.cargo }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
                                 </div> 
               
                                 <div class="row">
-                                  <div class="col-md-3">
-                                  <mat-form-field
+                                  <div class="col-3">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Sexo"
+                                        id="sexo"
+                                        name="sexo"
+                                        ngModel
+                                        required
+                                      >
+                                        <mat-option value="Masculino">
+                                          Masculino
+                                        </mat-option>
+                                        <mat-option value="Femenino">
+                                          Femenino
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                  <!-- <div class="col-3">
+                                    <mat-form-field
                                       class="example-full-width"
                                     >
                                       <mat-label>Fecha de macimiento</mat-label>
-                                        <input matInput [matDatepicker]="pickerInicio" name="fecha_nacimiento" ngModel required>
+                                        <input matInput [matDatepicker]="pickerInicio" name="fecha_nacimiento" ngModel required> -->
                                         <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
-                                        <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                        <!-- <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
                                         <mat-datepicker #pickerInicio></mat-datepicker>
                                     </mat-form-field>
+                                  </div> -->
+                                  <div class="col-9">
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Correo Electronico"
+                                            type="text"
+                                            id="correo"
+                                            name="correo"
+                                            ngModel
+                                            required
+                                          />
+                                        </mat-form-field>
+                                      </div>
+                                      <div class="col-6">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Contraseña"
+                                            type="password"
+                                            id="contraseña"
+                                            name="contraseña"
+                                            ngModel
+                                            required
+                                          />
+                                        </mat-form-field>
+                                      </div>  
+                                    </div>                                 
                                   </div>
-                                  <div class="col-md-3">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Correo Electronico"
-                                        type="text"
-                                        id="correo"
-                                        name="correo"
-                                        ngModel
-                                        required
-                                      />
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-md-3">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Contraseña"
-                                        type="text"
-                                        id="contraseña"
-                                        name="contraseña"
-                                        ngModel
-                                        required
-                                      />
-                                    </mat-form-field>
-                                  </div>                                 
                                 </div>
                                 <button
                                   mat-raised-button

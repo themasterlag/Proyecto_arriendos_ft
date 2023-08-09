@@ -249,7 +249,7 @@ export class GeneralesService {
   }
 
   enviarUsuarios(formUsuario){
-    return this.servicio.post(this.api + "usuarios/", formUsuario);
+    return this.servicio.post(this.api + "aut/singup", formUsuario);
   }
 
   traerPermisos(){
