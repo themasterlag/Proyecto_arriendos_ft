@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CargosComponent } from './cargos/cargos.component';
 import { BancoComponent } from './bancos/banco.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { BancoComponent } from './bancos/banco.component';
     MatSelectModule,
     MatDatepickerModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    MatCheckboxModule
   ]
 })
 export class ParametrizacionModule { }

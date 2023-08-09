@@ -33,6 +33,9 @@ export class UsuariosComponent implements OnInit {
   subProcesosFilter: any = [];
   filtermuni: boolean = false;
   Cargos: any;
+  idSubProcesos: any;
+  consultar: boolean = false;
+  password: boolean = true;
   displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
@@ -52,25 +55,47 @@ export class UsuariosComponent implements OnInit {
   }
 
   traerUsuario(){
-    console.log(this.consulta_usuario);
+    this.consultar = true;
+    this.password = false
+    console.log(this.password);
+    this.servicio.traerUsuario(this.consulta_usuario).subscribe(
+      (res: any) => {
+        console.log(res);
+        this.llenarFormulario(res);
+      }
+    )
+  }
+
+  llenarFormulario(infoUsuario){
+    this.formularioUsuarios.controls.tipo_documento.setValue(infoUsuario.tipo_documento);
+    this.formularioUsuarios.controls.numero_documento.setValue(infoUsuario.numero_documento);
+    this.formularioUsuarios.controls.Nombre.setValue(infoUsuario.nombres);
+    this.formularioUsuarios.controls.apellidos.setValue(infoUsuario.apellidos)
+    this.formularioUsuarios.controls.procesos.setValue(infoUsuario.proceso);
+
+    this.filtrarProcesos(infoUsuario.proceso);
+    this.formularioUsuarios.controls.subProcesos.setValue(infoUsuario.subproceso);
+
+    this.formularioUsuarios.controls.cargos.setValue(1);
+    this.formularioUsuarios.controls.sexo.setValue(infoUsuario.Sexo);
+    this.formularioUsuarios.controls.correo.setValue(infoUsuario.email);
   }
 
   registrarUsuario(){
 
     if(this.formularioUsuarios.valid){
       let formUsuarios = {
-        documento: this.formularioUsuarios.controls.tipo_documento.value,
+        tipo_documento: this.formularioUsuarios.controls.tipo_documento.value,
         numero_documento: this.formularioUsuarios.controls.numero_documento.value,
         nombres: this.formularioUsuarios.controls.Nombre.value,
         sexo: this.formularioUsuarios.controls.sexo.value,
         proceso: this.formularioUsuarios.controls.procesos.value,
-        sub_proceso: this.formularioUsuarios.controls.subProcesos.value,
+        subproceso: this.formularioUsuarios.controls.subProcesos.value,
         cargo: this.formularioUsuarios.controls.cargos.value,
-        fecha_nacimiento: this.formatoFecha(this.formularioUsuarios.controls.fecha_nacimiento.value),
         email: this.formularioUsuarios.controls.correo.value,
         password: this.formularioUsuarios.controls.contraseña.value,
         rolid_rol: 1,
-        appellidos: this.formularioUsuarios.controls.apellidos.value
+        apellidos: this.formularioUsuarios.controls.apellidos.value
       }
       Swal
         .fire({
@@ -81,11 +106,14 @@ export class UsuariosComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed){
+            console.log(this.idSubProcesos);
             // this.servicio.enviarUsuarios(formUsuarios).subscribe(
             //   (res:any) => {
             //     // console.log(res);
             //     Swal.fire('Usuario guardado con exito','','success');
             //     this.subProcesosFilter = [];
+                // this.consultar = false;
+                // this.password = true;
             //     this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
             //     this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
             //     this.formularioUsuarios.resetForm();
@@ -171,6 +199,9 @@ export class UsuariosComponent implements OnInit {
 
   limpiarFormulario(){
     this.subProcesosFilter = [];
+    this.consulta_usuario = null;
+    this.consultar = false;
+    this.password = true;
     this.formularioUsuarios.reset();
   }
 

@@ -36,6 +36,9 @@
                                 >
                                   Consultar
                                 </button>
+                                <div class="col-5 d-flex align-items-end d-flex justify-content-end" *ngIf="consultar == true">
+                                  <mat-checkbox class="example-margin" [(ngModel)]="password">Cambiar contraseña</mat-checkbox>
+                                </div>
                                 
                               </div>
               
@@ -219,7 +222,7 @@
                                           />
                                         </mat-form-field>
                                       </div>
-                                      <div class="col-6">
+                                      <div class="col-6" *ngIf="password == true">
                                         <mat-form-field class="example-full-width">
                                           <input
                                             matInput

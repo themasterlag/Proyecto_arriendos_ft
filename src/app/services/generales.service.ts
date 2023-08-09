@@ -260,6 +260,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "/cargos");
   }
 
+  traerUsuario(idUsuario){
+    return this.servicio.get(this.api + "/usuarios/documento/" + idUsuario);
+  }
+
   // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS
   traerConceptosAsociados(){
     return this.servicio.get(this.api + "/conceptos/asociados");
