@@ -27,6 +27,12 @@
     font-size: 18px; /* por ejemplo */
     border-radius: 25px;
 }
+
+.text-info{
+    color: #359b68 !important;
+    font-weight: 900;
+}
+
 #button-limpiar{
     /* background-color: #1b4f35 !important; */
     border-radius: 25px !important;

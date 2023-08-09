@@ -32,6 +32,7 @@ export class UsuariosComponent implements OnInit {
   SubProcesos: any;
   subProcesosFilter: any = [];
   filtermuni: boolean = false;
+  Cargos: any;
   displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
@@ -47,6 +48,7 @@ export class UsuariosComponent implements OnInit {
   ngOnInit(): void {
     this.traerProcesos();
     this.traerSubProcesos();
+    this.traerCargos();
   }
 
   traerUsuario(){
@@ -63,11 +65,12 @@ export class UsuariosComponent implements OnInit {
         sexo: this.formularioUsuarios.controls.sexo.value,
         proceso: this.formularioUsuarios.controls.procesos.value,
         sub_proceso: this.formularioUsuarios.controls.subProcesos.value,
+        cargo: this.formularioUsuarios.controls.cargos.value,
         fecha_nacimiento: this.formatoFecha(this.formularioUsuarios.controls.fecha_nacimiento.value),
         email: this.formularioUsuarios.controls.correo.value,
         password: this.formularioUsuarios.controls.contraseña.value,
         rolid_rol: 1,
-        appellidos: null
+        appellidos: this.formularioUsuarios.controls.apellidos.value
       }
       Swal
         .fire({
@@ -139,6 +142,19 @@ export class UsuariosComponent implements OnInit {
       }
     )
   }
+
+  traerCargos(){
+    this.servicio.traerCargos().subscribe(
+      (res) => {
+        console.log(res);
+        this.Cargos = res;
+      },
+      (error:any) =>{
+        console.log(error);
+      }
+    )
+  }
+
 
   filtrarProcesos(idProceso){
     console.log(idProceso);
