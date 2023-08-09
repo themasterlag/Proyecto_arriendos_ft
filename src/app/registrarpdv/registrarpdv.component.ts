@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GeneralesService } from "app/services/generales.service";
+import { AutenticacionService } from "app/auth/autenticacion.service";
 import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Loading, Confirm, Report, Notify } from "notiflix";
@@ -103,6 +104,7 @@ export class RegistrarpdvComponent implements OnInit {
     public servicio: GeneralesService,
     public formularioter: FormBuilder,
     private rutas: Router,
+    public autenticacion: AutenticacionService
   )
    {this.formulariotercero = this.formularioter.group({
       tipo_documento: [null, Validators.required],
@@ -743,7 +745,7 @@ export class RegistrarpdvComponent implements OnInit {
 
       let contrato = {
         id_punto_venta: this.formulariocontrato.value.id_punto_venta,
-        id_usuario: 1,
+        id_usuario: this.autenticacion.getCargaUtil().id_usuario,
         valor_canon: this.formulariocontrato.get('valor_canon').value,
         incremento_anual: this.checkIpc(
           this.formulariocontrato.value.incremento_anual
