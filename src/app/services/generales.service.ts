@@ -253,11 +253,19 @@ export class GeneralesService {
   }
 
   traerPermisos(){
-    return this.servicio.get(this.api + "/permisos");
+    return this.servicio.get(this.api + "permisos");
+  }
+
+  registrarPermisoDetalle(permiso){
+    return this.servicio.post(this.api + "permiso-detalle", permiso);
   }
 
   traerCargos(){
-    return this.servicio.get(this.api + "/cargos");
+    return this.servicio.get(this.api + "cargos");
+  }
+
+  traerCargo(id){
+    return this.servicio.get(this.api + "cargos/"+id);
   }
 
   traerUsuario(idUsuario){
