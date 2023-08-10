@@ -261,7 +261,11 @@ export class GeneralesService {
   }
 
   traerUsuario(idUsuario){
-    return this.servicio.get(this.api + "/usuarios/documento/" + idUsuario);
+    return this.servicio.get(this.api + "usuarios/documento/" + idUsuario);
+  }
+
+  actualizarUsuarios(datos){
+    return this.servicio.patch(this.api + "usuarios/update/", datos);
   }
 
   // CARGOS

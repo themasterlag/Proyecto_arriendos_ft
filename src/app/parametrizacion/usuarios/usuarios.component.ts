@@ -36,6 +36,7 @@ export class UsuariosComponent implements OnInit {
   idSubProcesos: any;
   consultar: boolean = false;
   password: boolean = true;
+  usuarioInfo: any;
   displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
@@ -61,7 +62,11 @@ export class UsuariosComponent implements OnInit {
     this.servicio.traerUsuario(this.consulta_usuario).subscribe(
       (res: any) => {
         console.log(res);
+        this.usuarioInfo = res;
         this.llenarFormulario(res);
+      },
+      (error) => {
+        Swal.fire('Error al consultar', error.error.message, 'warning');
       }
     )
   }
@@ -76,14 +81,25 @@ export class UsuariosComponent implements OnInit {
     this.filtrarProcesos(infoUsuario.proceso);
     this.formularioUsuarios.controls.subProcesos.setValue(infoUsuario.subproceso);
 
-    this.formularioUsuarios.controls.cargos.setValue(1);
-    this.formularioUsuarios.controls.sexo.setValue(infoUsuario.Sexo);
+    this.formularioUsuarios.controls.cargos.setValue(infoUsuario.id_cargo);
+    this.formularioUsuarios.controls.sexo.setValue(infoUsuario.sexo);
     this.formularioUsuarios.controls.correo.setValue(infoUsuario.email);
   }
 
   registrarUsuario(){
 
-    if(this.formularioUsuarios.valid){
+    // if(this.formularioUsuarios.valid){
+      let passwordform = null;
+      let id_usuario = null;
+
+      if(this.password == true){
+        passwordform = this.formularioUsuarios.controls.contraseña.value
+      }
+
+      if(this.consultar == true){
+        id_usuario = this.usuarioInfo.id_usuario;
+      }
+
       let formUsuarios = {
         tipo_documento: this.formularioUsuarios.controls.tipo_documento.value,
         numero_documento: this.formularioUsuarios.controls.numero_documento.value,
@@ -91,12 +107,14 @@ export class UsuariosComponent implements OnInit {
         sexo: this.formularioUsuarios.controls.sexo.value,
         proceso: this.formularioUsuarios.controls.procesos.value,
         subproceso: this.formularioUsuarios.controls.subProcesos.value,
-        cargo: this.formularioUsuarios.controls.cargos.value,
+        id_cargo: this.formularioUsuarios.controls.cargos.value,
         email: this.formularioUsuarios.controls.correo.value,
-        password: this.formularioUsuarios.controls.contraseña.value,
+        password: passwordform,
         rolid_rol: 1,
-        apellidos: this.formularioUsuarios.controls.apellidos.value
+        apellidos: this.formularioUsuarios.controls.apellidos.value,
+        id_usuario: id_usuario
       }
+      console.log(formUsuarios)
       Swal
         .fire({
           title: "Seguro de guardar los cambios?",
@@ -106,27 +124,48 @@ export class UsuariosComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed){
-            console.log(this.idSubProcesos);
-            // this.servicio.enviarUsuarios(formUsuarios).subscribe(
-            //   (res:any) => {
-            //     // console.log(res);
-            //     Swal.fire('Usuario guardado con exito','','success');
-            //     this.subProcesosFilter = [];
-                // this.consultar = false;
-                // this.password = true;
-            //     this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
-            //     this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
-            //     this.formularioUsuarios.resetForm();
-            //   },
-            //   (error) => {
-            //     console.log(error);
-            //   }
-            // )
+            // console.log(this.idSubProcesos);
+            if(this.consultar == true) {
+              console.log("blue label");
+              this.servicio.actualizarUsuarios(formUsuarios).subscribe(
+                (res) => {
+                  Swal.fire('Usuario actualizado con exito','','success');
+                  this.subProcesosFilter = [];
+                  this.consultar = false;
+                  this.password = true;
+                  this.consulta_usuario = null;
+                  this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
+                  this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+                  this.formularioUsuarios.resetForm();
+                },
+                (error) => {
+                  Swal.fire('Error al aztualizar el usuario', error.message, 'error');
+                  // console.log(error);
+                }
+              )
+            } else {
+              this.servicio.enviarUsuarios(formUsuarios).subscribe(
+                (res:any) => {
+                  // console.log(res);
+                  Swal.fire('Usuario creado con exito','','success');
+                  this.subProcesosFilter = [];
+                  this.consultar = false;
+                  this.password = true;
+                  this.consulta_usuario = null;
+                  this.formularioUsuarios.form.markAsPristine(); // Marcar el formulario como "intocado"
+                  this.formularioUsuarios.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+                  this.formularioUsuarios.resetForm();
+                },
+                (error) => {
+                  Swal.fire('Error al crear el usuario', error.error.message, 'error');
+                  // console.log(error);
+                }
+              )
+            }
           } })
       
       console.log(formUsuarios);
-
-    }  
+    // }  
   }
 
   formatoFecha(fecha){
