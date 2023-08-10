@@ -1,6 +1,86 @@
 
-<p>cargos works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info" id="banner">
+                        <h4 class="card-title">Añadir cargo</h4>
+                    </div>
+                    <div class="card-body">
+                        <mat-accordion>
+                            <mat-expansion-panel hideToggle> </mat-expansion-panel>
+                            <mat-expansion-panel>
 
-<span style="color: red; font-weight: bold;"> Esta ejecutamdoce la gran aplicacion!</span>
 
-<br/>
+                            
+                           
+                                
+                                    <!-- <form action="#">
+                                        <form action="" method="POST">
+                                            <form action="#" method="#"> -->
+                                                <!-- Cuadro de texto y boton -->
+                                                
+                                                <div class="col-6">
+                                                    <mat-form-field class="example-full-width">
+                                                      <mat-select
+                                                        placeholder="Cargo"
+                                                        id="cargos"
+                                                        name="cargos"
+                                                        ngModel
+                                                        required
+                                                      >
+                                                        <mat-option
+                                                          [value]="m.id_cargo"
+                                                          *ngFor="let m of Cargos"
+                                                        >
+                                                          {{ m.cargo }}
+                                                        </mat-option>
+                                                      </mat-select>
+                                                    </mat-form-field>
+                                                  </div>
+
+                                                  <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                      <h6 class="text-info">Cargos</h6>
+                                                    </mat-panel-title>
+                                                  </mat-expansion-panel-header>
+                                                  <h5><strong>Añadir cargo</strong></h5>
+                                                  <div class="row">
+                                                    <div class="col-3">
+
+                                                <form
+                                                #enviarCargo="ngForm"
+                                                (ngSubmit)="registrarCargos()"
+                                                [noValidate]="false"
+                                              >
+                                                <div class="row">
+                                                  <div class="col-2">
+                                                  </div>
+                                                </div>
+                              
+
+                                                  <!-- Pestaña de cargos -->
+
+                                                  <div class="col-8">
+                                                    <mat-form-field class="example-full-width">
+                                                      <input
+                                                        matInput
+                                                        placeholder="Nuevo cargo"
+                                                        type="text"
+                                                        id="Nuevocargo"
+                                                        name="Nuevocargo"
+                                                        ngModel
+                                                        required
+                                                      />
+                                                    </mat-form-field>
+                                                  </div>
+                                                <button
+                                                    mat-raised-button
+                                                    type="submit"
+                                                    class="btn btn-info pull-right"
+                                                    id="button-guardar"
+                                                    >
+                                                    Guardar
+                                                </button>
+                                                                                        

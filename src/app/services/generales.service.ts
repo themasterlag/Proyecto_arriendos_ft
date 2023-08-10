@@ -260,6 +260,12 @@ export class GeneralesService {
     return this.servicio.post(this.api + "permiso-detalle", permiso);
   }
 
+  traerUsuario(idUsuario){
+    return this.servicio.get(this.api + "/usuarios/documento/" + idUsuario);
+  }
+
+  // CARGOS
+
   traerCargos(){
     return this.servicio.get(this.api + "cargos");
   }
@@ -268,9 +274,10 @@ export class GeneralesService {
     return this.servicio.get(this.api + "cargos/"+id);
   }
 
-  traerUsuario(idUsuario){
-    return this.servicio.get(this.api + "/usuarios/documento/" + idUsuario);
+  enviarCargo(datosCargos){
+    return this.servicio.post(this.api + "/cargos", datosCargos);
   }
+
 
   // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS
   traerConceptosAsociados(){
