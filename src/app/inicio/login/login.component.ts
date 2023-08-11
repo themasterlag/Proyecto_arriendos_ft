@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor( public servicio: GeneralesService, public servicioAut:AutenticacionService, public route:Router) { 
     if (servicioAut.validarToken()) {
-      this.route.navigateByUrl("/dashboard");
+      this.route.onSameUrlNavigation="ignore",
+      this.route.navigate(["/dashboard"]);
     }
   }
 

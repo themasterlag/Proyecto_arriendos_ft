@@ -170,7 +170,7 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    Loading.pulse("Cargando");
+    // Loading.pulse("Cargando");
     this.traermunicipios();
     this.traerdepartamentos();
     this.traerzonas();
@@ -183,7 +183,7 @@ export class RegistrarpdvComponent implements OnInit {
     // this.traerautorizado();
     this.traertipopunto();
     this.traerconceptos();
-    Loading.remove();
+    // Loading.remove();
     this.traerConceptoMunicpios();
     this.tablaContratos();
   }

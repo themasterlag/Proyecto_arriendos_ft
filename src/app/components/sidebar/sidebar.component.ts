@@ -7,18 +7,17 @@ declare interface RouteInfo {
     title: string;
     icon: string;
     class: string;
-    id:string;
+    id:number;
     children: Array<RouteInfo>;
 }
-export const ROUTES: RouteInfo[] = [
- //   { path: '/dashboard', title: 'Dashboard',  icon: 'dashboard', class: '' },
- 
-  { path: '/dashboard/Register', title: 'Registro',  icon:'app_registration', class: '', id:"register", children:[]},
-  { path: '/dashboard/Pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:"pagos", children:[]},
-  { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:"creditos", children:[] },
-  { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:"reportes", children:[] },
-  { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:"usuarios", children:[]},
-  { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos", children:[]},
+
+let nav = [ 
+  { path: '/dashboard/register', title: 'Registro',  icon:'app_registration', class: '', id:1, active:false, children:[]},
+  { path: '/dashboard/pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:2, children:[]},
+  { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:3, active:false, children:[] },
+  { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:4, active:false, children:[] },
+  { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:5, active:false, children:[]},
+  { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:6, active:false, children:[]},
   // { path: '', 
   //   title: 'Parametrizaciones', 
   //   icon:'admin_panel_settings', 
@@ -28,10 +27,9 @@ export const ROUTES: RouteInfo[] = [
   //     { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:"permisos", children:[]}
   //   ]
   // }
-  { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:"cargos", children:[]},
+  { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:6, active:false, children:[]},
   
-  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:"bancos", children:[]}
-  // { path: '/dashboard/user-profile', title: 'Perfil',  icon:'person', class: '',id:"user" },
+  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:6, active:false, children:[]}
 ];
 
 @Component({
@@ -39,14 +37,29 @@ export const ROUTES: RouteInfo[] = [
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
+
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor(public servicioAuth:AutenticacionService) { }
+  constructor(public servicioAuth:AutenticacionService) {
+    let permisos:any = sessionStorage.getItem('permisos');
+    
+    if (permisos) {
+      permisos = JSON.parse(permisos);
+      permisos.forEach(permiso => {
+        nav.forEach(element => {
+          if (element.id == permiso.id_permiso) {
+            element.active = true;
+          }
+        });
+      });
+    }
+  }
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
+    this.menuItems = nav.filter(menuItem => menuItem);
   }
+
   isMobileMenu() {
       if ($(window).width() > 991) {
           return false;
@@ -55,6 +68,11 @@ export class SidebarComponent implements OnInit {
   };
 
   cerrarSesion(){
+    nav.forEach(element => {
+      element.active = false;
+    });
     this.servicioAuth.cerrarSesion();
   }
 }
+
+export let ROUTES: RouteInfo[] = nav;

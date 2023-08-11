@@ -18,7 +18,7 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 
-                                <div class="row text-center justify-content-center">
+                                <div class="row text-center justify-content-center" hidden>
                                     <div class="col-5 row align-items-center">
                                         <div class="col-auto">
                                             <p for="tipoElemento" class="text-black mt-2">Tipo de permiso:</p>
@@ -56,7 +56,7 @@
                                 <br>
 
                                 <div class="row">
-                                    <div class="col-5">
+                                    <div class="col-6">
                                         <div class="alert alert-info py-1 align-middle alertWarning text-black text-center" role="alert">
                                             <h4 *ngIf="tipoPermiso==0" class="my-0">Tipos</h4>
                                             <h4 *ngIf="tipoPermiso==1" class="my-0">Cargos</h4>
@@ -86,8 +86,8 @@
                                             <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                                         </table>
                                     </div>
-                                    <hr class="hrVertical h-auto">
-                                    <div class="col-5">
+                                    <hr class="hrVertical h-auto  mx-0">
+                                    <div class="col">
                                         <div class="alert alert-info py-1 align-middle alertWarning text-black text-center" role="alert">
                                             <h4 class="my-0">Modulos</h4>
                                         </div>
@@ -104,16 +104,20 @@
                                                 <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones
                                                 </th>
                                                 <td mat-cell *matCellDef="let element">
-                                                    <button *ngIf="element.check" [disabled]="spinner" class="btn btn-success rounded-pill px-4 py-2"
+                                                    <button *ngIf="element.check && !spinner" [disabled]="spinner" class="btn btn-success rounded-pill px-4 py-2"
                                                         (click)="cambiarEstadoPermiso(element)" matTooltip="Editar credito"
                                                         matTooltipPosition="above" matTooltipClass="tooltipText">
                                                         <i class="fa fa-check-circle" aria-hidden="true"></i>
                                                     </button>
 
-                                                    <button *ngIf="!element.check" [disabled]="spinner" class="btn btn-danger rounded-pill px-4 py-2"
+                                                    <button *ngIf="!element.check && !spinner" [disabled]="spinner" class="btn btn-danger rounded-pill px-4 py-2"
                                                         (click)="cambiarEstadoPermiso(element)" matTooltip="Editar credito"
                                                         matTooltipPosition="above" matTooltipClass="tooltipText">
                                                         <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                                    </button>
+
+                                                    <button *ngIf="spinner" disabled class="btn btn-info rounded-pill px-4 py-2">
+                                                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
                                                     </button>
                                                 </td>
                                             </ng-container>

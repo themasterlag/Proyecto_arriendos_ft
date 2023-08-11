@@ -5,7 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './inicio/login/login.component';
 import { AuthGuard } from './auth/guard/authguard.guard';
-import { ParametrizacionModule } from './parametrizacion/parametrizacion.module'
 import { Pagina404Component } from './paginas-error/pagina404/pagina404.component';
 
 const routes: Routes =[
@@ -47,7 +46,7 @@ const routes: Routes =[
     CommonModule,
     BrowserModule,
     RouterModule.forRoot(routes,{
-      useHash: false
+      useHash: false,
     }),
     // RouterModule.forChild(routes)
   ],

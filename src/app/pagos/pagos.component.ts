@@ -79,8 +79,8 @@ export class PagosComponent implements OnInit {
   constructor(private servicio: GeneralesService) {}
 
   ngOnInit(): void {
-    Loading.pulse("Cargando")
-    Loading.remove()
+    // Loading.pulse("Cargando")
+    // Loading.remove()
     const currentYear = new Date().getFullYear()
     for (let i = currentYear ; i >= currentYear-10; i--) {
       this.yearList.push(i)

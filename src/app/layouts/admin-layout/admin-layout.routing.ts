@@ -1,96 +1,59 @@
 import { Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { CommonModule, } from '@angular/common';
-import { BrowserModule  } from '@angular/platform-browser';
 import { DashboardComponent } from '../../dashboard/dashboard.component';
-import { UserProfileComponent } from '../../user-profile/user-profile.component';
-import { TableListComponent } from '../../table-list/table-list.component';
-import { TypographyComponent } from '../../typography/typography.component';
-import { IconsComponent } from '../../icons/icons.component';
-import { MapsComponent } from '../../maps/maps.component';
-import { NotificationsComponent } from '../../notifications/notifications.component';
-import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { RegistrarpdvComponent } from 'app/registrarpdv/registrarpdv.component';
 import { PagosComponent } from 'app/pagos/pagos.component';
-import { Component } from '@angular/core';
 import { CreditosComponent } from 'app/creditos/creditos.component';
 import { ReportesComponent } from 'app/reportes/reportes.component';
-import { ParametrizacionModule } from 'app/parametrizacion/parametrizacion.module';
 import { AuthGuard } from 'app/auth/guard/authguard.guard';
 import { Pagina404Component } from 'app/paginas-error/pagina404/pagina404.component';
 
-export const AdminLayoutRoutes: Routes = [
-    // {
-    //   path: '',
-    //   children: [ {
-    //     path: 'dashboard',
-    //     component: DashboardComponent
-    // }]}, {
-    // path: '',
-    // children: [ {
-    //   path: 'userprofile',
-    //   component: UserProfileComponent
-    // }]
-    // }, {
-    //   path: '',
-    //   children: [ {
-    //     path: 'icons',
-    //     component: IconsComponent
-    //     }]
-    // }, {
-    //     path: '',
-    //     children: [ {
-    //         path: 'notifications',
-    //         component: NotificationsComponent
-    //     }]
-    // }, {
-    //     path: '',
-    //     children: [ {
-    //         path: 'maps',
-    //         component: MapsComponent
-    //     }]
-    // }, {
-    //     path: '',
-    //     children: [ {
-    //         path: 'typography',
-    //         component: TypographyComponent
-    //     }]
-    // }, {
-    //     path: '',
-    //     children: [ {
-    //         path: 'upgrade',
-    //         component: UpgradeComponent
-    //     }]
-    // }
+let rutas = [];
+let permisos:any = sessionStorage.getItem('permisos');
+if (permisos) {
+    permisos = JSON.parse(permisos);
+    permisos.forEach(permiso => {
+        switch (permiso.id_permiso) {
+            case 1:
+                rutas.push({ path: 'register', component: RegistrarpdvComponent })
+                break;
+
+            case 2:
+                rutas.push({ path: 'pagos', component: PagosComponent })
+                break;
+            
+            case 3:
+                rutas.push({ path: 'creditos', component: CreditosComponent });
+                break;
+            
+            case 4:
+                rutas.push({ path: 'reportes', component: ReportesComponent });
+                break;
+            
+            case 5||6:
+                rutas.push(
+                    {
+                        path: 'parametrizacion',
+                        canActivate: [AuthGuard],
+                        children: [{
+                            path: '',
+                            canActivateChild: [AuthGuard],
+                            loadChildren: () => import('../../parametrizacion/parametrizacion.module').then(m => m.ParametrizacionModule)
+                        }]
+                    }
+                );
+            break;
+        }
+    });
+}
+
+rutas.push(
     {
         path: '',
-        redirectTo: 'Register',
+        redirectTo: rutas.length>0? rutas[0].path:"",
         pathMatch: 'full',
     },
-    { path: 'dashboard',      component: DashboardComponent },
-    { path: 'user-profile',   component: UserProfileComponent },
-    { path: 'table-list',     component: TableListComponent },
-    { path: 'typography',     component: TypographyComponent },
-    { path: 'icons',          component: IconsComponent },
-    { path: 'maps',           component: MapsComponent },
-    { path: 'notifications',  component: NotificationsComponent },
-    { path: 'upgrade',        component: UpgradeComponent },
-    { path: 'Register',       component: RegistrarpdvComponent },
-    { path: 'Pagos',          component: PagosComponent },
-    { path: 'creditos',       component: CreditosComponent},
-    { path: 'reportes',       component: ReportesComponent},
-    {
-        path: 'parametrizacion',
-        canActivate: [AuthGuard],
-        children: [{
-            path: '',
-            canActivateChild: [AuthGuard],
-            loadChildren: () => import('../../parametrizacion/parametrizacion.module').then(m => m.ParametrizacionModule)
-        }]
-    },
+    { path: 'dashboard',    component: DashboardComponent },
+    { path: '**',           component: Pagina404Component }
+);
 
-    {
-        path: '**', component: Pagina404Component
-    }
-    
-];
+export const AdminLayoutRoutes: Routes = rutas;
