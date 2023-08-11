@@ -46,3 +46,24 @@
     background-color: green !important;
     border-radius: 25px !important;
 }
+
+.tabla-usuarios .mat-header-cell {
+    font-size: 14px;
+    text-align: center;
+}
+
+.tabla-usuarios .mat-cell {
+    text-align: center;
+}
+
+.inhabilitar {
+    border-radius: 25px;
+    background-color : red;
+}
+
+.Habilitar {
+    border-radius: 25px;
+    background-color : #359b68;
+}
+
+

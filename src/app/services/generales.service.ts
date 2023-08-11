@@ -268,6 +268,21 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "usuarios/update/", datos);
   }
 
+  traerTodosUsuarios(){ 
+    return this.servicio.get(this.api + "usuarios/todos/");
+  }
+
+  inhabilitarUsuarios(id_usuario){
+    const body = { id: id_usuario };
+
+    return this.servicio.patch(this.api + "usuarios/inhabilitar", body);
+  }
+
+  habilitarUsuarios(id_usuario){
+    const body = { id: id_usuario };
+
+    return this.servicio.patch(this.api + "usuarios/habilitar", body);
+  }
   // CARGOS
 
   traerCargos(){

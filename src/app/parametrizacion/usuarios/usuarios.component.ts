@@ -9,12 +9,14 @@ import { MatPaginator } from "@angular/material/paginator"
 import { error } from 'console';
 
 interface Usuarios {
-  id_contrato: number;
-  nombre_comercial: string;
-  fecha_inicio: string;
-  fecha_fin: string;
-  fecha_inhabilitado: string;
-  codigo_sitio_venta: number;
+  id_usuario:number;
+  cedula: number;
+  nombre_usuario: string;
+  correo_usuario: string;
+  estado: number
+  // fecha_fin: string;
+  // fecha_inhabilitado: string;
+  // codigo_sitio_venta: number;
 }
 
 @Component({
@@ -37,10 +39,11 @@ export class UsuariosComponent implements OnInit {
   consultar: boolean = false;
   password: boolean = true;
   usuarioInfo: any;
-  displayedColumns: string[] = ["Id_Punto_Venta", "Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
-  dataSourceContratos: MatTableDataSource<Usuarios> =
+  tabla_usuarios: any;
+  displayedColumns: string[] = ["id_cedula", "nombre_usuario", "correo_usuario", "Acciones"];
+  dataSourceUsuarios: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
-  @ViewChild("paginatorContratos") paginatorContratos: MatPaginator
+  @ViewChild("paginatorUsuarios") paginatorUsuarios: MatPaginator
 
   constructor(
     public servicio: GeneralesService,
@@ -56,19 +59,25 @@ export class UsuariosComponent implements OnInit {
   }
 
   traerUsuario(){
-    this.consultar = true;
-    this.password = false
+    
     console.log(this.password);
-    this.servicio.traerUsuario(this.consulta_usuario).subscribe(
-      (res: any) => {
-        console.log(res);
-        this.usuarioInfo = res;
-        this.llenarFormulario(res);
-      },
-      (error) => {
-        Swal.fire('Error al consultar', error.error.message, 'warning');
-      }
-    )
+
+    if(this.consulta_usuario > 2000000000 ){
+      Swal.fire('Cedula invalida','','info');
+    } else {
+      this.servicio.traerUsuario(this.consulta_usuario).subscribe(
+        (res: any) => {
+          this.consultar = true;
+          this.password = false
+          console.log(res);
+          this.usuarioInfo = res;
+          this.llenarFormulario(res);
+        },
+        (error) => {
+          Swal.fire('Error al consultar', error.error.message, 'warning');
+        }
+      )
+    }
   }
 
   llenarFormulario(infoUsuario){
@@ -189,7 +198,7 @@ export class UsuariosComponent implements OnInit {
   traerProcesos(){
     this.servicio.traerProcesos().subscribe(
       (res) => {
-        console.log(res);
+        // console.log(res);
         this.procesos = res;
       },
       (error:any) =>{
@@ -201,7 +210,7 @@ export class UsuariosComponent implements OnInit {
   traerSubProcesos(){
     this.servicio.traerSubProcesos().subscribe(
       (res) => {
-        console.log(res);
+        // console.log(res);
         this.SubProcesos = res;
       }, 
       (error:any) =>{
@@ -213,7 +222,7 @@ export class UsuariosComponent implements OnInit {
   traerCargos(){
     this.servicio.traerCargos().subscribe(
       (res) => {
-        console.log(res);
+        // console.log(res);
         this.Cargos = res;
       },
       (error:any) =>{
@@ -229,11 +238,57 @@ export class UsuariosComponent implements OnInit {
   }
 
   tablaUsuarios(){
+    this.servicio.traerTodosUsuarios().subscribe(
+      (res:any) => {
+        // console.log(res);
 
+        this.tabla_usuarios = res.map((usuario) => {
+          return {
+            id_usuario: usuario.id_usuario,
+            cedula: usuario.numero_documento,
+            nombre_usuario: usuario.nombres + " " + usuario.apellidos,
+            correo_usuario: usuario.email,
+            estado: usuario.estado,
+          }
+        })
+        console.log(this.tabla_usuarios)
+
+        this.dataSourceUsuarios.data = this.tabla_usuarios;
+        this.dataSourceUsuarios.paginator = this.paginatorUsuarios;
+      }
+    )
+  }
+
+  cambiarEstadoUsuario(usuario, id_estado){
+    // console.log(usuario, id_estado)
+    if(id_estado == "1"){
+      this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
+        (res:any) => {
+          Swal.fire('Usuario inhabilitado', '', 'success');
+          this.tablaUsuarios();
+        },
+        (error:any) => {
+          console.log(error);
+          Swal.fire('Ocurrio un error', error.error.message, 'error');
+        }
+      )
+    }else{
+      this.servicio.habilitarUsuarios(usuario.id_usuario).subscribe(
+        (res:any) => {
+          Swal.fire('Usuario habilitado','', 'success');
+          this.tablaUsuarios();
+        },
+        (error:any) => {
+          console.log(error.error);
+          Swal.fire('Ocurrio un error', error.error.message, 'error');
+        }
+      )
+    }    
   }
 
   applyFilter(event: Event){
-
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceUsuarios.filter = filterValue.trim().toLowerCase();
   }
 
   limpiarFormulario(){

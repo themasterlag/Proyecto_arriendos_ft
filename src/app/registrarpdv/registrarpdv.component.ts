@@ -1336,7 +1336,7 @@ export class RegistrarpdvComponent implements OnInit {
   tablaContratos(){
     this.servicio.traerTodoContratos().subscribe(
       (res:any) => {
-        // console.log(res);
+        console.log(res);
 
         this.tabla_contratos = res.map((element) => {          
           
