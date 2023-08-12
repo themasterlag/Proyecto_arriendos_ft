@@ -12,6 +12,7 @@ let permisos:any = sessionStorage.getItem('permisos');
 if (permisos) {
     permisos = JSON.parse(permisos);
     permisos.forEach(permiso => {
+        console.log(permiso);
         switch (permiso.id_permiso) {
             case 1:
                 rutas.push({ path: 'register', component: RegistrarpdvComponent })
@@ -29,7 +30,9 @@ if (permisos) {
                 rutas.push({ path: 'reportes', component: ReportesComponent });
                 break;
             
-            case 5||6:
+            case 5:
+            case 6:
+                console.log("aqui"+permiso)
                 rutas.push(
                     {
                         path: 'parametrizacion',
