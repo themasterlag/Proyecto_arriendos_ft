@@ -6,15 +6,19 @@ import { NgForm } from "@angular/forms";
 
 
 
+
 @Component({
   selector: 'app-cargos',
   templateUrl: './cargos.component.html',
   styleUrls: ['./cargos.component.css']
+  
 })
 export class CargosComponent implements OnInit {
 
   Cargos: any;
   @ViewChild("registrarCargo") enviarCargo: NgForm;
+  consulta_cargos: any = null;
+  consultar: boolean = false;
   
   constructor(
     public servicio: GeneralesService,
@@ -38,15 +42,41 @@ export class CargosComponent implements OnInit {
       }
     )
   }
+  
+  consultarCargo(){
+
+    if(this.consulta_cargos > 2000000000 ){
+      Swal.fire('Cedula invalida','','info');
+    } else {
+      this.servicio.traerUsuario(this.consulta_cargos).subscribe(
+        (res: any) => {
+          this.consultar = true;
+          this.llenarFormulario(res);
+        },
+        (error) => {
+          Swal.fire('Error al consultar', error.error.message, 'warning');
+        }
+      )
+    }
+  }
+
+  // filtrarProcesos(idProceso){
+  //   console.log(idProceso);
+  //   this.subProcesosFilter = this.SubProcesos.filter((subProceso) => subProceso.id_proceso == idProceso);
+  // }
+
+  llenarFormulario(infoCargos){
+    this.enviarCargo.controls.cargo.setValue(infoCargos.cargo);
+  }
 
 
   registrarCargos(){
 
-    console.log("form");
+     console.log("form",this.enviarCargo.controls.cargo.value);
 
     if(this.enviarCargo.valid){
       let formCargos = {
-        nombre: this.enviarCargo.controls.Nuevocargo.value
+        cargo: this.enviarCargo.controls.cargo.value
       }
 
       Swal
@@ -60,10 +90,11 @@ export class CargosComponent implements OnInit {
           if (result.isConfirmed){
            this.servicio.enviarCargo(formCargos).subscribe(
               (res:any) => {
-                Swal.fire('Usuario guardado con exito','','success');
+                Swal.fire('Cargo guardado con exito','','success');
                 this.enviarCargo.form.markAsPristine(); // Marcar el formulario como "intocado"
                 this.enviarCargo.form.markAsUntouched(); // Marcar el formulario como "no modificado"
                 this.enviarCargo.resetForm();
+                this.traerCargos();
               },
               (error) => {
                 console.log(error);
