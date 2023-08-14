@@ -285,6 +285,10 @@ export class GeneralesService {
   }
   // CARGOS
 
+  actualizarCargo(datos: any) {
+    return this.servicio.patch(this.api + "cargos/update", datos)
+  }
+
   traerCargos(){
     return this.servicio.get(this.api + "cargos");
   }
