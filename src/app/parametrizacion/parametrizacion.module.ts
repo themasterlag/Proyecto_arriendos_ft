@@ -16,6 +16,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConceptosComponent } from './conceptos/conceptos.component';
+import { MatSortModule } from '@angular/material/sort';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { ConceptosComponent } from './conceptos/conceptos.component';
     MatTableModule,
     MatCheckboxModule,
     MatRadioModule,
+    MatSortModule
   ],
 })
 export class ParametrizacionModule { }

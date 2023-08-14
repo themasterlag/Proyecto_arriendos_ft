@@ -1,16 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
-import { error } from 'console';
+import {MatSort} from '@angular/material/sort';
 
 interface Usuarios {
   id_usuario:number;
-  cedula: number;
+  cedula: string;
   nombre_usuario: string;
   correo_usuario: string;
   estado: number
@@ -40,10 +38,11 @@ export class UsuariosComponent implements OnInit {
   password: boolean = true;
   usuarioInfo: any;
   tabla_usuarios: any;
-  displayedColumns: string[] = ["id_cedula", "nombre_usuario", "correo_usuario", "Acciones"];
+  displayedColumns: string[] = ["cedula", "nombre_usuario", "correo_usuario", "Acciones"];
   dataSourceUsuarios: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
   @ViewChild("paginatorUsuarios") paginatorUsuarios: MatPaginator
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public servicio: GeneralesService,
@@ -239,6 +238,9 @@ export class UsuariosComponent implements OnInit {
   }
 
   tablaUsuarios(){
+    this.sort.sortables = null;
+    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
+
     this.servicio.traerTodosUsuarios().subscribe(
       (res:any) => {
         // console.log(res);
@@ -252,10 +254,11 @@ export class UsuariosComponent implements OnInit {
             estado: usuario.estado,
           }
         })
-        console.log(this.tabla_usuarios)
 
         this.dataSourceUsuarios.data = this.tabla_usuarios;
         this.dataSourceUsuarios.paginator = this.paginatorUsuarios;
+        console.log(this.sort);
+        this.dataSourceUsuarios.sort = this.sort;
       }
     )
   }
