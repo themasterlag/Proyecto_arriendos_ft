@@ -121,7 +121,7 @@ export class UsuariosComponent implements OnInit {
         password: passwordform,
         rolid_rol: 1,
         apellidos: this.formularioUsuarios.controls.apellidos.value,
-        id_usuario: id_usuario
+        id_usuario: id_usuario,
       }
       console.log(formUsuarios)
       Swal
@@ -260,9 +260,9 @@ export class UsuariosComponent implements OnInit {
     )
   }
 
-  cambiarEstadoUsuario(usuario, id_estado){
+  cambiarEstadoUsuario(usuario){
     // console.log(usuario, id_estado)
-    if(id_estado == "1"){
+    if(usuario.estado == 1){
       this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
           Swal.fire('Usuario inhabilitado', '', 'success');

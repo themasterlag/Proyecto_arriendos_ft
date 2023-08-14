@@ -303,15 +303,15 @@
                     <th mat-header-cell *matHeaderCellDef> Acciones </th>
                     <td mat-cell *matCellDef="let element">
                       <button
-                        *ngIf="element.estado == 0"
+                        *ngIf="element.estado == 1"
                         class="btn btn-info inhabilitar"
-                        (click)="cambiarEstadoUsuario(element, 1)"
+                        (click)="cambiarEstadoUsuario(element)"
                         >Inhabilitar
                       </button>
                       <button
                         class="btn btn-info Habilitar"
-                        (click)="cambiarEstadoUsuario(element, 0)"
-                        *ngIf="element.estado == 1"
+                        (click)="cambiarEstadoUsuario(element)"
+                        *ngIf="element.estado == 0"
                         >Habilitar
                       </button>
                     </td>
