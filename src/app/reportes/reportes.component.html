@@ -59,10 +59,13 @@
                                 <ng-container matColumnDef="Acciones">
                                     <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
                                     <td mat-cell *matCellDef="let element">
-                                        <button class="btn btn-success rounded-pill"
+                                        <button *ngIf="!spinner" class="btn btn-success rounded-pill"
                                             matTooltip="Generar reporte {{element.nombre}}" matTooltipPosition="above"
                                             (click)="generarReporte(element.reporte)" matTooltipClass="tooltipText">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        </button>
+                                        <button *ngIf="spinner" disabled class="btn btn-info rounded-pill">
+                                            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
                                         </button>
                                     </td>
                                 </ng-container>

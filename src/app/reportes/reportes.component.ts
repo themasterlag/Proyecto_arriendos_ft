@@ -27,6 +27,8 @@ export class ReportesComponent implements OnInit {
   valselects: boolean = false
   yearList: number[] = []
 
+  spinner: boolean = false;
+
   constructor(private servicio: GeneralesService) { }
 
   ngOnInit(): void {
@@ -56,6 +58,8 @@ export class ReportesComponent implements OnInit {
     if(this.mes == null && this.anio == null){
       Swal.fire('El periodo no puede estar vacio','','info')
     }else{
+      this.spinner = true;
+
       switch(reporte){
         case "bancolombia":
           this.generarBase64("bancolombia");
@@ -118,10 +122,13 @@ export class ReportesComponent implements OnInit {
                 icon: 'error',
                 title: 'No se encontraron resultados',
                 text: 'No se encontraton contratos que cumplan los requisitos',
+              }).then(() => {
+                this.spinner = false;
               })
             }
           },
           (error) => {
+            this.spinner = false;
             console.log(error)
           }
         );
@@ -517,7 +524,6 @@ export class ReportesComponent implements OnInit {
   }
 
   async combinarPDFDocuments(pdfDocs: PDFDocument[]): Promise<PDFDocument> {
-    console.log(pdfDocs);    
     const mergedDoc = await PDFDocument.create();
   
     for (const pdfDoc of pdfDocs) {
@@ -538,6 +544,7 @@ export class ReportesComponent implements OnInit {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
   
+    this.spinner = false;
     window.open(url, '_blank');
   }
 
