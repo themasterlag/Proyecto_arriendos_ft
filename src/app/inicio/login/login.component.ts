@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GeneralesService } from 'app/services/generales.service';
 import { AutenticacionService } from 'app/auth/autenticacion.service';
 import { Router } from '@angular/router';
+import { Loading } from "notiflix";
 
 @Component({
   selector: 'app-login',
@@ -16,13 +17,15 @@ export class LoginComponent implements OnInit {
   errorLogin: string = null;
 
   constructor( public servicio: GeneralesService, public servicioAut:AutenticacionService, public route:Router) { 
-    if (servicioAut.validarToken()) {
-      this.route.onSameUrlNavigation="ignore",
-      this.route.navigate(["/dashboard"]);
-    }
+    Loading.pulse("Cargando");
   }
 
   ngOnInit(): void {
+    if (this.servicioAut.validarToken()) {
+      this.route.onSameUrlNavigation="ignore";
+      this.route.navigate(["/dashboard"]);      
+    }
+    Loading.remove();
   }
 
   iniciarSesion(){

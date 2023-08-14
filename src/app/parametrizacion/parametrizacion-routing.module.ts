@@ -13,22 +13,26 @@ const routes: Routes = [
   {
     path: 'usuarios',
     component: UsuariosComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [5] }
   },
   {
     path: 'permisos',
     component: PermisosComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [6] }
   },
   {
     path: 'bancos',
     component: BancoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [7] }
   },
   {
     path: 'cargos',
     component: CargosComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [7] }
   }
   
 ];

@@ -8,25 +8,63 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(public route:Router, public servicioAuth:AutenticacionService){}
+  constructor(public router:Router, public servicioAuth:AutenticacionService){}
   canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      return this.validarSesion();
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+    ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+      let loggedIn = this.validarSesion();
+
+      if (loggedIn) {
+        const requiredPermissions = next.data.requiredPermissions; // Permisos requeridos para la ruta
+        if (requiredPermissions) {
+            this.validarPermisos(next, requiredPermissions);
+        }
+        return true;
+      }
+      else {
+        return false;
+      }
   }
   
   canActivateChild(
-    route: ActivatedRouteSnapshot,
+    next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ) {
-    return this.validarSesion();
+    let loggedIn = this.validarSesion();
+
+    if (loggedIn) {
+      const requiredPermissions = next.data.requiredPermissions; // Permisos requeridos para la ruta
+      if (requiredPermissions) {
+          this.validarPermisos(next, requiredPermissions);
+      }
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   validarSesion(){
     if (this.servicioAuth.validarToken()) {
       return true;
     }
-    this.route.navigateByUrl('/login');
+    this.router.navigateByUrl('/login');
     return false;
+  }
+
+  validarPermisos(next, requiredPermissions){
+    const storedPermissions = JSON.parse(sessionStorage.getItem('permisos'));
+    // Verificar si el usuario tiene los permisos requeridos
+    const hasRequiredPermissions = requiredPermissions.every(
+      (requiredPermission: string) => storedPermissions.some((storedPermission: any) => storedPermission.id_permiso == requiredPermission)
+    );
+
+    if (hasRequiredPermissions) {
+      return true;
+    } else {
+      this.router.navigate(['/inautorizado']);
+      return false;
+    }
   }
 }

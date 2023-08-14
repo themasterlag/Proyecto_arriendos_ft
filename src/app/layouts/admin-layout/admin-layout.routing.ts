@@ -7,45 +7,30 @@ import { ReportesComponent } from 'app/reportes/reportes.component';
 import { AuthGuard } from 'app/auth/guard/authguard.guard';
 import { Pagina404Component } from 'app/paginas-error/pagina404/pagina404.component';
 
-let rutas = [];
+let rutas:Routes = [];
 let permisos:any = sessionStorage.getItem('permisos');
 if (permisos) {
     permisos = JSON.parse(permisos);
     permisos.forEach(permiso => {
-        console.log(permiso);
-        switch (permiso.id_permiso) {
-            case 1:
-                rutas.push({ path: 'register', component: RegistrarpdvComponent })
-                break;
+        rutas.push({ path: 'register', component: RegistrarpdvComponent, data: { requiredPermissions: [1] } })
 
-            case 2:
-                rutas.push({ path: 'pagos', component: PagosComponent })
-                break;
-            
-            case 3:
-                rutas.push({ path: 'creditos', component: CreditosComponent });
-                break;
-            
-            case 4:
-                rutas.push({ path: 'reportes', component: ReportesComponent });
-                break;
-            
-            case 5:
-            case 6:
-                console.log("aqui"+permiso)
-                rutas.push(
-                    {
-                        path: 'parametrizacion',
-                        canActivate: [AuthGuard],
-                        children: [{
-                            path: '',
-                            canActivateChild: [AuthGuard],
-                            loadChildren: () => import('../../parametrizacion/parametrizacion.module').then(m => m.ParametrizacionModule)
-                        }]
-                    }
-                );
-            break;
-        }
+        rutas.push({ path: 'pagos', component: PagosComponent, data: { requiredPermissions: [2] } })
+    
+        rutas.push({ path: 'creditos', component: CreditosComponent, data: { requiredPermissions: [3] } });
+    
+        rutas.push({ path: 'reportes', component: ReportesComponent, data: { requiredPermissions: [4] } });
+    
+        rutas.push(
+            {
+                path: 'parametrizacion',
+                canActivate: [AuthGuard],
+                children: [{
+                    path: '',
+                    canActivateChild: [AuthGuard],
+                    loadChildren: () => import('../../parametrizacion/parametrizacion.module').then(m => m.ParametrizacionModule)
+                }],
+            }
+        );
     });
 }
 
