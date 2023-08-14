@@ -7,7 +7,7 @@ import { AuthGuard } from 'app/auth/guard/authguard.guard';
 import { PermisosComponent } from './permisos/permisos.component';
 import { BancoComponent } from './bancos/banco.component';
 import { CargosComponent } from './cargos/cargos.component';
-
+import { ConceptosComponent } from './conceptos/conceptos.component';
 
 const routes: Routes = [
   {
@@ -33,6 +33,12 @@ const routes: Routes = [
     component: CargosComponent,
     canActivate: [AuthGuard],
     data: { requiredPermissions: [7] }
+  },
+  {
+    path: 'conceptos',
+    component: ConceptosComponent,
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [7] } 
   }
   
 ];

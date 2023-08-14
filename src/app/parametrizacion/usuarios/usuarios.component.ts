@@ -191,6 +191,7 @@ export class UsuariosComponent implements OnInit {
     return fechaCorta;
   }
 
+  //VALIDAR EL TIPO DE DOCUMENTO DE LA PEROSNA
   validartipopersona(tipo){
 
   }

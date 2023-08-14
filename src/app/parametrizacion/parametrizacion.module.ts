@@ -15,6 +15,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+import { ConceptosComponent } from './conceptos/conceptos.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MatRadioModule } from '@angular/material/radio';
     UsuariosComponent,
     PermisosComponent,
     CargosComponent,
-    BancoComponent
+    BancoComponent,
+    ConceptosComponent
   ],
   imports: [
     CommonModule,
