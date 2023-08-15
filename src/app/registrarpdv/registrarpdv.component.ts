@@ -114,7 +114,7 @@ export class RegistrarpdvComponent implements OnInit {
       direccion: [null, Validators.required],
       numero_contacto: [null, Validators.required],
       numero_contacto2: [null],
-      email: [null, Validators.required],
+      email: [null],
       fecha_nacimiento: [null],
       departamento: [null, Validators.required],
       fecha_creacion: [null],
