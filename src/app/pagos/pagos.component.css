@@ -35,11 +35,15 @@
     font-weight: bold;
     font-size: 12px;
 }
-  .card-title{
-      color: #1b4f35 !important;
-      font-weight: 900;
-      font-size: 18px;
-  }
+.card-title{
+    color: #1b4f35 !important;
+    font-weight: 900;
+    font-size: 18px;
+}
+.text-info{
+  color: #359b68 !important;
+  font-weight: 900;
+}
   .mat-accordion .mat-expansion-panel:last-of-type{
     border-radius: 25px;
 } 
