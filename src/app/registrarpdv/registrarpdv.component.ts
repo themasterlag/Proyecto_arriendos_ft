@@ -290,7 +290,8 @@ export class RegistrarpdvComponent implements OnInit {
         
         this.pdv_busqueda = res;
         console.log('Hola', this.pdv_busqueda);  
-        console.log(this.tipopunto);
+        this.propietariostabla = []
+        // console.log(this.tipopunto);
         
 
         let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
@@ -970,7 +971,7 @@ export class RegistrarpdvComponent implements OnInit {
           if (result.isConfirmed) {
             // swal.fire("Guardado con Exito!", "", "success");
             //console.log(this.formulariopdv.value);
-            if(this.pdv_busqueda != null){
+            if(this.pdv_id != null){
               let formulario = this.formulariopdv.value;
               formulario.id_punto_venta = this.pdv_busqueda.id_punto_venta
               this.servicio.actualizrRegistroPdv(formulario).subscribe(
@@ -990,6 +991,8 @@ export class RegistrarpdvComponent implements OnInit {
                         // this.formulariopdv.markAsUntouched();
                         this.formularioPdvReset.resetForm();
                         this.propietariostabla = [];
+                        this.pdv_id = null;
+                        this.pdv_busqueda = null;
                       });
                   } else {
                     //console.log(res);
@@ -1018,6 +1021,8 @@ export class RegistrarpdvComponent implements OnInit {
                         // this.formulariopdv.markAsPristine(); 
                         this.formularioPdvReset.resetForm();// Marcar el formulario como "intocado"
                         this.propietariostabla = []
+                        this.pdv_id = null;
+                        this.pdv_busqueda = null;
                       });
                   } else {
                     //console.log(res);
@@ -1322,6 +1327,8 @@ export class RegistrarpdvComponent implements OnInit {
 
   limpiarPdv(): void {
     this.propietariostabla = []
+    this.pdv_id = null;
+    this.pdv_busqueda = null;
   }
 
   actualizarValorConcepto(i, valor){    
