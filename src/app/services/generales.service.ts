@@ -301,6 +301,10 @@ export class GeneralesService {
     return this.servicio.post(this.api + "/cargos", datosCargos);
   }
 
+  eliminarCargo(id: number) {
+    return this.servicio.delete(this.api + "cargos/"+id)
+  }
+
 
   // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS
   traerConceptosAsociados(){

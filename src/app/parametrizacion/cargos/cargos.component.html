@@ -23,163 +23,79 @@
 
                   <!-- ----------------------------------------------------------------------------------------------->
                   <!-- Pestaña de cargos -->
-<!-- no es un form es una lista -->
-                  <!-- <div class="col-4">
-                    <mat-form-field class="example-full-width">
-                      <mat-select placeholder="Cargo" id="cargos" name="cargos" ngModel required>
-                        <mat-option [value]="m.id_cargo" *ngFor="let m of Cargos">
-                          {{ m.cargo }}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div> -->
 
-                  <div class="col-8">
-                  
-                  <table mat-table [dataSource]="dataSourceCargo" class="mat-elevation-z8 tabla-cargo">
+                  <div class="col">
+                  <div class="table-responsive">
+                  <table mat-table [dataSource]="dataSourceCargo" class="thead-dark">
                 
-                  <ng-container matColumnDef="id_cargo">
-                    <th mat-header-cell *matHeaderCellDef> id_cargo </th>
-                    <td mat-cell *matCellDef="let element"> {{element.id_cargo}} </td>
-                  </ng-container>
+                    <ng-container matColumnDef="id_cargo">
+                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> id_cargo </th>
+                      <td mat-cell *matCellDef="let element"> {{element.id_cargo}} </td>
+                    </ng-container>
 
-                  <ng-container matColumnDef="cargo">
-                    <th mat-header-cell *matHeaderCellDef> cargo </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cargo}} </td>
-                  </ng-container>     
+                    <ng-container matColumnDef="cargo">
+                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> cargo </th>
+                      <td mat-cell *matCellDef="let element"> {{element.cargo}} </td>
+                    </ng-container>    
 
-                  <ng-container matColumnDef="acciones">
-
-                    <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones</th>
-                    <td mat-cell *matCellDef="let element">                     
-
-
-                  <button class="btn btn-info rounded-pill" (click)="editarCargo(element)" 
-                  matTooltip="Editar cargo" 
-                  matTooltipPosition="above"
-                  matTooltipClass="tooltipText">
-                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                  </button>
-
-                  <button class="btn btn-danger rounded-pill" (click)="eliminarCargo(element)" 
-                  matTooltip="Eliminar cargo" 
-                  matTooltipPosition="above"
-                  matTooltipClass="tooltipText">
-                      <i class="fa fa-trash" aria-hidden="true"></i>
-                  </button>
-
-                  
-                   </td>
-                  </ng-container>            
+                    <ng-container matColumnDef="acciones">
+                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Acciones</th>
+                      <td mat-cell *matCellDef="let element" class="text-center">
+                        <div class="acciones-container"> <!-- Agrega un contenedor para los botones -->
+                          <button class="btn btn-info rounded-pill" (click)="editarCargo(element)" 
+                                  matTooltip="Editar cargo" 
+                                  matTooltipPosition="above"
+                                  matTooltipClass="tooltipText">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          </button>
+                    
+                          <button class="btn btn-danger rounded-pill" (click)="eliminarCargo(element)" 
+                                  matTooltip="Eliminar cargo" 
+                                  matTooltipPosition="above"
+                                  matTooltipClass="tooltipText">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </ng-container>     
                 
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 
 
                   <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" colspan="6">No hay información</td>
+                    <td class="mat-cell" colspan="6">
+                    No hay información</td>
                   </tr>
 
                 </table>
+                  </div>
                 </div>
-
-                <!-- <input type="text" [(ngModel)]="datoSeleccionadoParaEditar" placeholder="Editar cargo"> -->
 
                   <!-- ---------------------------------------------------------------------------------------------------->
 
-                  <!-- Añadir Cargo -->
+                  <!-- Añadir Cargo y eliminar -->
 
 
                   <div class="col-4">
-                  <h5><strong>Añadir cargo</strong></h5>
-
-                  <form #registrarCargo="ngForm" (ngSubmit)="registrarCargos()" [noValidate]="false">
-
-                    
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" />
-                      </mat-form-field>
-
-                      <button class="btn btn-primary" (click)="registrarCargos()">Modificar
-                      </button>
-
-                      <button mat-raised-button type="submit" class="btn btn-info pull-right" id="button-guardar"
-                        (click)="registrarCargos">
-                        Añadir
-                      </button>
-
-                    </form>
-
-
-
-
-
-                  <!-- Eliminar y llamar cargo -->
-                  <!-- ------------- -->
-                  <form [formGroup]="myForm"(ngSubmit)="submitForm()">
-
-                    <!-- <h5><strong>Seleccionar Cargo</strong></h5>
-                  <div class="col-4">
-                    <mat-form-field class="example-full-width">
-                      <mat-select placeholder="Cargo" id="cargos" name="cargos" ngModel required>
-                        <mat-option [value]="m.id_cargo" *ngFor="let m of Cargos">
-                          {{ m.cargo }}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div> -->
-
-                  <form>
-                    <div class="col">
-                      <mat-form-field class="example-full-width">
-                        <mat-select placeholder="Cargo" id="opciones" name="cargos" [(ngModel)]="opcionSeleccionada">
-                          <mat-option [value]="m.id_cargo" *ngFor="let m of Cargos">
-                            {{ m.cargo }}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                    </div> 
-                  </form>
-                               
-                  <button 
-                  class="btn btn-info traer-cargos col" 
-                  (click)="mostrarCuadroTexto()" 
-                  [disabled]="!opcionSeleccionada"
-                  >Modificar Cargo
-                </button>
-                  <!-- <button
-                  class="btn btn-info traer-cargos col"
-                  id="button-consultar"
-                  (click)="traerCargos()" 
-                  >Modificar Cargo
-                </button>
-                <div class="col d-flex align-items-end d-flex justify-content-end" *ngIf="consultar == true">
-                </div> -->
+                    <div class="añadir-cargo-container">
+                      <h5 class="titulo-añadir"><strong>Añadir Cargo</strong></h5>
                   
-                  </form>
-
-                    <!-- <h5><strong>Consultar por Id</strong></h5>
-                    <div class="row">
-                      <div class="col">
-                        <input
-                          class="formdata text-center form-control align-baseline mt-2"
-                          placeholder="Id cargo"
-                          type="number"
-                          max="1000"
-                          [(ngModel)]="consulta_cargos"
-                        />
-                      </div> -->
-                      
-                      <!-- <button
-                        class="btn btn-info text-center col-9"
-                        id="button-consultar"
-                        (click)="traerCargos()"                      >
-                        Consultar                        
-                      </button> -->
-
-
+                      <form #registrarCargo="ngForm" (ngSubmit)="registrarCargos()" [noValidate]="false">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" />
+                        </mat-form-field>
                   
-                </div>
+                        <button mat-raised-button type="submit" class="btn btn-info pull-right" id="button-guardar">
+                          Añadir
+                        </button>
+                        <button mat-raised-button type="submit" class="btn btn-info pull-right" id="button-limpiar">
+                          Limpiar
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                  
 
           
                 </div>

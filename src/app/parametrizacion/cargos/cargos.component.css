@@ -1,4 +1,104 @@
+.card{
+    background: #e8e8e8; /* por ejemplo */
+    font-size: 18px; /* por ejemplo */
+    border-radius: 25px;
+  }
+#banner{
+    border-radius: 25px;
+    background: #ffe203;
+    
+}
+
+.card-title{
+    
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 21px;
+}
+
+.card-body{
+    border-radius: 25px;
+}
+#mat-expansion-panel-header-1{
+    border-radius: 25px;
+}
+.mat-accordion .mat-expansion-panel{
+    border-radius: 25px;
+    margin-bottom: 1%;
+}
+
+.text-info{
+    color: #359b68 !important;
+    font-weight: 900;
+}
+
+.titulo-grande {
+    font-size: 1rem; /* Ajusta el tamaño según tus preferencias */
+    color:  #000000c5 !important;
+  }
+
 .traer-cargos {
     border-radius: 25px;
     background-color : red;
 }
+
+.mat-table {
+    width: 100%; /* O ajusta el ancho según tus necesidades */
+    margin-bottom: 20px; /* Agrega espacio inferior */
+  }
+  
+  /* Estilo para la tabla receptiva */
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+.tabla-header {
+    background-color: #ebebeb8c; /* Color de fondo para los encabezados */
+    color: rgb(0, 0, 0); /* Color del texto en los encabezados */
+    border-bottom: 2px solid white; /* Línea inferior */
+    padding: 8px; /* Espaciado interno */
+  }
+
+  .acciones-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espacio entre los botones */
+  }
+  /*---------------------------------------------------------------------------------------------------------------*/
+  .añadir-cargo-container {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .titulo-añadir {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .example-full-width {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  #button-guardar {
+    border-top-left-radius: 50px; /* Bordes planos arriba y abajo */
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    width: 60px; /* Ajusta el tamaño del botón según tus preferencias */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-left: 10px; /* Agrega margen para separar del campo de entrada */
+  }
+  
+  #button-guardar:hover {
+    background-color: #138496;
+    border-color: #138496;
+  }
+  

@@ -26,13 +26,12 @@ export class CargosComponent implements OnInit {
   panelFormEdit:boolean;
   listaCargos:any = [];
   opcionSeleccionada: string = '';
-  myForm: FormGroup;
   Cargos: any;
   @ViewChild("registrarCargo") enviarCargo: NgForm;
   @ViewChild("formularioEditarCargo") formularioEditarCargo:NgForm ;
   consulta_cargos: any = null;
   consultar: boolean = false;
-  idCargo: number = null;
+  idCargo: number ;
   dataSourceCargo: MatTableDataSource<Cargos> =
   new MatTableDataSource<Cargos>();
   tabla_cargo: any;
@@ -45,7 +44,7 @@ export class CargosComponent implements OnInit {
     public servicio: GeneralesService,
   )
   {
-    this.myForm = new FormGroup({});
+
   }
 
   ngOnInit(): void {
@@ -77,35 +76,14 @@ export class CargosComponent implements OnInit {
     this.datoSeleccionadoParaEditar = element.cargo;
     this.datoOriginal = element.cargo;
   }
-  // editarCargo(cargos){    
-    
-  //   this.formularioEditarCargo.controls.id_cargo.setValue(cargos.id_cargo);
-  //   this.formularioEditarCargo.controls.cargo.setValue(cargos.cargo);
-  // }
 
-  
-  guardarEdicion() {
-    if (this.datoSeleccionadoParaEditar != this.datoOriginal) {
-      this.servicio.actualizarCargo(this.datoSeleccionadoParaEditar).subscribe(
-        (res: any) => {
-          this.datoOriginal = this.datoSeleccionadoParaEditar; // Actualiza el dato original
-          this.datoSeleccionadoParaEditar = ''; // Limpia el cuadro de texto
-          this.ejecutarConsultas();
-          Swal.fire("Cambios guardados con éxito", "", "success");
-        },
-        (err: any) => {
-          Swal.fire("No se pudieron gusrdar los cabios", "", "error");
-        }
-      );
-    } else {
-      console.log('No hay cambios para guardar.');
-    }
-  }
 
-  eliminarCredito(credito: any){
-    this.servicio.eliminarCredito(credito.id_saldo_credito).subscribe(
+  eliminarCargo(cargo: any){
+    this.servicio.eliminarCargo(cargo.id_cargo).subscribe(
       (res:any)=>{
         this.ejecutarConsultas();
+        this.traerCargos();
+        Swal.fire("Se elimino con exito", "", "success");
       },
       (err:any)=>{
         Swal.fire("No se pudo eliminar el credito", "", "error");
@@ -114,24 +92,6 @@ export class CargosComponent implements OnInit {
   }
 
 
-  mostrarCuadroTexto() {
-    if (this.opcionSeleccionada) {
-      // Aquí puedes mostrar el cuadro de texto, por ejemplo, utilizando un modal
-      alert('Mostrar cuadro de texto');
-    } else {
-      alert('Selecciona una opción antes de mostrar el cuadro de texto.');
-    }
-  }
-
-  submitForm(){
-    if (this.myForm.valid) {
-      // Realizar acciones con los datos del formulario
-      console.log(this.myForm.value);
-    } else {
-      // Realizar acciones si el formulario no es válido
-      console.log("El formulario no es válido");
-    }
-  }
 
   traerCargos(){
     this.servicio.traerCargos().subscribe(
@@ -177,68 +137,57 @@ export class CargosComponent implements OnInit {
     }
   }
 
-  // filtrarProcesos(idProceso){
-  //   console.log(idProceso);
-  //   this.subProcesosFilter = this.SubProcesos.filter((subProceso) => subProceso.id_proceso == idProceso);
-  // }
-
   llenarFormulario(infoCargos){
     this.enviarCargo.controls.cargo.setValue(infoCargos.cargo);
   }
 
 
-  registrarCargos(){
-
-
-    //  console.log("form",this.enviarCargo.controls.cargo.value);
-    if(this.enviarCargo.valid){
-      let formCargos = {
-        id: this.idCargo,
+  registrarCargos() {
+    if (this.enviarCargo.valid) {
+      const formCargos = {
+        id_cargo: this.idCargo,
         cargo: this.enviarCargo.controls.añadircargo.value
-      }
-      if(this.editar == true){
-        console.log(formCargos)
+      };
+  
+      if (formCargos.id_cargo) {
         this.servicio.actualizarCargo(formCargos).subscribe(
           (res: any) => {
-            this.datoOriginal = this.datoSeleccionadoParaEditar; // Actualiza el dato original
-            this.datoSeleccionadoParaEditar = ''; // Limpia el cuadro de texto
+            this.datoOriginal = this.datoSeleccionadoParaEditar;
+            this.datoSeleccionadoParaEditar = '';
             this.ejecutarConsultas();
             this.traerCargos();
+            this.idCargo = null;
             Swal.fire("Cambios guardados con éxito", "", "success");
           },
           (err: any) => {
-            Swal.fire("No se pudieron gusrdar los cabios", "", "error");
+            Swal.fire("No se pudieron guardar los cambios", "", "error");
           }
-          
         );
-        
-      }else{
-        Swal
-        .fire({
+      } else {
+        Swal.fire({
           title: "Seguro de guardar los cambios?",
           showDenyButton: true,
           confirmButtonText: "Guardar",
           denyButtonText: `Cancelar`,
-        })
-        .then((result) => {
-          if (result.isConfirmed){
-           this.servicio.enviarCargo(formCargos).subscribe(
-              (res:any) => {
-                Swal.fire('Cargo guardado con exito','','success');
-                this.enviarCargo.form.markAsPristine(); // Marcar el formulario como "intocado"
-                this.enviarCargo.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.enviarCargo(formCargos).subscribe(
+              (res: any) => {
+                Swal.fire("Cargo guardado con éxito", "", "success");
+                this.enviarCargo.form.markAsPristine();
+                this.enviarCargo.form.markAsUntouched();
                 this.enviarCargo.resetForm();
                 this.traerCargos();
               },
               (error) => {
                Swal.fire("No se encontro", "Error: "+error.error.message, "error");
               }
-             )
-          } })
-      
-      console.log(formCargos);
-      }      
-    }  
+            );
+          }
+        });
+      }
+    }
   }
+  
 
 }
