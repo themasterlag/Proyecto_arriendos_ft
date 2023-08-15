@@ -609,8 +609,8 @@
                   >
                     Consultar
                   </button>
-                  <div class="col d-flex align-items-end d-flex justify-content-end" *ngIf="consulta_pdv != null">
-                    <mat-checkbox class="example-margin">Cambiar contraseña</mat-checkbox>
+                  <div class="col d-flex align-items-end d-flex justify-content-end" >
+                    <mat-checkbox class="example-margin" disabled [(ngModel)]="inhabilitar_save">Inhablitado</mat-checkbox>
                   </div>
                 </div>
 
@@ -953,6 +953,7 @@
                     type="submit"
                     class="btn btn-info pull-right"
                     id="button-guardar"
+                    *ngIf="inhabilitar_save == false"
                   >
                     Guardar
                   </button>

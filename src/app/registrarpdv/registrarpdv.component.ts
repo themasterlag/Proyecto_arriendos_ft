@@ -86,6 +86,8 @@ export class RegistrarpdvComponent implements OnInit {
   tabla_contratos: any = [];
   valorCanon = null;
   canonGlobal = null;
+  inhabilitar:any = null;
+  inhabilitar_save: any = false;
   displayedColumns: string[] = ["Codigo_Punto_Venta", "Numero_documento" ,"Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
   dataSourceContratos: MatTableDataSource<Contratos> =
   new MatTableDataSource<Contratos>();
@@ -351,10 +353,17 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerContrato(id).subscribe(
       (res: any) => {
         // this.pdv = res;
+        let fecha_inactivo = '';
         if (res.length > 1) {
           this.contratos_pdv = res.map((datoConsulta) =>{
+            console.log(res);
+            if(datoConsulta.contrato.fecha_inactivo != null){
+              fecha_inactivo = "(Inhabilitado)";
+            }else{
+              fecha_inactivo = "";
+            }
             let responsable = datoConsulta.contrato.responsabledetalle.clientedetalle;
-            let nombre = responsable.razon_social == null? responsable.nombres+" "+responsable.apellidos: responsable.razon_social
+            let nombre = responsable.razon_social == null? responsable.nombres+" "+responsable.apellidos+" "+fecha_inactivo: responsable.razon_social+" "+fecha_inactivo
 
             return nombre
           });
@@ -369,6 +378,11 @@ export class RegistrarpdvComponent implements OnInit {
             inputValidator: (value) => {
               return new Promise((resolve) => {
                 this.cargarDatosContrato(res[value]);
+                if(res[value].contrato.fecha_inactivo != null){
+                  this.inhabilitar_save = true;
+                }else{
+                  this.inhabilitar_save = false;
+                }
                 resolve("");
               })
             }
@@ -376,11 +390,12 @@ export class RegistrarpdvComponent implements OnInit {
         }
         else {
           this.cargarDatosContrato(res[0]);
-        }
-        
-        
-
-        
+          if(res[0].contrato.fecha_inactivo != null){
+            this.inhabilitar_save = true;
+          }else{
+            this.inhabilitar_save = false;
+          }
+        }        
       },
       (err) => {
         Swal.fire("Punto de venta no encontrado", "", "error");
@@ -805,6 +820,7 @@ export class RegistrarpdvComponent implements OnInit {
                           // this.formulariocontrato.markAsUntouched(); // Marcar el formulario como "no modificado"
                           // this.formulariocontrato.reset();
                           this.formularioContratoReset.resetForm();
+                          this.inhabilitar = null;
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -818,6 +834,7 @@ export class RegistrarpdvComponent implements OnInit {
                       this.servicio.registrarcontrato(datos).subscribe(
                         (res: any) => {
                           this.formularioContratoReset.resetForm();
+                          this.inhabilitar = null;
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -1317,6 +1334,8 @@ export class RegistrarpdvComponent implements OnInit {
     this.conceptosTabla = []
     this.consulta_pdv = null;
     this.formulariocontrato.get('valor_canon').enable()
+    this.inhabilitar = null;
+    this.inhabilitar_save = false;
   }
 
   limpiarPdv(): void {

@@ -24,7 +24,7 @@ interface Usuarios {
 })
 export class UsuariosComponent implements OnInit, AfterViewInit {
 
-  panelOpenState = false;
+  panelOpenState = true;
   consulta_usuario: any = null;
   @ViewChild("formularioUsuarios") formularioUsuarios: NgForm;
   tipoUsuario: boolean = null;
@@ -43,6 +43,8 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
   new MatTableDataSource<Usuarios>();
   @ViewChild("paginatorUsuarios") paginatorUsuarios: MatPaginator
   @ViewChild(MatSort) sort: MatSort;
+
+  // savedSort: { active: string; direction: string} = {active: 'cedula', direction: 'asc'};
 
   constructor(
     public servicio: GeneralesService,
@@ -241,11 +243,16 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
     this.subProcesosFilter = this.SubProcesos.filter((subProceso) => subProceso.id_proceso == idProceso);
   }
 
+
+
   tablaUsuarios(){
+    this.sort.sortables = null;
+    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
+
     this.servicio.traerTodosUsuarios().subscribe(
       (res:any) => {
         // console.log(res);
-
+        
         this.tabla_usuarios = res.map((usuario) => {
           return {
             id_usuario: usuario.id_usuario,
@@ -256,20 +263,25 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
           }
         })
 
+        // this.sort.sort({id:'cedula', start:'asc', disableClear: true});
+
         this.dataSourceUsuarios.data = this.tabla_usuarios;
         this.dataSourceUsuarios.paginator = this.paginatorUsuarios;
         console.log(this.sort);
         this.dataSourceUsuarios.sort = this.sort;
+        // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
       }
     )
   }
 
   cambiarEstadoUsuario(usuario){
     // console.log(usuario, id_estado)
+    this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
     if(usuario.estado == 1){
       this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
           Swal.fire('Usuario inhabilitado', '', 'success');
+          // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
           this.tablaUsuarios();
         },
         (error:any) => {
@@ -280,6 +292,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
       this.servicio.habilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
           Swal.fire('Usuario habilitado','', 'success');
+          // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
           this.tablaUsuarios();
         },
         (error:any) => {
