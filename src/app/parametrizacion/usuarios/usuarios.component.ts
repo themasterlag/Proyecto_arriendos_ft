@@ -246,9 +246,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
 
 
   tablaUsuarios(){
-    this.sort.sortables = null;
-    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
-
     this.servicio.traerTodosUsuarios().subscribe(
       (res:any) => {
         // console.log(res);
@@ -276,7 +273,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
 
   cambiarEstadoUsuario(usuario){
     // console.log(usuario, id_estado)
-    this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
+    // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
     if(usuario.estado == 1){
       this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
