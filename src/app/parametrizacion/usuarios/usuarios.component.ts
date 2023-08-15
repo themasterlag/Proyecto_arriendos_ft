@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
 import Swal from "sweetalert2";
@@ -22,7 +22,7 @@ interface Usuarios {
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit {
+export class UsuariosComponent implements OnInit, AfterViewInit {
 
   panelOpenState = false;
   consulta_usuario: any = null;
@@ -55,6 +55,10 @@ export class UsuariosComponent implements OnInit {
     this.traerProcesos();
     this.traerSubProcesos();
     this.traerCargos();
+  }
+
+  ngAfterViewInit(){
+    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
   }
 
   traerUsuario(){
@@ -238,9 +242,6 @@ export class UsuariosComponent implements OnInit {
   }
 
   tablaUsuarios(){
-    this.sort.sortables = null;
-    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
-
     this.servicio.traerTodosUsuarios().subscribe(
       (res:any) => {
         // console.log(res);

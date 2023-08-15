@@ -7,12 +7,14 @@ import { InicioRoutingModule } from  './inicio-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
+import { InicioComponent } from './inicio/inicio.component';
 
 
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    InicioComponent
   ],
   imports: [
     CommonModule,

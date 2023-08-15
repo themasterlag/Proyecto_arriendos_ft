@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.titulo {
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}
+
+.feature {
+    text-align: center;
+    padding: 1.5rem;
+    margin: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.feature img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+}
+
+footer {
+    text-align: center;
+    background-color: #f4f4f4;
+    padding: 1rem;
+}
