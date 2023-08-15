@@ -141,7 +141,7 @@ export class CargosComponent implements OnInit {
         this.tablaCargo();
       },
       (error:any) =>{
-        console.log(error);
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     )
   }
@@ -231,7 +231,7 @@ export class CargosComponent implements OnInit {
                 this.traerCargos();
               },
               (error) => {
-                console.log(error);
+               Swal.fire("No se encontro", "Error: "+error.error.message, "error");
               }
              )
           } })

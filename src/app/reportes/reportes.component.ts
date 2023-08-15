@@ -129,7 +129,7 @@ export class ReportesComponent implements OnInit {
           },
           (error) => {
             this.spinner = false;
-            console.log(error)
+           Swal.fire("No se encontro", "Error: "+error.error.message, "error");
           }
         );
       }

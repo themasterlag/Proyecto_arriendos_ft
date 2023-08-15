@@ -152,7 +152,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
                 },
                 (error) => {
                   Swal.fire('Error al aztualizar el usuario', error.message, 'error');
-                  // console.log(error);
+                  //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
                 }
               )
             } else {
@@ -170,7 +170,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
                 },
                 (error) => {
                   Swal.fire('Error al crear el usuario', error.error.message, 'error');
-                  // console.log(error);
+                  //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
                 }
               )
             }
@@ -206,7 +206,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
         this.procesos = res;
       },
       (error:any) =>{
-        console.log(error);
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     )
   }
@@ -218,7 +218,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
         this.SubProcesos = res;
       }, 
       (error:any) =>{
-        console.log(error);
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     )
   }
@@ -230,7 +230,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
         this.Cargos = res;
       },
       (error:any) =>{
-        console.log(error);
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     )
   }
@@ -273,7 +273,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
           this.tablaUsuarios();
         },
         (error:any) => {
-          console.log(error);
           Swal.fire('Ocurrio un error', error.error.message, 'error');
         }
       )

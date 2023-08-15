@@ -2,17 +2,11 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { GeneralesService } from "app/services/generales.service";
 import { AutenticacionService } from "app/auth/autenticacion.service";
 import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Loading, Confirm, Report, Notify } from "notiflix";
+import { Loading, Confirm } from "notiflix";
 import { Router } from "@angular/router";
-import swal from "sweetalert2";
-import { throwIfEmpty } from "rxjs";
-import { element } from "protractor";
 import Swal from "sweetalert2";
 import { MatPaginator } from "@angular/material/paginator"
-import { MatSort } from "@angular/material/sort"
 import { MatTableDataSource } from "@angular/material/table"
-import { error, log } from "console";
 
 
 interface Concepto {
@@ -324,7 +318,7 @@ export class RegistrarpdvComponent implements OnInit {
         
       },
       (error:any) => {
-        console.log(error.message);
+        Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     );
   }
@@ -389,7 +383,7 @@ export class RegistrarpdvComponent implements OnInit {
         
       },
       (err) => {
-        swal.fire("Punto de venta no encontrado", "", "error");
+        Swal.fire("Punto de venta no encontrado", "", "error");
         console.log(err.message);
       }
     );
@@ -642,7 +636,7 @@ export class RegistrarpdvComponent implements OnInit {
   registroserviciocontrato(idcontrato) {
 
     if ( this.listservicios.length < 1) {
-      swal.fire("Guardado con Exito!", "", "success");
+      Swal.fire("Guardado con Exito!", "", "success");
       this.consulta_pdv = null;
       this.id_contrato = null;
       Loading.remove();
@@ -660,7 +654,7 @@ export class RegistrarpdvComponent implements OnInit {
       this.servicio.registroserviciocontrato(e).subscribe(
         (res: any) => {
           if (i == (this.listservicios.length - 1)) {
-            swal.fire("Guardado con Exito!", "", "success");
+            Swal.fire("Guardado con Exito!", "", "success");
             this.consulta_pdv = null;
             this.id_contrato = null;
             Loading.remove();
@@ -669,7 +663,7 @@ export class RegistrarpdvComponent implements OnInit {
           }
         },
         (err) => {
-          swal.fire("No se pudo realizar el proceso con exito", "", "error");
+          Swal.fire("No se pudo realizar el proceso con exito", "", "error");
         }
       );
     }
@@ -724,7 +718,7 @@ export class RegistrarpdvComponent implements OnInit {
   registrocontrato(): void {
     // Loading.pulse("Cargando");
     if (this.conceptosTabla.length == 0) {
-      swal.fire('La tabla conceptos no puede estar vacia','', 'warning');
+      Swal.fire('La tabla conceptos no puede estar vacia','', 'warning');
     }
     else if (this.formulariocontrato.valid) {
       let responsable = {
@@ -763,7 +757,7 @@ export class RegistrarpdvComponent implements OnInit {
         id_responsable: 0,
         id_autorizado: 0,
       };
-      swal
+      Swal
         .fire({
           title: "Seguro de guardar los cambios?",
           showDenyButton: true,
@@ -816,7 +810,7 @@ export class RegistrarpdvComponent implements OnInit {
                           }
                         },
                         (err) => {
-                          swal.fire("No se pudo actualizar el contrato", "", "error");
+                          Swal.fire("No se pudo actualizar el contrato", "", "error");
                         }
                       );
                     }
@@ -829,7 +823,7 @@ export class RegistrarpdvComponent implements OnInit {
                           }
                         },
                         (err) => {
-                          swal.fire("No se pudo registrar el contrato", "", "error");
+                          Swal.fire("No se pudo registrar el contrato", "", "error");
                         }
                       );
                     }
@@ -850,7 +844,7 @@ export class RegistrarpdvComponent implements OnInit {
         });
     } else {
       //console.log(this.formulariocontrato);
-      swal.fire("Falta información del contrato", "", "question");
+      Swal.fire("Falta información del contrato", "", "question");
     }
   }
   validarTercero(terceroActual: any) {
@@ -883,7 +877,7 @@ export class RegistrarpdvComponent implements OnInit {
         digito_verificacion: this.formulariotercero.value.digito_verificacion,
       };
 
-      swal
+      Swal
         .fire({
           title: "Seguro de guardar los cambios?",
           showDenyButton: true,
@@ -897,7 +891,7 @@ export class RegistrarpdvComponent implements OnInit {
                 (res) => {
                   // console.log(res);
                   
-                  swal.fire("Actualizado con Exito!","","success")
+                  Swal.fire("Actualizado con Exito!","","success")
                   .then((isConfirm) => {
                   // this.formulariotercero.reset();
                   // this.formulariotercero.markAsUntouched();
@@ -907,13 +901,13 @@ export class RegistrarpdvComponent implements OnInit {
                   this.traerclientes();
                 },
                 (error) => {
-                  swal.fire("Error al Actualizar", error.error.menssage, "error");
+                  Swal.fire("Error al Actualizar", error.error.menssage, "error");
                 }
               ) 
             }else{
             this.servicio.enviarregistrotercero(formtercer).subscribe(
               (res) => {
-                swal
+                Swal
                   .fire("Guardado con Exito!", "", "success")
                   .then((isConfirm) => {
                     this.formularioTerceroReset.resetForm();
@@ -923,16 +917,16 @@ export class RegistrarpdvComponent implements OnInit {
                 this.traerclientes();
               },
               (err) => {
-                swal.fire("Error al registrar", err.error.message, "error");
+                Swal.fire("Error al registrar", err.error.message, "error");
               }
             );
             }
           }
         });
     } else {
-      swal.fire("Falta información en los datos del tercero", "", "question");
+      Swal.fire("Falta información en los datos del tercero", "", "question");
 
-      // swal.fire("Datos Registrados");
+      // Swal.fire("Datos Registrados");
     }
   }
 
@@ -959,7 +953,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   registropdv() {
     if (this.formulariopdv.valid) {
-      swal
+      Swal
         .fire({
           title: "Seguro de guardar los cambios?",
           showDenyButton: true,
@@ -969,7 +963,7 @@ export class RegistrarpdvComponent implements OnInit {
         .then((result) => {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
-            // swal.fire("Guardado con Exito!", "", "success");
+            // Swal.fire("Guardado con Exito!", "", "success");
             //console.log(this.formulariopdv.value);
             if(this.pdv_id != null){
               let formulario = this.formulariopdv.value;
@@ -980,7 +974,7 @@ export class RegistrarpdvComponent implements OnInit {
                     // this.resgistropropietarios(res.id);
                     console.log(res);                    
                     this.traerpdv();
-                    swal
+                    Swal
                       .fire(
                         `Se actualizó el Punto de venta ${this.formulariopdv.value.nombre_comercial}`,
                         '',
@@ -999,7 +993,7 @@ export class RegistrarpdvComponent implements OnInit {
                   }
                 },
                 (err) => {
-                  swal.fire("Error al actualizar", err.error.menssage, "error");
+                  Swal.fire("Error al actualizar", err.error.menssage, "error");
                 }
               );
               this.traerpdv;
@@ -1009,7 +1003,7 @@ export class RegistrarpdvComponent implements OnInit {
                   if (res.estado == "1") {
                     this.resgistropropietarios(res.id);
                     this.traerpdv();
-                    swal
+                    Swal
                       .fire(
                         `Se registro el Punto de venta ${this.formulariopdv.value.nombre_comercial}`,
                         '',
@@ -1029,7 +1023,7 @@ export class RegistrarpdvComponent implements OnInit {
                   }
                 },
                 (err) => {
-                  swal.fire("Error al registrar", err.error.menssage, "error");
+                  Swal.fire("Error al registrar", err.error.menssage, "error");
                 }
               );
               this.traerpdv;
@@ -1037,7 +1031,7 @@ export class RegistrarpdvComponent implements OnInit {
           }
         });
     } else {
-      swal.fire("Falta información del punto de venta", "", "question");
+      Swal.fire("Falta información del punto de venta", "", "question");
     }
   }
 
@@ -1095,12 +1089,12 @@ export class RegistrarpdvComponent implements OnInit {
     // console.log(conceptoIgual);
     
     if (conceptoIgual) {
-      swal.fire('El concepto ya se encuentra en la lista','','info');   
+      Swal.fire('El concepto ya se encuentra en la lista','','info');   
     }else{
       // console.log(this.formulariocontrato.get('valor_canon').value);
       
       if(this.formulariocontrato.get('valor_canon').value == null){
-        swal.fire("El canon no puede estar vacio", '', "error");
+        Swal.fire("El canon no puede estar vacio", '', "error");
       }else{
         let concepto: Concepto = {
           id_concepto: this.conceptosFilter[0].id_concepto,
@@ -1194,7 +1188,7 @@ export class RegistrarpdvComponent implements OnInit {
             console.log('Hola reteiva'); 
             let buscarIva = this.conceptosTabla.find((element) => element.id_concepto == 3);
             if (!buscarIva) {
-              swal.fire('Debe agregar el concepto IVA', '', 'info');
+              Swal.fire('Debe agregar el concepto IVA', '', 'info');
             }else{
               let valorIva = this.conceptosTabla.find((element) => element.id_concepto == 3); 
               concepto.valor = valorIva.valor * this.conceptosFilter[0].porcentaje_operacion;
@@ -1225,7 +1219,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.ordenConceptoAsociado(concepto, res);
       },
       (error) => {
-        console.log(error);
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
       }
     )
   }
@@ -1382,7 +1376,7 @@ export class RegistrarpdvComponent implements OnInit {
     const currentDate = new Date();
     const formattedDate = this.formatDate(currentDate);
 
-    swal.fire({
+    Swal.fire({
       title: 'Observación',
       input: 'text',
       showCancelButton: true,
@@ -1401,7 +1395,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.servicio.inhabilitarContratos(datos).subscribe(
             (res:any) => {
             // console.log(res);
-            swal.fire(`Contrato ${contrato.id_contrato} inhabilitado`,'', 'success') 
+            Swal.fire(`Contrato ${contrato.id_contrato} inhabilitado`,'', 'success') 
             this.tablaContratos();           
         })        
       }

@@ -80,7 +80,7 @@ mda = {
                         $toggle.removeClass('toggled');
                     }, 400);
 
-                    mobile_menu_visible = 0;;
+                    mobile_menu_visible = 0;
                 } else {
                     setTimeout(function(){
                         $toggle.addClass('toggled');
