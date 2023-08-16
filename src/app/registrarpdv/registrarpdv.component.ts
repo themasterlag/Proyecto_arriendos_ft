@@ -204,18 +204,7 @@ export class RegistrarpdvComponent implements OnInit {
       console.error(error.message, this.tipopunto);
     }
   }
-  // traerserviciospublicos() {
-  //   try {
-  //     //console.log("aqui");
-  //     this.servicio.traerserviciospublicos().subscribe((res: any) => {
-  //       this.serviciospublicos = res;
-  //       //console.log(res);
-  //       //console.log(this.serviciospublicos, "servicios");
-  //     });
-  //   } catch (err) {
-  //     //console.log(err.message, this.serviciospublicos);
-  //   }
-  // }
+
   traerpdv() {
     this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
@@ -282,8 +271,7 @@ export class RegistrarpdvComponent implements OnInit {
   traerPDV(){
     this.servicio.traerPDv(this.pdv_id).subscribe(
       (res:any) => {
-        console.log(res);
-        
+
         this.pdv_busqueda = res;
         console.log('Hola', this.pdv_busqueda);  
         this.propietariostabla = []
@@ -296,7 +284,14 @@ export class RegistrarpdvComponent implements OnInit {
         this.filtrardepar(buscarDep[0].id_departamento);
 
         let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
-        this.addpropietario(this.pdv_busqueda.proppv[0].id_propietario);
+
+        for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
+          const element = this.pdv_busqueda.proppv[index];
+          this.addpropietario(element.id_propietario);
+        }
+        
+        console.log(this.propietariostabla);
+
         
         this.formulariopdv.patchValue({
           nombre_comercial: this.pdv_busqueda.nombre_comercial,
@@ -953,6 +948,7 @@ export class RegistrarpdvComponent implements OnInit {
     });
 
     this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
+    // console.log(this.clientesfilter);
 
     this.propietariostabla.push({
       tipoid: this.clientesfilter[0].tipo_documento,
@@ -960,6 +956,7 @@ export class RegistrarpdvComponent implements OnInit {
       nombres: this.clientesfilter[0].nombres,
       apellidos: this.clientesfilter[0].apellidos,
       razon: this.clientesfilter[0].razon_social,
+      id_propietario: this.clientesfilter[0].id_cliente,
     });
   }
 
@@ -978,18 +975,17 @@ export class RegistrarpdvComponent implements OnInit {
           denyButtonText: `Cancelar`,
         })
         .then((result) => {
-          /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
-            // Swal.fire("Guardado con Exito!", "", "success");
-            //console.log(this.formulariopdv.value);
             if(this.pdv_id != null){
+              console.log(this.formulariopdv.value)
               let formulario = this.formulariopdv.value;
               formulario.id_punto_venta = this.pdv_busqueda.id_punto_venta
               this.servicio.actualizrRegistroPdv(formulario).subscribe(
                 (res: any) => {
                   if (res.estado == "1") {
                     // this.resgistropropietarios(res.id);
-                    console.log(res);                    
+                    console.log(res);  
+                    this.resgistropropietarios(res.id);                  
                     this.traerpdv();
                     Swal
                       .fire(
@@ -1053,11 +1049,16 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   resgistropropietarios(id) {
-    for (let i = 0; i < this.listprop.length; i++) {
-      const e = this.listprop[i];
-      e.id_punto_venta = id;
+    let datospropietarios = [];
+    
+    this.propietariostabla.forEach((propietarios) => {
+      datospropietarios.push(propietarios.id_propietario);
+    })
+    // console.log(propietarios);
 
-      this.servicio.enviarproppdv(e).subscribe(
+    let datos_propietario = {id_punto_venta: id, propietarios: JSON.stringify(datospropietarios)}
+    console.log(datos_propietario);
+      this.servicio.enviarproppdv(datos_propietario).subscribe(
         (res) => {
           //console.log(res);
         },
@@ -1066,7 +1067,7 @@ export class RegistrarpdvComponent implements OnInit {
         }
       );
     }
-  }
+  
   operacionConceptos(valor, tipo_id){
     // console.log(valor, tipo_id, "hola");
     
