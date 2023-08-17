@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import Swal from "sweetalert2";
 import { FormGroup, NgForm } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
+import {MatSort} from '@angular/material/sort';
+
 
 interface Cargos {
   id_cargo:number;
@@ -14,7 +16,8 @@ interface Cargos {
 @Component({
   selector: 'app-cargos',
   templateUrl: './cargos.component.html',
-  styleUrls: ['./cargos.component.css']
+  styleUrls: ['./cargos.component.css'],
+  encapsulation: ViewEncapsulation.None,
   
 })
 export class CargosComponent implements OnInit {
@@ -28,7 +31,6 @@ export class CargosComponent implements OnInit {
   opcionSeleccionada: string = '';
   Cargos: any;
   @ViewChild("registrarCargo") enviarCargo: NgForm;
-  @ViewChild("formularioEditarCargo") formularioEditarCargo:NgForm ;
   consulta_cargos: any = null;
   consultar: boolean = false;
   idCargo: number ;
@@ -38,6 +40,7 @@ export class CargosComponent implements OnInit {
   editar: boolean = false;
   displayedColumns: string[] = ["id_cargo", "cargo","acciones"];
   @ViewChild("paginatorCargo") paginatorCargos: MatPaginator
+  @ViewChild(MatSort) sort: MatSort;
 
   
   constructor(
@@ -118,6 +121,8 @@ export class CargosComponent implements OnInit {
 
     this.dataSourceCargo.data = this.tabla_cargo;
     this.dataSourceCargo.paginator = this.paginatorCargos;
+    console.log(this.sort);
+    this.dataSourceCargo.sort = this.sort;
   }
 
   consultarCargo(){
@@ -187,6 +192,20 @@ export class CargosComponent implements OnInit {
         });
       }
     }
+  }
+
+  limpiarFormulario(){
+    this.consulta_cargos = null;
+    this.consultar = false;
+    this.datoSeleccionadoParaEditar = null;
+
+    this.idCargo = null;
+    this.editar = false;
+    this.opcionSeleccionada  = '';
+
+
+    this.enviarCargo.reset();
+    console.log(this.datoOriginal);
   }
   
 

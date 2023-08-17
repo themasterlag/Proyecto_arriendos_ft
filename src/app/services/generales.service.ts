@@ -298,7 +298,7 @@ export class GeneralesService {
   }
 
   enviarCargo(datosCargos){
-    return this.servicio.post(this.api + "/cargos", datosCargos);
+    return this.servicio.post(this.api + "cargos", datosCargos);
   }
 
   eliminarCargo(id: number) {

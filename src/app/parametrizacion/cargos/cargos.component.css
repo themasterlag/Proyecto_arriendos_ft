@@ -32,6 +32,11 @@
     font-weight: 900;
 }
 
+.text-white{
+  color: #ffffff !important;
+  font-weight: 900;
+}
+
 .titulo-grande {
     font-size: 1rem; /* Ajusta el tamaño según tus preferencias */
     color:  #000000c5 !important;
@@ -82,23 +87,32 @@
     width: 100%;
     margin-bottom: 10px;
   }
+
   
-  #button-guardar {
-    border-top-left-radius: 50px; /* Bordes planos arriba y abajo */
+  #button-guardar:hover {
+    background-color:rgba(8, 194, 8, 0.37) !important;
+    border-color: green !important;
+  }
+
+  #button-limpiar:hover {
+    background-color:rgba(226, 11, 11, 0.37) !important;
+    border-color: rgb(128, 0, 0) !important;
+  }
+  
+  /*#button-guardar,#button-limpiar{
+    border-top-left-radius: 50px; /* Bordes planos arriba y abajo 
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
-    width: 60px; /* Ajusta el tamaño del botón según tus preferencias */
+    width: 60px; /* Ajusta el tamaño del botón según tus preferencias 
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-    margin-left: 10px; /* Agrega margen para separar del campo de entrada */
+    margin-left: 10px; /* Agrega margen para separar del campo de entrada 
+  }*/
+
+  .example-tooltip-red {
+    background: #b71c1c;
   }
-  
-  #button-guardar:hover {
-    background-color: #138496;
-    border-color: #138496;
-  }
-  
