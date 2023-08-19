@@ -5,13 +5,13 @@
         <div class="card">
           <div class="card-header card-header-info" id="banner">
             <h4 class="card-title">Registrar Cargo</h4>
+            <p class="card-category">Aqui se Puden gastionar los cargos</p>
           </div>
 
           <div class="card-body">
             <mat-accordion>
               <mat-expansion-panel hideToggle> </mat-expansion-panel>
               <mat-expansion-panel>
-
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <h6 class="text-info">Cargos</h6>
@@ -51,11 +51,10 @@
                     
                           <button class="btn btn-danger rounded-pill " (click)="eliminarCargo(element)" 
                                   mat-raised-button
-                                  matTooltip="Eliminar cargo text-white" 
+                                  matTooltip="Eliminar cargo" 
                                   matTooltipPosition="above"
-                                  matTooltipClass="example-tooltip-red"
-                                  aria-label="Button that shows a red tooltip">
-                            <i class="fa fa-trash" aria-label="Button that shows a red tooltip "></i>
+                                  matTooltipClass="tooltipText">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
                           </button>
                         </div>
                       </td>
@@ -96,12 +95,12 @@
                           <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" />
                         </mat-form-field>
                   
-                        <button mat-raised-button type="submit" class="btn btn-outline-success rounded-pill" id="button-guardar">
+                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
                           Guardar
                         </button>
 
                         <button mat-raised-button type="reset"
-                          class="btn btn-outline-danger rounded-pill"
+                          class="btn btn-danger rounded-pill text-center"
                           id="button-limpiar"
                           (click)="limpiarFormulario()">
                           Limpiar

@@ -18,6 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ConceptosComponent } from './conceptos/conceptos.component';
 import { MatSortModule } from '@angular/material/sort';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ProcesosComponent } from './procesos/procesos.component';
 
 
 
@@ -27,7 +28,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     PermisosComponent,
     CargosComponent,
     BancoComponent,
-    ConceptosComponent
+    ConceptosComponent,
+    ProcesosComponent
   ],
   imports: [
     CommonModule,

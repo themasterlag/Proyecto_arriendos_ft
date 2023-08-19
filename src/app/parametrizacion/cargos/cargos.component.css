@@ -16,6 +16,12 @@
     font-size: 21px;
 }
 
+.card-category{
+  color: #1b4f35 !important;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 .card-body{
     border-radius: 25px;
 }
@@ -70,6 +76,11 @@
     align-items: center;
     gap: 10px; /* Espacio entre los botones */
   }
+
+  ::ng-deep .tooltipText{
+    transform: scale(1);
+    font-size: medium;
+}
   /*---------------------------------------------------------------------------------------------------------------*/
   .añadir-cargo-container {
     background-color: #f4f4f4;
