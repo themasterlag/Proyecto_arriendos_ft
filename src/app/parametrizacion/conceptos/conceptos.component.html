@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header card-header-info" id="banner">
-                        <h4 class="card-title">Registrar usuarios</h4>
+                        <h4 class="card-title">Gestión de conceptos</h4>
                     </div>
                     <div class="card-body">
                         <mat-accordion>
@@ -15,88 +15,53 @@
                             >
                               <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                  <h6 class="text-info">Registro de usuarios</h6>
+                                  <h6 class="text-info">Registro de conceptos</h6>
                                 </mat-panel-title>
                               </mat-expansion-panel-header>
-                              <h5><strong>Buscar usuario por su número de documento</strong></h5>
+                              <h5><strong>Buscar concepto por codigo</strong></h5>
                               <div class="row">
                                 <div class="col-3">
                                   <input
                                     class="formdata text-center form-control align-baseline mt-2"
-                                    placeholder="Cedula Tercero"
-                                    type="number"
-                                    max="1000"
-                                    [(ngModel)]="consulta_usuario"
+                                    placeholder="Codigo concepto"
+                                    type="text"
+                                    [(ngModel)]="consulta_concepto"
                                   />
                                 </div>
                                 
                                 <button
                                   class="btn btn-info text-center col-3"
                                   id="button-consultar"
-                                  (click)="traerUsuario()"
+                                  (click)="traerConcepto()"
                                 >
                                   Consultar
                                 </button>
-                                <div class="col d-flex align-items-end d-flex justify-content-end" *ngIf="consultar == true">
-                                  <mat-checkbox class="example-margin" [(ngModel)]="password">Cambiar contraseña</mat-checkbox>
-                                </div>
+                                
                                 
                               </div>
               
                               <hr />
                               <!--formulario del tercero-->
                               <form
-                                #formularioUsuarios="ngForm"
-                                (ngSubmit)="registrarUsuario()"
+                                #formularioConceptos="ngForm"
+                                (ngSubmit)="registrarConcepto()"
                                 [noValidate]="false"
                               >
                                 <div class="row">
-                                  <div class="col-2">
-                                    <mat-form-field class="example-full-width">
-                                      <mat-select
-                                        placeholder="Tipo documento"
-                                        (selectionChange)="validartipopersona($event.value)"
-                                        id="tipo_documento"
-                                        name="tipo_documento"
-                                        ngModel
-                                        required
-                                      >
-                                        <mat-option value="Cedula"> Cedula </mat-option>
-                                        <mat-option value="Cedula_Extrangeria">
-                                          Cedula extranjería
-                                        </mat-option>
-                                        <mat-option value="Nit"> Nit </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
                                   <div class="col-3">
                                     <mat-form-field class="example-full-width">
                                       <input
                                         matInput
-                                        placeholder="Numero De Documento"
+                                        placeholder="Codigo del concepto"
                                         type="number"
-                                        id="numero_documento"
-                                        name="numero_documento"
+                                        name="codigo_concepto"
                                         ngModel
                                         required
                                       />
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-7">
-                                    <div class="row">
-                                      <div class="col-6">
-                                        <mat-form-field class="example-full-width">
-                                          <input
-                                            matInput
-                                            placeholder="Nombres"
-                                            type="text"
-                                            id="Nombre"
-                                            name="Nombre"
-                                            ngModel
-                                            required
-                                          />
-                                        </mat-form-field>
-                                      </div>
+                                  <!-- <div class="col-7">
+                                    <div class="row">                                      
                                       <div class="col-6">
                                         <mat-form-field class="example-full-width">
                                           <input
@@ -111,6 +76,32 @@
                                         </mat-form-field>
                                       </div>
                                     </div>
+                                  </div> -->
+                                  <div class="col-6">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Nombre de concepto"
+                                        type="text"
+                                        name="nombre_concepto"
+                                        ngModel
+                                        required
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-3">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        placeholder="Tipo de operación"
+                                        (selectionChange)="validartipopersona($event.value)"
+                                        name="tipo_documento"
+                                        ngModel
+                                        required
+                                      >
+                                        <mat-option value="Débito"> Débito </mat-option>
+                                        <mat-option value="Crédito">Crédito</mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
                                   </div>
                                 </div>
               
@@ -118,26 +109,52 @@
                                   
                                 </div> -->
                                  <div class="row">
+                                  <div class="col-3">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Cuenta contrable"
+                                        type="number"
+                                        name="cuenta_contable"
+                                        ngModel
+                                        required
+                                      />
+                                    </mat-form-field>
+                                  </div>
                                   <div class="col-4">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
-                                        placeholder="Procesos"
-                                        id="procesos"
-                                        name="procesos"
+                                        placeholder="Tipo de concepto"
+                                        name="tipo_concepto"
+                                        (selectionChange)="validarTipoConcepto()"
                                         ngModel
                                         required
-                                        (selectionChange)="filtrarProcesos($event.value)"
                                       >
                                         <mat-option
-                                          [value]="p.id_proceso"
-                                          *ngFor="let p of procesos"
+                                          [value]="p.id_tipo_concepto"
+                                          *ngFor="let p of tipo_conceptos"
                                         >
-                                          {{ p.nombre_proceso }}
+                                          {{ p.tipo_concepto }}
                                         </mat-option>
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-4">
+                                  <div class="col-3" *ngIf="tipo">
+                                    <mat-form-field class="example-full-width">
+                                      <input
+                                        matInput
+                                        placeholder="Valor porcentaje"
+                                        type="number"
+                                        name="valor_porcentaje"
+                                        [(ngModel)]="consultaPorcentaje"
+                                      />
+                                    </mat-form-field>
+                                  </div>
+                                  <div class="col-2 d-flex align-items-center d-flex justify-content-center">
+                                  <mat-checkbox class="example-margin" [(ngModel)]="incremento" name="incremento">Incremento</mat-checkbox>
+                                  </div>
+                                 </div>
+                                  <!-- <div class="col-4">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Sub-procesos"
@@ -157,8 +174,8 @@
                                         </mat-option>
                                       </mat-select>
                                     </mat-form-field>
-                                  </div>
-                                  <div class="col-4">
+                                  </div> -->
+                                  <!-- <div class="col-4">
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Cargo"
@@ -196,7 +213,7 @@
                                         </mat-option>
                                       </mat-select>
                                     </mat-form-field>
-                                  </div>
+                                  </div> -->
                                   <!-- <div class="col-3">
                                     <mat-form-field
                                       class="example-full-width"
@@ -208,21 +225,8 @@
                                         <mat-datepicker #pickerInicio></mat-datepicker>
                                     </mat-form-field>
                                   </div> -->
-                                  <div class="col-9">
+                                  <!-- <div class="col-9">
                                     <div class="row">
-                                      <div class="col-6">
-                                        <mat-form-field class="example-full-width">
-                                          <input
-                                            matInput
-                                            placeholder="Correo Electronico"
-                                            type="text"
-                                            id="correo"
-                                            name="correo"
-                                            ngModel
-                                            required
-                                          />
-                                        </mat-form-field>
-                                      </div>
                                       <div class="col-6" *ngIf="password == true">
                                         <mat-form-field class="example-full-width">
                                           <input
@@ -238,7 +242,7 @@
                                       </div>  
                                     </div>                                 
                                   </div>
-                                </div>
+                                </div> -->
                                 <button
                                   mat-raised-button
                                   type="submit"

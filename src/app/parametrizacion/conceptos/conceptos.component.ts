@@ -26,36 +26,130 @@ interface Usuarios {
 
 export class ConceptosComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public servicio: GeneralesService,
+  ) { }
 
   panelOpenState = false;
   consulta_usuario: any = null;
-  @ViewChild("formularioUsuarios") formularioUsuarios: NgForm;
+  @ViewChild("formularioConceptos") formularioConceptos: NgForm;
   tipoUsuario: boolean = null;
-  procesos: any;
-  SubProcesos: any;
-  subProcesosFilter: any = [];
-  filtermuni: boolean = false;
   Cargos: any;
   idSubProcesos: any;
   consultar: boolean = false;
-  password: boolean = true;
-  usuarioInfo: any;
+  consulta_concepto: any;
+  incremento: boolean = false;
   tabla_usuarios: any;
+  tipo_conceptos: any;
+  tipo: boolean = false;
+  valor_porcentaje: any;
+  consultaPorcentaje: any;
   displayedColumns: string[] = ["id_cedula", "nombre_usuario", "correo_usuario", "Acciones"];
   dataSourceUsuarios: MatTableDataSource<Usuarios> =
   new MatTableDataSource<Usuarios>();
   @ViewChild("paginatorUsuarios") paginatorUsuarios: MatPaginator
 
   ngOnInit(): void {
+    this.traerTipoConceptos();
   }
 
-  traerUsuario(){
-
+  traerConcepto(){
+    this.consultar = true;
+    if(this.consulta_concepto != null){
+      console.log(this.consulta_concepto);
+      this.servicio.traerConceptoCodigo(this.consulta_concepto).subscribe(
+        (res:any) => {
+          console.log(res);
+          this.llenarFormulario(res);
+        },
+        (err:any) => {
+          // console.log(err);
+          Swal.fire("Concepto no encontrado", err.error.message, "error");
+        }
+      )
+    }else{
+      Swal.fire("No se aceptan codigos vacios","","info");
+    }    
   }
 
-  registrarUsuario(){
+  llenarFormulario(concepto){
+    const tiposPermitidos = [1, 2];
+    
+    this.formularioConceptos.controls.nombre_concepto.setValue(concepto.nombre_concepto);
+    this.formularioConceptos.controls.codigo_concepto.setValue(concepto.codigo_concepto);
+    this.formularioConceptos.controls.tipo_documento.setValue(concepto.operacion);
+    this.formularioConceptos.controls.cuenta_contable.setValue(concepto.cuenta_contable);
+    this.formularioConceptos.controls.tipo_concepto.setValue(concepto.tipo_concepto);
 
+    if(tiposPermitidos.includes(concepto.tipo_concepto)){
+      this.tipo = true;
+    }else{
+      this.tipo = false;
+    }
+
+    if(concepto.incremento == 1){
+      this.incremento = true;
+    }
+
+    if(concepto.porcentaje_operacion != null && this.tipo == true){
+      // this.formularioConceptos.controls.valor_porcentaje.setValue(concepto.porcentaje_operacion);
+      this.consultaPorcentaje = concepto.porcentaje_operacion;
+      console.log(this.consultaPorcentaje)
+    }
+  }
+
+  traerTipoConceptos(){
+    this.servicio.traerTipoConcepto().subscribe(
+      (res:any) => {
+        console.log(res);
+        this.tipo_conceptos = res;
+      })
+  }
+
+  validarTipoConcepto(){
+    const tiposPermitidos = [1, 2]
+    if (tiposPermitidos.includes(this.formularioConceptos.controls.tipo_concepto.value)) {
+      this.tipo = true;
+    }else{
+      this.tipo = false;
+      this.valor_porcentaje = null;
+    }
+  }  
+
+  registrarConcepto(){
+
+    if(this.tipo == true){
+      this.valor_porcentaje = this.formularioConceptos.controls.valor_porcentaje.value;
+    }
+
+    let formConceptos = {
+      codigo_concepto: this.formularioConceptos.controls.codigo_concepto.value,
+      nombre_concepto: this.formularioConceptos.controls.nombre_concepto.value,
+      cuenta_contable: this.formularioConceptos.controls.cuenta_contable.value,
+      operacion: this.formularioConceptos.controls.tipo_documento.value,
+      tipo_concepto: this.formularioConceptos.controls.tipo_concepto.value,
+      porcentaje_operacion: this.valor_porcentaje,
+      incremento: this.incremento
+    }
+    console.log(formConceptos);
+    Swal.fire({
+          title: "Seguro de guardar los cambios?",
+          showDenyButton: true,
+          confirmButtonText: "Guardar",
+          denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if(result.isConfirmed){
+        this.servicio.crearConceptos(formConceptos).subscribe(
+          (res:any) => {
+            console.log(res);
+          },
+          (err:any) => {
+            Swal.fire("Error al crear el concepto", err, "error");
+          }
+        )
+      }
+    })
+    
   }
 
   validartipopersona(tipo){
@@ -75,6 +169,7 @@ export class ConceptosComponent implements OnInit {
   }
 
   limpiarFormulario(){
-
+    this.consulta_concepto = null;
+    this.tipo = false;
   }
 }

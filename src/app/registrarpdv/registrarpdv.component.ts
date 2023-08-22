@@ -342,7 +342,6 @@ export class RegistrarpdvComponent implements OnInit {
     this.actualizar = true;
     let id = this.consulta_pdv;
 
-
     this.buscarPuntosDeVenta();
 
     this.servicio.traerContrato(id).subscribe(
@@ -1067,7 +1066,8 @@ export class RegistrarpdvComponent implements OnInit {
     }
     else if (tipo_id == 1 || tipo_id == 2) {
       let numero_decimal = this.formulariocontrato.get('valor_canon').value * valor;
-      this.operacion = parseFloat(numero_decimal.toFixed(2));
+      // this.operacion = parseFloat(numero_decimal.toFixed(2));
+      this.operacion = Math.round(numero_decimal);
     }
     else{
       this.operacion = this.formulariocontrato.get('valor_canon').value;

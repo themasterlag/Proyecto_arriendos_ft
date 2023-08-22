@@ -320,10 +320,21 @@ export class GeneralesService {
   }
 
 
-  // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS
+  // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS, CONCEPTOS
   traerConceptosAsociados(){
     return this.servicio.get(this.api + "/conceptos/asociados");
   }
-   
- 
+
+  traerTipoConcepto(){
+    return this.servicio.get(this.api + "/tipo-concepto/");
+  }
+
+  crearConceptos(data){
+    return this.servicio.post(this.api + "/conceptos", data);
+  }
+
+  traerConceptoCodigo(id){
+    return this.servicio.get(this.api + "/conceptos/codigo-concepto/"+ id);
+  }
+
 }
