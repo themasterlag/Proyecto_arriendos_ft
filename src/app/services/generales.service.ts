@@ -115,10 +115,24 @@ export class GeneralesService {
     return this.servicio.post(this.api + "propietariopunto", datos)
   }
 
-  traerbancos() {
-    return this.servicio.get(this.api + "entidadbancaria")
+  
+  traerBancos(){
+    return this.servicio.get(this.api + "entidadbancaria");
+  }
+   
+  actualizarBanco(datos: any) {
+    return this.servicio.patch(this.api + "entidadbancaria/update", datos)
+  }
+  
+  enviarBanco(banco){
+    return this.servicio.post(this.api + "entidadbancaria/registrar", banco);
   }
 
+  modificarBanco(banco){
+    return this.servicio.patch(this.api + "entidadbancaria/modificar", banco)
+  }
+  
+  
   traertipocuentas() {
     return this.servicio.get(this.api + "tipocuenta")
   }
@@ -310,5 +324,6 @@ export class GeneralesService {
   traerConceptosAsociados(){
     return this.servicio.get(this.api + "/conceptos/asociados");
   }
-
+   
+ 
 }

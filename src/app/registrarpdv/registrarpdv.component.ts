@@ -172,7 +172,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerzonas();
     this.traermicrozonas();
     this.traerclientes();
-    this.traerbancos();
+   
     this.traertipocuentas();
     this.traerpdv();
     // this.traerserviciospublicos();
@@ -474,16 +474,7 @@ export class RegistrarpdvComponent implements OnInit {
     
   }
 
-  traerbancos() {
-    this.servicio.traerbancos().subscribe(
-      (res: any) => {
-        this.bancos = res;
-      },
-      (err) => {
-        //console.log(err.message);
-      }
-    );
-  }
+ 
 
   traertipocuentas() {
     this.servicio.traertipocuentas().subscribe(
