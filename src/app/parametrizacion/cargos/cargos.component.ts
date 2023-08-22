@@ -5,6 +5,8 @@ import { FormGroup, NgForm } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 
 
 interface Cargos {
@@ -22,6 +24,7 @@ interface Cargos {
 })
 export class CargosComponent implements OnInit {
 
+  panelOpenState = true;
   datoSeleccionadoParaEditar: string;
   datoOriginal: string = '';
   panelLista:boolean;
@@ -82,17 +85,33 @@ export class CargosComponent implements OnInit {
 
 
   eliminarCargo(cargo: any){
-    this.servicio.eliminarCargo(cargo.id_cargo).subscribe(
-      (res:any)=>{
-        this.ejecutarConsultas();
-        this.traerCargos();
-        Swal.fire("Se elimino con exito", "", "success");
-      },
-      (err:any)=>{
-        Swal.fire("No se pudo eliminar el credito", "", "error");
+    if (this.servicio.eliminarCargo(cargo.id_cargo)) {
+      const formCargos = {
+        id_cargo: this.idCargo,
+      };
+        Swal.fire({
+          title: "Seguro que quieres eliminar este cargo?",
+          showDenyButton: true,
+          confirmButtonText: "Confirmar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.eliminarCargo(cargo.id_cargo).subscribe(
+              (res: any) => {
+                Swal.fire("Cargo eliminado", "", "success");
+                this.ejecutarConsultas();
+                this.traerCargos();
+              },
+              (error) => {
+               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
       }
-    );
-  }
+    }
+
+  
 
 
 
@@ -125,22 +144,6 @@ export class CargosComponent implements OnInit {
     this.dataSourceCargo.sort = this.sort;
   }
 
-  consultarCargo(){
-
-    if(this.consulta_cargos > 2000000000 ){
-      Swal.fire('Cedula invalida','','info');
-    } else {
-      this.servicio.traerCargo(this.consulta_cargos).subscribe(
-        (res: any) => {
-          this.consultar = true;
-          this.llenarFormulario(res);
-        },
-        (error) => {
-          Swal.fire('Error al consultar', error.error.message, 'warning');
-        }
-      )
-    }
-  }
 
   llenarFormulario(infoCargos){
     this.enviarCargo.controls.cargo.setValue(infoCargos.cargo);
