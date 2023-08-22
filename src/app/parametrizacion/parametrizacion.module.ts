@@ -17,6 +17,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConceptosComponent } from './conceptos/conceptos.component';
 import { MatSortModule } from '@angular/material/sort';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { ProcesosComponent } from './procesos/procesos.component';
+
 
 
 @NgModule({
@@ -25,7 +28,8 @@ import { MatSortModule } from '@angular/material/sort';
     PermisosComponent,
     CargosComponent,
     BancoComponent,
-    ConceptosComponent
+    ConceptosComponent,
+    ProcesosComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +44,8 @@ import { MatSortModule } from '@angular/material/sort';
     MatTableModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatSortModule
+    MatSortModule,
+    MatTooltipModule
   ],
 })
 export class ParametrizacionModule { }

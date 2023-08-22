@@ -424,7 +424,7 @@ export class RegistrarpdvComponent implements OnInit {
         this.formulariocontrato.value.valor_canon = this.formulariocontrato.get('valor_canon').value
         this.canonGlobal = this.formulariocontrato.get('valor_canon').value
         
-        if (res.contrato.autdetalle.metodo_pago == 1) {
+        if (res.contrato.autdetalle.metodo_pago == 2) {
           this.pago_transferencia = false;
           this.pago_efectivo = true;
         } else

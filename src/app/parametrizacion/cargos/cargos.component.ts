@@ -1,9 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import Swal from "sweetalert2";
 import { FormGroup, NgForm } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
+import {MatSort} from '@angular/material/sort';
+import {MatExpansionModule} from '@angular/material/expansion';
+
+
 
 interface Cargos {
   id_cargo:number;
@@ -14,11 +18,13 @@ interface Cargos {
 @Component({
   selector: 'app-cargos',
   templateUrl: './cargos.component.html',
-  styleUrls: ['./cargos.component.css']
+  styleUrls: ['./cargos.component.css'],
+  encapsulation: ViewEncapsulation.None,
   
 })
 export class CargosComponent implements OnInit {
 
+  panelOpenState = true;
   datoSeleccionadoParaEditar: string;
   datoOriginal: string = '';
   panelLista:boolean;
@@ -28,7 +34,6 @@ export class CargosComponent implements OnInit {
   opcionSeleccionada: string = '';
   Cargos: any;
   @ViewChild("registrarCargo") enviarCargo: NgForm;
-  @ViewChild("formularioEditarCargo") formularioEditarCargo:NgForm ;
   consulta_cargos: any = null;
   consultar: boolean = false;
   idCargo: number ;
@@ -38,6 +43,7 @@ export class CargosComponent implements OnInit {
   editar: boolean = false;
   displayedColumns: string[] = ["id_cargo", "cargo","acciones"];
   @ViewChild("paginatorCargo") paginatorCargos: MatPaginator
+  @ViewChild(MatSort) sort: MatSort;
 
   
   constructor(
@@ -79,17 +85,33 @@ export class CargosComponent implements OnInit {
 
 
   eliminarCargo(cargo: any){
-    this.servicio.eliminarCargo(cargo.id_cargo).subscribe(
-      (res:any)=>{
-        this.ejecutarConsultas();
-        this.traerCargos();
-        Swal.fire("Se elimino con exito", "", "success");
-      },
-      (err:any)=>{
-        Swal.fire("No se pudo eliminar el credito", "", "error");
+    if (this.servicio.eliminarCargo(cargo.id_cargo)) {
+      const formCargos = {
+        id_cargo: this.idCargo,
+      };
+        Swal.fire({
+          title: "Seguro que quieres eliminar este cargo?",
+          showDenyButton: true,
+          confirmButtonText: "Confirmar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.eliminarCargo(cargo.id_cargo).subscribe(
+              (res: any) => {
+                Swal.fire("Cargo eliminado", "", "success");
+                this.ejecutarConsultas();
+                this.traerCargos();
+              },
+              (error) => {
+               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
       }
-    );
-  }
+    }
+
+  
 
 
 
@@ -118,24 +140,10 @@ export class CargosComponent implements OnInit {
 
     this.dataSourceCargo.data = this.tabla_cargo;
     this.dataSourceCargo.paginator = this.paginatorCargos;
+    console.log(this.sort);
+    this.dataSourceCargo.sort = this.sort;
   }
 
-  consultarCargo(){
-
-    if(this.consulta_cargos > 2000000000 ){
-      Swal.fire('Cedula invalida','','info');
-    } else {
-      this.servicio.traerCargo(this.consulta_cargos).subscribe(
-        (res: any) => {
-          this.consultar = true;
-          this.llenarFormulario(res);
-        },
-        (error) => {
-          Swal.fire('Error al consultar', error.error.message, 'warning');
-        }
-      )
-    }
-  }
 
   llenarFormulario(infoCargos){
     this.enviarCargo.controls.cargo.setValue(infoCargos.cargo);
@@ -187,6 +195,20 @@ export class CargosComponent implements OnInit {
         });
       }
     }
+  }
+
+  limpiarFormulario(){
+    this.consulta_cargos = null;
+    this.consultar = false;
+    this.datoSeleccionadoParaEditar = null;
+
+    this.idCargo = null;
+    this.editar = false;
+    this.opcionSeleccionada  = '';
+
+
+    this.enviarCargo.reset();
+    console.log(this.datoOriginal);
   }
   
 

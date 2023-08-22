@@ -20,7 +20,9 @@ let nav = [
   { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:6, active:false, children:[]},
   { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:6, active:false, children:[]},
   { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:6, active:false, children:[]}, 
-  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:6, active:false, children:[]}
+  { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:6, active:false, children:[]},
+  { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'self_improvement', class:'', id:6, active:false, children:[]},
+
 ];
 
 
