@@ -341,4 +341,8 @@ export class GeneralesService {
     return this.servicio.get(this.api + "/contrato/proximosrenovar");
   }
 
+  actualizarConcepto(datos){
+    return this.servicio.patch(this.api + "/conceptos/update", datos);
+  }
+
 }

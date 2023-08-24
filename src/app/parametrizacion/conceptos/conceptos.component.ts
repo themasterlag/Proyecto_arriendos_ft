@@ -9,12 +9,14 @@ import { MatPaginator } from "@angular/material/paginator"
 import { error } from 'console';
 
 
-interface Usuarios {
-  id_usuario:number;
-  cedula: number;
-  nombre_usuario: string;
-  correo_usuario: string;
-  estado: number
+interface Conceptos {
+  // id_usuario:number;
+  // cedula: number;
+  // nombre_usuario: string;
+  // correo_usuario: string;
+  // estado: number
+  codigo_concepto: number;
+  nombre_concepto: string;
 }
 
 @Component({
@@ -39,18 +41,24 @@ export class ConceptosComponent implements OnInit {
   consultar: boolean = false;
   consulta_concepto: any;
   incremento: boolean = false;
-  tabla_usuarios: any;
+  tabla_Conceptos: any;
   tipo_conceptos: any;
   tipo: boolean = false;
-  valor_porcentaje: any;
+  valor_porcentaje: any = null;
   consultaPorcentaje: any;
-  displayedColumns: string[] = ["id_cedula", "nombre_usuario", "correo_usuario", "Acciones"];
-  dataSourceUsuarios: MatTableDataSource<Usuarios> =
-  new MatTableDataSource<Usuarios>();
-  @ViewChild("paginatorUsuarios") paginatorUsuarios: MatPaginator
+  infConcepto: any;
+  displayedColumns: string[] = ["codigo_concepto", "nombre_concepto",];
+  dataSourceConceptos: MatTableDataSource<Conceptos> =
+  new MatTableDataSource<Conceptos>();
+  @ViewChild("paginatorConceptos") paginatorConceptos: MatPaginator
 
   ngOnInit(): void {
     this.traerTipoConceptos();
+    // this.traerTodosConceptos();
+  }
+
+  traerTodosConceptos(){
+    
   }
 
   traerConcepto(){
@@ -60,6 +68,7 @@ export class ConceptosComponent implements OnInit {
       this.servicio.traerConceptoCodigo(this.consulta_concepto).subscribe(
         (res:any) => {
           console.log(res);
+          this.infConcepto = res;
           this.llenarFormulario(res);
         },
         (err:any) => {
@@ -94,7 +103,7 @@ export class ConceptosComponent implements OnInit {
     if(concepto.porcentaje_operacion != null && this.tipo == true){
       // this.formularioConceptos.controls.valor_porcentaje.setValue(concepto.porcentaje_operacion);
       this.consultaPorcentaje = concepto.porcentaje_operacion;
-      console.log(this.consultaPorcentaje)
+      // console.log(this.consultaPorcentaje)
     }
   }
 
@@ -118,8 +127,19 @@ export class ConceptosComponent implements OnInit {
 
   registrarConcepto(){
 
+    let incremento = 0;
+
+    // if(this.consultar == true){
+    //   idConcepto = this.infConcepto.id_concepto
+    // }
+
     if(this.tipo == true){
-      this.valor_porcentaje = this.formularioConceptos.controls.valor_porcentaje.value;
+      const cleanedValue = this.formularioConceptos.controls.valor_porcentaje.value;
+      // this.consultaPorcentaje = cleanedValue;
+      this.valor_porcentaje = parseFloat(cleanedValue);
+    }
+    if(this.incremento == true){
+      incremento = 1;
     }
 
     let formConceptos = {
@@ -129,7 +149,7 @@ export class ConceptosComponent implements OnInit {
       operacion: this.formularioConceptos.controls.tipo_documento.value,
       tipo_concepto: this.formularioConceptos.controls.tipo_concepto.value,
       porcentaje_operacion: this.valor_porcentaje,
-      incremento: this.incremento
+      incremento: incremento,
     }
     console.log(formConceptos);
     Swal.fire({
@@ -139,14 +159,30 @@ export class ConceptosComponent implements OnInit {
           denyButtonText: `Cancelar`,
     }).then((result) => {
       if(result.isConfirmed){
-        this.servicio.crearConceptos(formConceptos).subscribe(
-          (res:any) => {
-            console.log(res);
-          },
-          (err:any) => {
-            Swal.fire("Error al crear el concepto", err, "error");
-          }
-        )
+        if(this.consultar == true){
+          console.log(formConceptos);
+          this.servicio.actualizarConcepto(formConceptos).subscribe(
+            (res:any) => {
+              Swal.fire("Concepto actualizado con éxito","","success");
+            },
+            (err:any) => {
+              Swal.fire("Error al crear el concepto", err.error.message, "error");
+            }
+          )
+          this.limpiarFormulario(); 
+        }else{
+          console.log(formConceptos)
+          this.servicio.crearConceptos(formConceptos).subscribe(
+            (res:any) => {
+              console.log(res);
+              Swal.fire("Concepto guardado con éxito", "", "success");
+            },
+            (err:any) => {
+              Swal.fire("Error al crear el concepto", err.error.message, "error");
+            }
+          )
+          this.limpiarFormulario(); 
+        }       
       }
     })
     
@@ -160,16 +196,36 @@ export class ConceptosComponent implements OnInit {
 
   }
 
-  tablaUsuarios(){
+  tablaConceptos(){
+    this.servicio.traerConceptos().subscribe(
+      (res:any) => {
+        console.log(res);
+        this.tabla_Conceptos = res.map((concepto) => {
+          return {
+            // id_usuario: concepto.id_usuario,
+            codigo: concepto.codigo_concepto,
+            nombre_concepto: concepto.nombre_concepto,
+            // correo_usuario: concepto.email,
+            // estado: concepto.estado,
+          }
+        })
 
+        // this.sort.sort({id:'cedula', start:'asc', disableClear: true});
+
+        this.dataSourceConceptos.data = this.tabla_Conceptos;
+        this.dataSourceConceptos.paginator = this.paginatorConceptos;
+      }
+    )
   }
 
-  applyFilter(filtroTabla){
-
+  applyFilter(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceConceptos.filter = filterValue.trim().toLowerCase();
   }
 
   limpiarFormulario(){
     this.consulta_concepto = null;
+    this.consultar = null;
     this.tipo = false;
   }
 }
