@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import Swal from "sweetalert2";
 import { FormGroup, NgForm } from "@angular/forms";
@@ -18,10 +18,9 @@ interface Cargos {
 @Component({
   selector: 'app-cargos',
   templateUrl: './cargos.component.html',
-  styleUrls: ['./cargos.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  
+  styleUrls: ['./cargos.component.css'], 
 })
+
 export class CargosComponent implements OnInit {
 
   panelOpenState = true;
