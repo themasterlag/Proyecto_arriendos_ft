@@ -336,5 +336,9 @@ export class GeneralesService {
   traerConceptoCodigo(id){
     return this.servicio.get(this.api + "/conceptos/codigo-concepto/"+ id);
   }
+  
+  traerContratosRenovar(){
+    return this.servicio.get(this.api + "/contrato/proximosrenovar");
+  }
 
 }

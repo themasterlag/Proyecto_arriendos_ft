@@ -1,0 +1,61 @@
+.card {
+    background: #e8e8e8;
+    font-size: 18px;
+    border-radius: 25px;
+}
+
+#banner {
+    border-radius: 25px;
+    background: #ffe203;
+}
+
+.card-category {
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.card-title {
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 21px;
+}
+
+.card-body {
+    border-radius: 25px;
+}
+
+#mat-expansion-panel-header-1 {
+    border-radius: 25px;
+}
+
+.mat-accordion .mat-expansion-panel {
+    border-radius: 25px;
+    margin-bottom: 1%;
+}
+
+.text-info {
+    color: #359b68 !important;
+    font-weight: 900;
+}
+
+.text-black {
+    color: #000000;
+}
+
+::ng-deep .tooltipText {
+    transform: scale(1);
+    font-size: medium;
+}
+
+.alertWarning {
+    border-radius: 25px;
+    background: #ffe203;
+}
+
+.hrVertical {
+    /* height:100vh; */
+    width: 0.1%;
+    border-width: 0;
+    background-color: #939393;
+}

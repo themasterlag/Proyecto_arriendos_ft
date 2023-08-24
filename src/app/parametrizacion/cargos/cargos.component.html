@@ -1,128 +1,120 @@
 <div class="main-content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header card-header-info" id="banner">
-            <h4 class="card-title">Registrar Cargo</h4>
-            <p class="card-category">Aqui se Puden gastionar los cargos</p>
-          </div>
-
-          <div class="card-body">
-            <mat-accordion>
-              <mat-expansion-panel hideToggle> </mat-expansion-panel>
-              <mat-expansion-panel    
-              (opened)="panelOpenState = true"
-              (closed)="panelOpenState = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <h6 class="text-info">Cargos</h6>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                
-                <div class="row ">
-                  <!-- ----------------------------------------------------------------------------------------------->
-                  <!-- Pestaña de cargos -->
-
-                  <div class="col row align-items-center">
-                  <div class="table-responsive">
-                  <table mat-table [dataSource]="dataSourceCargo" class="thead-dark">
-                
-                    <ng-container matColumnDef="id_cargo">
-                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> * </th>
-                      <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_cargo}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="cargo">
-                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Cargos </th>
-                      <td mat-cell class="text-center" *matCellDef="let element"> {{element.cargo}} </td>
-                    </ng-container>    
-
-                    <ng-container matColumnDef="acciones">
-                      <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Acciones</th>
-                      <td mat-cell *matCellDef="let element" class="text-center">
-                        <div class="acciones-container"> <!-- Agrega un contenedor para los botones -->
-                          <button class="btn btn-info rounded-pill" (click)="editarCargo(element)" 
-                                  matTooltip="Editar cargo" 
-                                  matTooltipPosition="above"
-                                  matTooltipClass="tooltipText">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                          </button>
-                    
-                          <button class="btn btn-danger rounded-pill " (click)="eliminarCargo(element)" 
-                                  mat-raised-button
-                                  matTooltip="Eliminar cargo" 
-                                  matTooltipPosition="above"
-                                  matTooltipClass="tooltipText">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </ng-container>     
-                
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                
-
-                  <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" colspan="6">
-                    No hay información</td>
-                  </tr>
-
-                </table>
-                <mat-paginator 
-                [hidden]="dataSourceCargo.data.length < 1"
-                class="mat-elevation-z8"
-                #paginatorCargo
-                [pageSizeOptions]="[5, 10, 20]"
-                showFirstLastButtons
-              >
-                </mat-paginator>
-                  </div>
-                </div>
-
-                  <!-- ---------------------------------------------------------------------------------------------------->
-
-                  <!-- Añadir Cargo y eliminar -->
-
-
-                  <div class="col-4">
-                    <div class="añadir-cargo-container">
-                      <h5 class="titulo-añadir"><strong>Añadir Cargo</strong></h5>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header card-header-info" id="banner">
+              <h4 class="card-title">Registrar Cargo</h4>
+              <p class="card-category">Aqui se Puden gastionar los cargos</p>
+            </div>
+  
+              <div class="card-body">
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="panelOpenState" (opened)="panelOpenState = true"
+                        (closed)="panelOpenState = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <h6 class="text-info">Panel de permisos</h6>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
                   
-                      <form #registrarCargo="ngForm" (ngSubmit)="registrarCargos()" [noValidate]="false">
-                        <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" />
-                        </mat-form-field>
+                  <div class="row ">
+                    <!-- ----------------------------------------------------------------------------------------------->
+                    <!-- Pestaña de cargos -->
+  
+                    <div class="col row align-items-center">
+                    <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSourceCargo" class="thead-dark">
                   
-                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
-                          Guardar
-                        </button>
-
-                        <button mat-raised-button type="reset"
-                          class="btn btn-danger rounded-pill text-center"
-                          id="button-limpiar"
-                          (click)="limpiarFormulario()">
-                          Limpiar
-                        </button>
-
-                      </form>
+                      <ng-container matColumnDef="id_cargo">
+                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> * </th>
+                        <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_cargo}} </td>
+                      </ng-container>
+  
+                      <ng-container matColumnDef="cargo">
+                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Cargos </th>
+                        <td mat-cell class="text-center" *matCellDef="let element"> {{element.cargo}} </td>
+                      </ng-container>    
+  
+                      <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Acciones</th>
+                        <td mat-cell *matCellDef="let element" class="text-center">
+                          <div class="acciones-container"> <!-- Agrega un contenedor para los botones -->
+                            <button class="btn btn-info rounded-pill" (click)="editarCargo(element)" 
+                                    matTooltip="Editar cargo" 
+                                    matTooltipPosition="above"
+                                    matTooltipClass="tooltipText">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                      
+                            <button class="btn btn-danger rounded-pill " (click)="eliminarCargo(element)" 
+                                    mat-raised-button
+                                    matTooltip="Eliminar cargo" 
+                                    matTooltipPosition="above"
+                                    matTooltipClass="tooltipText">
+                              <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </ng-container>     
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  
+  
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="6">
+                      No hay información</td>
+                    </tr>
+  
+                  </table>
+                  <mat-paginator 
+                  [hidden]="dataSourceCargo.data.length < 1"
+                  class="mat-elevation-z8"
+                  #paginatorCargo
+                  [pageSizeOptions]="[5, 10, 20]"
+                  showFirstLastButtons
+                >
+                  </mat-paginator>
                     </div>
                   </div>
+  
+                    <!-- ---------------------------------------------------------------------------------------------------->
+  
+                    <!-- Añadir Cargo y eliminar -->
+  
+  
+                    <div class="col-4">
+                      <div class="añadir-cargo-container">
+                        <h5 class="titulo-añadir"><strong>Añadir Cargo</strong></h5>
+                    
+                        <form #registrarCargo="ngForm" (ngSubmit)="registrarCargos()" [noValidate]="false">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" />
+                          </mat-form-field>
+                    
+                          <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                            Guardar
+                          </button>
+  
+                          <button mat-raised-button type="reset"
+                            class="btn btn-danger rounded-pill text-center"
+                            id="button-limpiar"
+                            (click)="limpiarFormulario()">
+                            Limpiar
+                          </button>
+  
+                        </form>
+                      </div>
+                    </div>                      
+                  </div>
                   
-
-          
-                </div>
-
-              </mat-expansion-panel>
-              
-            </mat-accordion>
-
-
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
+  

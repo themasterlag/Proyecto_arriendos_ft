@@ -1,4 +1,4 @@
- .card{
+.card{
     background: #e8e8e8; 
     font-size: 18px; 
     border-radius: 25px;
@@ -105,4 +105,3 @@
   .mat-accordion .mat-expansion-panel:last-of-type{
     border-radius: 25px;
 }
-

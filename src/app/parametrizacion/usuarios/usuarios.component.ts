@@ -6,7 +6,6 @@ import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
 
-
 interface Usuarios {
   id_usuario:number;
   cedula: string;
