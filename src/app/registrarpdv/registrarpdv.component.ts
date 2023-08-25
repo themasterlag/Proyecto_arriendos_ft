@@ -62,7 +62,7 @@ export class RegistrarpdvComponent implements OnInit {
   autorizadosTabla: any = [];
   conceptosTabla: any = [];
   serviciostabla: any = [];
-  bancos: any;a_ter
+  bancos: any;
   tipocuentas: any;
   pdv: any = [];
   serviciospublicos: any = [];
@@ -182,6 +182,7 @@ export class RegistrarpdvComponent implements OnInit {
     // Loading.remove();
     this.traerConceptoMunicpios();
     this.tablaContratos();
+    this.traerBancos();
   }
 
   traerConceptoMunicpios(){
@@ -258,7 +259,7 @@ export class RegistrarpdvComponent implements OnInit {
         
       },
       (err) => {
-
+      Swal.fire("Error al traer el tercero", err.error.message, 'error')
       }
     );
     
@@ -273,7 +274,7 @@ export class RegistrarpdvComponent implements OnInit {
       (res:any) => {
 
         this.pdv_busqueda = res;
-        console.log('Hola', this.pdv_busqueda);  
+        // console.log('Hola', this.pdv_busqueda);  
         this.propietariostabla = []
         // console.log(this.tipopunto);
         
@@ -290,7 +291,7 @@ export class RegistrarpdvComponent implements OnInit {
           this.addpropietario(element.id_propietario);
         }
         
-        console.log(this.propietariostabla);
+        // console.log(this.propietariostabla);
 
         
         this.formulariopdv.patchValue({
@@ -473,7 +474,16 @@ export class RegistrarpdvComponent implements OnInit {
     
   }
 
- 
+  traerBancos() {
+    this.servicio.traerBancos().subscribe(
+      (res: any) => {
+        this.bancos = res;
+      },
+      (err) => {
+        //console.log(err.message);
+      }
+    );
+  }
 
   traertipocuentas() {
     this.servicio.traertipocuentas().subscribe(
