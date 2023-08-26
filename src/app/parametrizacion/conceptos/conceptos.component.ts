@@ -37,7 +37,7 @@ export class ConceptosComponent implements OnInit {
   @ViewChild("formularioConceptos") formularioConceptos: NgForm;
   tipoUsuario: boolean = null;
   Cargos: any;
-  idSubProcesos: any;
+  conceptos: any;
   consultar: boolean = false;
   consulta_concepto: any;
   incremento: boolean = false;
@@ -47,6 +47,8 @@ export class ConceptosComponent implements OnInit {
   valor_porcentaje: any = null;
   consultaPorcentaje: any;
   infConcepto: any;
+  tabla_asociacion: any = [];
+  asociacion: any;
   displayedColumns: string[] = ["codigo_concepto", "nombre_concepto",];
   dataSourceConceptos: MatTableDataSource<Conceptos> =
   new MatTableDataSource<Conceptos>();
@@ -54,11 +56,19 @@ export class ConceptosComponent implements OnInit {
 
   ngOnInit(): void {
     this.traerTipoConceptos();
-    // this.traerTodosConceptos();
+    this.traerTodosConceptos();
   }
 
   traerTodosConceptos(){
-    
+    this.servicio.traerConceptos().subscribe(
+      (res:any) => {
+        console.log(res);
+        this.conceptos = res;
+      },
+      (error:any) => {
+        Swal.fire('Error al traer los conceptos','','error')
+      }
+    )  
   }
 
   traerConcepto(){
@@ -166,7 +176,7 @@ export class ConceptosComponent implements OnInit {
               Swal.fire("Concepto actualizado con éxito","","success");
             },
             (err:any) => {
-              Swal.fire("Error al crear el concepto", err.error.message, "error");
+              Swal.fire("Error al actualizar el concepto", err.error.message, "error");
             }
           )
           this.limpiarFormulario(); 
@@ -188,13 +198,73 @@ export class ConceptosComponent implements OnInit {
     
   }
 
-  validartipopersona(tipo){
+  // validartipopersona(tipo){
 
+  // }
+
+  // filtrarProcesos(filtro){
+
+  // }
+
+  tablaAsociacion(concepto){
+    console.log(concepto);
+    let concepto_select = this.conceptos.filter((idConcepto) => idConcepto.id_concepto == concepto);
+    console.log(concepto_select);
+    this.tabla_asociacion.push({
+      codigo_concepto: concepto_select[0].codigo_concepto,
+      nombre_concepto: concepto_select[0].nombre_concepto,
+    });  
   }
 
-  filtrarProcesos(filtro){
-
+  agregarAsociacion(){
+    // console.log(this.tabla_asociacion);
+    let posicion = 1
+    let formAsociado = null;
+    if(this.tabla_asociacion.length == 0){
+      Swal.fire("La tabla asociacion no puede estar vacia",'','info')
+    }else{
+      Swal.fire({
+        title: "Seguro de guardar los cambios?",
+        showDenyButton: true,
+        confirmButtonText: "Guardar",
+        denyButtonText: "Cancelar",
+      }).then((result) => {
+        if(result.isConfirmed){
+          for (let i = 0; i < this.tabla_asociacion.length ; i++) {
+            // this.tabla_asociacion[i].siguiente = i;
+            this.tabla_asociacion[i].concepto_asociado = posicion+"_"+this.tabla_asociacion[(i + 1) % this.tabla_asociacion.length].codigo_concepto;
+            posicion++;
+      
+            formAsociado = {
+              codigo_concepto: this.tabla_asociacion[i].codigo_concepto,
+              concepto_asociado: this.tabla_asociacion[i].concepto_asociado
+            }
+            // console.log(formAsociado);
+            this.servicio.actualizarConcepto(formAsociado).subscribe(
+              (res:any) => {
+                Swal.fire("Concepto actualizado con éxito","","success");
+                this.limpiarAsociacion();  
+              },
+              (err:any) => {
+                Swal.fire("Error al actualizar el concepto", err.error.message, "error");
+              }
+            )  
+          }
+        } 
+      }) 
+    }    
+    // console.log(this.tabla_asociacion);
   }
+
+  limpiarAsociacion(){
+    this.tabla_asociacion = [];
+    this.asociacion = null;
+  }
+
+  deliCon(i: number) {
+    this.tabla_asociacion.splice(i, 1);
+    // this.totalValorConceptos();
+}
 
   tablaConceptos(){
     this.servicio.traerConceptos().subscribe(
