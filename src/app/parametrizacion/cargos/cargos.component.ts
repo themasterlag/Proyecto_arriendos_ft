@@ -5,9 +5,6 @@ import { FormGroup, NgForm } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
-import {MatExpansionModule} from '@angular/material/expansion';
-
-
 
 interface Cargos {
   id_cargo:number;
@@ -31,7 +28,7 @@ export class CargosComponent implements OnInit {
   panelFormEdit:boolean;
   listaCargos:any = [];
   opcionSeleccionada: string = '';
-  Cargos: any;
+  cargos: any;
   @ViewChild("registrarCargo") enviarCargo: NgForm;
   consulta_cargos: any = null;
   consultar: boolean = false;
@@ -118,7 +115,7 @@ export class CargosComponent implements OnInit {
     this.servicio.traerCargos().subscribe(
       (res) => {
         console.log(res);
-        this.Cargos = res;
+        this.cargos = res;
         this.tablaCargo();
       },
       (error:any) =>{
@@ -129,7 +126,7 @@ export class CargosComponent implements OnInit {
   
   tablaCargo(){
 
-    this.tabla_cargo = this.Cargos.map((cargo) => {
+    this.tabla_cargo = this.cargos.map((cargo) => {
       return {
         id_cargo: cargo.id_cargo,
         cargo: cargo.cargo,

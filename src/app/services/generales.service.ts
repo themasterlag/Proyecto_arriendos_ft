@@ -258,9 +258,26 @@ export class GeneralesService {
     return this.servicio.get(this.api + "procesos");
   }
 
+  traerProceso(id){
+    return this.servicio.get(this.api + "procesos/"+id);
+  }
+
   traerSubProcesos(){
     return this.servicio.get(this.api + "procesos/subprocesos/");
   }
+
+  enviarProceso(datosProcesos){
+    return this.servicio.post(this.api + "procesos", datosProcesos);
+  }
+  
+  eliminarProceso(id: number) {
+    return this.servicio.delete(this.api + "procesos/"+id)
+  }
+
+  actualizarProcesos(datos: any) {
+    return this.servicio.patch(this.api + "procesos/update", datos)
+  }
+
 
   enviarUsuarios(formUsuario){
     return this.servicio.post(this.api + "aut/singup", formUsuario);
@@ -318,6 +335,8 @@ export class GeneralesService {
   eliminarCargo(id: number) {
     return this.servicio.delete(this.api + "cargos/"+id)
   }
+
+
 
 
   // ORGANIZAR CONCEPTOS, TABLA CONCEPTOS, CONCEPTOS
