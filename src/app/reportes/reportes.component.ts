@@ -8,6 +8,7 @@ import { GeneralesService } from 'app/services/generales.service';
 declare var require: any
 ;(pdfMake as any).vfs = pdfFonts.pdfMake.vfs
 import { PDFDocument } from 'pdf-lib';
+import * as XLSX from "xlsx";
 
 
 @Component({
@@ -46,21 +47,23 @@ export class ReportesComponent implements OnInit {
   generarListaReportes(){
     this.dataSource = new MatTableDataSource(
       [
-        {"nombre" : "Bancolombia", "reporte": "bancolombia"},
-        {"nombre" : "Otros bancos", "reporte": "otrosBancos"},
-        {"nombre" : "Efectivo", "reporte": "efectivo"},
-        {"nombre" : "Todos los bancos", "reporte": "todosBancos"},
+        {"nombre" : "Bancolombia", "reporte": "bancolombia", "periodo" : true, status: true},
+        {"nombre" : "Otros bancos", "reporte": "otrosBancos", "periodo" : true, status: true},
+        {"nombre" : "Efectivo", "reporte": "efectivo", "periodo" : true, status: true},
+        {"nombre" : "Todos los bancos", "reporte": "todosBancos", "periodo" : true, status: true},
+        {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: false}
       ]
     );
   }
 
   generarReporte(reporte){
-    if(this.mes == null && this.anio == null){
+    console.log(reporte);
+    if(this.mes == null && this.anio == null && reporte.periodo){
       Swal.fire('El periodo no puede estar vacio','','info')
     }else{
       this.spinner = true;
 
-      switch(reporte){
+      switch(reporte.reporte){
         case "bancolombia":
           this.generarBase64("bancolombia");
           break;
@@ -73,10 +76,53 @@ export class ReportesComponent implements OnInit {
         case "todosBancos":
           this.generarBase64("todos-bancos");
           break;
+        case "proximosRenovar":
+          this.generarReporteProximosRenovar();
+          break;
         default:
           break;
       }
     }
+
+    this.mes = null;
+    this.anio = null;
+  }
+
+  generarReporteProximosRenovar(){
+    this.servicio.traerContratosRenovar().subscribe(
+      (res:any) =>{
+        // console.log(res);
+        if (res.length > 0) {
+          let workbook = XLSX.utils.book_new()
+          let cabeceras = ["Contrato", "Punto_venta", "Fecha_fin_contrato", "Cannon"]
+          let worksheet = XLSX.utils.aoa_to_sheet([cabeceras]);
+
+          for (let i = 0; i < res.length; i++) {
+            XLSX.utils.sheet_add_json(worksheet, [res[i]]);
+          }
+
+          XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            "Contratos"
+          )
+          XLSX.writeFile(
+            workbook,
+            "Contratos a renobar.xlsx"
+          );
+        }
+        
+        this.spinner = false;
+      },
+      (error) =>{
+        Swal.fire({
+          icon: 'error',
+          title: 'Ocurrio un error',
+          text: error.mensaje,
+        });
+        this.spinner = false;
+      }
+    );
   }
 
   asignarmes(mes) {
