@@ -27,7 +27,7 @@
                   <mat-form-field class="example-full-width">
                     <mat-select placeholder="Procesos" id="nombre_proceso" name="nombre_proceso" ngModel required>
                       <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
-                        {{ p.proceso }}
+                        {{ p.nombre_proceso }}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>

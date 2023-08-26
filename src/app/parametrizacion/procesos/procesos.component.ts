@@ -6,7 +6,7 @@ import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
 import {NgForm } from "@angular/forms";
 
-interface Cargos {
+interface Procesos {
   id_proceso:number;
   nombre_proceso: string;
 }
@@ -29,7 +29,7 @@ export class ProcesosComponent implements OnInit {
   consulta_procesos: any = null;
   opcionSeleccionada: string = '';
   tabla_procesos: any;
-  dataSourceProceso: MatTableDataSource<Cargos> =  new MatTableDataSource<Cargos>();
+  dataSourceProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
   displayedColumns: string[] = ["id_Proceso", "nombre_proceso","acciones"];
   @ViewChild("paginatorProceso") paginatorProcesos: MatPaginator
   @ViewChild(MatSort) sort: MatSort;
@@ -54,7 +54,7 @@ export class ProcesosComponent implements OnInit {
   }
 
   traerProcesos(){
-    this.servicio.traerCargos().subscribe(
+    this.servicio.traerProcesos().subscribe(
       (res) => {
         console.log(res);
         this.procesos = res;
@@ -74,7 +74,7 @@ export class ProcesosComponent implements OnInit {
 
       },
       (err:any)=>{
-        Swal.fire("No se pudo consultar los cargos", "", "error");
+        Swal.fire("No se pudo consultar los procesos", "", "error");
       }
     );
   }
@@ -175,7 +175,7 @@ export class ProcesosComponent implements OnInit {
 
   eliminarProceso(proceso: any){
     if (this.servicio.eliminarProceso(proceso.id_proceso)) {
-      const formCargos = {
+      const formProcesos = {
         id_proceso: this.idProcesos,
       };
         Swal.fire({
