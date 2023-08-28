@@ -207,5 +207,9 @@ export class CargosComponent implements OnInit {
     console.log(this.datoOriginal);
   }
   
+  applyFilter(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceCargo.filter = filterValue.trim().toLowerCase();
+  }
 
 }

@@ -267,7 +267,7 @@ export class GeneralesService {
   }
 
   enviarProceso(datosProcesos){
-    return this.servicio.post(this.api + "procesos", datosProcesos);
+    return this.servicio.post(this.api + "procesos/p", datosProcesos);
   }
   
   eliminarProceso(id: number) {

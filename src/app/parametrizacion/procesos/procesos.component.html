@@ -9,120 +9,98 @@
                     </div>
 
                     <div class="card-body">
-                        <mat-accordion>
-                            <mat-expansion-panel >
-                                <mat-expansion-panel-header >
-                                    <mat-panel-title>
-                                        <h6 class="text-info">Procesos</h6>
-                                    </mat-panel-title>                                
-                                </mat-expansion-panel-header>
+                      <mat-accordion>
+                          <mat-expansion-panel>
+                              <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                      <h6 class="text-info">Panel de permisos</h6>
+                                  </mat-panel-title>
+                              </mat-expansion-panel-header>
 
-                                <!-- <div class="row "> -->
-            <!-- ----------------------------------------------------------------------------------------------->
+                              <div class="row">
+                                
+                                <div class="col row align-items-center">
+                                  <div class="table-responsive">
+                            <table mat-table [dataSource]="dataSourceProceso" class="w-100 text-center table table-striped table-hover">
 
-            <form>
+                                <ng-container matColumnDef="id_proceso">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center" > * </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id_proceso}} </td>
+                                </ng-container>
 
-                <h5><strong>Procesos:</strong></h5>
-                <div class="col-4">
-                  <mat-form-field class="example-full-width">
-                    <mat-select placeholder="Procesos" id="nombre_proceso" name="nombre_proceso" ngModel required>
-                      <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
-                        {{ p.nombre_proceso }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
+                                <ng-container matColumnDef="nombre_proceso">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center"> Procesos </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.nombre_proceso}} </td>
+                                </ng-container>
+                            
 
-              </form>
-              
-                                    <!-- <div class="col row align-items-center">
-                                    <div class="table-responsive">
-                                    <table mat-table [dataSource]="dataSourceProceso" class="thead-dark">
-                                  
-                                      <ng-container matColumnDef="id_proceso">
-                                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> * </th>
-                                        <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_proceso}} </td>
-                                      </ng-container>
-                  
-                                      <ng-container matColumnDef="nombre_proceso">
-                                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Nombre Procesos </th>
-                                        <td mat-cell class="text-center" *matCellDef="let element"> {{element.proceso}} </td>
-                                      </ng-container>    
-                  
-                                      <ng-container matColumnDef="acciones">
-                                        <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> Acciones</th>
-                                        <td mat-cell *matCellDef="let element" class="text-center">
-                                          <div class="acciones-container">
+                                <ng-container matColumnDef="acciones">
+                                  <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                                  <td mat-cell *matCellDef="let element">
 
-                                             <button class="btn btn-info rounded-pill" (click)="editarProceso(element)" 
-                                                    matTooltip="Editar Proceso" 
-                                                    matTooltipPosition="above"
-                                                    matTooltipClass="tooltipText">
-                                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                            </button>
-                                      
-                                            <button class="btn btn-danger rounded-pill " (click)="eliminarProceso(element)" 
-                                                    mat-raised-button
-                                                    matTooltip="Eliminar proceso" 
-                                                    matTooltipPosition="above"
-                                                    matTooltipClass="tooltipText">
-                                              <i class="fa fa-trash" aria-hidden="true"></i>
-                                            </button>
-                                          </div>
-                                        </td>
-                                      </ng-container>      -->
-<!--                                   
-                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                  
-                  
-                                    <tr class="mat-row" *matNoDataRow>
-                                      <td class="mat-cell" colspan="6">
-                                      No hay información</td>
-                                    </tr>
-                  
-                                  </table>
-                                  <mat-paginator 
-                                  [hidden]="dataSourceProceso.data.length < 1"
-                                  class="mat-elevation-z8"
-                                  #paginatorProceso
-                                  [pageSizeOptions]="[5, 10, 20]"
-                                  showFirstLastButtons
-                                >
-                                  </mat-paginator>
-                                    </div>
-                                  </div>  -->
-                
-                  <!-- ---------------------------------------------------------------------------------------------------->
-                  
+                                    <button class="btn btn-info rounded-pill" (click)="editarProceso(element)" 
+                                    matTooltip="Editar Proceso" 
+                                    matTooltipPosition="above"
+                                    matTooltipClass="tooltipText">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </button>
 
-                  
-                  
-                                    <!-- <div class="col-4">
-                                      <div class="añadir-proceso-container">
-                                        <h5 class="titulo-añadir"><strong>Añadir proceso</strong></h5>
-                                    
-                                        <form #registrarProceso="ngForm" (ngSubmit)="registrarProceso()" [noValidate]="false">
-                                          <mat-form-field class="example-full-width">
-                                            <input matInput placeholder="Proceso" type="text" name="añadirproceso" [(ngModel)]="datoSeleccionadoParaEditar" />
-                                          </mat-form-field>
-                                    
-                                          <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
-                                            Guardar
-                                          </button>
-                  
-                                          <button mat-raised-button type="reset"
-                                            class="btn btn-danger rounded-pill text-center"
-                                            id="button-limpiar"
-                                            (click)="limpiarFormulario()">
-                                            Limpiar
-                                          </button>
-                  
-                                        </form>
-                                      </div>
-                                    </div>                       -->
-                                  <!-- </div> -->
+                                      <button class="btn btn-danger rounded-pill" (click)="eliminarProceso(element)" 
+                                      matTooltip="Eliminar proceso" 
+                                      matTooltipPosition="above"
+                                      matTooltipClass="tooltipText">
+                                          <i class="fa fa-trash" aria-hidden="true"></i>
+                                      </button>
+                                  </td>
+                              </ng-container>
 
+                              <tr class="mat-row" *matNoDataRow>
+                                  <td class="mat-cell" colspan="8">No hay Procesos</td>
+                              </tr>
+
+                              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                          
+                            <mat-paginator 
+                            [hidden]="dataSourceProceso.data.length < 1"
+                            class="mat-elevation-z8"
+                            #paginatorProceso
+                            [pageSizeOptions]="[5, 10, 20]"
+                            showFirstLastButtons
+                          >
+                            </mat-paginator>
+                          </div>
+                        </div>
+
+
+                            <div class="col-4">
+
+                              <div class="añadir-proceso-container">
+                                <h5 class="titulo-añadir"><strong>Añadir Proceso</strong></h5>
+                            
+                                <form #registrarProceso="ngForm" (ngSubmit)="registrarProcesos()" [noValidate]="false">
+                                  <mat-form-field class="example-full-width">
+                                    <input matInput (keyup)="applyFilter($event)" placeholder="proceso" type="text" name="añadirproceso" [(ngModel)]="datoSeleccionadoParaEditar" required/>
+                                  </mat-form-field>
+                            
+                                  <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                                    Guardar
+                                  </button>
+          
+                                  <button mat-raised-button type="reset"
+                                    class="btn btn-danger rounded-pill text-center"
+                                    id="button-limpiar"
+                                    (click)="limpiarFormulario()">
+                                    Limpiar
+                                  </button>
+          
+                                </form>
+                              </div>
+                            </div>                      
+
+
+                              </div>
                             </mat-expansion-panel>
 
 <!-- --------------------------------------------------------------------------------------------------------------------------- -->
@@ -130,6 +108,7 @@
 
 
                             <mat-expansion-panel>
+
                                 <mat-expansion-panel-header >
                                     <mat-panel-title>
                                         <h6 class="text-info">Subprocesos</h6>
@@ -137,13 +116,26 @@
                                     
                                 </mat-expansion-panel-header>
                                 
+                                <form>
 
+                                  <h5><strong>Procesos:</strong></h5>
+                                  <div class="col-4">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select placeholder="Procesos" id="nombre_proceso" name="nombre_proceso" ngModel required>
+                                        <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
+                                          {{ p.nombre_proceso }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                  
+                                </form>
 
 
                             </mat-expansion-panel>
 
                         </mat-accordion>
-                    </div>
+
                 </div>
             </div>
         </div>

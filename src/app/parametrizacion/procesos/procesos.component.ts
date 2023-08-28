@@ -19,6 +19,7 @@ interface Procesos {
 
 export class ProcesosComponent implements OnInit {
 
+  panelOpenState = true;
   idProcesos: number;
   datoOriginal: string = '';
   editar: boolean = false;
@@ -30,7 +31,7 @@ export class ProcesosComponent implements OnInit {
   opcionSeleccionada: string = '';
   tabla_procesos: any;
   dataSourceProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
-  displayedColumns: string[] = ["id_Proceso", "nombre_proceso","acciones"];
+  displayedColumns: string[] = ["id_proceso", "nombre_proceso","acciones"];
   @ViewChild("paginatorProceso") paginatorProcesos: MatPaginator
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("registrarProceso") enviarProceso: NgForm;
@@ -95,6 +96,43 @@ export class ProcesosComponent implements OnInit {
   }
 
 
+
+  editarProceso(element: any) {
+    console.log(element);
+    this.idProcesos = element.id_proceso;
+    this.editar = true;
+    this.datoSeleccionadoParaEditar = element.nombre_proceso;
+    this.datoOriginal = element.nombre_proceso;
+    console.log(element);
+  }
+
+  eliminarProceso(proceso: any){
+    if (this.servicio.eliminarProceso(proceso.id_proceso)) {
+      const formProcesos = {
+        id_proceso: this.idProcesos,
+      };
+        Swal.fire({
+          title: "Seguro que quieres eliminar este proceso?",
+          showDenyButton: true,
+          confirmButtonText: "Confirmar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.eliminarProceso(proceso.id_proceso).subscribe(
+              (res: any) => {
+                Swal.fire("proceso eliminado", "", "success");
+                this.ejecutarConsultas();
+                this.traerProcesos();
+              },
+              (error) => {
+               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
+      }
+    }
+
 // -------------------------------------------------------------------------------------------------------------------------
 
 
@@ -103,11 +141,11 @@ export class ProcesosComponent implements OnInit {
   }
 
 
-  registrarProceso() {
+  registrarProcesos() {
     if (this.enviarProceso.valid) {
       const formProcesos = {
         id_proceso: this.idProcesos,
-        nombre_proceso: this.enviarProceso.controls.añadirProceso.value
+        nombre_proceso: this.enviarProceso.controls.añadirproceso.value
       };
   
       if (formProcesos.id_proceso) {
@@ -163,41 +201,15 @@ export class ProcesosComponent implements OnInit {
     this.enviarProceso.reset();
     console.log(this.datoOriginal);
   }
+
+  applyFilter(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceProceso.filter = filterValue.trim().toLowerCase();
+  }
 // -------------------------------------------------------------------------------------------------------------------------
 
-  editarProceso(element: any) {
-    console.log(element);
-    this.idProcesos = element.id_proceso;
-    this.editar = true;
-    this.datoSeleccionadoParaEditar = element.proceso;
-    this.datoOriginal = element.proceso;
-  }
 
-  eliminarProceso(proceso: any){
-    if (this.servicio.eliminarProceso(proceso.id_proceso)) {
-      const formProcesos = {
-        id_proceso: this.idProcesos,
-      };
-        Swal.fire({
-          title: "Seguro que quieres eliminar este proceso?",
-          showDenyButton: true,
-          confirmButtonText: "Confirmar",
-          denyButtonText: `Cancelar`,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.servicio.eliminarProceso(proceso.id_proceso).subscribe(
-              (res: any) => {
-                Swal.fire("proceso eliminado", "", "success");
-                this.ejecutarConsultas();
-                this.traerProcesos();
-              },
-              (error) => {
-               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
-              }
-            );
-          }
-        });
-      }
-    }
+
+
 
 }
