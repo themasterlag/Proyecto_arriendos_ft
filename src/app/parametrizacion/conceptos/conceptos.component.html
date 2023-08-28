@@ -281,11 +281,11 @@
                                   <mat-form-field class="example-full-width">
                                     <mat-select
                                       placeholder="Conceptos"
-                                      (selectionChange)="tablaAsociacion($event.value)"
+                                      (selectionChange)="consultarAsociacion($event.value)"
                                       [(ngModel)]= "asociacion"
                                     >
                                       <mat-option
-                                        [value]="m.id_concepto"
+                                        [value]="m"
                                         *ngFor="let m of conceptos"
                                       >
                                         {{m.codigo_concepto}} - {{ m.nombre_concepto }}
