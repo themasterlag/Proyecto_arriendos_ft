@@ -358,7 +358,7 @@
                                   mat-raised-button
                                   class="btn btn-info pull-right"
                                   id="button-guardar"
-                                  (click)="agregarAsociacion()">
+                                  (click)="agregarAsociacion(1)">
                                   Guardar
                                 </button>
                                 <button
@@ -368,6 +368,13 @@
                                   (click)="limpiarAsociacion()"
                                 >
                                   Limpiar
+                                </button>
+                                <button
+                                  mat-raised-button
+                                  class="btn btn-info pull-right"
+                                  id="button-borrar"
+                                  (click)="agregarAsociacion(2)">
+                                  Borrar
                                 </button>
                               <!-- </form> -->
                             </mat-expansion-panel>

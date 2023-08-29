@@ -42,6 +42,11 @@
     background-color: green !important;
     border-radius: 25px !important;
 }
+#button-borrar{
+    background-color: #ffe203 !important;
+    color: #000 !important;
+    border-radius: 25px !important;
+}
 #button-consultar{
     background-color: green !important;
     border-radius: 25px !important;
