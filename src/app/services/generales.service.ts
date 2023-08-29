@@ -252,7 +252,7 @@ export class GeneralesService {
     return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
-  //USUARIOS
+ //Procesos y subprocesos
 
   traerProcesos(){
     return this.servicio.get(this.api + "procesos");
@@ -260,10 +260,6 @@ export class GeneralesService {
 
   traerProceso(id){
     return this.servicio.get(this.api + "procesos/"+id);
-  }
-
-  traerSubProcesos(){
-    return this.servicio.get(this.api + "procesos/subprocesos/");
   }
 
   enviarProceso(datosProcesos){
@@ -278,6 +274,27 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "procesos/update", datos)
   }
 
+  traerSubProcesos(){
+    return this.servicio.get(this.api + "procesos/subprocesos/");
+  }
+
+  traerSubProceso(id){
+    return this.servicio.get(this.api + "procesos/subprocesos/"+id);
+  }
+
+  enviarSubProceso(datosSubProcesos){
+    return this.servicio.post(this.api + "", datosSubProcesos);
+  }
+  
+  eliminarSubProceso(id: number) {
+    return this.servicio.delete(this.api + ""+id)
+  }
+
+  actualizarSubProcesos(datos: any) {
+    return this.servicio.patch(this.api + "", datos)
+  }
+
+   //USUARIOS
 
   enviarUsuarios(formUsuario){
     return this.servicio.post(this.api + "aut/singup", formUsuario);

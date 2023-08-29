@@ -9,6 +9,8 @@ import {NgForm } from "@angular/forms";
 interface Procesos {
   id_proceso:number;
   nombre_proceso: string;
+  id_subproceso: number;
+  subproceso: string;
 }
 
 @Component({
@@ -21,20 +23,29 @@ export class ProcesosComponent implements OnInit {
 
   panelOpenState = true;
   idProcesos: number;
+  idSubProcesos: number;
   datoOriginal: string = '';
   editar: boolean = false;
   datoSeleccionadoParaEditar: string;
   listaProcesos:any = [];
+  listaSubProcesos:any = [];
   procesos: any;
+  subprocesos: any;
   consultar: boolean = false;
   consulta_procesos: any = null;
   opcionSeleccionada: string = '';
   tabla_procesos: any;
+  tabla_subprocesos: any;
+
   dataSourceProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
-  displayedColumns: string[] = ["id_proceso", "nombre_proceso","acciones"];
-  @ViewChild("paginatorProceso") paginatorProcesos: MatPaginator
+  dataSourceSubProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
+  ColumnasProceso: string[] = ["id_proceso", "nombre_proceso","acciones"];
+  columnasSubProcesos: string[] = ["id_subproceso", "subproceso","acciones"];
+  @ViewChild("paginatorProceso") paginatorProcesos: MatPaginator;
+  @ViewChild("paginatorSubProceso") paginatorSubProcesos: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("registrarProceso") enviarProceso: NgForm;
+  @ViewChild("registrarSubProceso") enviarSubProceso: NgForm;
 
   panelLista:boolean;
   panelForm:boolean;
@@ -47,10 +58,12 @@ export class ProcesosComponent implements OnInit {
 
   ngOnInit(): void {
     this.traerProcesos();
+    this.traerSubProcesos();
   }
 
   ejecutarConsultas(){
     this.consultarListaProcesos();
+    this.consultarListaSubProcesos();
 
   }
 
@@ -67,11 +80,37 @@ export class ProcesosComponent implements OnInit {
     )
   }
 
+  traerSubProcesos(){
+    this.servicio.traerSubProcesos().subscribe(
+      (res) => {
+        console.log(res);
+        this.subprocesos = res;
+        this.tablaSubProcesos();
+      },
+      (error:any) =>{
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+      }
+    )
+  }
+
   consultarListaProcesos(){
     this.servicio.traerProcesos().subscribe(
       (res:any)=>{
         
         this.listaProcesos = res;
+
+      },
+      (err:any)=>{
+        Swal.fire("No se pudo consultar los procesos", "", "error");
+      }
+    );
+  }
+
+  consultarListaSubProcesos(){
+    this.servicio.traerSubProcesos().subscribe(
+      (res:any)=>{
+        
+        this.listaSubProcesos = res;
 
       },
       (err:any)=>{
@@ -95,11 +134,34 @@ export class ProcesosComponent implements OnInit {
     this.dataSourceProceso.sort = this.sort;
   }
 
+  tablaSubProcesos(){
+
+    this.tabla_subprocesos = this.subprocesos.map((subproceso) => {
+      return {
+        id_subproceso: subproceso.id_subproceso,
+        subproceso: subproceso.subproceso,
+      }
+    })
+    console.log(this.tabla_subprocesos)
+
+    this.dataSourceSubProceso.data = this.tabla_subprocesos;
+    this.dataSourceSubProceso.paginator = this.paginatorSubProcesos;
+    this.dataSourceSubProceso.sort = this.sort;
+  }
 
 
   editarProceso(element: any) {
     console.log(element);
     this.idProcesos = element.id_proceso;
+    this.editar = true;
+    this.datoSeleccionadoParaEditar = element.nombre_proceso;
+    this.datoOriginal = element.nombre_proceso;
+    console.log(element);
+  }
+
+  editarSubProceso(element: any) {
+    console.log(element);
+    this.idProcesos = element.id_subproceso;
     this.editar = true;
     this.datoSeleccionadoParaEditar = element.nombre_proceso;
     this.datoOriginal = element.nombre_proceso;
@@ -133,11 +195,39 @@ export class ProcesosComponent implements OnInit {
       }
     }
 
+    eliminarSubProceso(proceso: any){
+      if (this.servicio.eliminarProceso(proceso.id_subproceso)) {
+        const formProcesos = {
+          id_subproceso: this.idProcesos,
+        };
+          Swal.fire({
+            title: "Seguro que quieres eliminar este proceso?",
+            showDenyButton: true,
+            confirmButtonText: "Confirmar",
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.servicio.eliminarProceso(proceso.id_subproceso).subscribe(
+                (res: any) => {
+                  Swal.fire("proceso eliminado", "", "success");
+                  this.ejecutarConsultas();
+                  this.traerProcesos();
+                },
+                (error) => {
+                 Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+                }
+              );
+            }
+          });
+        }
+      }
+
 // -------------------------------------------------------------------------------------------------------------------------
 
 
-  llenarFormulario(infoProcesos){
+  llenarFormulario(infoProcesos,infoSubProceso){
     this.enviarProceso.controls.proceso.setValue(infoProcesos.proceso);
+    this.enviarSubProceso.controls.subproceso.setValue(infoSubProceso.subproceso);
   }
 
 
@@ -177,6 +267,53 @@ export class ProcesosComponent implements OnInit {
                 this.enviarProceso.form.markAsUntouched();
                 this.enviarProceso.resetForm();
                 this.traerProcesos();
+              },
+              (error) => {
+               Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
+      }
+    }
+  }
+
+  registrarSubProcesos() {
+    if (this.enviarSubProceso.valid) {
+      const formSubProcesos = {
+        id_subproceso: this.idSubProcesos,
+        subproceso: this.enviarSubProceso.controls.añadirsubproceso.value
+      };
+  
+      if (formSubProcesos.id_subproceso) {
+        this.servicio.actualizarSubProcesos(formSubProcesos).subscribe(
+          (res: any) => {
+            this.datoOriginal = this.datoSeleccionadoParaEditar;
+            this.datoSeleccionadoParaEditar = '';
+            this.ejecutarConsultas();
+            this.traerSubProcesos();
+            this.idSubProcesos = null;
+            Swal.fire("Cambios guardados con éxito", "", "success");
+          },
+          (err: any) => {
+            Swal.fire("No se pudieron guardar los cambios", "", "error");
+          }
+        );
+      } else {
+        Swal.fire({
+          title: "Seguro de guardar los cambios?",
+          showDenyButton: true,
+          confirmButtonText: "Guardar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.enviarSubProceso(formSubProcesos).subscribe(
+              (res: any) => {
+                Swal.fire("Proceso guardado con éxito", "", "success");
+                this.enviarSubProceso.form.markAsPristine();
+                this.enviarSubProceso.form.markAsUntouched();
+                this.enviarSubProceso.resetForm();
+                this.traerSubProcesos();
               },
               (error) => {
                Swal.fire("No se encontro", "Error: "+error.error.message, "error");
