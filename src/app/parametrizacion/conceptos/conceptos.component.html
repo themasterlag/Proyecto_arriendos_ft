@@ -294,7 +294,7 @@
                                   </mat-form-field>
                                 </div>
                               </div>
-                                <div class="row" *ngIf="tabla_asociacion.length > 0">
+                                <div class="row" >
                                   <div class="col-md-2"></div>
                                   <div class="col-md-8">
                                     <div class="card">
@@ -307,7 +307,7 @@
                                       </div>
                                       <div class="card-body" [ngClass]="tabla_asociacion.length > 2 ? 'scrollCard' : ''">
                                         <div class="table-responsive" >
-                                          <table class="table" style="text-align:center;">
+                                          <table class="table mb-0" style="text-align:center;">
                                             <thead class="text-info">
                                               <th>CODIGO</th>
                                               <th>NOMBRE CONCEPTO</th>
@@ -339,7 +339,7 @@
                                         </div>
                                          <!-- <p class="text-center bg-primary text-white p-2 rounded">Hola = {{valorTotal}}</p> -->
                                       </div>
-                                      <hr>
+                                      
                                       <!-- <div class="card-footer">Total Valor = {{valorTotal.toLocaleString('es-ES')}}</div> -->
                                       <!-- <div class="card-footer">Valor total : <span class="valor-destacado"> $ {{valorTotal.toLocaleString('es-ES')}}</span></div> -->
                                     </div>
@@ -388,7 +388,7 @@
               >
                 <mat-expansion-panel-header (click)="tablaConceptos()">
                   <mat-panel-title>
-                    <h6 class="text-info">Gestión de contratos</h6>
+                    <h6 class="text-info">Lista de conceptos</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <hr>

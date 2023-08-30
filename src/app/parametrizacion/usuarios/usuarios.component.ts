@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
 import Swal from "sweetalert2";
@@ -22,7 +22,7 @@ interface Usuarios {
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit, AfterViewInit {
+export class UsuariosComponent implements OnInit {
 
   panelOpenState = true;
   consulta_usuario: any = null;
@@ -57,10 +57,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
     this.traerProcesos();
     this.traerSubProcesos();
     this.traerCargos();
-  }
-
-  ngAfterViewInit(){
-    this.sort.sort({id:"cedula", start:"asc", disableClear:true} );
   }
 
   traerUsuario(){
@@ -172,7 +168,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
                 },
                 (error) => {
                   Swal.fire('Error al crear el usuario', error.error.message, 'error');
-                  //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
                 }
               )
             }
@@ -248,8 +243,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
   tablaUsuarios(){
     this.servicio.traerTodosUsuarios().subscribe(
       (res:any) => {
-        // console.log(res);
-        
         this.tabla_usuarios = res.map((usuario) => {
           return {
             id_usuario: usuario.id_usuario,
@@ -260,25 +253,20 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
           }
         })
 
-        // this.sort.sort({id:'cedula', start:'asc', disableClear: true});
-
         this.dataSourceUsuarios.data = this.tabla_usuarios;
         this.dataSourceUsuarios.paginator = this.paginatorUsuarios;
         console.log(this.sort);
         this.dataSourceUsuarios.sort = this.sort;
-        // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
+
       }
     )
   }
 
   cambiarEstadoUsuario(usuario){
-    // console.log(usuario, id_estado)
-    // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
     if(usuario.estado == 1){
       this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
           Swal.fire('Usuario inhabilitado', '', 'success');
-          // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
           this.tablaUsuarios();
         },
         (error:any) => {
@@ -289,7 +277,6 @@ export class UsuariosComponent implements OnInit, AfterViewInit {
       this.servicio.habilitarUsuarios(usuario.id_usuario).subscribe(
         (res:any) => {
           Swal.fire('Usuario habilitado','', 'success');
-          // this.dataSourceUsuarios.sort.sort({ id: 'cedula', start: 'asc', disableClear: true});
           this.tablaUsuarios();
         },
         (error:any) => {

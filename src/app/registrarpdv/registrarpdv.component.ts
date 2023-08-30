@@ -161,6 +161,7 @@ export class RegistrarpdvComponent implements OnInit {
       poliza: [false],
       definicion: [null],
       Conceptos: [null],
+      anios_prorroga: [null],
       // conceptos: [null, Validators.required]
     });
   }
@@ -766,6 +767,7 @@ export class RegistrarpdvComponent implements OnInit {
         poliza: this.formulariocontrato.value.poliza,
         id_responsable: 0,
         id_autorizado: 0,
+        anios_prorroga: this.formulariocontrato.value.anios_prorroga
       };
       Swal
         .fire({
