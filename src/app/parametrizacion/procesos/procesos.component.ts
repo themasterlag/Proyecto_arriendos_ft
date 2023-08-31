@@ -27,6 +27,7 @@ export class ProcesosComponent implements OnInit {
   datoOriginal: string = '';
   editar: boolean = false;
   datoSeleccionadoParaEditar: string;
+  datoEditarSubPro: string;
   listaProcesos:any = [];
   listaSubProcesos:any = [];
   procesos: any;
@@ -40,12 +41,13 @@ export class ProcesosComponent implements OnInit {
   dataSourceProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
   dataSourceSubProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
   ColumnasProceso: string[] = ["id_proceso", "nombre_proceso","acciones"];
-  columnasSubProcesos: string[] = ["id_subproceso", "subproceso","acciones"];
+  columnasSubProcesos: string[] = ["id_subproceso", "subproceso","id_proceso","acciones"];
   @ViewChild("paginatorProceso") paginatorProcesos: MatPaginator;
   @ViewChild("paginatorSubProceso") paginatorSubProcesos: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("registrarProceso") enviarProceso: NgForm;
   @ViewChild("registrarSubProceso") enviarSubProceso: NgForm;
+
 
   panelLista:boolean;
   panelForm:boolean;
@@ -135,11 +137,13 @@ export class ProcesosComponent implements OnInit {
   }
 
   tablaSubProcesos(){
-
+    let lista:any 
     this.tabla_subprocesos = this.subprocesos.map((subproceso) => {
+      lista = this.procesos.find((pro) => pro.id_proceso == subproceso.id_proceso)
       return {
         id_subproceso: subproceso.id_subproceso,
         subproceso: subproceso.subproceso,
+        id_proceso: lista.nombre_proceso,
       }
     })
     console.log(this.tabla_subprocesos)
@@ -161,10 +165,10 @@ export class ProcesosComponent implements OnInit {
 
   editarSubProceso(element: any) {
     console.log(element);
-    this.idProcesos = element.id_subproceso;
+    this.idSubProcesos = element.id_subproceso;
     this.editar = true;
-    this.datoSeleccionadoParaEditar = element.nombre_proceso;
-    this.datoOriginal = element.nombre_proceso;
+    this.datoEditarSubPro = element.subproceso;
+    this.datoOriginal = element.subproceso;
     console.log(element);
   }
 
@@ -195,23 +199,23 @@ export class ProcesosComponent implements OnInit {
       }
     }
 
-    eliminarSubProceso(proceso: any){
-      if (this.servicio.eliminarProceso(proceso.id_subproceso)) {
-        const formProcesos = {
-          id_subproceso: this.idProcesos,
+    eliminarSubProceso(subproceso: any){
+      if (this.servicio.eliminarSubProceso(subproceso.id_subproceso)) {
+        const formSubProcesos = {
+          id_subproceso: this.idSubProcesos,
         };
           Swal.fire({
-            title: "Seguro que quieres eliminar este proceso?",
+            title: "Seguro que quieres eliminar este subproceso?",
             showDenyButton: true,
             confirmButtonText: "Confirmar",
             denyButtonText: `Cancelar`,
           }).then((result) => {
             if (result.isConfirmed) {
-              this.servicio.eliminarProceso(proceso.id_subproceso).subscribe(
+              this.servicio.eliminarSubProceso(subproceso.id_subproceso).subscribe(
                 (res: any) => {
-                  Swal.fire("proceso eliminado", "", "success");
+                  Swal.fire("subproceso eliminado", "", "success");
                   this.ejecutarConsultas();
-                  this.traerProcesos();
+                  this.traerSubProcesos();
                 },
                 (error) => {
                  Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
@@ -221,6 +225,10 @@ export class ProcesosComponent implements OnInit {
           });
         }
       }
+
+      AgregarProceso(){
+
+      }  
 
 // -------------------------------------------------------------------------------------------------------------------------
 
@@ -282,14 +290,14 @@ export class ProcesosComponent implements OnInit {
     if (this.enviarSubProceso.valid) {
       const formSubProcesos = {
         id_subproceso: this.idSubProcesos,
-        subproceso: this.enviarSubProceso.controls.añadirsubproceso.value
+        subproceso: this.enviarSubProceso.controls.añadirSubProceso.value
       };
   
       if (formSubProcesos.id_subproceso) {
         this.servicio.actualizarSubProcesos(formSubProcesos).subscribe(
           (res: any) => {
-            this.datoOriginal = this.datoSeleccionadoParaEditar;
-            this.datoSeleccionadoParaEditar = '';
+            this.datoOriginal = this.datoEditarSubPro;
+            this.datoEditarSubPro = '';
             this.ejecutarConsultas();
             this.traerSubProcesos();
             this.idSubProcesos = null;
@@ -329,6 +337,7 @@ export class ProcesosComponent implements OnInit {
     this.consulta_procesos = null;
     this.consultar = false;
     this.datoSeleccionadoParaEditar = null;
+    this.datoEditarSubPro = null;
 
     this.idProcesos = null;
     this.editar = false;

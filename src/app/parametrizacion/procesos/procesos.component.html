@@ -130,22 +130,26 @@
                                   <ng-container matColumnDef="subproceso">
                                       <th mat-header-cell *matHeaderCellDef class="text-center"> Subprocesos </th>
                                       <td mat-cell *matCellDef="let element"> {{element.subproceso}} </td>
-                                  </ng-container>
-                              
+                                  </ng-container>                              
   
+                                  <ng-container matColumnDef="id_proceso">
+                                    <th mat-header-cell *matHeaderCellDef class="text-center" > * </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id_proceso}} </td>
+                                </ng-container>
+
                                   <ng-container matColumnDef="acciones">
                                     <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
                                     <td mat-cell *matCellDef="let element">
   
                                       <button class="btn btn-info rounded-pill" (click)="editarSubProceso(element)" 
-                                      matTooltip="Editar Proceso" 
+                                      matTooltip="Editar subProceso" 
                                       matTooltipPosition="above"
                                       matTooltipClass="tooltipText">
                                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                       </button>
   
                                         <button class="btn btn-danger rounded-pill" (click)="eliminarSubProceso(element)" 
-                                        matTooltip="Eliminar proceso" 
+                                        matTooltip="Eliminar subProceso" 
                                         matTooltipPosition="above"
                                         matTooltipClass="tooltipText">
                                             <i class="fa fa-trash" aria-hidden="true"></i>
@@ -159,6 +163,7 @@
   
                                 <tr mat-header-row *matHeaderRowDef="columnasSubProcesos"></tr>
                                 <tr mat-row *matRowDef="let row; columns: columnasSubProcesos;"></tr>
+
                               </table>
                             
                               <mat-paginator 
@@ -178,9 +183,9 @@
                                 <div class="añadir-proceso-container">
                                   <h5 class="titulo-añadir"><strong>Añadir Proceso</strong></h5>
                               
-                                  <form #registrarProceso="ngForm" (ngSubmit)="registrarProcesos()" [noValidate]="false">
+                                  <form #registrarSubProceso="ngForm" (ngSubmit)="registrarSubProcesos()" [noValidate]="false">
                                     <mat-form-field class="example-full-width">
-                                      <input matInput (keyup)="applyFilter($event)" placeholder="proceso" type="text" name="añadirproceso" [(ngModel)]="datoSeleccionadoParaEditar" required/>
+                                      <input matInput (keyup)="applyFilter($event)" placeholder="Subproceso" type="text" name="añadirSubProceso" [(ngModel)]="datoEditarSubPro" required/>
                                     </mat-form-field>
                               
                                     <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
@@ -195,6 +200,21 @@
                                     </button>
             
                                   </form>
+
+                                  <mat-select
+                                  placeholder="formularioProcesos"
+                                  name="formularioProcesos"
+                                  (selectionChange)="AgregarProceso()"
+                                  ngModel
+                                  required
+                                >
+                                <mat-option 
+                                [value]="p.id_proceso" *ngFor="let p of procesos">
+                                  {{ p.nombre_proceso }}
+                                </mat-option>
+
+                                </mat-select>
+
                                 </div>
                               </div>                      
   

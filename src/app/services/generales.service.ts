@@ -267,7 +267,7 @@ export class GeneralesService {
   }
   
   eliminarProceso(id: number) {
-    return this.servicio.delete(this.api + "procesos/"+id)
+    return this.servicio.delete(this.api + "procesos/proceso"+id)
   }
 
   actualizarProcesos(datos: any) {
@@ -283,15 +283,15 @@ export class GeneralesService {
   }
 
   enviarSubProceso(datosSubProcesos){
-    return this.servicio.post(this.api + "", datosSubProcesos);
+    return this.servicio.post(this.api + "procesos/subP", datosSubProcesos);
   }
   
   eliminarSubProceso(id: number) {
-    return this.servicio.delete(this.api + ""+id)
+    return this.servicio.delete(this.api + "procesos/subproceso"+id)
   }
 
   actualizarSubProcesos(datos: any) {
-    return this.servicio.patch(this.api + "", datos)
+    return this.servicio.patch(this.api + "procesos/updateSub", datos)
   }
 
    //USUARIOS
