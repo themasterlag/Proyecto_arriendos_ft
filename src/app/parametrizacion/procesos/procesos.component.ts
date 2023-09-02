@@ -38,6 +38,8 @@ export class ProcesosComponent implements OnInit {
   tabla_procesos: any;
   tabla_subprocesos: any;
 
+  procesoSeleccionado: any = null;
+
   dataSourceProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
   dataSourceSubProceso: MatTableDataSource<Procesos> =  new MatTableDataSource<Procesos>();
   ColumnasProceso: string[] = ["id_proceso", "nombre_proceso","acciones"];
@@ -226,9 +228,9 @@ export class ProcesosComponent implements OnInit {
         }
       }
 
-      AgregarProceso(){
-
-      }  
+      AgregarProceso() {
+        this.procesoSeleccionado = this.enviarProceso.controls.formularioProcesos.value;
+      }
 
 // -------------------------------------------------------------------------------------------------------------------------
 
@@ -287,10 +289,11 @@ export class ProcesosComponent implements OnInit {
   }
 
   registrarSubProcesos() {
-    if (this.enviarSubProceso.valid) {
+    if (this.enviarSubProceso.valid && this.procesoSeleccionado !== null) {
       const formSubProcesos = {
         id_subproceso: this.idSubProcesos,
-        subproceso: this.enviarSubProceso.controls.añadirSubProceso.value
+        subproceso: this.enviarSubProceso.controls.añadirSubProceso.value,
+        id_proceso: this.procesoSeleccionado
       };
   
       if (formSubProcesos.id_subproceso) {

@@ -10,6 +10,141 @@
 
                     <div class="card-body">
                         <mat-accordion>
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <h6 class="text-info">Crear permiso</h6>
+                                    </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <div class="row">
+                                
+                            <div class="col row align-items-center">
+                              <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSourcePermiso" class="w-100 text-center table table-striped table-hover">
+
+                            <ng-container matColumnDef="id_permiso">
+                                <th mat-header-cell *matHeaderCellDef class="text-center" > * </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id_permiso}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="permiso">
+                                <th mat-header-cell *matHeaderCellDef class="text-center"> Permisos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.permiso}} </td>
+                            </ng-container>                              
+
+                            <ng-container matColumnDef="estado">
+                              <th mat-header-cell *matHeaderCellDef class="text-center" > Estado </th>
+                              <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                          </ng-container>
+
+                            <ng-container matColumnDef="acciones">
+                              <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                              <td mat-cell *matCellDef="let element">
+
+                                <button class="btn btn-info rounded-pill" (click)="editarPermiso(element)" 
+                                matTooltip="Editar Permiso" 
+                                matTooltipPosition="above"
+                                matTooltipClass="tooltipText">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </button>
+
+                                  <button class="btn btn-danger rounded-pill" (click)="eliminarPermiso(element)" 
+                                  matTooltip="Eliminar Permiso" 
+                                  matTooltipPosition="above"
+                                  matTooltipClass="tooltipText">
+                                      <i class="fa fa-trash" aria-hidden="true"></i>
+                                  </button>
+                              </td>
+                          </ng-container>
+
+                          <tr class="mat-row" *matNoDataRow>
+                              <td class="mat-cell" colspan="8">No hay permisos</td>
+                          </tr>
+
+                          <tr mat-header-row *matHeaderRowDef="columnasPermisos"></tr>
+                          <tr mat-row *matRowDef="let row; columns: columnasPermisos;"></tr>
+
+                        </table>
+                      
+                        <!-- <mat-paginator 
+                        [hidden]="dataSourcePermisos.data.length < 1"
+                        class="mat-elevation-z8"
+                        #paginatorPermisos
+                        [pageSizeOptions]="[5, 10, 20]"
+                        showFirstLastButtons
+                      >
+                        </mat-paginator> -->
+                      </div>
+                    </div>
+
+
+                        <div class="col-4">
+
+                          <div class="añadir-permiso-container">
+                            <h5 class="titulo-añadir"><strong>Añadir Permiso</strong></h5>
+                        
+                            <form #registrarPermiso="ngForm" (ngSubmit)="registrarPermiso()" [noValidate]="false">
+                              <mat-form-field class="example-full-width">
+                                <input matInput  placeholder="Permiso" type="text" name="añadirPermiso" [(ngModel)]="datoEditarPermiso" required/>
+                              </mat-form-field>
+                        
+                              <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                                Guardar
+                              </button>
+      
+                              <button mat-raised-button type="reset"
+                                class="btn btn-danger rounded-pill text-center"
+                                id="button-limpiar"
+                                (click)="limpiarFormulario()">
+                                Limpiar
+                              </button>
+      
+                            </form>
+
+                            <!-- <mat-form-field class="example-full-width">
+                              <mat-select
+                                placeholder="formularioPermisos"
+                                name="formularioPermisos"
+                                [(ngModel)]="procesoSeleccionado"
+                                (selectionChange)="AgregarProceso()"
+                                required
+                              >
+                                <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
+                                  {{ p.nombre_proceso }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field> -->
+
+                                                           <form>
+
+                                  <h5><strong>Procesos:</strong></h5>
+                                  <div class="col-4">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select placeholder="permisos" id="permisos" name="permisos" ngModel required>
+                                        <mat-option [value]="p.id_permiso" *ngFor="let p of permisos">
+                                          {{ p.permiso }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                  
+                                </form>
+                            
+
+                          </div>
+                        </div>                      
+
+
+                          </div>        
+
+
+                        
+                        </mat-expansion-panel>
+
+
+<!-- ___________________________________________________________________________________________________________________________________ -->
+
                             <mat-expansion-panel [expanded]="panelPermisos" (opened)="panelPermisos = true"
                                 (closed)="panelPermisos = false">
                                 <mat-expansion-panel-header>

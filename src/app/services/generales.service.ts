@@ -294,11 +294,7 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "procesos/updateSub", datos)
   }
 
-   //USUARIOS
-
-  enviarUsuarios(formUsuario){
-    return this.servicio.post(this.api + "aut/singup", formUsuario);
-  }
+  //PERMISOS
 
   traerPermisos(){
     return this.servicio.get(this.api + "permisos");
@@ -306,6 +302,31 @@ export class GeneralesService {
 
   registrarPermisoDetalle(permiso){
     return this.servicio.post(this.api + "permiso-detalle", permiso);
+  }
+
+  traerPermiso(id){
+    return this.servicio.get(this.api + "permisos/"+id);
+  }
+
+  enviarPermiso(datosSubProcesos){
+    return this.servicio.post(this.api + "permisos", datosSubProcesos);
+  }
+  
+  eliminarPermiso(id: number) {
+    return this.servicio.delete(this.api + "permisos/"+id)
+  }
+
+  actualizarPermisos(datos: any) {
+    return this.servicio.patch(this.api + "permisos", datos)
+  }
+
+
+
+
+   //USUARIOS
+
+  enviarUsuarios(formUsuario){
+    return this.servicio.post(this.api + "aut/singup", formUsuario);
   }
 
   traerUsuario(idUsuario){
