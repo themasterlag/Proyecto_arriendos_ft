@@ -5,9 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
-import { MatPaginator } from "@angular/material/paginator"
-import { error } from 'console';
-import { MatCardModule } from '@angular/material/card';
+
 
 
 
@@ -35,9 +33,6 @@ export class BancoComponent implements OnInit {
   bancos: Bancos[] = []; // Inicializar bancos como un arreglo vacío
   @ViewChild('registrarBanco', { static: true }) enviarBanco: NgForm;
   @ViewChild('formBanco') formularioBancos: NgForm;
-  dataSourceBanco: MatTableDataSource<Bancos> =
-  new MatTableDataSource<Bancos>();
-  displayedColumns: string[] = ["id_banco", "banco","acciones"];
   id_entidad_bancaria: number;
   consulta_bancos: any = null;
   consultar: boolean = false;
@@ -48,7 +43,7 @@ export class BancoComponent implements OnInit {
   modificarBancoSeleccionado: Bancos | null = null;
   eliminarBancoSeleccionado: Bancos | null = null;
   nuevoBanco: any = {
-    banco: '' // Inicializar el campo banco aquí
+    banco: '' 
   };
   formularioEnviado = false; // Variable para rastrear el estado de envío
 

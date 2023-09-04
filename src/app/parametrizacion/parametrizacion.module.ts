@@ -19,6 +19,7 @@ import { ConceptosComponent } from './conceptos/conceptos.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProcesosComponent } from './procesos/procesos.component';
+import { IncrementosComponent } from './incrementos/incrementos.component';
 
 
 
@@ -29,7 +30,8 @@ import { ProcesosComponent } from './procesos/procesos.component';
     CargosComponent,
     BancoComponent,
     ConceptosComponent,
-    ProcesosComponent
+    ProcesosComponent,
+    IncrementosComponent
   ],
   imports: [
     CommonModule,

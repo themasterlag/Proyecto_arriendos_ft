@@ -9,6 +9,7 @@ import { BancoComponent } from './bancos/banco.component';
 import { CargosComponent } from './cargos/cargos.component';
 import { ConceptosComponent } from './conceptos/conceptos.component';
 import { ProcesosComponent } from './procesos/procesos.component';
+import { IncrementosComponent } from './incrementos/incrementos.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,14 @@ const routes: Routes = [
     component: ProcesosComponent,
     canActivate: [AuthGuard],
     data: { requiredPermissions: [7] } 
+  },
+  {
+    path: 'incrementos',
+    component: IncrementosComponent,
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [7] } 
   }
+
   
 ];
 

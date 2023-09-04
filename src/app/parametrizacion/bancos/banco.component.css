@@ -108,3 +108,19 @@
     color: #1b4f35 !important;
     font-weight: bold;
 }
+
+
+
+.mat-accordion {
+  background-color: transparent !important;
+}
+
+.mat-expansion-panel {
+  background-color: transparent !important;
+}
+
+
+.card {
+  background-color: transparent !important;
+  border-radius: 25px;
+}
