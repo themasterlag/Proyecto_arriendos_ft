@@ -306,8 +306,8 @@ export class GeneralesService {
     return this.servicio.get(this.api + "permisos/"+id);
   }
 
-  enviarPermiso(datosSubProcesos){
-    return this.servicio.post(this.api + "permisos", datosSubProcesos);
+  enviarPermiso(DatosPermiso){
+    return this.servicio.post(this.api + "permisos", DatosPermiso);
   }
   
   eliminarPermiso(id: number) {
@@ -315,7 +315,7 @@ export class GeneralesService {
   }
 
   actualizarPermisos(datos: any) {
-    return this.servicio.patch(this.api + "permisos", datos)
+    return this.servicio.patch(this.api + "permisos/update", datos)
   }
 
 

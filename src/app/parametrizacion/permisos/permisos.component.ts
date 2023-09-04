@@ -30,11 +30,13 @@ export class PermisosComponent implements OnInit {
   cargo:any = null;
   spinner:boolean = false;
 
+  // ___________________________________________________________________________________________________________
 
   consultar: boolean = false;
   consulta_permisos: any = null;
   permisoSeleccionado: any = null;
   idPermisos: number;
+  estado: number;
   datoOriginal: string = '';
   datoEditarPermiso: string;
   editar: boolean = false;
@@ -48,7 +50,7 @@ export class PermisosComponent implements OnInit {
   @ViewChild("enviarPermiso") enviarPermiso: NgForm;
   @ViewChild(MatSort) sort: MatSort;
 
-
+  // ___________________________________________________________________________________________________________
 
   constructor(private servicio: GeneralesService) { }
 
@@ -103,8 +105,8 @@ export class PermisosComponent implements OnInit {
     console.log(this.tabla_permisos)
 
     this.dataSourcePermisos.data = this.tabla_permisos;
-    this.dataSourcePermiso.paginator = this.paginatorPermiso;
-    this.dataSourcePermiso.sort = this.sort;
+    this.dataSourcePermisos.paginator = this.paginatorPermiso;
+    this.dataSourcePermisos.sort = this.sort;
   }
 
   editarPermisos(element: any) {
@@ -147,15 +149,15 @@ export class PermisosComponent implements OnInit {
     this.enviarPermiso.controls.Permiso.setValue(infoPermiso.Permiso);
   }
 
-  registrarPermisos() {
+  registrarPermiso() {
     if (this.enviarPermiso.valid ) {
       const formPermisos = {
-        id_permisos: this.idPermisos,
+        id_permiso: this.idPermisos,
         permiso: this.enviarPermiso.controls.añadirPermiso.value,
-        // estado: this.Seleccionado
+        estado: this.estado,
       };
   
-      if (formPermisos.id_permisos) {
+      if (formPermisos.id_permiso) {
         this.servicio.actualizarPermisos(formPermisos).subscribe(
           (res: any) => {
             this.datoOriginal = this.datoEditarPermiso;

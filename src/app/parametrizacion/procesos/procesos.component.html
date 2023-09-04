@@ -181,11 +181,26 @@
                               <div class="col-4">
   
                                 <div class="añadir-proceso-container">
-                                  <h5 class="titulo-añadir"><strong>Añadir Subproceso</strong></h5>
-                              
+                                  <h5 class="titulo-añadir"><strong>Añadir Subproceso</strong></h5>                                  
+
                                   <form #registrarSubProceso="ngForm" (ngSubmit)="registrarSubProcesos()" [noValidate]="false">
                                     <mat-form-field class="example-full-width">
                                       <input matInput  placeholder="Subproceso" type="text" name="añadirSubProceso" [(ngModel)]="datoEditarSubPro" required/>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select
+                                        matInput
+                                        placeholder="Procesos Relacionado"
+                                        name="formularioProcesos"
+                                        [(ngModel)]="procesoSeleccionado"
+                                        (selectionChange)="AgregarProceso()"
+                                        required
+                                      >
+                                        <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
+                                          {{ p.nombre_proceso }}
+                                        </mat-option>
+                                      </mat-select>
                                     </mat-form-field>
                               
                                     <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
@@ -200,22 +215,6 @@
                                     </button>
             
                                   </form>
-
-                                  <mat-form-field class="example-full-width">
-                                    <mat-select
-                                      placeholder="formularioProcesos"
-                                      name="formularioProcesos"
-                                      [(ngModel)]="procesoSeleccionado"
-                                      (selectionChange)="AgregarProceso()"
-                                      required
-                                    >
-                                      <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
-                                        {{ p.nombre_proceso }}
-                                      </mat-option>
-                                    </mat-select>
-                                  </mat-form-field>
-                                  
-
                                 </div>
                               </div>                      
   

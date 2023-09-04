@@ -21,7 +21,7 @@
                                 
                             <div class="col row align-items-center">
                               <div class="table-responsive">
-                        <table mat-table [dataSource]="dataSourcePermiso" class="w-100 text-center table table-striped table-hover">
+                        <table mat-table [dataSource]="dataSourcePermisos" class="w-100 text-center table table-striped table-hover">
 
                             <ng-container matColumnDef="id_permiso">
                                 <th mat-header-cell *matHeaderCellDef class="text-center" > * </th>
@@ -42,7 +42,7 @@
                               <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
                               <td mat-cell *matCellDef="let element">
 
-                                <button class="btn btn-info rounded-pill" (click)="editarPermiso(element)" 
+                                <button class="btn btn-info rounded-pill" (click)="editarPermisos(element)" 
                                 matTooltip="Editar Permiso" 
                                 matTooltipPosition="above"
                                 matTooltipClass="tooltipText">
@@ -67,14 +67,14 @@
 
                         </table>
                       
-                        <!-- <mat-paginator 
+                        <mat-paginator 
                         [hidden]="dataSourcePermisos.data.length < 1"
                         class="mat-elevation-z8"
-                        #paginatorPermisos
+                        #paginatorPermiso
                         [pageSizeOptions]="[5, 10, 20]"
                         showFirstLastButtons
                       >
-                        </mat-paginator> -->
+                        </mat-paginator>
                       </div>
                     </div>
 
@@ -84,7 +84,7 @@
                           <div class="añadir-permiso-container">
                             <h5 class="titulo-añadir"><strong>Añadir Permiso</strong></h5>
                         
-                            <form #registrarPermiso="ngForm" (ngSubmit)="registrarPermiso()" [noValidate]="false">
+                            <form #enviarPermiso ="ngForm" (ngSubmit)="registrarPermiso()" [noValidate]="false">
                               <mat-form-field class="example-full-width">
                                 <input matInput  placeholder="Permiso" type="text" name="añadirPermiso" [(ngModel)]="datoEditarPermiso" required/>
                               </mat-form-field>
