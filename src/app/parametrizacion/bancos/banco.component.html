@@ -1,10 +1,13 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header card-header-info" id="banner">
-          <h4 class="card-title">Buscar Bancos</h4>
-        </div>
+
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card" style="margin-top: 20px;"> <!-- Agregado el margen superior -->
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Gestion Bancos</h4>
+            <p  class="paragraph-info">Aqui se puede gestionar los Bancos</p>
+          </div>
         <div class="card-body">
           <mat-accordion>
             <mat-expansion-panel hideToggle></mat-expansion-panel>
@@ -17,43 +20,74 @@
                   <h6 class="text-info">Búsqueda de Bancos</h6>
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <h5><strong>Buscar banco por su nombre</strong></h5>
+              
+              <!-- Sección de buscar y añadir banco -->
               <div class="row">
-                <div class="col-3">
-                  <input
-                    class="formdata text-center form-control align-baseline mt-2"
-                    placeholder="Nombre del Banco"
-                    type="text"
-                    [(ngModel)]="consulta_banco"
-                  />
-                </div>
-                <button   
-                  class="btn btn-info text-center col-3"
-                  id="button-consultar"
-                    (click)="traerBancos()" 
-                >
-                  Consultar
-                </button> 
-              </div>
+  <!-- Sección de buscar banco -->
+  <div class="col-6">
+    <h5><strong>Buscar banco por su nombre</strong></h5>
+    <div class="row">
+      <div class="col-12">
+        <input class="formdata form-control mt-2" placeholder="Nombre del Banco" type="text" [(ngModel)]="consulta_banco" />
+      </div>
+      <div class="col-12 mt-2">
+        <button mat-raised-button class="btn btn-info btn-lg consulta-button btn-verde-oscuro" (click)="traerBancos()">Consultar</button>
+      </div>
+    </div>
+  </div>
 
-           
-           
-              <div class="col-4">
-                <h5><strong>Añadir Banco</strong></h5>
-                <form #registrarBancoForm="ngForm" (ngSubmit)="registrarBanco()">
-                  <mat-form-field class="example-full-width">
-                    <input matInput placeholder="Banco" type="text" name="banco" [(ngModel)]="nuevoBanco.banco" required />
-                  </mat-form-field>
-                  <button mat-raised-button type="submit" class="btn btn-info pull-right" id="button-guardar">
-                    Guardar
-                  </button>
-                </form>
-                
+  <!-- Sección de añadir banco -->
+  <div class="col-6">
+    <h5><strong>Añadir Banco</strong></h5>
+    <form #registrarBancoForm="ngForm" (ngSubmit)="registrarBanco()">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Banco" type="text" name="nuevoBanco.banco" [(ngModel)]="nuevoBanco.banco" />
+      </mat-form-field>
+      <div class="col-12 mt-2">
+        <button mat-raised-button class="btn btn-info btn-lg btn-verde-oscuro" type="submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+              <!-- Sección de modificar / eliminar banco -->
+              <div class="row">
+                <div class="col-12">
+                  <h5><strong>Modifica o elimina un Banco</strong></h5>
+                  <div class="row">
+                    <!-- Select Bank Dropdown -->
+                    <div class="col-6">
+                      <mat-form-field>
+                        <mat-label>Selecciona un Banco</mat-label>
+                        <mat-select [(value)]="modificarBancoSeleccionado">
+                          <mat-option *ngFor="let banco of listaBancos" [value]="banco" (click)="seleccionarBancoParaModificar(banco)">
+                            {{ banco.entidad_bancaria }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    
+                    <!-- Nuevo Nombre del Banco -->
+                    <div class="col-6">
+                      <mat-form-field>
+                        <mat-label>Nuevo Nombre del Banco</mat-label>
+                        <input matInput [(ngModel)]="nuevoNombreBanco" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  
+                  <!-- Botones de Modificar y Eliminar -->
+                  <div class="row">
+                    <div class="col-6">
+                      <button mat-raised-button class="btn btn-info btn-lg btn-verde-oscuro" (click)="modificarBanco()">Modificar Banco</button>
+                    </div>
+                    <div class="col-6">
+                      <button mat-raised-button class="btn btn-danger btn-lg btn-rojo" (click)="eliminarBanco()">Eliminar Banco</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              
-            
-            
               
             </mat-expansion-panel>
           </mat-accordion>

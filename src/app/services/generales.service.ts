@@ -120,16 +120,14 @@ export class GeneralesService {
     return this.servicio.get(this.api + "entidadbancaria");
   }
    
-  actualizarBanco(datos: any) {
-    return this.servicio.patch(this.api + "entidadbancaria/update", datos)
-  }
-  
   enviarBanco(banco){
     return this.servicio.post(this.api + "entidadbancaria/registrar", banco);
   }
-
-  modificarBanco(banco){
-    return this.servicio.patch(this.api + "entidadbancaria/modificar", banco)
+   modificarBanco(banco) {
+    return this.servicio.patch(this.api + "entidadbancaria/update", banco);
+  }
+  eliminarBanco(id: number) {
+    return this.servicio.delete(this.api + "entidadbancaria/" + id);
   }
   
   

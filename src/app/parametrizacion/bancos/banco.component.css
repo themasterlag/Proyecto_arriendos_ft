@@ -1,0 +1,110 @@
+
+/* Botones verdes oscuros */
+.btn-verde-oscuro {
+    background-color: #009200 !important; 
+    color: #fff !important; 
+    border: none !important; 
+    border-radius: 20px !important; 
+}
+
+
+/* Establece un tamaño uniforme para los elementos en el card-body */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Estilos para los cuadros de texto */
+  .formdata {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+  }
+  
+  
+  /* Estilos para el desplegable mat-select */
+  .mat-select {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    appearance: none;
+    cursor: pointer;
+  }
+  
+  /* Ajusta el indicador del desplegable */
+  .mat-select-arrow-wrapper {
+    position: absolute;
+    top: calc(50% - 8px);
+    right: 12px;
+  }
+  
+  /* Estilo para el indicador */
+  .mat-select-arrow {
+    border: solid #777;
+    border-width: 0 1px 1px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    transition: border-color 0.3s;
+  }
+  
+  
+  
+  .btn.btn-lg {
+    font-size: 15px; /* Cambia el tamaño del texto del botón */
+    padding: 5px 10px; /* Ajusta el espacio alrededor del texto */
+    border-radius: 25px; /* Agrega bordes redondeados */
+}
+
+#button-consultar {
+    width: 5px;
+}
+
+#banner{
+    border-radius: 25px;
+    background: #ffe203;
+}
+
+.card-title {
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 21px;
+    margin-bottom: 100px; /* Ajusta la cantidad de espacio en píxeles según tus necesidades */
+}
+
+
+  
+.text-info{
+    color: #359b68 !important;
+    font-weight: 900;
+}
+
+
+.mat-accordion .mat-expansion-panel:last-of-type{
+    border-radius: 25px;
+}
+
+/* Botones verdes oscuros */
+.btn-verde-oscuro {
+    background-color: #009200 !important; /* Color verde oscuro */
+    color: #fff !important; /* Texto blanco */
+    border: none !important; /* Sin borde */
+    border-radius: 20px !important; /* Bordes redondeados */
+}
+
+/* Botón rojo (Eliminar) */
+.btn-rojo {
+    background-color: red !important; /* Color rojo */
+    color: #fff !important; /* Texto blanco */
+    border: none !important; /* Sin borde */
+    border-radius: 20px !important; /* Bordes redondeados */
+    width: auto;
+}
+
+.paragraph-info {
+    color: #1b4f35 !important;
+    font-weight: bold;
+}
