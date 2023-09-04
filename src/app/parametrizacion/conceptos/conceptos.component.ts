@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import { error } from 'console';
+import { element } from 'protractor';
 
 
 interface Conceptos {
@@ -37,7 +38,7 @@ export class ConceptosComponent implements OnInit {
   @ViewChild("formularioConceptos") formularioConceptos: NgForm;
   tipoUsuario: boolean = null;
   Cargos: any;
-  idSubProcesos: any;
+  conceptos: any;
   consultar: boolean = false;
   consulta_concepto: any;
   incremento: boolean = false;
@@ -47,6 +48,9 @@ export class ConceptosComponent implements OnInit {
   valor_porcentaje: any = null;
   consultaPorcentaje: any;
   infConcepto: any;
+  tabla_asociacion: any = [];
+  asociacion: any;
+  conceptos_asociados: any;
   displayedColumns: string[] = ["codigo_concepto", "nombre_concepto",];
   dataSourceConceptos: MatTableDataSource<Conceptos> =
   new MatTableDataSource<Conceptos>();
@@ -54,20 +58,41 @@ export class ConceptosComponent implements OnInit {
 
   ngOnInit(): void {
     this.traerTipoConceptos();
-    // this.traerTodosConceptos();
+    this.traerTodosConceptos();
+    this.traerAsociados();
   }
 
   traerTodosConceptos(){
-    
+    this.servicio.traerConceptos().subscribe(
+      (res:any) => {
+        // console.log(res);
+        this.conceptos = res;
+      },
+      (error:any) => {
+        Swal.fire('Error al traer los conceptos','','error')
+      }
+    )  
+  }
+
+  traerAsociados(){
+    this.servicio. traerConceptosAsociados().subscribe(
+      (res:any) => {
+        this.conceptos_asociados = res;
+        // console.log(this.conceptos_asociados);
+      },
+      (err:any) => {
+        Swal.fire('Error al traer loc conceptos asociados',err,'error');
+      }
+    )
   }
 
   traerConcepto(){
     this.consultar = true;
     if(this.consulta_concepto != null){
-      console.log(this.consulta_concepto);
+      // console.log(this.consulta_concepto);
       this.servicio.traerConceptoCodigo(this.consulta_concepto).subscribe(
         (res:any) => {
-          console.log(res);
+          // console.log(res);
           this.infConcepto = res;
           this.llenarFormulario(res);
         },
@@ -110,7 +135,7 @@ export class ConceptosComponent implements OnInit {
   traerTipoConceptos(){
     this.servicio.traerTipoConcepto().subscribe(
       (res:any) => {
-        console.log(res);
+        // console.log(res);
         this.tipo_conceptos = res;
       })
   }
@@ -129,9 +154,6 @@ export class ConceptosComponent implements OnInit {
 
     let incremento = 0;
 
-    // if(this.consultar == true){
-    //   idConcepto = this.infConcepto.id_concepto
-    // }
 
     if(this.tipo == true){
       const cleanedValue = this.formularioConceptos.controls.valor_porcentaje.value;
@@ -160,18 +182,18 @@ export class ConceptosComponent implements OnInit {
     }).then((result) => {
       if(result.isConfirmed){
         if(this.consultar == true){
-          console.log(formConceptos);
+          // console.log(formConceptos);
           this.servicio.actualizarConcepto(formConceptos).subscribe(
             (res:any) => {
               Swal.fire("Concepto actualizado con éxito","","success");
             },
             (err:any) => {
-              Swal.fire("Error al crear el concepto", err.error.message, "error");
+              Swal.fire("Error al actualizar el concepto", err.error.message, "error");
             }
           )
           this.limpiarFormulario(); 
         }else{
-          console.log(formConceptos)
+          // console.log(formConceptos)
           this.servicio.crearConceptos(formConceptos).subscribe(
             (res:any) => {
               console.log(res);
@@ -188,13 +210,137 @@ export class ConceptosComponent implements OnInit {
     
   }
 
-  validartipopersona(tipo){
+  // validartipopersona(tipo){
 
+  // }
+
+  // filtrarProcesos(filtro){
+
+  // }
+
+  consultarAsociacion(concepto){
+    let primero = false;
+    let listaLlena = false    
+    let lista_concepto = null;
+    let vueltas = 0
+    // console.log(concepto);
+    let concepto_igual = this.tabla_asociacion.find((con) => con.codigo_concepto == concepto.codigo_concepto)
+    if(concepto_igual){
+      Swal.fire('Ya existe el concepto en la tabla', '', 'info');
+    } else {
+      if(concepto.concepto_asociado == null){
+        this.tablaAsociacion(concepto);
+      }else{  
+        let concepto_asociado = concepto.concepto_asociado.split("_")[1];
+        let codigo_concepto = concepto.codigo_concepto;
+        for (let i = 0; i < this.conceptos_asociados.length && listaLlena == false && vueltas < 5; i++) {
+          const element = this.conceptos_asociados[i];
+
+          if(codigo_concepto == element.codigo_concepto && primero == false){
+            // concepto_asociado = element.concepto_asociado.split("_")[1];
+            codigo_concepto = element.concepto_asociado.split("_")[1];;            // console.log(codigo_concepto)
+
+            if(element.concepto_asociado.split("_")[0] == 1){
+              primero = true;
+              concepto_asociado = element.concepto_asociado.split("_")[1];
+              codigo_concepto = element.codigo_concepto
+
+              lista_concepto = {
+                codigo_concepto: element.codigo_concepto,
+                nombre_concepto: element.nombre_concepto,
+              }
+            }
+          }          
+          if(primero == true && concepto_asociado == element.codigo_concepto){
+            concepto_asociado = element.concepto_asociado.split("_")[1]
+
+            lista_concepto = {
+              codigo_concepto: element.codigo_concepto,
+              nombre_concepto: element.nombre_concepto,
+            }
+
+            if(codigo_concepto == concepto_asociado){
+              listaLlena = true
+            }
+          }
+          if(i == this.conceptos_asociados.length-1){
+            i = 0; 
+            vueltas++;
+          }     
+
+          if(lista_concepto && !(this.tabla_asociacion.find((con) => con.codigo_concepto == lista_concepto["codigo_concepto"]))){
+            this.tabla_asociacion.push(lista_concepto);
+          }
+        }
+      }
+    }    
   }
 
-  filtrarProcesos(filtro){
-
+  tablaAsociacion(concepto){
+    // let concepto_select = this.conceptos.filter((idConcepto) => idConcepto.id_concepto == concepto);
+    // console.log(concepto);
+    this.tabla_asociacion.push({
+      codigo_concepto: concepto.codigo_concepto,
+      nombre_concepto: concepto.nombre_concepto,
+    });  
   }
+
+  agregarAsociacion(tipo){
+    // console.log(this.tabla_asociacion);
+    let posicion = 1
+    let formAsociado = null;
+
+    if(this.tabla_asociacion.length == 0){
+      Swal.fire("La tabla asociacion no puede estar vacia",'','info')
+    }else{
+      Swal.fire({
+        title: "Seguro de guardar los cambios?",
+        showDenyButton: true,
+        confirmButtonText: "Guardar",
+        denyButtonText: "Cancelar",
+      }).then((result) => {
+        if(result.isConfirmed){
+          for (let i = 0; i < this.tabla_asociacion.length ; i++) {
+            // this.tabla_asociacion[i].siguiente = i;
+            if(this.tabla_asociacion.length == 1 || tipo == 2){
+              this.tabla_asociacion[i].concepto_asociado = null
+            }else {
+              this.tabla_asociacion[i].concepto_asociado = posicion+"_"+this.tabla_asociacion[(i + 1) % this.tabla_asociacion.length].codigo_concepto;
+              posicion++;
+            }
+      
+            formAsociado = {
+              codigo_concepto: this.tabla_asociacion[i].codigo_concepto,
+              concepto_asociado: this.tabla_asociacion[i].concepto_asociado
+            }
+            // console.log(formAsociado);
+            this.servicio.actualizarConcepto(formAsociado).subscribe(
+              (res:any) => {
+                Swal.fire("Concepto actualizado con éxito","","success");
+                this.limpiarAsociacion();  
+                this.traerAsociados();  
+                this.traerTodosConceptos();
+              },
+              (err:any) => {
+                Swal.fire("Error al actualizar el concepto", err.error.message, "error");
+              }
+            )  
+          }
+        } 
+      }) 
+    }
+    // console.log(this.tabla_asociacion);
+  }
+
+  limpiarAsociacion(){
+    this.tabla_asociacion = [];
+    this.asociacion = null;
+  }
+
+  deliCon(i: number) {
+    this.tabla_asociacion.splice(i, 1);
+    // this.totalValorConceptos();
+}
 
   tablaConceptos(){
     this.servicio.traerConceptos().subscribe(

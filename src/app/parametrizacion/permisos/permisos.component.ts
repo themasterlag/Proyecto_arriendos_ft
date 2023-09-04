@@ -1,7 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import {MatTableDataSource} from '@angular/material/table';
 import Swal from "sweetalert2";
+import { MatPaginator } from "@angular/material/paginator"
+import {MatSort} from '@angular/material/sort';
+import {NgForm } from "@angular/forms";
+
+interface Permisos{
+  id_permiso:number;
+  permiso: string;
+  estado: number;
+}
 
 @Component({
   selector: 'app-permisos',
@@ -21,6 +30,26 @@ export class PermisosComponent implements OnInit {
   cargo:any = null;
   spinner:boolean = false;
 
+
+  consultar: boolean = false;
+  consulta_permisos: any = null;
+  permisoSeleccionado: any = null;
+  idPermisos: number;
+  datoOriginal: string = '';
+  datoEditarPermiso: string;
+  editar: boolean = false;
+  permisos: any;
+  listaPer:any = [];
+  tabla_permisos: any;
+  opcionSeleccionada: string = '';
+  columnasPermisos: string[] = ["id_permiso", "permiso","estado","acciones"];
+  dataSourcePermisos: MatTableDataSource<Permisos> =  new MatTableDataSource<Permisos>();
+  @ViewChild("paginatorPermiso") paginatorPermiso: MatPaginator;
+  @ViewChild("enviarPermiso") enviarPermiso: NgForm;
+  @ViewChild(MatSort) sort: MatSort;
+
+
+
   constructor(private servicio: GeneralesService) { }
 
   ngOnInit(): void {
@@ -28,7 +57,161 @@ export class PermisosComponent implements OnInit {
     this.dataSourcePermiso = new MatTableDataSource();
 
     this.cargarDatos();
+    this.traerPermisos();   
   }
+
+  ejecutarConsultas(){
+    this.consultarListaPermisos();
+  }
+  // ___________________________________________________________________________________________________________
+
+  traerPermisos(){
+    this.servicio.traerPermisos().subscribe(
+      (res) => {
+        console.log(res);
+        this.permisos = res;
+        this.tablaPermisos();
+      },
+      (error:any) =>{
+       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+      }
+    )
+  }
+
+  consultarListaPermisos(){
+    this.servicio.traerPermisos().subscribe(
+      (res:any)=>{
+        
+        this.listaPer = res;
+
+      },
+      (err:any)=>{
+        Swal.fire("No se pudo consultar los permisos", "", "error");
+      }
+    );
+  }
+
+  tablaPermisos(){
+
+    this.tabla_permisos = this.permisos.map((permisos) => {
+      return {
+        id_permiso: permisos.id_permiso,
+        permiso: permisos.permiso,
+        estado:  permisos.estado,
+      }
+    })
+    console.log(this.tabla_permisos)
+
+    this.dataSourcePermisos.data = this.tabla_permisos;
+    this.dataSourcePermiso.paginator = this.paginatorPermiso;
+    this.dataSourcePermiso.sort = this.sort;
+  }
+
+  editarPermisos(element: any) {
+    console.log(element);
+    this.idPermisos = element.id_permiso;
+    this.editar = true;
+    this.datoEditarPermiso = element.permiso;
+    this.datoOriginal = element.permiso;
+    console.log(element);
+  }
+
+  // eliminarSubProceso(subproceso: any){
+  //   if (this.servicio.eliminarSubProceso(subproceso.id_subproceso)) {
+  //     const formSubProcesos = {
+  //       id_subproceso: this.idPermisos,
+  //     };
+  //       Swal.fire({
+  //         title: "Seguro que quieres eliminar este subproceso?",
+  //         showDenyButton: true,
+  //         confirmButtonText: "Confirmar",
+  //         denyButtonText: `Cancelar`,
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           this.servicio.eliminarSubProceso(subproceso.id_subproceso).subscribe(
+  //             (res: any) => {
+  //               Swal.fire("subproceso eliminado", "", "success");
+  //               this.ejecutarConsultas();
+  //               this.traerSubProcesos();
+  //             },
+  //             (error) => {
+  //              Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+  //             }
+  //           );
+  //         }
+  //       });
+  //     }
+  //   }
+
+  llenarFormulario(infoPermiso){
+    this.enviarPermiso.controls.Permiso.setValue(infoPermiso.Permiso);
+  }
+
+  registrarPermisos() {
+    if (this.enviarPermiso.valid ) {
+      const formPermisos = {
+        id_permisos: this.idPermisos,
+        permiso: this.enviarPermiso.controls.añadirPermiso.value,
+        // estado: this.Seleccionado
+      };
+  
+      if (formPermisos.id_permisos) {
+        this.servicio.actualizarPermisos(formPermisos).subscribe(
+          (res: any) => {
+            this.datoOriginal = this.datoEditarPermiso;
+            this.datoEditarPermiso = '';
+            this.ejecutarConsultas();
+            this.traerPermisos();
+            this.idPermisos = null;
+            Swal.fire("Cambios guardados con éxito", "", "success");
+          },
+          (err: any) => {
+            Swal.fire("No se pudieron guardar los cambios", "", "error");
+          }
+        );
+      } else {
+        Swal.fire({
+          title: "Seguro de guardar los cambios?",
+          showDenyButton: true,
+          confirmButtonText: "Guardar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.enviarPermiso(formPermisos).subscribe(
+              (res: any) => {
+                Swal.fire("Permiso guardado con éxito", "", "success");
+                this.enviarPermiso.form.markAsPristine();
+                this.enviarPermiso.form.markAsUntouched();
+                this.enviarPermiso.resetForm();
+                this.traerPermisos();
+              },
+              (error) => {
+               Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
+      }
+    }
+  }
+
+  limpiarFormulario(){
+    this.consulta_permisos = null;
+    this.consultar = false;
+    this.datoEditarPermiso = null;
+
+
+    this.idPermisos = null;
+    this.editar = false;
+    this.opcionSeleccionada  = '';
+
+
+    this.enviarPermiso.reset();
+    console.log(this.datoOriginal);
+  }
+
+
+  // ____________________________________________________________________________________________________
 
   cargarDatos() {
     if (this.tipoPermiso == 1) {

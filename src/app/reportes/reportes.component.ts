@@ -47,11 +47,12 @@ export class ReportesComponent implements OnInit {
   generarListaReportes(){
     this.dataSource = new MatTableDataSource(
       [
-        {"nombre" : "Bancolombia", "reporte": "bancolombia", "periodo" : true, status: true},
-        {"nombre" : "Otros bancos", "reporte": "otrosBancos", "periodo" : true, status: true},
-        {"nombre" : "Efectivo", "reporte": "efectivo", "periodo" : true, status: true},
-        {"nombre" : "Todos los bancos", "reporte": "todosBancos", "periodo" : true, status: true},
-        {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: false}
+        {"nombre" : "Bancolombia", "reporte": "bancolombia", "periodo" : true, status: 1},
+        {"nombre" : "Otros bancos", "reporte": "otrosBancos", "periodo" : true, status: 1},
+        {"nombre" : "Efectivo", "reporte": "efectivo", "periodo" : true, status: 1},
+        {"nombre" : "Todos los bancos", "reporte": "todosBancos", "periodo" : true, status: 1},
+        {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: 2},
+        {"nombre" : "Consulta", "reporte" : "consulta", "periodo" : true, status: 3, }
       ]
     );
   }
@@ -79,13 +80,20 @@ export class ReportesComponent implements OnInit {
         case "proximosRenovar":
           this.generarReporteProximosRenovar();
           break;
+        case "consulta":
+          this.generarReporteConsulta(reporte);
         default:
           break;
       }
     }
 
-    this.mes = null;
-    this.anio = null;
+    // this.mes = null;
+    // this.anio = null;
+  }
+
+  generarReporteConsulta(reporte){
+    console.log(reporte);
+    this.spinner = false;
   }
 
   generarReporteProximosRenovar(){

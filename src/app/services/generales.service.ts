@@ -250,7 +250,7 @@ export class GeneralesService {
     return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
-  //USUARIOS
+ //Procesos y subprocesos
 
   traerProcesos(){
     return this.servicio.get(this.api + "procesos");
@@ -260,26 +260,39 @@ export class GeneralesService {
     return this.servicio.get(this.api + "procesos/"+id);
   }
 
-  traerSubProcesos(){
-    return this.servicio.get(this.api + "procesos/subprocesos/");
-  }
-
   enviarProceso(datosProcesos){
-    return this.servicio.post(this.api + "procesos", datosProcesos);
+    return this.servicio.post(this.api + "procesos/p", datosProcesos);
   }
   
   eliminarProceso(id: number) {
-    return this.servicio.delete(this.api + "procesos/"+id)
+    return this.servicio.delete(this.api + "procesos/proceso"+id)
   }
 
   actualizarProcesos(datos: any) {
     return this.servicio.patch(this.api + "procesos/update", datos)
   }
 
-
-  enviarUsuarios(formUsuario){
-    return this.servicio.post(this.api + "aut/singup", formUsuario);
+  traerSubProcesos(){
+    return this.servicio.get(this.api + "procesos/subprocesos/");
   }
+
+  traerSubProceso(id){
+    return this.servicio.get(this.api + "procesos/subprocesos/"+id);
+  }
+
+  enviarSubProceso(datosSubProcesos){
+    return this.servicio.post(this.api + "procesos/subP", datosSubProcesos);
+  }
+  
+  eliminarSubProceso(id: number) {
+    return this.servicio.delete(this.api + "procesos/subproceso"+id)
+  }
+
+  actualizarSubProcesos(datos: any) {
+    return this.servicio.patch(this.api + "procesos/updateSub", datos)
+  }
+
+  //PERMISOS
 
   traerPermisos(){
     return this.servicio.get(this.api + "permisos");
@@ -287,6 +300,31 @@ export class GeneralesService {
 
   registrarPermisoDetalle(permiso){
     return this.servicio.post(this.api + "permiso-detalle", permiso);
+  }
+
+  traerPermiso(id){
+    return this.servicio.get(this.api + "permisos/"+id);
+  }
+
+  enviarPermiso(datosSubProcesos){
+    return this.servicio.post(this.api + "permisos", datosSubProcesos);
+  }
+  
+  eliminarPermiso(id: number) {
+    return this.servicio.delete(this.api + "permisos/"+id)
+  }
+
+  actualizarPermisos(datos: any) {
+    return this.servicio.patch(this.api + "permisos", datos)
+  }
+
+
+
+
+   //USUARIOS
+
+  enviarUsuarios(formUsuario){
+    return this.servicio.post(this.api + "aut/singup", formUsuario);
   }
 
   traerUsuario(idUsuario){

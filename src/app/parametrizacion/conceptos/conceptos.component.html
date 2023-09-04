@@ -93,7 +93,7 @@
                                     <mat-form-field class="example-full-width">
                                       <mat-select
                                         placeholder="Tipo de operación"
-                                        (selectionChange)="validartipopersona($event.value)"
+
                                         name="tipo_documento"
                                         ngModel
                                         required
@@ -278,13 +278,73 @@
                               <h5><strong>Asociar conceptos que dependan de otro concepto</strong></h5>
                               <div class="row">
                                 <div class="col">
-                                  <input
-                                    class="formdata text-center form-control align-baseline mt-2"
-                                    placeholder="Ingresar concepto"
-                                    type="text"
-                                    [(ngModel)]="consulta_concepto"
-                                  />
+                                  <mat-form-field class="example-full-width">
+                                    <mat-select
+                                      placeholder="Conceptos"
+                                      (selectionChange)="consultarAsociacion($event.value)"
+                                      [(ngModel)]= "asociacion"
+                                    >
+                                      <mat-option
+                                        [value]="m"
+                                        *ngFor="let m of conceptos"
+                                      >
+                                        {{m.codigo_concepto}} - {{ m.nombre_concepto }}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
                                 </div>
+                              </div>
+                                <div class="row" >
+                                  <div class="col-md-2"></div>
+                                  <div class="col-md-8">
+                                    <div class="card">
+                                      <div class="card-header card-header-success">
+                                        <h4 class="card-title">Conceptos de contrato</h4>
+                                        <p class="card-category">
+                                          Aqui se registran los conceptos presentes en el
+                                          contrato
+                                        </p>
+                                      </div>
+                                      <div class="card-body" [ngClass]="tabla_asociacion.length > 2 ? 'scrollCard' : ''">
+                                        <div class="table-responsive" >
+                                          <table class="table mb-0" style="text-align:center;">
+                                            <thead class="text-info">
+                                              <th>CODIGO</th>
+                                              <th>NOMBRE CONCEPTO</th>
+                                              <!-- <th>Valor</th> -->
+                                              <th>ACCIONES</th>
+                                            </thead>
+                                            <tbody>
+                                              <tr
+                                                *ngFor="let pt of tabla_asociacion; let i = index"
+                                              >
+                                                <td>{{ pt.codigo_concepto }}</td>
+                                                <td>{{ pt.nombre_concepto }}</td>
+                
+                                                <td>
+                                                  <button
+                                                    class="btn btn-danger"
+                                                    type="button"
+                                                    (click)="deliCon(i)"
+                                                    id="button-eliminar-tabla"
+                                                  >
+                                                    <span class="material-symbols-outlined">
+                                                      eliminar
+                                                    </span>
+                                                  </button>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                         <!-- <p class="text-center bg-primary text-white p-2 rounded">Hola = {{valorTotal}}</p> -->
+                                      </div>
+                                      
+                                      <!-- <div class="card-footer">Total Valor = {{valorTotal.toLocaleString('es-ES')}}</div> -->
+                                      <!-- <div class="card-footer">Valor total : <span class="valor-destacado"> $ {{valorTotal.toLocaleString('es-ES')}}</span></div> -->
+                                    </div>
+                                  </div>
+                                
                                 
                                 <!-- <button
                                   class="btn btn-info text-center col-3"
@@ -294,116 +354,27 @@
                                   Consultar
                                 </button> -->
                               </div>
-              
-                              <hr />
-                              <!--Registro asociacion-->
-                              <!-- <form
-                                #formularioConceptos="ngForm"
-                                (ngSubmit)="registrarConcepto()"
-                                [noValidate]="false"
-                              > -->
-                                <!-- <div class="row">
-                                  <div class="col-4">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Codigo del concepto"
-                                        type="number"
-                                        name="codigo_concepto"
-                                        ngModel
-                                        required
-                                      />
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-5">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Nombre de concepto"
-                                        type="text"
-                                        name="nombre_concepto"
-                                        ngModel
-                                        required
-                                      />
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-3">
-                                    <mat-form-field class="example-full-width">
-                                      <mat-select
-                                        placeholder="Tipo de operación"
-                                        (selectionChange)="validartipopersona($event.value)"
-                                        name="tipo_documento"
-                                        ngModel
-                                        required
-                                      >
-                                        <mat-option value="Débito"> Débito </mat-option>
-                                        <mat-option value="Crédito">Crédito</mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                                </div>
-                                 <div class="row">
-                                  <div class="col-3">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Cuenta contable"
-                                        type="number"
-                                        name="cuenta_contable"
-                                        ngModel
-                                        required
-                                      />
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-4">
-                                    <mat-form-field class="example-full-width">
-                                      <mat-select
-                                        placeholder="Tipo de concepto"
-                                        name="tipo_concepto"
-                                        (selectionChange)="validarTipoConcepto()"
-                                        ngModel
-                                        required
-                                      >
-                                        <mat-option
-                                          [value]="p.id_tipo_concepto"
-                                          *ngFor="let p of tipo_conceptos"
-                                        >
-                                          {{ p.tipo_concepto }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-3" *ngIf="tipo">
-                                    <mat-form-field class="example-full-width">
-                                      <input
-                                        matInput
-                                        placeholder="Valor porcentaje"
-                                        type="text"
-                                        name="valor_porcentaje"
-                                        [(ngModel)]="consultaPorcentaje"
-                                      />
-                                    </mat-form-field>
-                                  </div>
-                                  <div class="col-2 d-flex align-items-center d-flex justify-content-center">
-                                  <mat-checkbox class="example-margin" [(ngModel)]="incremento" name="incremento">Incremento</mat-checkbox>
-                                  </div>
-                                 </div> -->
                                 <button
                                   mat-raised-button
-                                  type="submit"
                                   class="btn btn-info pull-right"
                                   id="button-guardar"
-                                >
+                                  (click)="agregarAsociacion(1)">
                                   Guardar
                                 </button>
                                 <button
                                   mat-raised-button
-                                  type="reset"
                                   class="btn btn-danger pull-right"
                                   id="button-limpiar"
-                                  (click)="limpiarFormulario()"
+                                  (click)="limpiarAsociacion()"
                                 >
                                   Limpiar
+                                </button>
+                                <button
+                                  mat-raised-button
+                                  class="btn btn-info pull-right"
+                                  id="button-borrar"
+                                  (click)="agregarAsociacion(2)">
+                                  Borrar
                                 </button>
                               <!-- </form> -->
                             </mat-expansion-panel>
@@ -417,7 +388,7 @@
               >
                 <mat-expansion-panel-header (click)="tablaConceptos()">
                   <mat-panel-title>
-                    <h6 class="text-info">Gestión de contratos</h6>
+                    <h6 class="text-info">Lista de conceptos</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <hr>

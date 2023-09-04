@@ -42,6 +42,11 @@
     background-color: green !important;
     border-radius: 25px !important;
 }
+#button-borrar{
+    background-color: #ffe203 !important;
+    color: #000 !important;
+    border-radius: 25px !important;
+}
 #button-consultar{
     background-color: green !important;
     border-radius: 25px !important;
@@ -64,6 +69,15 @@
 .Habilitar {
     border-radius: 25px;
     background-color : #359b68;
+}
+
+.scrollCard{
+    height: 30vh; 
+    overflow-y: auto;
+}
+#button-eliminar-tabla {
+    border-radius: 25px;
+    background-color : red;
 }
 
 
