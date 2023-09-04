@@ -229,8 +229,13 @@ export class ProcesosComponent implements OnInit {
       }
 
       AgregarProceso() {
+        if (this.procesoSeleccionado !== null){
         this.procesoSeleccionado = this.enviarProceso.controls.formularioProcesos.value;
+        }
+        else {
+          Swal.fire("Seleccione el Proceso relacionado","","info");          
       }
+    }
 
 // -------------------------------------------------------------------------------------------------------------------------
 
