@@ -175,7 +175,7 @@
 
                         <mat-form-field class="example-full-width">
                           <mat-select matInput placeholder="Proceso Relacionado"  name="formularioProcesos"
-                            [(ngModel)]="procesoSeleccionado" (selectionChange)="registrarSubProcesos()" required>
+                            [(ngModel)]="procesoSeleccionado"  required>
                             <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
                               {{ p.nombre_proceso }}
                             </mat-option>
