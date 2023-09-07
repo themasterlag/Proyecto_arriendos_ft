@@ -259,8 +259,16 @@
                                   (click)="limpiarFormulario()"
                                 >
                                   Limpiar
-                                </button>
+                                </button>                                
                               </form>
+                              <button
+                                *ngIf="consultar == true"
+                                mat-raised-button
+                                class="btn btn-info pull-right"
+                                id="button-borrar"
+                                (click)="eliminarConcepto()">
+                                Eliminar
+                              </button>
                             </mat-expansion-panel>
                           </mat-accordion>
                           <hr>
