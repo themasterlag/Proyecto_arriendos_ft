@@ -81,7 +81,7 @@ export class ConceptosComponent implements OnInit {
         // console.log(this.conceptos_asociados);
       },
       (err:any) => {
-        Swal.fire('Error al traer loc conceptos asociados',err,'error');
+        Swal.fire('Error al traer los conceptos asociados',err,'error');
       }
     )
   }
