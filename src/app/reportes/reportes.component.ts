@@ -81,7 +81,7 @@ export class ReportesComponent implements OnInit {
           this.generarReporteProximosRenovar();
           break;
         case "consulta":
-          this.generarReporteConsulta(reporte);
+          this.generarReporteConsulta("todos-bancos");
         default:
           break;
       }
@@ -94,6 +94,11 @@ export class ReportesComponent implements OnInit {
   generarReporteConsulta(reporte){
     console.log(reporte);
     this.spinner = false;
+    this.servicio.traerPdvReporte(this.mes,this.anio,reporte).subscribe(
+      (res:any) => {
+        console.log(res);
+      }
+    )
   }
 
   generarReporteProximosRenovar(){
