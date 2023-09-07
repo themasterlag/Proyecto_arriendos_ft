@@ -74,7 +74,7 @@ export class ProcesosComponent implements OnInit {
   traerProcesos(){
     this.servicio.traerProcesos().subscribe(
       (res) => {
-        console.log(res);
+  
         this.procesos = res;
         this.tablaProcesos();
       },
@@ -87,7 +87,7 @@ export class ProcesosComponent implements OnInit {
   traerSubProcesos(){
     this.servicio.traerSubProcesos().subscribe(
       (res) => {
-        console.log(res);
+      
         this.subprocesos = res;
         this.tablaSubProcesos();
       },
@@ -131,7 +131,7 @@ export class ProcesosComponent implements OnInit {
         nombre_proceso: proceso.nombre_proceso,
       }
     })
-    console.log(this.tabla_procesos)
+
 
     this.dataSourceProceso.data = this.tabla_procesos;
     this.dataSourceProceso.paginator = this.paginatorProcesos;
@@ -148,7 +148,7 @@ export class ProcesosComponent implements OnInit {
         id_proceso: lista.nombre_proceso,
       }
     })
-    console.log(this.tabla_subprocesos)
+
 
     this.dataSourceSubProceso.data = this.tabla_subprocesos;
     this.dataSourceSubProceso.paginator = this.paginatorSubProcesos;
@@ -157,21 +157,21 @@ export class ProcesosComponent implements OnInit {
 
 
   editarProceso(element: any) {
-    console.log(element);
+
     this.idProcesos = element.id_proceso;
     this.editar = true;
     this.datoSeleccionadoParaEditar = element.nombre_proceso;
     this.datoOriginal = element.nombre_proceso;
-    console.log(element);
+
   }
 
   editarSubProceso(element: any) {
-    console.log(element);
+
     this.idSubProcesos = element.id_subproceso;
     this.editar = true;
     this.datoEditarSubPro = element.subproceso;
     this.datoOriginal = element.subproceso;
-    console.log(element);
+   
   }
 
   eliminarProceso(proceso: any){
@@ -299,7 +299,7 @@ export class ProcesosComponent implements OnInit {
         id_subproceso: this.idSubProcesos,
         subproceso: this.enviarSubProceso.controls.añadirSubProceso.value,
         id_proceso: this.procesoSeleccionado
-      };
+      }
   
       if (formSubProcesos.id_subproceso) {
         this.servicio.actualizarSubProcesos(formSubProcesos).subscribe(
@@ -338,6 +338,8 @@ export class ProcesosComponent implements OnInit {
           }
         });
       }
+    }else{
+      Swal.fire("Los campos no deben estar vacios","" ,"question");
     }
   }
 
@@ -353,13 +355,13 @@ export class ProcesosComponent implements OnInit {
 
 
     this.enviarProceso.reset();
-    console.log(this.datoOriginal);
+
   }
 
-  applyFilter(event: Event){
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceProceso.filter = filterValue.trim().toLowerCase();
-  }
+  // applyFilter(event: Event){
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSourceProceso.filter = filterValue.trim().toLowerCase();
+  // }
 // -------------------------------------------------------------------------------------------------------------------------
 
 

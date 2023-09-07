@@ -92,7 +92,7 @@
                     
                         <form #registrarCargo="ngForm" (ngSubmit)="registrarCargos()" [noValidate]="false">
                           <mat-form-field class="example-full-width">
-                            <input matInput (keyup)="applyFilter($event)" placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" required/>
+                            <input matInput placeholder="Cargo" type="text" name="añadircargo" [(ngModel)]="datoSeleccionadoParaEditar" required/>
                           </mat-form-field>
                     
                           <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">

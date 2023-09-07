@@ -70,7 +70,6 @@ export class PermisosComponent implements OnInit {
   traerPermisos(){
     this.servicio.traerPermisos().subscribe(
       (res) => {
-        console.log(res);
         this.permisos = res;
         this.tablaPermisos();
       },
@@ -102,7 +101,6 @@ export class PermisosComponent implements OnInit {
         estado:  permisos.estado,
       }
     })
-    console.log(this.tabla_permisos)
 
     this.dataSourcePermisos.data = this.tabla_permisos;
     this.dataSourcePermisos.paginator = this.paginatorPermiso;
@@ -110,40 +108,40 @@ export class PermisosComponent implements OnInit {
   }
 
   editarPermisos(element: any) {
-    console.log(element);
+
     this.idPermisos = element.id_permiso;
     this.editar = true;
     this.datoEditarPermiso = element.permiso;
     this.datoOriginal = element.permiso;
-    console.log(element);
+
   }
 
-  // eliminarSubProceso(subproceso: any){
-  //   if (this.servicio.eliminarSubProceso(subproceso.id_subproceso)) {
-  //     const formSubProcesos = {
-  //       id_subproceso: this.idPermisos,
-  //     };
-  //       Swal.fire({
-  //         title: "Seguro que quieres eliminar este subproceso?",
-  //         showDenyButton: true,
-  //         confirmButtonText: "Confirmar",
-  //         denyButtonText: `Cancelar`,
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           this.servicio.eliminarSubProceso(subproceso.id_subproceso).subscribe(
-  //             (res: any) => {
-  //               Swal.fire("subproceso eliminado", "", "success");
-  //               this.ejecutarConsultas();
-  //               this.traerSubProcesos();
-  //             },
-  //             (error) => {
-  //              Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
-  //             }
-  //           );
-  //         }
-  //       });
-  //     }
-  //   }
+  eliminarPermiso(permiso: any){
+    if (this.servicio.eliminarPermiso(permiso.id_permiso)) {
+      const formPermiso = {
+        id_permiso: this.idPermisos,
+      };
+        Swal.fire({
+          title: "Seguro que quieres eliminar este Permiso?",
+          showDenyButton: true,
+          confirmButtonText: "Confirmar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.eliminarPermiso(permiso.id_permiso).subscribe(
+              (res: any) => {
+                Swal.fire("Permiso eliminado", "", "success");
+                this.ejecutarConsultas();
+                this.traerPermisos();
+              },
+              (error) => {
+               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
+      }
+    }
 
   llenarFormulario(infoPermiso){
     this.enviarPermiso.controls.Permiso.setValue(infoPermiso.Permiso);
@@ -209,7 +207,6 @@ export class PermisosComponent implements OnInit {
 
 
     this.enviarPermiso.reset();
-    console.log(this.datoOriginal);
   }
 
 
