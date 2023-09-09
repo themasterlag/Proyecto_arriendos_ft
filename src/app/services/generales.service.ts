@@ -126,6 +126,7 @@ export class GeneralesService {
    modificarBanco(banco) {
     return this.servicio.patch(this.api + "entidadbancaria/update", banco);
   }
+  
   eliminarBanco(id: number) {
     return this.servicio.delete(this.api + "entidadbancaria/" + id);
   }
