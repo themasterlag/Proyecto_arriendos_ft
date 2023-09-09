@@ -68,14 +68,16 @@
 
                   <div class="col-4">
 
-                    <div class="añadir-proceso-container">
+                    <div class="añadir-cargo-container">
                       <h5 class="titulo-añadir"><strong>Añadir Proceso</strong></h5>
 
                       <form #registrarProceso="ngForm" (ngSubmit)="registrarProcesos()" [noValidate]="false">
                         <mat-form-field class="example-full-width">
-                          <input matInput (keyup)="applyFilter($event)" placeholder="proceso" type="text"
+                          <input matInput  placeholder="proceso" type="text"
                             name="añadirproceso" [(ngModel)]="datoSeleccionadoParaEditar" required />
                         </mat-form-field>
+
+                        <!-- (keyup)="applyFilter($event)" -->
 
                         <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center"
                           id="button-guardar">
@@ -164,7 +166,7 @@
 
                   <div class="col-4">
 
-                    <div class="añadir-proceso-container">
+                    <div class="añadir-cargo-container">
                       <h5 class="titulo-añadir"><strong>Añadir Subproceso</strong></h5>
 
                       <form #registrarSubProceso="ngForm" (ngSubmit)="registrarSubProcesos()" [noValidate]="false">
@@ -175,7 +177,7 @@
 
                         <mat-form-field class="example-full-width">
                           <mat-select matInput placeholder="Proceso Relacionado"  name="formularioProcesos"
-                            [(ngModel)]="procesoSeleccionado" (selectionChange)="registrarSubProcesos()" required>
+                            [(ngModel)]="procesoSeleccionado"  required>
                             <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
                               {{ p.nombre_proceso }}
                             </mat-option>
@@ -212,7 +214,7 @@
                                     </mat-form-field>
                                   </div>
                   
-                                </form>-->
+                 </form>-->
 
 
               </mat-expansion-panel>

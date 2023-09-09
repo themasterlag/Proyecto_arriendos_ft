@@ -72,7 +72,6 @@ export class CargosComponent implements OnInit {
   }
 
   editarCargo(element: any) {
-    console.log(element);
     this.idCargo = element.id_cargo;
     this.editar = true;
     this.datoSeleccionadoParaEditar = element.cargo;
@@ -114,7 +113,6 @@ export class CargosComponent implements OnInit {
   traerCargos(){
     this.servicio.traerCargos().subscribe(
       (res) => {
-        console.log(res);
         this.cargos = res;
         this.tablaCargo();
       },
@@ -132,11 +130,9 @@ export class CargosComponent implements OnInit {
         cargo: cargo.cargo,
       }
     })
-    console.log(this.tabla_cargo)
-
     this.dataSourceCargo.data = this.tabla_cargo;
     this.dataSourceCargo.paginator = this.paginatorCargos;
-    console.log(this.sort);
+
     this.dataSourceCargo.sort = this.sort;
   }
 
@@ -204,12 +200,11 @@ export class CargosComponent implements OnInit {
 
 
     this.enviarCargo.reset();
-    console.log(this.datoOriginal);
   }
   
-  applyFilter(event: Event){
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceCargo.filter = filterValue.trim().toLowerCase();
-  }
+  // applyFilter(event: Event){
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSourceCargo.filter = filterValue.trim().toLowerCase();
+  // }
 
 }

@@ -71,7 +71,8 @@
                                             en construccion
                                         </button>
                                         <button *ngIf="!spinner && element.status == 3" class="btn btn-info rounded-pill"
-                                            (click)="generarReporte(element)">
+                                            (click)="generarReporte(element)"
+                                            disabled>
                                             <i class="fa fa-search" aria-hidden="true"></i>
                                         </button>
                                     </td>

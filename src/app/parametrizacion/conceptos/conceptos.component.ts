@@ -81,7 +81,7 @@ export class ConceptosComponent implements OnInit {
         // console.log(this.conceptos_asociados);
       },
       (err:any) => {
-        Swal.fire('Error al traer loc conceptos asociados',err,'error');
+        Swal.fire('Error al traer los conceptos asociados',err,'error');
       }
     )
   }
@@ -153,8 +153,6 @@ export class ConceptosComponent implements OnInit {
   registrarConcepto(){
 
     let incremento = 0;
-
-
     if(this.tipo == true){
       const cleanedValue = this.formularioConceptos.controls.valor_porcentaje.value;
       // this.consultaPorcentaje = cleanedValue;
@@ -173,7 +171,7 @@ export class ConceptosComponent implements OnInit {
       porcentaje_operacion: this.valor_porcentaje,
       incremento: incremento,
     }
-    console.log(formConceptos);
+    // console.log(formConceptos);
     Swal.fire({
           title: "Seguro de guardar los cambios?",
           showDenyButton: true,
@@ -186,37 +184,47 @@ export class ConceptosComponent implements OnInit {
           this.servicio.actualizarConcepto(formConceptos).subscribe(
             (res:any) => {
               Swal.fire("Concepto actualizado con éxito","","success");
+              this.limpiarFormulario(); 
             },
             (err:any) => {
               Swal.fire("Error al actualizar el concepto", err.error.message, "error");
             }
           )
-          this.limpiarFormulario(); 
         }else{
           // console.log(formConceptos)
           this.servicio.crearConceptos(formConceptos).subscribe(
             (res:any) => {
               console.log(res);
               Swal.fire("Concepto guardado con éxito", "", "success");
+              this.limpiarFormulario(); 
             },
             (err:any) => {
               Swal.fire("Error al crear el concepto", err.error.message, "error");
             }
           )
-          this.limpiarFormulario(); 
         }       
       }
     })
     
   }
 
-  // validartipopersona(tipo){
-
-  // }
-
-  // filtrarProcesos(filtro){
-
-  // }
+  eliminarConcepto(){
+    console.log(this.infConcepto)
+    if(this.infConcepto.concepto_asociado != null){
+      Swal.fire('No se puede eliminar el concepto, porque tiene asociación','','question');
+    } else {
+      this.servicio.eliminarConcepto(this.infConcepto.id_concepto).subscribe(
+        (res:any) => {
+          console.log(res)
+          Swal.fire('Concepto eliminado con exito', '', 'success');
+          this.limpiarFormulario(); 
+        },
+        (err:any) => {
+          Swal.fire('Error al eliminar el concepto',err.message,'error');
+        }
+      )
+    }
+  }
 
   consultarAsociacion(concepto){
     let primero = false;
@@ -370,6 +378,9 @@ export class ConceptosComponent implements OnInit {
   }
 
   limpiarFormulario(){
+    this.formularioConceptos.form.markAsPristine(); // Marcar el formulario como "intocado"
+    this.formularioConceptos.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+    this.formularioConceptos.resetForm();
     this.consulta_concepto = null;
     this.consultar = null;
     this.tipo = false;

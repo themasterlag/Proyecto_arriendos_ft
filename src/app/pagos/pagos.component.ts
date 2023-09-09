@@ -823,7 +823,7 @@ export class PagosComponent implements OnInit {
         }
 
         workbook["Props"] = { 
-          Author: "Generado por Sofware arriendos",
+          Author: "Generado por Software arriendos",
           CreatedDate: new Date()
         };
 

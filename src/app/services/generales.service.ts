@@ -401,4 +401,8 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "/conceptos/update", datos);
   }
 
+  eliminarConcepto(id){
+    return this.servicio.delete(this.api + "/conceptos/delete/"+ id);
+  }
+
 }

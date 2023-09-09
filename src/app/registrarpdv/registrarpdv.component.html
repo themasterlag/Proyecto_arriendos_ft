@@ -988,8 +988,9 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <hr>
+                <h5><strong>Filtro para buscar información en la tabla</strong></h5>
                 <mat-form-field appearance="standard">
-                  <mat-label>Buscar</mat-label>
+                  <mat-label>Buscar información por cualquier valor de las columnas</mat-label>
                   <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input>
                 </mat-form-field>
                 
@@ -1001,7 +1002,7 @@
                   </ng-container>
 
                   <ng-container matColumnDef="Numero_documento">
-                    <th mat-header-cell *matHeaderCellDef> Cedula Responsable </th>
+                    <th mat-header-cell *matHeaderCellDef> N° de documento </th>
                     <td mat-cell *matCellDef="let element"> {{element.numero_documento}} </td>
                   </ng-container>
 

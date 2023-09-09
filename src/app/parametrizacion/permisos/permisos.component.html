@@ -19,7 +19,7 @@
 
                         <div class="row">
                                 
-                            <div class="col row align-items-center">
+                            <div class="col row align-items-center ">
                               <div class="table-responsive">
                         <table mat-table [dataSource]="dataSourcePermisos" class="w-100 text-center table table-striped table-hover">
 
@@ -81,7 +81,7 @@
 
                         <div class="col-4">
 
-                          <div class="añadir-permiso-container">
+                          <div class="añadir-cargo-container">
                             <h5 class="titulo-añadir"><strong>Añadir Permiso</strong></h5>
                         
                             <form #enviarPermiso ="ngForm" (ngSubmit)="registrarPermiso()" [noValidate]="false">
@@ -100,37 +100,7 @@
                                 Limpiar
                               </button>
       
-                            </form>
-
-                            <!-- <mat-form-field class="example-full-width">
-                              <mat-select
-                                placeholder="formularioPermisos"
-                                name="formularioPermisos"
-                                [(ngModel)]="procesoSeleccionado"
-                                (selectionChange)="AgregarProceso()"
-                                required
-                              >
-                                <mat-option [value]="p.id_proceso" *ngFor="let p of procesos">
-                                  {{ p.nombre_proceso }}
-                                </mat-option>
-                              </mat-select>
-                            </mat-form-field> -->
-
-                                                           <form>
-
-                                  <h5><strong>Procesos:</strong></h5>
-                                  <div class="col-4">
-                                    <mat-form-field class="example-full-width">
-                                      <mat-select placeholder="permisos" id="permisos" name="permisos" ngModel required>
-                                        <mat-option [value]="p.id_permiso" *ngFor="let p of permisos">
-                                          {{ p.permiso }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                  
-                                </form>
-                            
+                            </form>                          
 
                           </div>
                         </div>                      
