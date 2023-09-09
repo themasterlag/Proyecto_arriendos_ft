@@ -66,3 +66,10 @@
     padding: 20px;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
   }
+
+  .botones-container {
+    display: flex; /* Esto hace que los botones estén en línea horizontalmente */
+    justify-content: space-between; /* Esto distribuirá los botones horizontalmente en el contenedor */
+    align-items: center; /* Esto alineará verticalmente los botones en el centro del contenedor */
+  }
+  
