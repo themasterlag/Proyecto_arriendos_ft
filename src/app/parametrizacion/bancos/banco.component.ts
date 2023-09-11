@@ -16,11 +16,7 @@ interface Bancos {
   entidad_bancaria: string;
 }
 
-// @Component({
-//   selector: 'app-banco',
-//   templateUrl: './banco.component.html',
-//   styleUrls: ['./banco.component.css']
-// })
+
 
 @Component({
   selector: 'app-banco',
@@ -81,68 +77,12 @@ export class BancoComponent implements OnInit {
     );
   }
 
-  // editarBanco(element: any) {
-  //   console.log(element);
-  //   this.id_entidad_bancaria = element.id_entidad_bancaria;
-  //   this.editar = true;
-  //   this.datoSeleccionadoParaEditar = element.entidad_bancaria;
-  //   this.datoOriginal = element.entidad_bancaria;
-  // }
-    
-  // editarBanco(element: any) {
-  //   console.log(element); // Verifica el contenido de element en la consola
-  //   this.id_entidad_bancaria = element.id_entidad_bancaria;
-  //   this.editar = true;
-  //   this.datoSeleccionadoParaEditar = element.entidad_bancaria; // Asegúrate de que element tenga la propiedad entidad_bancaria
-  //   this.datoOriginal = element.entidad_bancaria;
-  // }
- 
-  // editarBanco(element: any) {
-  //   console.log(element);
-  //   this.id_entidad_bancaria = element.id_entidad_bancaria;
-  //   this.editar = true;
-  //   this.nombreBancoEditar = element.entidad_bancaria; // Asigna el nombre del banco al nuevo campo
-  //   this.datoOriginal = element.entidad_bancaria;
-  // }
-
   editarBanco(element: any) {
     this.id_entidad_bancaria = element.id_entidad_bancaria;
     this.editar = true;
     this.nombreBancoEditar = element.banco; // Asigna el nombre del banco al nuevo campo
     this.datoOriginal = element.banco;
   }
-  
-  
-  
-  
-
-  // eliminarBanco(banco: any){
-  //   if (this.servicio.eliminarBanco(banco.id_entidad_bancaria)) {
-  //     const formBancos = {
-  //       id_entidad_bancaria: this.id_entidad_bancaria,
-  //     };
-  //       Swal.fire({
-  //         title: "Seguro que quieres eliminar este banco?",
-  //         showDenyButton: true,
-  //         confirmButtonText: "Confirmar",
-  //         denyButtonText: `Cancelar`,
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           this.servicio.eliminarBanco(banco.id_entidad_bancaria).subscribe(
-  //             (res: any) => {
-  //               Swal.fire("Banco eliminado", "", "success");
-  //               this.llenarDesplegable();
-  //               this.traerBancos();
-  //             },
-  //             (error) => {
-  //              Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
-  //             }
-  //           );
-  //         }
-  //       });
-  //     }
-  //   }
-
   
   eliminarBanco(id: number) {
     console.log(id);
@@ -200,13 +140,12 @@ export class BancoComponent implements OnInit {
       console.log(this.sort);
     }
 
-    
+
 registrarBancos() {
   if (this.enviarBanco.valid) {
     const formBancos = {
       entidad_bancaria: this.enviarBanco.value.añadirbanco
     };
-    
 
     if (this.editar) {
       // Si estamos editando, utilizamos el método modificarBanco
@@ -245,15 +184,20 @@ registrarBancos() {
               this.traerBancos();
             },
             (error) => {
-              Swal.fire("No se pudo guardar el banco", "Error: " + error.error.message, "error");
+              if (error && error.error && error.error.message) {
+                // Maneja el caso en el que el banco ya está registrado
+                Swal.fire("No se pudo guardar el banco", "El banco ya está registrado: " + error.error.message, "error");
+              } else {
+                // Maneja otros errores
+                Swal.fire("No se pudo guardar el banco", "El banco ya esta registrado", "error");
+              }
             }
           );
         }
       });
     }
   }
-} 
-
+}
 
     
    
