@@ -160,6 +160,9 @@ export class PermisosComponent implements OnInit {
           (res: any) => {
             this.datoOriginal = this.datoEditarPermiso;
             this.datoEditarPermiso = '';
+            this.enviarPermiso.form.markAsPristine();
+            this.enviarPermiso.form.markAsUntouched();
+            this.enviarPermiso.resetForm();
             this.ejecutarConsultas();
             this.traerPermisos();
             this.idPermisos = null;

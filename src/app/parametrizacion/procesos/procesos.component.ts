@@ -235,12 +235,7 @@ export class ProcesosComponent implements OnInit {
       }
 
       AgregarProceso() {
-        if (this.procesoSeleccionado !== null){
         this.procesoSeleccionado = this.enviarProceso.controls.formularioProcesos.value;
-        }
-        else {
-          Swal.fire("Seleccione el Proceso relacionado","","info");          
-      }
     }
 
 // -------------------------------------------------------------------------------------------------------------------------
@@ -264,6 +259,9 @@ export class ProcesosComponent implements OnInit {
           (res: any) => {
             this.datoOriginal = this.datoSeleccionadoParaEditar;
             this.datoSeleccionadoParaEditar = '';
+            this.enviarProceso.form.markAsPristine();
+            this.enviarProceso.form.markAsUntouched();
+            this.enviarProceso.resetForm();
             this.ejecutarConsultas();
             this.traerProcesos();
             this.idProcesos = null;
@@ -311,7 +309,15 @@ export class ProcesosComponent implements OnInit {
         this.servicio.actualizarSubProcesos(formSubProcesos).subscribe(
           (res: any) => {
             this.datoOriginal = this.datoEditarSubPro;
+            console.log(this.datoEditarSubPro)
             this.datoEditarSubPro = '';
+            this.procesoSeleccionado = '';
+
+            this.enviarSubProceso.form.markAsPristine();
+            this.enviarSubProceso.form.markAsUntouched();
+            this.enviarSubProceso.resetForm();
+
+            
             this.ejecutarConsultas();
             this.traerSubProcesos();
             this.idSubProcesos = null;
@@ -352,7 +358,7 @@ export class ProcesosComponent implements OnInit {
   limpiarFormulario(){
     this.consulta_procesos = null;
     this.consultar = false;
-    this.datoSeleccionadoParaEditar = null;
+    this.datoSeleccionadoParaEditar = '';
     this.datoEditarSubPro = null;
 
     this.idProcesos = null;
