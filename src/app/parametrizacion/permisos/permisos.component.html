@@ -87,18 +87,20 @@
                             <form #enviarPermiso ="ngForm" (ngSubmit)="registrarPermiso()" [noValidate]="false">
                               <mat-form-field class="example-full-width">
                                 <input matInput  placeholder="Permiso" type="text" name="añadirPermiso" [(ngModel)]="datoEditarPermiso" required/>
-                              </mat-form-field>
-                        
-                              <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
-                                Guardar
-                              </button>
-      
-                              <button mat-raised-button type="reset"
-                                class="btn btn-danger rounded-pill text-center"
-                                id="button-limpiar"
-                                (click)="limpiarFormulario()">
-                                Limpiar
-                              </button>
+                              </mat-form-field>                    
+
+                              <div class="d-flex justify-content-between">
+                                <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                                    Guardar
+                                  </button>
+
+                                  <button mat-raised-button type="reset"
+                                  class="btn btn-danger rounded-pill text-center"
+                                  id="button-limpiar"
+                                  (click)="limpiarFormulario()">
+                                  Limpiar
+                                </button>
+                            </div>
       
                             </form>                          
 

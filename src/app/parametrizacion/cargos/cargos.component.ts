@@ -154,6 +154,9 @@ export class CargosComponent implements OnInit {
           (res: any) => {
             this.datoOriginal = this.datoSeleccionadoParaEditar;
             this.datoSeleccionadoParaEditar = '';
+            this.enviarCargo.form.markAsPristine();
+            this.enviarCargo.form.markAsUntouched();
+            this.enviarCargo.resetForm();
             this.ejecutarConsultas();
             this.traerCargos();
             this.idCargo = null;
