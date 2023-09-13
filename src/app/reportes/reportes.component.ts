@@ -52,7 +52,7 @@ export class ReportesComponent implements OnInit {
         {"nombre" : "Efectivo", "reporte": "efectivo", "periodo" : true, status: 1},
         {"nombre" : "Todos los bancos", "reporte": "todosBancos", "periodo" : true, status: 1},
         {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: 1},
-        {"nombre" : "Consulta", "reporte" : "consulta", "periodo" : true, status: 3, }
+        // {"nombre" : "Consulta", "reporte" : "consulta", "periodo" : true, status: 3, }
       ]
     );
   }
@@ -102,7 +102,7 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporteProximosRenovar(){
-    this.servicio.traerContratosRenovar().subscribe(
+    this.servicio.traerContratosRenovar(1).subscribe(
       (res:any) =>{
         if (res.length > 0) {
           let workbook = XLSX.utils.book_new()

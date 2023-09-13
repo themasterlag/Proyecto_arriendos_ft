@@ -401,8 +401,8 @@ export class GeneralesService {
     return this.servicio.get(this.api + "/conceptos/codigo-concepto/"+ id);
   }
   
-  traerContratosRenovar(){
-    return this.servicio.get(this.api + "/contrato/proximosrenovar");
+  traerContratosRenovar(id){
+    return this.servicio.get(this.api + "/contrato/proximosrenovar/" + id);
   }
 
   actualizarConcepto(datos){
