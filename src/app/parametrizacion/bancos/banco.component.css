@@ -1,126 +1,113 @@
-
-/* Botones verdes oscuros */
-.btn-verde-oscuro {
-    background-color: #009200 !important; 
-    color: #fff !important; 
-    border: none !important; 
-    border-radius: 20px !important; 
-}
-
-
-/* Establece un tamaño uniforme para los elementos en el card-body */
-.card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  /* Estilos para los cuadros de texto */
-  .formdata {
-    width: 100%;
-    padding: 0;
-    border: none;
-    background-color: transparent;
-  }
-  
-  
-  /* Estilos para el desplegable mat-select */
-  .mat-select {
-    width: 100%;
-    padding: 0;
-    border: none;
-    background-color: transparent;
-    appearance: none;
-    cursor: pointer;
-  }
-  
-  /* Ajusta el indicador del desplegable */
-  .mat-select-arrow-wrapper {
-    position: absolute;
-    top: calc(50% - 8px);
-    right: 12px;
-  }
-  
-  /* Estilo para el indicador */
-  .mat-select-arrow {
-    border: solid #777;
-    border-width: 0 1px 1px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(45deg);
-    transition: border-color 0.3s;
-  }
-  
-  
-  
-  .btn.btn-lg {
-    font-size: 15px; /* Cambia el tamaño del texto del botón */
-    padding: 5px 10px; /* Ajusta el espacio alrededor del texto */
-    border-radius: 25px; /* Agrega bordes redondeados */
-}
-
-#button-consultar {
-    width: 5px;
+.card{
+  background: #e8e8e8; 
+  font-size: 18px; 
+  border-radius: 25px;
 }
 
 #banner{
-    border-radius: 25px;
-    background: #ffe203;
-}
-
-.card-title {
-    color: #1b4f35 !important;
-    font-weight: bold;
-    font-size: 21px;
-    margin-bottom: 100px; /* Ajusta la cantidad de espacio en píxeles según tus necesidades */
+  border-radius: 25px;
+  background: #ffe203;
 }
 
 
-  
+.paragraph-info{
+  color: #1b4f35 !important;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.card-title{
+  color: #1b4f35 !important;
+  font-weight: bold;
+  font-size: 21px;
+}
+
+.card-category{
+color: #1b4f35 !important;
+font-weight: bold;
+font-size: 14px;
+}
+
+.card-body{
+  border-radius: 25px;
+}
+
+
 .text-info{
-    color: #359b68 !important;
-    font-weight: 900;
+  color: #359b68 !important;
+  font-weight: 900;
 }
+
+.text-white{
+color: #ffffff !important;
+font-weight: 900;
+}
+
+.titulo-grande {
+  font-size: 1rem; 
+  color:  #000000c5 !important;
+}
+
+.mat-table {
+  width: 100%; 
+  margin-bottom: 20px; 
+}
+
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.tabla-header {
+  background-color: #ebebeb8c; 
+  color: rgb(0, 0, 0); 
+  border-bottom: 2px solid white; 
+  padding: 8px; 
+}
+
+.acciones-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; 
+}
+
+::ng-deep .tooltipText {
+  transform: scale(1);
+  font-size: medium;
+}
+
+
+/*---------------------------------------------------------------------------------------------------------------*/
+ .añadir-cargo-container {
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-añadir {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.example-full-width {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+
+#button-guardar:hover {
+  background-color:rgba(8, 194, 8, 0.37) !important;
+  border-color: green !important;
+}
+
+#button-limpiar:hover {
+  background-color:rgba(226, 11, 11, 0.37) !important;
+  border-color: rgb(128, 0, 0) !important;
+} 
 
 
 .mat-accordion .mat-expansion-panel:last-of-type{
-    border-radius: 25px;
-}
-
-/* Botones verdes oscuros */
-.btn-verde-oscuro {
-    background-color: #009200 !important; /* Color verde oscuro */
-    color: #fff !important; /* Texto blanco */
-    border: none !important; /* Sin borde */
-    border-radius: 20px !important; /* Bordes redondeados */
-}
-
-/* Botón rojo (Eliminar) */
-.btn-rojo {
-    background-color: red !important; /* Color rojo */
-    color: #fff !important; /* Texto blanco */
-    border: none !important; /* Sin borde */
-    border-radius: 20px !important; /* Bordes redondeados */
-    width: auto;
-}
-
-.paragraph-info {
-    color: #1b4f35 !important;
-    font-weight: bold;
-}
-
-
-
-.mat-accordion {
-  background-color: transparent !important;
-}
-
-.mat-expansion-panel {
-  background-color: transparent !important;
-}
-
-
-.card {
-  background-color: transparent !important;
   border-radius: 25px;
 }

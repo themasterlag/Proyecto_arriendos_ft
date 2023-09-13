@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
+import { MatPaginator } from "@angular/material/paginator"
+import { MatSort } from '@angular/material/sort';
+import { FormsModule } from '@angular/forms'
 
 
 
@@ -15,11 +16,7 @@ interface Bancos {
   entidad_bancaria: string;
 }
 
-// @Component({
-//   selector: 'app-banco',
-//   templateUrl: './banco.component.html',
-//   styleUrls: ['./banco.component.css']
-// })
+
 
 @Component({
   selector: 'app-banco',
@@ -30,23 +27,25 @@ interface Bancos {
 export class BancoComponent implements OnInit {
   panelOpenState = true;
   consulta_banco: any = null;
-  bancos: Bancos[] = []; // Inicializar bancos como un arreglo vacío
-  @ViewChild('registrarBanco', { static: true }) enviarBanco: NgForm;
+  @ViewChild('registrarBanco')enviarBanco: NgForm;
   @ViewChild('formBanco') formularioBancos: NgForm;
   id_entidad_bancaria: number;
+  entidad_bancaria: any;
   consulta_bancos: any = null;
   consultar: boolean = false;
-  bancoInfo:any = null;
-  nombreBanco: string = '';
   listaBancos:any = [];
-  nuevoNombreBanco: string;
-  modificarBancoSeleccionado: Bancos | null = null;
-  eliminarBancoSeleccionado: Bancos | null = null;
-  nuevoBanco: any = {
-    banco: '' 
-  };
-  formularioEnviado = false; // Variable para rastrear el estado de envío
-
+  dataSourceBanco: MatTableDataSource<Bancos> =
+  new MatTableDataSource<Bancos>();
+  displayedColumns: string[] = ["id_banco", "banco","acciones"];
+  editar: boolean = false;
+  datoSeleccionadoParaEditar: string;
+  datoOriginal: string = '';
+  opcionSeleccionada: string = '';
+  @ViewChild(MatSort) sort: MatSort;
+  bancos: any;
+  tabla_banco: any;
+  @ViewChild("paginatorBanco") paginatorBancos: MatPaginator
+  nombreBancoEditar: string = '';
 
 
   
@@ -54,12 +53,17 @@ export class BancoComponent implements OnInit {
       public servicio: GeneralesService,
       
       ) { 
-        this.nuevoBanco = { banco: '' };
+        
   }
 
   ngOnInit(): void {
-      this.traerBancos(false);
-      this.llenarDesplegableBancos();
+     this.traerBancos();
+     this.dataSourceBanco.sort = this.sort;
+  }
+
+  llenarDesplegable(){
+    this.llenarDesplegableBancos();
+
   }
 
   llenarDesplegableBancos() {
@@ -73,623 +77,154 @@ export class BancoComponent implements OnInit {
     );
   }
 
-
-  ejecutarConsultasBanco() {
-    this.consultarListaBancos();
+  editarBanco(element: any) {
+    this.id_entidad_bancaria = element.id_entidad_bancaria;
+    this.editar = true;
+    this.nombreBancoEditar = element.banco; // Asigna el nombre del banco al nuevo campo
+    this.datoOriginal = element.banco;
   }
   
-  consultarListaBancos() {
-    this.servicio.traerBancos().subscribe(
-      (res: any) => {
-        this.listaBancos = res;
-      },
-      (err: any) => {
-        Swal.fire("No se pudo consultar los bancos", "", "error");
-      }
-    );
-  }
-  
-
-normalizarTexto(texto: string): string {
-  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-}
-
-
-
-  
-
-  llenarFormulario(bancos){
-    this.formularioBancos.controls.banco.setValue(bancos.banco);
-  }
-  
-//este es el que funciona
-// registrarBanco() {
-
-//   // Validar si el campo de banco no está vacío ni es nulo
-//   if (!this.nuevoBanco.banco || !this.nuevoBanco.banco.trim()) {
-//   Swal.fire('Campo vacío', 'Ingresa un nombre de banco para poder añadir', 'info');
-//   this.formularioEnviado = false; // Restablecer el estado del formulario
-//   return;
-// }
-
-
-//   console.log('Método registrarBanco() llamado.');
-
-//   // Verificar si el formulario ya se envió
-//   if (this.formularioEnviado) {
-//     return;
-//   }
-
-//   // Crear objeto con el nombre del banco
-//   const formBanco = {
-//     entidad_bancaria: this.nuevoBanco.banco.trim() // Trimming para eliminar espacios en blanco
-//   };
-
-//   // Marcar el formulario como enviado
-//   this.formularioEnviado = true;
-
-//   this.servicio.traerBancos().subscribe(
-//     (res: any) => {
-//       if (Array.isArray(res)) {
-//         const bancoExistenteBD = res.find(banco => {
-//           if (banco.entidad_bancaria && formBanco.entidad_bancaria) {
-//             return banco.entidad_bancaria.toLowerCase() === formBanco.entidad_bancaria.toLowerCase();
-//           }
-//           return false;
-//         });
-
-//         if (bancoExistenteBD) {
-//           // Si el banco ya existe en la base de datos, mostrar una alerta
-//           Swal.fire('Banco ya registrado', 'Este banco ya está registrado en la base de datos.', 'warning');
-//           this.formularioEnviado = false; // Restablecer el estado del formulario
-//         } else {
-//           // Si el banco no existe en la base de datos, realizar el registro
-//           this.servicio.enviarBanco(formBanco).subscribe(
-//             (res: any) => {
-//               console.log('Respuesta del servicio:', res);
-//               Swal.fire('Banco registrado', 'El nuevo banco se ha registrado exitosamente.', 'success');
-//               this.nuevoBanco.banco = ''; // Limpia el campo de banco después de registrar
-//               this.traerBancos(); // Actualizar la lista de bancos
-//               Swal.fire('Banco registrado', 'El nuevo banco se ha registrado exitosamente.', 'success');
-//               this.formularioEnviado = false; // Restablecer el estado del formulario
-//             },
-//             (error: any) => {
-//               console.log('Error en la petición:', error);
-//               Swal.fire('Error al registrar', 'Ocurrió un error al registrar el nuevo banco.', 'error');
-//               this.formularioEnviado = false; // Restablecer el estado del formulario
-//             }
-//           );
-//         }
-//       } else {
-//         console.log('Respuesta no es un array:', res);
-//         Swal.fire('Error al verificar', 'La respuesta de la base de datos no es válida.', 'error');
-//         this.formularioEnviado = false; // Restablecer el estado del formulario
-//       }
-//     },
-//     (error: any) => {
-//       console.log('Error en la petición:', error);
-//       Swal.fire('Error al verificar', 'Ocurrió un error al verificar el banco en la base de datos.', 'error');
-//       this.formularioEnviado = false; // Restablecer el estado del formulario
-//     }
-//   );
-// }
-
-
-registrarBanco() {
-  // Validar si el campo de banco no está vacío ni es nulo
-  if (!this.nuevoBanco.banco || !this.nuevoBanco.banco.trim()) {
-    Swal.fire('Campo vacío', 'Ingresa un nombre de banco para poder añadir', 'info');
-    this.formularioEnviado = false; // Restablecer el estado del formulario
-    return;
-  }
-
-  console.log('Método registrarBanco() llamado.');
-
-  // Verificar si el formulario ya se envió
-  if (this.formularioEnviado) {
-    return;
-  }
-
-  // Crear objeto con el nombre del banco
-  const formBanco = {
-    entidad_bancaria: this.nuevoBanco.banco.trim() // Trimming para eliminar espacios en blanco
-  };
-
-  // Marcar el formulario como enviado
-  this.formularioEnviado = true;
-
-  this.servicio.traerBancos().subscribe(
-    (res: any) => {
-      if (Array.isArray(res)) {
-        const bancoExistenteBD = res.find(banco => {
-          if (banco.entidad_bancaria && formBanco.entidad_bancaria) {
-            return banco.entidad_bancaria.toLowerCase() === formBanco.entidad_bancaria.toLowerCase();
-          }
-          return false;
-        });
-
-        if (bancoExistenteBD) {
-          // Si el banco ya existe en la base de datos, mostrar una alerta
-          Swal.fire('Banco ya registrado', 'Este banco ya está registrado en la base de datos.', 'warning');
-          this.formularioEnviado = false; // Restablecer el estado del formulario
-        } else {
-          // Si el banco no existe en la base de datos, realizar el registro
-          // ...
-
-// Al agregar un nuevo banco
-this.servicio.enviarBanco(formBanco).subscribe(
-  (resAgregar: any) => {
-    console.log('Respuesta del servicio al agregar:', resAgregar);
-    
-    // Asignar el id recibido al objeto nuevoBanco
-    this.nuevoBanco.id_entidad_bancaria = resAgregar.id;
-
-    Swal.fire('Banco registrado', 'El nuevo banco se ha registrado exitosamente.', 'success');
-    this.nuevoBanco.banco = ''; // Limpia el campo de banco después de registrar
-
-    // Realizar una nueva solicitud para obtener la lista actualizada de bancos
-    this.servicio.traerBancos().subscribe(
-      (resListaBancos: any) => {
-        console.log('Respuesta del servicio al obtener la lista de bancos actualizada:', resListaBancos);
-
-        // Actualizar la lista de bancos con los datos obtenidos
-        this.listaBancos = resListaBancos;
-
-        // Actualizar this.modificarBancoSeleccionado para que apunte al nuevo banco
-        const nuevoBanco = { id_entidad_bancaria: resAgregar.id, entidad_bancaria: formBanco.entidad_bancaria };
-        this.modificarBancoSeleccionado = nuevoBanco;
-
-        this.formularioEnviado = false; // Restablecer el estado del formulario
-      },
-      (error: any) => {
-        console.log('Error al obtener la lista de bancos actualizada:', error);
-        Swal.fire('Error al registrar', 'Ocurrió un error al obtener la lista de bancos actualizada.', 'error');
-        this.formularioEnviado = false; // Restablecer el estado del formulario
-      }
-    );
-  },
-  (error: any) => {
-    console.log('Error en la petición al agregar:', error);
-    Swal.fire('Error al registrar', 'Ocurrió un error al registrar el nuevo banco.', 'error');
-    this.formularioEnviado = false; // Restablecer el estado del formulario
-  }
-);
-
-
-// ...
-
-        }
-      } else {
-        console.log('Respuesta no es un array:', res);
-        Swal.fire('Error al verificar', 'La respuesta de la base de datos no es válida.', 'error');
-        this.formularioEnviado = false; // Restablecer el estado del formulario
-      }
-    },
-    (error: any) => {
-      console.log('Error en la petición:', error);
-      Swal.fire('Error al verificar', 'Ocurrió un error al verificar el banco en la base de datos.', 'error');
-      this.formularioEnviado = false; // Restablecer el estado del formulario
-    }
-  );
-}
-
-
-
-  seleccionarBancoParaModificar(banco: Bancos) {
-    this.modificarBancoSeleccionado = banco;
-  }
-  
-  // modificarBanco() {
-  //   if (!this.modificarBancoSeleccionado) {
-  //     Swal.fire('No se seleccionó banco', 'Por favor, selecciona un banco para modificar.', 'info');
-  //     return;
-  //   }
-  
-  //   if (!this.nuevoNombreBanco || !this.nuevoNombreBanco.trim()) {
-  //     Swal.fire('Nombre de banco vacío', 'Ingresa un nuevo nombre de banco válido.', 'info');
-  //     return;
-  //   }
-  
-  //   const bancoModificado = {
-  //     ...this.modificarBancoSeleccionado,
-  //     entidad_bancaria: this.nuevoNombreBanco.trim()
-  //   };
-  
-  //   this.servicio.modificarBanco(bancoModificado).subscribe(
-  //     (res: any) => {
-  //       Swal.fire('Banco modificado', 'El banco se ha modificado exitosamente.', 'success');
-  //       this.nuevoNombreBanco = '';
-  //       this.traerBancos(); // Actualizar la lista de bancos
-  //       this.modificarBancoSeleccionado = null; // Limpiar la selección después de la modificación
-  //     },
-  //     (error: any) => {
-  //       Swal.fire('Error al modificar', 'Ocurrió un error al modificar el banco.', 'error');
-  //     }
-  //   );
-  // }
-
-
-  // modificarBanco() {
-  //   if (!this.modificarBancoSeleccionado || !this.nuevoNombreBanco.trim()) {
-  //     Swal.fire('Campos incompletos', 'Selecciona un banco y proporciona un nuevo nombre válido.', 'info');
-  //     return;
-  //   }
-  
-  //   const idBanco = this.modificarBancoSeleccionado.id_entidad_bancaria; // Obtener el ID del banco seleccionado
-  //   const nuevoNombre = this.nuevoNombreBanco.trim(); // Obtener el nuevo nombre
-  
-  //   // Llamar al servicio para actualizar el nombre del banco
-  //   this.servicio.modificarBanco({ id_entidad_bancaria: idBanco, nuevoNombre: nuevoNombre }).subscribe(
-  //     (res: any) => {
-  //       console.log('Respuesta del servicio:', res);
-  //       this.nuevoNombreBanco = ''; // Limpiar el campo de nuevo nombre
-  //       this.traerBancos(); // Actualizar la lista de bancos
-  //       Swal.fire('Banco modificado', 'El nombre del banco se ha modificado exitosamente.', 'success');
-  //     },
-  //     (error: any) => {
-  //       console.log('Error en la petición:', error);
-  //       Swal.fire('Error al modificar', 'Ocurrió un error al modificar el nombre del banco.', 'error');
-  //     }
-  //   );
-  // }
-
-
-  //este es el que funciona final
-  // modificarBanco() {
-  //   if (!this.modificarBancoSeleccionado || !this.nuevoNombreBanco.trim()) {
-  //     Swal.fire('Campos incompletos', 'Selecciona un banco y proporciona un nuevo nombre válido.', 'info');
-  //     return;
-  //   }
-  
-  //   const idBanco = this.modificarBancoSeleccionado.id_entidad_bancaria;
-  //   const nuevoNombre = this.nuevoNombreBanco.trim();
-  
-  //   // Verificar si el nuevo nombre ya existe en la lista de bancos
-  //   const nombreExistente = this.listaBancos.some(banco => banco.entidad_bancaria.toLowerCase() === nuevoNombre.toLowerCase());
-  //   if (nombreExistente) {
-  //     Swal.fire('Error', 'El nuevo nombre ya existe. Por favor, elige un nombre único.', 'error');
-  //     return;
-  //   }
-  
-  //   // Llamar al servicio para actualizar el nombre del banco
-  //   this.servicio.modificarBanco({ id_entidad_bancaria: idBanco, nuevoNombre: nuevoNombre }).subscribe(
-  //     (res: any) => {
-  //       console.log('Respuesta del servicio:', res);
-  //       this.nuevoNombreBanco = ''; // Limpiar el campo de nuevo nombre
-  //       this.traerBancos(); // Actualizar la lista de bancos
-  //       Swal.fire('Banco modificado', 'El nombre del banco se ha modificado exitosamente.', 'success');
-  //     },
-  //     (error: any) => {
-  //       console.log('Error en la petición:', error);
-  //       Swal.fire('Error al modificar', 'Ocurrió un error al modificar el nombre del banco.', 'error');
-  //     }
-  //   );
-  // }
-  
-  modificarBanco() {
-    if (!this.modificarBancoSeleccionado || !this.nuevoNombreBanco.trim()) {
-      Swal.fire('Campos incompletos', 'Selecciona un banco y proporciona un nuevo nombre válido.', 'info');
-      return;
-    }
-  
-    const idBanco = this.modificarBancoSeleccionado.id_entidad_bancaria;
-    const nuevoNombre = this.nuevoNombreBanco.trim();
-  
-    // Verificar si el nuevo nombre ya existe en la lista de bancos
-    const nombreExistente = this.listaBancos.some(banco => banco.entidad_bancaria.toLowerCase() === nuevoNombre.toLowerCase());
-    if (nombreExistente) {
-      Swal.fire('Error', 'El nuevo nombre ya existe. Por favor, elige un nombre único.', 'error');
-      return;
-    }
-  
-    // Llamar al servicio para actualizar el nombre del banco
-    this.servicio.modificarBanco({ id_entidad_bancaria: idBanco, nuevoNombre: nuevoNombre }).subscribe(
-      (res: any) => {
-        console.log('Respuesta del servicio:', res);
-        this.nuevoNombreBanco = ''; // Limpiar el campo de nuevo nombre
-  
-        // Realizar una nueva solicitud para obtener la lista actualizada de bancos
-        this.servicio.traerBancos().subscribe(
-          (resListaBancos: any) => {
-            console.log('Respuesta del servicio al obtener la lista de bancos actualizada:', resListaBancos);
-  
-            // Actualizar la lista de bancos con los datos obtenidos
-            this.listaBancos = resListaBancos;
-            Swal.fire('Banco modificado', 'El nombre del banco se ha modificado exitosamente.', 'success');
+  eliminarBanco(id: number) {
+    console.log(id);
+    Swal.fire({
+      title: "¿Seguro que quieres eliminar este banco?",
+      showDenyButton: true,
+      confirmButtonText: "Eliminar",
+      denyButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.servicio.eliminarBanco(id).subscribe(
+          (res: any) => {
+            // Eliminación exitosa, puedes actualizar la lista de bancos aquí si es necesario
+            this.traerBancos();
+            Swal.fire("Banco eliminado", "", "success");
           },
-          (error: any) => {
-            console.log('Error al obtener la lista de bancos actualizada:', error);
-            Swal.fire('Error al modificar', 'Ocurrió un error al obtener la lista de bancos actualizada.', 'error');
+          (error) => {
+            Swal.fire("No se pudo eliminar", "Error: " + error.error.message, "error");
           }
         );
-      },
-      (error: any) => {
-        console.log('Error en la petición:', error);
-        Swal.fire('Error al modificar', 'Ocurrió un error al modificar el nombre del banco.', 'error');
       }
-    );
+    });
   }
-  
+   
 
-  seleccionarBancoParaEliminar(banco: any) {
-    console.log('Banco seleccionado para eliminar:', banco);
-    this.eliminarBancoSeleccionado = banco;
-    this.modificarBancoSeleccionado = banco; 
-  }
-  
-  
-  // eliminarBanco() {
-  //   if (!this.eliminarBancoSeleccionado) {
-  //     Swal.fire('No se seleccionó banco', 'Por favor, selecciona un banco para eliminar.', 'info');
-  //     return;
-  //   }
-  
-  //   const idBanco = this.eliminarBancoSeleccionado.id_entidad_bancaria;
-  
-  //   this.servicio.eliminarBanco(idBanco).subscribe(
-  //     (res: any) => {
-  //       console.log('Respuesta del servicio:', res);
-  //       Swal.fire('Banco eliminado', 'El banco se ha eliminado exitosamente.', 'success');
-  //       this.eliminarBancoSeleccionado = null; // Limpiar la selección después de la eliminación
-  //       this.traerBancos(); // Actualizar la lista de bancos
-  //     },
-  //     (error: any) => {
-  //       console.log('Error en la petición:', error);
-  //       Swal.fire('Error al eliminar', 'Ocurrió un error al eliminar el banco.', 'error');
-  //     }
-  //   );
-  // }
-  
-  // eliminarBanco() {
-  //   console.log('Eliminar banco seleccionado:', this.eliminarBancoSeleccionado);
-  //   if (this.eliminarBancoSeleccionado) {
-  //     const idEntidadBancaria = this.eliminarBancoSeleccionado.id_entidad_bancaria;
-  
-  //     this.servicio.eliminarBanco(idEntidadBancaria).subscribe(
-  //       (res: any) => {
-  //         console.log('Respuesta del servicio:', res);
-  //         Swal.fire('Banco eliminado', 'El banco se ha eliminado exitosamente.', 'success');
-  //         this.eliminarBancoSeleccionado = null; // Limpiar la selección
-  //         this.traerBancos(); // Actualizar la lista de bancos
-  //       },
-  //       (error: any) => {
-  //         console.log('Error en la petición:', error);
-  //         Swal.fire('Error al eliminar', 'Ocurrió un error al eliminar el banco.', 'error');
-  //       }
-  //     );
-  //   } else {
-  //     Swal.fire('Error', 'Debe seleccionar un banco para eliminar.', 'error');
-  //   }
-  // }
-
-
-  //es elque funciona por ahora definitivo
-  // eliminarBanco() {
-  //   if (!this.modificarBancoSeleccionado) {
-  //     Swal.fire('No se seleccionó banco', 'Por favor, selecciona un banco para eliminar.', 'info');
-  //     return;
-  //   }
-  
-  //   const idEntidadBancaria = this.modificarBancoSeleccionado.id_entidad_bancaria;
-  
-  //   console.log('ID de entidad bancaria:', idEntidadBancaria); // Agrega esta línea para depurar
-  
-  //   if (idEntidadBancaria === undefined || idEntidadBancaria === null) {
-  //     Swal.fire('Error al eliminar', 'El ID del banco es inválido.', 'error');
-  //     return;
-  //   }
-  
-  //   // Realizar la solicitud de eliminación
-  //   this.servicio.eliminarBanco(idEntidadBancaria).subscribe(
-  //     (res: any) => {
-  //       console.log('Respuesta del servicio:', res);
-  
-  //       // Actualizar la lista de bancos en la interfaz de usuario
-  //       const index = this.bancos.findIndex(banco => banco.id_entidad_bancaria === idEntidadBancaria);
-  //       if (index !== -1) {
-  //         this.bancos.splice(index, 1); // Elimina el banco de la lista
-  //       }
-  
-  //       Swal.fire('Banco eliminado', 'El banco se ha eliminado exitosamente.', 'success');
-  //     },
-  //     (error: any) => {
-  //       console.log('Error en la petición:', error);
-  //       Swal.fire('Error al eliminar', 'Ocurrió un error al eliminar el banco.', 'error');
-  //     }
-  //   );
-  // }
-  
-  
-  eliminarBanco() {
-    if (!this.modificarBancoSeleccionado) {
-      Swal.fire('No se seleccionó banco', 'Por favor, selecciona un banco para eliminar.', 'info');
-      return;
-    }
-  
-    const idEntidadBancaria = this.modificarBancoSeleccionado.id_entidad_bancaria;
-  
-    console.log('ID de entidad bancaria:', idEntidadBancaria); // Agrega esta línea para depurar
-  
-    if (idEntidadBancaria === undefined || idEntidadBancaria === null) {
-      Swal.fire('Error al eliminar', 'El ID del banco es inválido.', 'error');
-      return;
-    }
-  
-    // Realizar la solicitud de eliminación
-    this.servicio.eliminarBanco(idEntidadBancaria).subscribe(
-      (res: any) => {
-        console.log('Respuesta del servicio:', res);
-  
-        // Realizar una nueva solicitud para obtener la lista actualizada de bancos
-        this.servicio.traerBancos().subscribe(
-          (resListaBancos: any) => {
-            console.log('Respuesta del servicio al obtener la lista de bancos actualizada:', resListaBancos);
-  
-            // Actualizar la lista de bancos con los datos obtenidos
-            this.listaBancos = resListaBancos;
-            Swal.fire('Banco eliminado', 'El banco se ha eliminado exitosamente.', 'success');
-          },
-          (error: any) => {
-            console.log('Error al obtener la lista de bancos actualizada:', error);
-            Swal.fire('Error al eliminar', 'Ocurrió un error al obtener la lista de bancos actualizada.', 'error');
-          }
-        );
-      },
-      (error: any) => {
-        console.log('Error en la petición:', error);
-        Swal.fire('Error al eliminar', 'Elige un banco valido para eliminar', 'error');
-      }
-    );
-  }
-  
-  
-  
-  //este es el que funciona
-// traerBancos() {
- 
-//   if (!this.consulta_banco || !this.consulta_banco.trim()) {
-//     // Swal.fire('Campo vacío', 'Ingresa un nombre de banco válido antes de consultar.', 'info');
-//     return; // Salir de la función si no hay un nombre de banco válido
-//   }
-  
-//   console.log('Consultando bancos...');
-
-//   this.servicio.traerBancos().subscribe(
-//     (res: any) => {
-//       console.log('Respuesta del servicio:', res);
-//       this.bancoInfo = res;
-
-//       const nombreBancoBuscado = this.consulta_banco.trim().toLowerCase();
-//       console.log('Nombre de banco buscado:', nombreBancoBuscado);
-
-//       const palabrasBancoBuscado = nombreBancoBuscado.split(' ');
-//       console.log('Palabras del nombre de banco buscado:', palabrasBancoBuscado);
-
-//       const bancosCoincidentes = this.bancoInfo.filter((banco: any) => {
-//         if (banco.entidad_bancaria) {
-//           const nombreBancoSinTildes = this.normalizarTexto(banco.entidad_bancaria.toLowerCase());
-//           const palabrasBanco = nombreBancoSinTildes.split(' ');
-//           const coincidencias = palabrasBanco.filter(palabra => palabrasBancoBuscado.some(busqueda => palabra.includes(busqueda)));
-//           return coincidencias.length > 0;
-//         }
-//         return false;
-//       });
-
-//       console.log('Bancos coincidentes:', bancosCoincidentes);
-
-//       if (bancosCoincidentes.length > 0) {
-//         Swal.fire('Bancos encontrados', 'Se encontraron bancos coincidentes.', 'success');
-//       } else {
-//         Swal.fire('Bancos no encontrados', 'No se encontraron bancos coincidentes en la base de datos.', 'info');
-       
-//       }
-//     },
-//     (error: any) => {
-//       Swal.fire('Error al consultar', 'Ocurrió un error al consultar los bancos.', 'error');
-//     }
-//   );
-// }
-
-// traerBancos(mostrarAlerta: boolean = true) {
-//   if (mostrarAlerta && (!this.consulta_banco || !this.consulta_banco.trim())) {
-    
-//     Swal.fire('Campo vacio', 'El campo de texto nopuede estar vacio.', 'info');
-//     return;
-//   }
-
-//   console.log('Consultando bancos...');
-
-//   this.realizarConsultaBancos();
-// }
-
-// realizarConsultaBancos() {
-//   this.servicio.traerBancos().subscribe(
-//     (res: any) => {
-//       console.log('Respuesta del servicio:', res);
-//       this.bancoInfo = res;
-
-//       const nombreBancoBuscado = this.consulta_banco.trim().toLowerCase();
-//       console.log('Nombre de banco buscado:', nombreBancoBuscado);
-
-//       const palabrasBancoBuscado = nombreBancoBuscado.split(' ');
-//       console.log('Palabras del nombre de banco buscado:', palabrasBancoBuscado);
-        
-//       const bancosCoincidentes = this.bancoInfo.filter((banco: any) => {
-//         if (banco.entidad_bancaria) {
-//           const nombreBancoSinTildes = this.normalizarTexto(banco.entidad_bancaria.toLowerCase());
-//           const palabrasBanco = nombreBancoSinTildes.split(' ');
-//           const coincidencias = palabrasBanco.filter(palabra => palabrasBancoBuscado.some(busqueda => palabra.includes(busqueda)));
-//           return coincidencias.length > 0;
-//         }
-//         return false;
-//       });
-
-//       console.log('Bancos coincidentes:', bancosCoincidentes);
-
-//       if (bancosCoincidentes.length > 0) {
-//         Swal.fire('Bancos encontrados', 'Se encontraron bancos coincidentes.', 'success');
-//       } else {
-//         Swal.fire('Bancos no encontrados', 'No se encontraron bancos coincidentes en la base de datos.', 'info');
-//       }
-//     },
-//     (error: any) => {
-//       Swal.fire('Error al consultar', 'Ocurrió un error al consultar los bancos.', 'error');
-//     }
-//   );
-// }
-
-traerBancos(mostrarAlerta: boolean = true) {
-  // Verificar si consulta_banco es null o undefined antes de usar trim()
-  if (mostrarAlerta && (!this.consulta_banco || !this.consulta_banco.trim())) {
-    Swal.fire('Campo vacío', 'El campo de texto no puede estar vacío.', 'info');
-    return;
-  }
-
-  console.log('Consultando bancos...');
-
-  this.realizarConsultaBancos();
-}
-
-realizarConsultaBancos() {
-  this.servicio.traerBancos().subscribe(
-    (res: any) => {
-      console.log('Respuesta del servicio:', res);
-      this.bancoInfo = res;
-
-      // Verificar si consulta_banco es null o undefined antes de usar trim()
-      if (!this.consulta_banco) {
-        console.log('consulta_banco es nulo o indefinido');
-        return;
-      }
-
-      const nombreBancoBuscado = this.consulta_banco.trim().toLowerCase();
-      console.log('Nombre de banco buscado:', nombreBancoBuscado);
-
-      const palabrasBancoBuscado = nombreBancoBuscado.split(' ');
-      console.log('Palabras del nombre de banco buscado:', palabrasBancoBuscado);
-
-      const bancosCoincidentes = this.bancoInfo.filter((banco: any) => {
-        if (banco.entidad_bancaria) {
-          const nombreBancoSinTildes = this.normalizarTexto(banco.entidad_bancaria.toLowerCase());
-          const palabrasBanco = nombreBancoSinTildes.split(' ');
-          const coincidencias = palabrasBanco.filter(palabra => palabrasBancoBuscado.some(busqueda => palabra.includes(busqueda)));
-          return coincidencias.length > 0;
+    traerBancos() {
+      this.servicio.traerBancos().subscribe(
+        (res) => {
+          console.log(res); // Verifica si los datos se imprimen correctamente en la consola
+          this.entidad_bancaria = res;
+          this.tablaBanco();
+        },
+        (error: any) => {
+          Swal.fire("No se encontro", "Error: " + error.error.message, "error");
         }
-        return false;
+      );
+    }
+    
+
+
+    tablaBanco() {
+      this.tabla_banco = this.entidad_bancaria.map((entidad_bancaria) => {
+        return {
+          id_entidad_bancaria: entidad_bancaria.id_entidad_bancaria,
+          banco: entidad_bancaria.entidad_bancaria,
+        };
       });
-
-      console.log('Bancos coincidentes:', bancosCoincidentes);
-
-      if (bancosCoincidentes.length > 0) {
-        Swal.fire('Bancos encontrados', 'Se encontraron bancos coincidentes.', 'success');
-      } else {
-        Swal.fire('Bancos no encontrados', 'No se encontraron bancos coincidentes en la base de datos.', 'info');
-      }
-    },
-    (error: any) => {
-      Swal.fire('Error al consultar', 'Ocurrió un error al consultar los bancos.', 'error');
+    
+      this.dataSourceBanco = new MatTableDataSource(this.tabla_banco); // Inicializar dataSourceBanco
+    
+      // Asignar paginator y sort al dataSource
+      this.dataSourceBanco.paginator = this.paginatorBancos;
+      this.dataSourceBanco.sort = this.sort; // Asignar sort
+    
+      console.log(this.sort);
     }
-  );
+
+
+registrarBancos() {
+  if (this.enviarBanco.valid) {
+    const formBancos = {
+      entidad_bancaria: this.enviarBanco.value.añadirbanco
+    };
+
+    if (this.editar) {
+      // Si estamos editando, utilizamos el método modificarBanco
+      formBancos['id_entidad_bancaria'] = this.id_entidad_bancaria; // Agregamos el ID al objeto si estamos editando
+      formBancos['nuevoNombre'] = this.nombreBancoEditar; // Agrega el nuevo nombre
+
+      this.servicio.modificarBanco(formBancos).subscribe(
+        (res: any) => {
+          this.datoOriginal = this.datoSeleccionadoParaEditar;
+          this.datoSeleccionadoParaEditar = '';
+          this.llenarDesplegable();
+          this.traerBancos();
+          this.id_entidad_bancaria = null;
+          this.editar = false;
+          Swal.fire("Cambios guardados con éxito", "", "success");
+        },
+        (err: any) => {
+          Swal.fire("No se pudieron guardar los cambios", "", "error");
+        }
+      );
+    } else {
+      // Si no estamos editando, utilizamos el método enviarBanco para crear uno nuevo
+      Swal.fire({
+        title: "Seguro de guardar los cambios?",
+        showDenyButton: true,
+        confirmButtonText: "Guardar",
+        denyButtonText: `Cancelar`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.servicio.enviarBanco(formBancos).subscribe(
+            (res: any) => {
+              Swal.fire("Banco guardado con éxito", "", "success");
+              this.enviarBanco.form.markAsPristine();
+              this.enviarBanco.form.markAsUntouched();
+              this.enviarBanco.resetForm();
+              this.traerBancos();
+            },
+            (error) => {
+              if (error && error.error && error.error.message) {
+                // Maneja el caso en el que el banco ya está registrado
+                Swal.fire("No se pudo guardar el banco", "El banco ya está registrado: " + error.error.message, "error");
+              } else {
+                // Maneja otros errores
+                Swal.fire("No se pudo guardar el banco", "El banco ya esta registrado", "error");
+              }
+            }
+          );
+        }
+      });
+    }
+  }
+}
+
+    
+   
+    llenarFormulario(entidad_bancaria){
+      this.enviarBanco.controls.banco.setValue(entidad_bancaria.entidad_bancaria);
+    }
+
+    
+  
+
+limpiarFormulario(){
+  this.consulta_banco = null;
+  this.consultar = false;
+  this.datoSeleccionadoParaEditar = null;
+
+  this.id_entidad_bancaria = null;
+  this.editar = false;
+  this.opcionSeleccionada  = '';
+
+
+  this.enviarBanco.reset();
+  console.log(this.datoOriginal);
+}
+
+applyFilter(event: Event){
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSourceBanco.filter = filterValue.trim().toLowerCase();
 }
 
 }

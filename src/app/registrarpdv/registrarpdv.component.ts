@@ -1038,7 +1038,8 @@ export class RegistrarpdvComponent implements OnInit {
                   }
                 },
                 (err) => {
-                  Swal.fire("Error al registrar", err.error.menssage, "error");
+                  console.log(err);
+                  Swal.fire("Error al registrar", err.error.message, "error");
                 }
               );
               this.traerpdv;

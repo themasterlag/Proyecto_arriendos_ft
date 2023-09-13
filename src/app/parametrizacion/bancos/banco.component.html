@@ -1,96 +1,106 @@
-
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <div class="card" style="margin-top: 20px;"> <!-- Agregado el margen superior -->
+        <div class="card" style="margin-top: 20px;">
           <div class="card-header card-header-info" id="banner">
-            <h4 class="card-title">Gestion Bancos</h4>
-            <p  class="paragraph-info">Aqui se puede gestionar los Bancos</p>
+            <h4 class="card-title">Gestión Bancos</h4>
+            <p class="paragraph-info">Aquí se puede gestionar los Bancos</p>
           </div>
-        <div class="card-body">
-          <mat-accordion>
-            <mat-expansion-panel hideToggle></mat-expansion-panel>
-            <mat-expansion-panel
-              (opened)="panelOpenState = true"
-              (closed)="panelOpenState = false"
-            >
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <h6 class="text-info">Búsqueda de Bancos</h6>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              
-              <!-- Sección de buscar y añadir banco -->
-              <div class="row">
-  <!-- Sección de buscar banco -->
-  <div class="col-6">
-    <h5><strong>Buscar banco por su nombre</strong></h5>
-    <div class="row">
-      <div class="col-12">
-        <input class="formdata form-control mt-2" placeholder="Nombre del Banco" type="text" [(ngModel)]="consulta_banco" />
-      </div>
-      <div class="col-12 mt-2">
-        <button mat-raised-button class="btn btn-info btn-lg consulta-button btn-verde-oscuro" (click)="traerBancos()">Consultar</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Sección de añadir banco -->
-  <div class="col-6">
-    <h5><strong>Añadir Banco</strong></h5>
-    <form #registrarBancoForm="ngForm" (ngSubmit)="registrarBanco()">
-      <mat-form-field class="example-full-width">
-        <input matInput placeholder="Banco" type="text" name="nuevoBanco.banco" [(ngModel)]="nuevoBanco.banco" />
-      </mat-form-field>
-      <div class="col-12 mt-2">
-        <button mat-raised-button class="btn btn-info btn-lg btn-verde-oscuro" type="submit">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
+          <div class="card-body">
+            <mat-accordion>
+              <mat-expansion-panel [expanded]="panelOpenState" (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Panel de Bancos</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
 
+                <div class="row">
+                  <!-- Pestaña de bancos -->
 
-              <!-- Sección de modificar / eliminar banco -->
-              <div class="row">
-                <div class="col-12">
-                  <h5><strong>Modifica o elimina un Banco</strong></h5>
-                  <div class="row">
-                    <!-- Select Bank Dropdown -->
-                    <div class="col-6">
-                      <mat-form-field>
-                        <mat-label>Selecciona un Banco</mat-label>
-                        <mat-select [(value)]="modificarBancoSeleccionado">
-                          <mat-option *ngFor="let banco of listaBancos" [value]="banco" (click)="seleccionarBancoParaModificar(banco)">
-                            {{ banco.entidad_bancaria }}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                    </div>
-                    
-                    <!-- Nuevo Nombre del Banco -->
-                    <div class="col-6">
-                      <mat-form-field>
-                        <mat-label>Nuevo Nombre del Banco</mat-label>
-                        <input matInput [(ngModel)]="nuevoNombreBanco" />
-                      </mat-form-field>
+                  <div class="col row align-items-center">
+                    <div class="table-responsive">
+                      <table mat-table [dataSource]="dataSourceBanco" class="thead-dark" matSort class="thead-dark">
+
+                        <ng-container matColumnDef="id_banco">
+                          <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"
+                            mat-sort-header="id_banco"> id </th>
+                          <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_entidad_bancaria}}
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="banco">
+                          <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                            Bancos </th>
+                          <td mat-cell class="text-center" *matCellDef="let element"> {{element.banco}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                          <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                            Acciones</th>
+                          <td mat-cell *matCellDef="let element" class="text-center">
+                            <div class="acciones-container">
+                              <button class="btn btn-info rounded-pill" (click)="editarBanco(element)"
+                                matTooltip="Editar banco" matTooltipPosition="above" matTooltipClass="tooltipText">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              </button>
+
+                              <button class="btn btn-danger rounded-pill"
+                                (click)="eliminarBanco(element.id_entidad_bancaria)" mat-raised-button
+                                matTooltip="Eliminar banco" matTooltipPosition="above" matTooltipClass="tooltipText">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                        <tr class="mat-row" *matNoDataRow>
+                          <td class="mat-cell" colspan="6">
+                            No hay información</td>
+                        </tr>
+
+                      </table>
+                      <mat-paginator [hidden]="dataSourceBanco.data.length < 1" class="mat-elevation-z8"
+                        #paginatorBanco [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                      </mat-paginator>
                     </div>
                   </div>
-                  
-                  <!-- Botones de Modificar y Eliminar -->
-                  <div class="row">
-                    <div class="col-6">
-                      <button mat-raised-button class="btn btn-info btn-lg btn-verde-oscuro" (click)="modificarBanco()">Modificar Banco</button>
-                    </div>
-                    <div class="col-6">
-                      <button mat-raised-button class="btn btn-danger btn-lg btn-rojo" (click)="eliminarBanco()">Eliminar Banco</button>
+
+                  <!-- Añadir banco y eliminar -->
+
+                  <div class="col-4">
+                    <div class="añadir-banco-container">
+                      <h5 class="titulo-añadir"><strong>Añadir Banco</strong></h5>
+
+                      <form #registrarBanco="ngForm" (ngSubmit)="registrarBancos()" [noValidate]="false">
+                        <mat-form-field class="example-full-width">
+                          <input matInput (keyup)="applyFilter($event)" placeholder="Banco" type="text" name="añadirbanco"
+                            [(ngModel)]="nombreBancoEditar" required />
+                        </mat-form-field>
+
+                        <button mat-raised-button type="submit"
+                          class="btn btn-success rounded-pill text-center" id="button-guardar">
+                          Guardar
+                        </button>
+
+                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center"
+                          id="button-limpiar" (click)="limpiarFormulario()">
+                          Limpiar
+                        </button>
+                      </form>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-            </mat-expansion-panel>
-          </mat-accordion>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
         </div>
       </div>
     </div>

@@ -139,13 +139,15 @@ export class ProcesosComponent implements OnInit {
   }
 
   tablaSubProcesos(){
-    let lista:any 
-    this.tabla_subprocesos = this.subprocesos.map((subproceso) => {
-      lista = this.procesos.find((pro) => pro.id_proceso == subproceso.id_proceso)
+    // let lista:any 
+    // this.tabla_subprocesos = this.subprocesos.map((subproceso) => {
+    //   lista = this.procesos.find((pro) => pro.id_proceso == subproceso.id_proceso)
+    this.tabla_subprocesos =  this.subprocesos.map((subproceso) => {
       return {
         id_subproceso: subproceso.id_subproceso,
         subproceso: subproceso.subproceso,
-        id_proceso: lista.nombre_proceso,
+        id_proceso: subproceso.proceso.nombre_proceso,
+        idproceso: subproceso.id_proceso
       }
     })
 
@@ -162,15 +164,19 @@ export class ProcesosComponent implements OnInit {
     this.editar = true;
     this.datoSeleccionadoParaEditar = element.nombre_proceso;
     this.datoOriginal = element.nombre_proceso;
+ 
 
   }
 
   editarSubProceso(element: any) {
 
     this.idSubProcesos = element.id_subproceso;
+    console.log(element)
+    this.enviarSubProceso.controls.formularioProcesos.setValue(element.idproceso);
     this.editar = true;
     this.datoEditarSubPro = element.subproceso;
     this.datoOriginal = element.subproceso;
+    
    
   }
 
@@ -229,12 +235,7 @@ export class ProcesosComponent implements OnInit {
       }
 
       AgregarProceso() {
-        if (this.procesoSeleccionado !== null){
         this.procesoSeleccionado = this.enviarProceso.controls.formularioProcesos.value;
-        }
-        else {
-          Swal.fire("Seleccione el Proceso relacionado","","info");          
-      }
     }
 
 // -------------------------------------------------------------------------------------------------------------------------
@@ -258,6 +259,9 @@ export class ProcesosComponent implements OnInit {
           (res: any) => {
             this.datoOriginal = this.datoSeleccionadoParaEditar;
             this.datoSeleccionadoParaEditar = '';
+            this.enviarProceso.form.markAsPristine();
+            this.enviarProceso.form.markAsUntouched();
+            this.enviarProceso.resetForm();
             this.ejecutarConsultas();
             this.traerProcesos();
             this.idProcesos = null;
@@ -305,7 +309,15 @@ export class ProcesosComponent implements OnInit {
         this.servicio.actualizarSubProcesos(formSubProcesos).subscribe(
           (res: any) => {
             this.datoOriginal = this.datoEditarSubPro;
+            console.log(this.datoEditarSubPro)
             this.datoEditarSubPro = '';
+            this.procesoSeleccionado = '';
+
+            this.enviarSubProceso.form.markAsPristine();
+            this.enviarSubProceso.form.markAsUntouched();
+            this.enviarSubProceso.resetForm();
+
+            
             this.ejecutarConsultas();
             this.traerSubProcesos();
             this.idSubProcesos = null;
@@ -346,7 +358,7 @@ export class ProcesosComponent implements OnInit {
   limpiarFormulario(){
     this.consulta_procesos = null;
     this.consultar = false;
-    this.datoSeleccionadoParaEditar = null;
+    this.datoSeleccionadoParaEditar = '';
     this.datoEditarSubPro = null;
 
     this.idProcesos = null;

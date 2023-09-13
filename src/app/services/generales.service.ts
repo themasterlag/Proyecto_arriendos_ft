@@ -126,6 +126,7 @@ export class GeneralesService {
    modificarBanco(banco) {
     return this.servicio.patch(this.api + "entidadbancaria/update", banco);
   }
+  
   eliminarBanco(id: number) {
     return this.servicio.delete(this.api + "entidadbancaria/" + id);
   }
@@ -285,7 +286,7 @@ export class GeneralesService {
   }
 
   traerSubProceso(id){
-    return this.servicio.get(this.api + "procesos/subprocesos/"+id);
+    return this.servicio.get(this.api + "procesos/subprocesos"+id);
   }
 
   enviarSubProceso(datosSubProcesos){
@@ -293,7 +294,7 @@ export class GeneralesService {
   }
   
   eliminarSubProceso(id: number) {
-    return this.servicio.delete(this.api + "procesos/subproceso"+id)
+    return this.servicio.delete(this.api + "procesos/subproceso/"+id)
   }
 
   actualizarSubProcesos(datos: any) {

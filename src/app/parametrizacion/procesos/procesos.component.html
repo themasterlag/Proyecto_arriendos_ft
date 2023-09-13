@@ -78,16 +78,15 @@
                         </mat-form-field>
 
                         <!-- (keyup)="applyFilter($event)" -->
-
-                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center"
-                          id="button-guardar">
-                          Guardar
-                        </button>
-
-                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center"
-                          id="button-limpiar" (click)="limpiarFormulario()">
-                          Limpiar
-                        </button>
+                        
+                        <div class="d-flex justify-content-between">
+                          <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                            Guardar
+                          </button>
+                          <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                            Limpiar
+                          </button>
+                      </div>
 
                       </form>
                     </div>
@@ -184,15 +183,16 @@
                           </mat-select>
                         </mat-form-field>
 
-                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center"
-                          id="button-guardar">
-                          Guardar
-                        </button>
-
-                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center"
-                          id="button-limpiar" (click)="limpiarFormulario()">
-                          Limpiar
-                        </button>
+                        <!-- <div class="row"> -->
+                            <div class="d-flex justify-content-between">
+                              <button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                                Guardar
+                              </button>
+                              <button  type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                                Limpiar
+                              </button>
+                          </div>
+                        <!-- </div> -->
 
                       </form>
                     </div>
