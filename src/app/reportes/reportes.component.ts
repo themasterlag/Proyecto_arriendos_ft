@@ -141,6 +141,12 @@ export class ReportesComponent implements OnInit {
             "Contratos a renovar "+this.formatDate(new Date())+".xlsx"
           );
         }
+        else{
+          Swal.fire({
+            icon: 'info',
+            title: 'No se encontraron contratos proximos a renovar',
+          });
+        }
         
         this.spinner = false;
       },
