@@ -40,16 +40,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
-                                            <input type="number" class="form-control" ngModel name="credito_total" placeholder="Ingrese el valor del credito" required>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
-                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" required>
-                                        </div>
-                                    </div>
                                     <div class="row align-items-center">
                                         <div class="col-12">
                                             <br>
@@ -58,7 +48,7 @@
                                                 <div class="form-group col-6 mt-0">
                                                     <mat-form-field appearance="fill">
                                                         <mat-label>Seleccione fecha de inicio</mat-label>
-                                                        <input matInput [matDatepicker]="pickerInicio" name="fecha_inicio" ngModel required>
+                                                        <input matInput [matDatepicker]="pickerInicio" name="fecha_inicio" ngModel (dateChange)="calcularValorMes(formularioCredito)" required>
                                                         <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                                                         <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
                                                         <mat-datepicker #pickerInicio></mat-datepicker>
@@ -67,7 +57,7 @@
                                                 <div class="form-group col-6 mt-0">
                                                     <mat-form-field appearance="fill">
                                                         <mat-label>Seleccione fecha de fin</mat-label>
-                                                        <input matInput [matDatepicker]="pickerFin" name="fecha_fin" ngModel required>
+                                                        <input matInput [matDatepicker]="pickerFin" name="fecha_fin" ngModel (dateChange)="calcularValorMes(formularioCredito)" required>
                                                         <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                                                         <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
                                                         <mat-datepicker #pickerFin></mat-datepicker>
@@ -76,9 +66,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
+                                            <input type="number" class="form-control" ngModel (focusout)="calcularValorMes(formularioCredito)" name="credito_total" placeholder="Ingrese el valor del credito" required>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
+                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" readonly required>
+                                        </div>
+                                    </div>
                                     <div class="row justify-content-end">
                                         <div class="col-3">
-                                            <button type="submit" class="btn btn-success align-middle rounded-pill">
+                                            <button type="submit" class="btn btn-success align-middle rounded-pill" [disabled]="!puedeGuardar">
                                                 Crear credito
                                             </button>
                                         </div>
@@ -120,16 +120,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
-                                            <input type="number" class="form-control" ngModel name="credito_total" placeholder="Ingrese el valor del credito" required>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
-                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" required>
-                                        </div>
-                                    </div>
                                     <div class="row align-items-center">
                                         <div class="col-12">
                                             <br>
@@ -138,7 +128,7 @@
                                                 <div class="form-group col-6 mt-0">
                                                     <mat-form-field appearance="fill">
                                                         <mat-label>Seleccione fecha de inicio</mat-label>
-                                                        <input matInput [matDatepicker]="pickerInicioEditar" name="fecha_inicio" ngModel required>
+                                                        <input matInput [matDatepicker]="pickerInicioEditar" name="fecha_inicio" ngModel (dateChange)="calcularValorMes(formularioEditarCredito)" required>
                                                         <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                                                         <mat-datepicker-toggle matSuffix [for]="pickerInicioEditar"></mat-datepicker-toggle>
                                                         <mat-datepicker #pickerInicioEditar></mat-datepicker>
@@ -147,7 +137,7 @@
                                                 <div class="form-group col-6 mt-0">
                                                     <mat-form-field appearance="fill">
                                                         <mat-label>Seleccione fecha de fin</mat-label>
-                                                        <input matInput [matDatepicker]="pickerFinEditar" name="fecha_fin" ngModel required>
+                                                        <input matInput [matDatepicker]="pickerFinEditar" name="fecha_fin" ngModel (dateChange)="calcularValorMes(formularioEditarCredito)" required>
                                                         <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                                                         <mat-datepicker-toggle matSuffix [for]="pickerFinEditar"></mat-datepicker-toggle>
                                                         <mat-datepicker #pickerFinEditar></mat-datepicker>
@@ -156,9 +146,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor total del credito</label>
+                                            <input type="number" class="form-control" ngModel (focusout)="calcularValorMes(formularioEditarCredito)" name="credito_total" placeholder="Ingrese el valor del credito" required>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="contrato" class="text-black">Ingrese el valor de pago mensual</label>
+                                            <input type="number" class="form-control" ngModel name="valor" placeholder="Ingrese el valor del pago" readonly required>
+                                        </div>
+                                    </div>
                                     <div class="row justify-content-end">
                                         <div class="col-2">
-                                            <button type="submit" class="btn btn-success align-middle rounded-pill">
+                                            <button type="submit" class="btn btn-success align-middle rounded-pill" [disabled]="!puedeGuardar">
                                                 Guardar
                                             </button>
                                         </div>
@@ -216,18 +216,32 @@
                                         <ng-container matColumnDef="Acciones">
                                             <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <button class="btn btn-info rounded-pill" (click)="editarCredito(element)" 
-                                                matTooltip="Editar credito" 
-                                                matTooltipPosition="above"
-                                                matTooltipClass="tooltipText">
-                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                                </button>
-                                                <button class="btn btn-danger rounded-pill" (click)="eliminarCredito(element)" 
-                                                matTooltip="Eliminar credito" 
-                                                matTooltipPosition="above"
-                                                matTooltipClass="tooltipText">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
+                                                <div class="px-0" role="group">
+                                                    <button class="btn btn-success rounded px-2" (click)="abonarCredito(element)" 
+                                                    matTooltip="Abonar al credito" 
+                                                    matTooltipPosition="above"
+                                                    matTooltipClass="tooltipText">
+                                                        <i class="fa fa-money fa-fw" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button class="btn btn-info rounded px-2" (click)="editarCredito(element)" 
+                                                    matTooltip="Editar credito" 
+                                                    matTooltipPosition="above"
+                                                    matTooltipClass="tooltipText">
+                                                        <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button class="btn btn-warning rounded px-2" (click)="consultarPagosCredito(element)" 
+                                                    matTooltip="Ver historial de pagos" 
+                                                    matTooltipPosition="above"
+                                                    matTooltipClass="tooltipText">
+                                                        <i class="fa fa-history fa-fw" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger rounded px-2" (click)="eliminarCredito(element)" 
+                                                    matTooltip="Eliminar credito" 
+                                                    matTooltipPosition="above"
+                                                    matTooltipClass="tooltipText">
+                                                        <i class="fa fa-trash fa-fw" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </ng-container>
 
@@ -237,12 +251,52 @@
 
                                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                      </table>
+                                    </table>
                                     
-                                      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                                                     showFirstLastButtons
-                                                     aria-label="Select page of periodic elements">
-                                      </mat-paginator>
+                                    <mat-paginator #paginatorLista [pageSizeOptions]="[5, 10, 20]"
+                                                    showFirstLastButtons
+                                                    aria-label="Select page of periodic elements">
+                                    </mat-paginator>
+                            </mat-expansion-panel>
+
+                            <mat-expansion-panel [hidden]="!panelListaPagos" [expanded]="panelListaPagos" (opened)="panelListaPagos = true" (closed)="panelListaPagos = false">
+                                <mat-expansion-panel-header (click)="ejecutarConsultas()">
+                                    <mat-panel-title>
+                                        <h6 class="text-info">HISTORIAL DE PAGOS A CREDITO</h6>
+                                    </mat-panel-title>
+                                    
+                                </mat-expansion-panel-header>
+
+                                <table mat-table [dataSource]="dataSourcePagos" class="w-100 text-center table table-striped table-hover">
+
+                                    <ng-container matColumnDef="usuario">
+                                        <th mat-header-cell *matHeaderCellDef class="text-center" > Usuario pago </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.creditopagousuario.nombres + " " + element.creditopagousuario.apellidos}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fecha">
+                                        <th mat-header-cell *matHeaderCellDef class="text-center"> Fecha de pago </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.fecha_pago}} </td>
+                                    </ng-container>
+                                
+                                    <ng-container matColumnDef="valor">
+                                        <th mat-header-cell *matHeaderCellDef class="text-center"> Valor del pago </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.valor_pago | currency}} </td>
+                                    </ng-container>
+                                
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell" colspan="8">No hay creditos</td>
+                                    </tr>
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsPagos"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsPagos;"></tr>
+                                </table>
+                                
+                                <mat-paginator #paginatorListaPagos [pageSizeOptions]="[10, 15, 20, 30]"
+                                                showFirstLastButtons
+                                                aria-label="Select page of periodic elements">
+                                </mat-paginator>
+
                             </mat-expansion-panel>
                         </mat-accordion>
                     </div>

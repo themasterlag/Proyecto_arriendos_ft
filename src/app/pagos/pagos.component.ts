@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core"
 import { GeneralesService } from "app/services/generales.service"
+import { AutenticacionService } from "app/auth/autenticacion.service"
 // import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Loading, Report } from "notiflix"
 import { MatPaginator } from "@angular/material/paginator"
@@ -12,13 +13,8 @@ const htmlToPdfmake = require("html-to-pdfmake")
 ;(pdfMake as any).vfs = pdfFonts.pdfMake.vfs
 import Swal from "sweetalert2"
 import { AngularCsv } from "angular-csv-ext/dist/Angular-csv"
-import { element } from "protractor"
-import { style } from "@angular/animations"
-// import {MatTabsModule} from '@angular/material/tabs';
 import * as XLSX from "xlsx"
-import { Console, count, error, log } from "console"
 import * as _ from 'lodash';
-import { asPDFName } from "pdf-lib"
 
 export interface PeriodicElement {
   Check: boolean
@@ -76,7 +72,7 @@ export class PagosComponent implements OnInit {
   tipoPago: number = 0
   spinnerNomina: boolean = false;
 
-  constructor(private servicio: GeneralesService) {}
+  constructor(private servicio: GeneralesService, public servicioAutenticacion: AutenticacionService) {}
 
   ngOnInit(): void {
     // Loading.pulse("Cargando")
@@ -484,6 +480,7 @@ export class PagosComponent implements OnInit {
 
         const listaEnviar = nopagados.map((element) => {
           return {
+            id_usuario: this.servicioAutenticacion.getCargaUtil().id_usuario,
             id_contrato: element.id_contrato,
             valor: Math.round(element.total),
             fecha_pago: formattedDate,

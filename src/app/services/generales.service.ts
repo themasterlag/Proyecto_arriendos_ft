@@ -250,6 +250,14 @@ export class GeneralesService {
     return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
+  abonarCredito(datos:any){
+    return this.servicio.post(this.api + 'saldo-credito-pago', datos);
+  }
+
+  traerPagosCredito(id:any){
+    return this.servicio.get(this.api + 'saldo-credito/pagos/'+id);
+  }
+
  //Procesos y subprocesos
 
   traerProcesos(){
