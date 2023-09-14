@@ -204,10 +204,5 @@ export class CargosComponent implements OnInit {
 
     this.enviarCargo.reset();
   }
-  
-  // applyFilter(event: Event){
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSourceCargo.filter = filterValue.trim().toLowerCase();
-  // }
 
 }

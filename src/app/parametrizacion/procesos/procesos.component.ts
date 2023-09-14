@@ -370,10 +370,6 @@ export class ProcesosComponent implements OnInit {
 
   }
 
-  // applyFilter(event: Event){
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSourceProceso.filter = filterValue.trim().toLowerCase();
-  // }
 // -------------------------------------------------------------------------------------------------------------------------
 
 
