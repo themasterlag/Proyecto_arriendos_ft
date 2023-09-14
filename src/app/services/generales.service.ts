@@ -251,6 +251,14 @@ export class GeneralesService {
     return this.servicio.get(this.api + `reportes/contratos-periodo/${mes}/${anio}/${filtro}`)
   }
 
+  abonarCredito(datos:any){
+    return this.servicio.post(this.api + 'saldo-credito-pago', datos);
+  }
+
+  traerPagosCredito(id:any){
+    return this.servicio.get(this.api + 'saldo-credito/pagos/'+id);
+  }
+
  //Procesos y subprocesos
 
   traerProcesos(){
@@ -393,8 +401,8 @@ export class GeneralesService {
     return this.servicio.get(this.api + "/conceptos/codigo-concepto/"+ id);
   }
   
-  traerContratosRenovar(){
-    return this.servicio.get(this.api + "/contrato/proximosrenovar");
+  traerContratosRenovar(id){
+    return this.servicio.get(this.api + "/contrato/proximosrenovar/" + id);
   }
 
   actualizarConcepto(datos){
