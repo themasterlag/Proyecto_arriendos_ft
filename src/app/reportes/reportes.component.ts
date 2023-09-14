@@ -51,7 +51,7 @@ export class ReportesComponent implements OnInit {
         {"nombre" : "Otros bancos", "reporte": "otrosBancos", "periodo" : true, status: 1},
         {"nombre" : "Efectivo", "reporte": "efectivo", "periodo" : true, status: 1},
         {"nombre" : "Todos los bancos", "reporte": "todosBancos", "periodo" : true, status: 1},
-        {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: 1},
+        {"nombre" : "Contratos proximos a renovar", "reporte": "proximosRenovar", "periodo" : false, status: 3},
         // {"nombre" : "Consulta", "reporte" : "consulta", "periodo" : true, status: 3, }
       ]
     );
@@ -77,9 +77,9 @@ export class ReportesComponent implements OnInit {
         case "todosBancos":
           this.generarBase64("todos-bancos");
           break;
-        case "proximosRenovar":
-          this.generarReporteProximosRenovar();
-          break;
+        // case "proximosRenovar":
+        //   this.generarReporteProximosRenovar();
+        //   break;
         case "consulta":
           this.generarReporteConsulta("todos-bancos");
         default:
@@ -102,63 +102,71 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporteProximosRenovar(){
-    this.servicio.traerContratosRenovar(1).subscribe(
-      (res:any) =>{
-        if (res.length > 0) {
-          let workbook = XLSX.utils.book_new()
-          let cabeceras = ["Contrato", "Punto_venta", "Fecha_fin_contrato", "Cannon"]
-          let worksheet = XLSX.utils.aoa_to_sheet([cabeceras]);
-          
-          for (let i = 0; i < res.length; i++) {
-            for (let prop in res[i]) {
-              if (res[i][prop] == null) {
-                res[i][prop] = "----------"
+    Swal.fire({
+      title: "Ingrese la cantidad de meses para generar el reporte",
+      input: "number",
+      showCancelButton: true,
+    }).then((result) => {
+      if(result.isConfirmed){
+        this.servicio.traerContratosRenovar(result.value).subscribe(
+          (res:any) =>{
+            if (res.length > 0) {
+              let workbook = XLSX.utils.book_new()
+              let cabeceras = ["Contrato", "Punto_venta", "Fecha_fin_contrato", "Cannon"]
+              let worksheet = XLSX.utils.aoa_to_sheet([cabeceras]);
+              
+              for (let i = 0; i < res.length; i++) {
+                for (let prop in res[i]) {
+                  if (res[i][prop] == null) {
+                    res[i][prop] = "----------"
+                  }
+                }
+    
+                delete res[i]["valor_adminstracion"];
+    
+                res[i]["PDV"] = res[i]["pvdetalle"]["codigo_oficina"];
+                res[i]["PDV_nombre"] = res[i]["pvdetalle"]["nombre_comercial"];
+                delete res[i]["pvdetalle"];
+    
+                res[i]["autorizado"] = res[i]["autdetalle"]["clientedetalle"]["nombres"] + " " + res[i]["autdetalle"]["clientedetalle"]["apellidos"];
+                delete res[i]["autdetalle"];
+    
+                res[i]["responsable"] = res[i]["responsabledetalle"]["clientedetalle"]["nombres"] + " " + res[i]["responsabledetalle"]["clientedetalle"]["apellidos"];
+                delete res[i]["responsabledetalle"];
+    
+                XLSX.utils.sheet_add_json(worksheet, [res[i]]);
               }
+    
+              XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                "Contratos"
+              )
+              XLSX.writeFile(
+                workbook,
+                "Contratos a renovar "+this.formatDate(new Date())+".xlsx"
+              );
             }
-
-            delete res[i]["valor_adminstracion"];
-
-            res[i]["PDV"] = res[i]["pvdetalle"]["codigo_oficina"];
-            res[i]["PDV_nombre"] = res[i]["pvdetalle"]["nombre_comercial"];
-            delete res[i]["pvdetalle"];
-
-            res[i]["autorizado"] = res[i]["autdetalle"]["clientedetalle"]["nombres"] + " " + res[i]["autdetalle"]["clientedetalle"]["apellidos"];
-            delete res[i]["autdetalle"];
-
-            res[i]["responsable"] = res[i]["responsabledetalle"]["clientedetalle"]["nombres"] + " " + res[i]["responsabledetalle"]["clientedetalle"]["apellidos"];
-            delete res[i]["responsabledetalle"];
-
-            XLSX.utils.sheet_add_json(worksheet, [res[i]]);
+            else{
+              Swal.fire({
+                icon: 'info',
+                title: 'No se encontraron contratos proximos a renovar',
+              });
+            }
+            
+            this.spinner = false;
+          },
+          (error) =>{
+            Swal.fire({
+              icon: 'error',
+              title: 'Ocurrio un error',
+              text: error.mensaje,
+            });
+            this.spinner = false;
           }
-
-          XLSX.utils.book_append_sheet(
-            workbook,
-            worksheet,
-            "Contratos"
-          )
-          XLSX.writeFile(
-            workbook,
-            "Contratos a renovar "+this.formatDate(new Date())+".xlsx"
-          );
-        }
-        else{
-          Swal.fire({
-            icon: 'info',
-            title: 'No se encontraron contratos proximos a renovar',
-          });
-        }
-        
-        this.spinner = false;
-      },
-      (error) =>{
-        Swal.fire({
-          icon: 'error',
-          title: 'Ocurrio un error',
-          text: error.mensaje,
-        });
-        this.spinner = false;
+        );
       }
-    );
+    })    
   }
 
   asignarmes(mes) {

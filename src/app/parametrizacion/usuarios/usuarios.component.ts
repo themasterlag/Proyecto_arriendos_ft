@@ -255,8 +255,8 @@ export class UsuariosComponent implements OnInit {
 
         this.dataSourceUsuarios.data = this.tabla_usuarios;
         this.dataSourceUsuarios.paginator = this.paginatorUsuarios;
-        console.log(this.sort);
-        this.dataSourceUsuarios.sort = this.sort;
+        // console.log(this.sort);
+        // this.dataSourceUsuarios.sort = this.sort;
 
       }
     )

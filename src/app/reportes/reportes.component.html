@@ -70,11 +70,10 @@
                                         <button *ngIf="(element.status == 2)" disabled class="btn btn-warning rounded-pill">
                                             en construccion
                                         </button>
-                                        <!-- <button *ngIf="!spinner && element.status == 3" class="btn btn-info rounded-pill"
-                                            (click)="generarReporte(element)"
-                                            disabled>
+                                        <button *ngIf="!spinner && element.status == 3" class="btn btn-info rounded-pill"
+                                            (click)="generarReporteProximosRenovar()">
                                             <i class="fa fa-search" aria-hidden="true"></i>
-                                        </button> -->
+                                        </button>
                                     </td>
                                 </ng-container>
 
