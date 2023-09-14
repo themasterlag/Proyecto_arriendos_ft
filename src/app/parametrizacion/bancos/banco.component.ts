@@ -58,7 +58,7 @@ export class BancoComponent implements OnInit {
 
   ngOnInit(): void {
      this.traerBancos();
-     this.dataSourceBanco.sort = this.sort;
+     
   }
 
   llenarDesplegable(){
