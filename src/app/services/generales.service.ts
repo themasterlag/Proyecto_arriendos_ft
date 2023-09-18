@@ -180,9 +180,25 @@ export class GeneralesService {
     return this.servicio.get(this.api + "preliquidacion/", { params: datos })
   }
 
+  //Incrementos
+
+  traerIncrementos(){
+    return this.servicio.get(this.api + "incrementos");
+  }
+
   traerIncremento(id){
     return this.servicio.get(this.api + "reportes/valor-incremento/" + id)
   }
+
+  enviarIncremento(datosIncrementos){
+    return this.servicio.post(this.api + "", datosIncrementos);
+  }
+
+  actualizarIncremento(datos: any) {
+    return this.servicio.patch(this.api + "", datos)
+  }
+
+  //
 
   traerListaPagosTodos() {
     return this.servicio.get(this.api + "preliquidacion/todos")

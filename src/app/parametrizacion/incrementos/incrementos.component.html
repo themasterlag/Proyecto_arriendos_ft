@@ -1,12 +1,45 @@
 <div class="main-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <div class="card" style="margin-top: 20px;"> 
-            <div class="card-header card-header-info" id="banner">
-              <h4 class="card-title">Gestion Incrementos</h4>
-              <p  class="paragraph-info">Aqui puedes gestionar Incrementos</p>
-            </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Procesos y subprocesos</h4>
+            <p class="card-category">Gestion de Procesos</p>
+          </div>
+
+          <div class="card-body">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Procesos</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <form>
+
+                                  <h5><strong>Procesos:</strong></h5>
+                                  <div class="col-4">
+                                    <mat-form-field class="example-full-width">
+                                      <mat-select placeholder="incrementos" id="incrementos" name="incrementos" ngModel required>
+                                        <mat-option [value]="p.id_subproceso" *ngFor="let p of incrementos">
+                                          {{ p.incremento }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                  
+                 </form>
+
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+
           </div>
         </div>
-</div>
+      </div>
+    </div>
+  </div>
