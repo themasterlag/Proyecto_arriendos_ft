@@ -4,8 +4,8 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header card-header-info" id="banner">
-            <h4 class="card-title">Procesos y subprocesos</h4>
-            <p class="card-category">Gestion de Procesos</p>
+            <h4 class="card-title">Incrementos</h4>
+            <p class="card-category">Gestion de Incrementos</p>
           </div>
 
           <div class="card-body">
@@ -13,26 +13,106 @@
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
-                    <h6 class="text-info">Procesos</h6>
+                    <h6 class="text-info">Añadir Incremento</h6>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
 
 
-                <form>
+                <div class="row">
 
-                                  <h5><strong>Procesos:</strong></h5>
-                                  <div class="col-4">
-                                    <mat-form-field class="example-full-width">
-                                      <mat-select placeholder="incrementos" id="incrementos" name="incrementos" ngModel required>
-                                        <mat-option [value]="p.id_subproceso" *ngFor="let p of incrementos">
-                                          {{ p.incremento }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                  </div>
-                  
-                 </form>
 
+                    <div class="col">
+
+                    <div class="añadir-cargo-container">
+
+                      <form #registrarIncrementos="ngForm" (ngSubmit)="registrarIncremento()" [noValidate]="false" class="d-flex align-items-center">
+
+                        <mat-form-field class="example-full-width flex-grow-1 mr-2">
+                          <input matInput placeholder="Nombre del incremento" type="text" name="añadirproceso" [(ngModel)]="datoEditarInc" required />
+                        </mat-form-field>
+                      
+                        <mat-form-field class="example-full-width flex-grow-1 mr-2">
+                          <input matInput placeholder="Valor del incremento" type="number" name="valorproceso" [(ngModel)]="valorProceso" required />
+                        </mat-form-field>
+                      
+                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                          Guardar
+                        </button>
+                      
+                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                          Limpiar
+                        </button>
+                      
+                      </form>
+                    </div>
+                    </div>
+                      
+
+
+
+                    <div class="col-12">
+
+                  <div class="col row align-items-center">
+                    <div class="table-responsive">
+                      <table mat-table [dataSource]="dataSourceIncrementos"
+                        class="w-100 text-center table table-striped table-hover">
+
+                        <ng-container matColumnDef="id_incremento">
+                          <th mat-header-cell *matHeaderCellDef class="text-center"> * </th>
+                          <td mat-cell *matCellDef="let element"> {{element.id_incremento}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombre_incremento">
+                          <th mat-header-cell *matHeaderCellDef class="text-center"> incrementos </th>
+                          <td mat-cell *matCellDef="let element"> {{element.nombre_incremento}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="incremento">
+                          <th mat-header-cell *matHeaderCellDef class="text-center"> valor incremento</th>
+                          <td mat-cell *matCellDef="let element"> {{element.incremento}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fecha_modificacion">
+                          <th mat-header-cell *matHeaderCellDef class="text-center"> fecha </th>
+                          <td mat-cell *matCellDef="let element"> {{element.fecha_modificacion}} </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="acciones">
+                          <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                          <td mat-cell *matCellDef="let element">
+
+                            <button class="btn btn-info rounded-pill" (click)="editarIncrementos(element)"
+                              matTooltip="Editar Incremento" matTooltipPosition="above" matTooltipClass="tooltipText">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+
+                            <button class="btn btn-danger rounded-pill" (click)="eliminarIncremento(element)"
+                              matTooltip="Eliminar Incremento" matTooltipPosition="above" matTooltipClass="tooltipText">
+                              <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                          </td>
+                        </ng-container>
+
+                        <tr class="mat-row" *matNoDataRow>
+                          <td class="mat-cell" colspan="8">No hay Incrementos</td>
+                        </tr>
+
+                        <tr mat-header-row *matHeaderRowDef="ColumnasIncrementos"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ColumnasIncrementos;"></tr>
+                      </table>
+
+                      <mat-paginator [hidden]="dataSourceIncrementos.data.length < 1" class="mat-elevation-z8"
+                        #paginatorIncrementos [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                      </mat-paginator>
+                    </div>
+                  </div>
+
+
+
+                  </div>
+
+                </div>
 
               </mat-expansion-panel>
 

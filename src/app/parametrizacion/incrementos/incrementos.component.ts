@@ -8,7 +8,7 @@ import {NgForm } from "@angular/forms";
 
 interface Incrementos {
   id_incrementos:number;
-  // nombre_incremento: string;
+  nombre_incremento: string;
   incremento: number;
 }
 
@@ -21,9 +21,14 @@ export class IncrementosComponent implements OnInit {
 
   panelOpenState = true;
   idIncremento: number;
+  nombreIncremento: string;
   datoOriginal: string = '';
+  valorOriginal: number;
   editar: boolean = false;
+
   datoEditarInc: string;
+  valorProceso: number;
+
   listaIncrementos:any = [];
   incrementos: any;
   consultar: boolean = false;
@@ -34,7 +39,7 @@ export class IncrementosComponent implements OnInit {
   IncrementosSeleccionado: any = null;
 
   dataSourceIncrementos: MatTableDataSource<Incrementos> =  new MatTableDataSource<Incrementos>();
-  ColumnasIncrementos: string[] = ["id_incrementos", "incrementos","fecha_modificacion"];
+  ColumnasIncrementos: string[] = ["id_incremento","nombre_incremento","incremento","fecha_modificacion","acciones"];
   @ViewChild("paginatorIncrementos") paginatorIncrementos: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("registrarIncrementos") enviarIncrementos: NgForm;
@@ -82,8 +87,9 @@ export class IncrementosComponent implements OnInit {
     this.tabla_Incrementos = this.incrementos.map((incremento) => {
       return {
         id_incremento: incremento.id_incremento,
+        nombre_incremento: incremento.nombre_incremento,
         incremento: incremento.incremento,
-        fecha: incremento.fecha_modificacion
+        fecha_modificacion: incremento.fecha_modificacion
       }
     })
 
@@ -95,39 +101,44 @@ export class IncrementosComponent implements OnInit {
 
   editarIncrementos(element: any) {
 
-    this.idIncremento = element.id_proceso;
+    this.idIncremento = element.id_incremento;
     this.editar = true;
-    this.datoEditarInc = element.incremento;
-    this.datoOriginal = element.incremento;
+    this.datoEditarInc = element.nombre_incremento;
+    this.datoOriginal = element.nombre_incremento;
+
+    this.valorProceso = element.incremento;
+    this.valorOriginal = element.incremento;
+
+
  
   }
 
-  // eliminarIncremento(proceso: any){
-  //   if (this.servicio.eliminarIncremento(proceso.id_incremento)) {
-  //     const formProcesos = {
-  //       id_incremento: this.idIncremento,
-  //     };
-  //       Swal.fire({
-  //         title: "Seguro que quieres eliminar este incremento?",
-  //         showDenyButton: true,
-  //         confirmButtonText: "Confirmar",
-  //         denyButtonText: `Cancelar`,
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           this.servicio.eliminarIncremento(proceso.id_incremento).subscribe(
-  //             (res: any) => {
-  //               Swal.fire("incremento eliminado", "", "success");
-  //               this.ejecutarConsultas();
-  //               this.traerIncrementos();
-  //             },
-  //             (error) => {
-  //              Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
-  //             }
-  //           );
-  //         }
-  //       });
-  //     }
-  //   }
+  eliminarIncremento(proceso: any){
+    if (this.servicio.eliminarIncremento(proceso.id_incremento)) {
+      const formProcesos = {
+        id_incremento: this.idIncremento,
+      };
+        Swal.fire({
+          title: "Seguro que quieres eliminar este incremento?",
+          showDenyButton: true,
+          confirmButtonText: "Confirmar",
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.servicio.eliminarIncremento(proceso.id_incremento).subscribe(
+              (res: any) => {
+                Swal.fire("incremento eliminado", "", "success");
+                this.ejecutarConsultas();
+                this.traerIncrementos();
+              },
+              (error) => {
+               Swal.fire("No se pudo eliminar", "Error: "+error.error.message, "error");
+              }
+            );
+          }
+        });
+      }
+    }
 
 
 
@@ -141,7 +152,10 @@ export class IncrementosComponent implements OnInit {
     if (this.enviarIncrementos.valid) {
       const formIncrementos = {
         id_incremento: this.idIncremento,
-        incremento: this.enviarIncrementos.controls.añadirincremento.value
+        nombre_incremento: this.enviarIncrementos.controls.añadirproceso.value,
+        incremento: this.enviarIncrementos.controls.valorproceso.value,
+        
+
       };
   
       if (formIncrementos.id_incremento) {
@@ -149,6 +163,10 @@ export class IncrementosComponent implements OnInit {
           (res: any) => {
             this.datoOriginal = this.datoEditarInc;
             this.datoEditarInc = '';
+
+            this.valorOriginal = this.valorProceso;
+            this.valorProceso;
+
             this.enviarIncrementos.form.markAsPristine();
             this.enviarIncrementos.form.markAsUntouched();
             this.enviarIncrementos.resetForm();
@@ -192,6 +210,7 @@ export class IncrementosComponent implements OnInit {
     this.consulta_incrementos = null;
     this.consultar = false;
     this.datoEditarInc = '';
+    this.valorOriginal=  null;
 
     this.idIncremento = null;
     this.editar = false;

@@ -191,11 +191,15 @@ export class GeneralesService {
   }
 
   enviarIncremento(datosIncrementos){
-    return this.servicio.post(this.api + "", datosIncrementos);
+    return this.servicio.post(this.api + "incrementos/inc", datosIncrementos);
   }
 
   actualizarIncremento(datos: any) {
-    return this.servicio.patch(this.api + "", datos)
+    return this.servicio.patch(this.api + "incrementos/update", datos)
+  }
+
+  eliminarIncremento(id: number) {
+    return this.servicio.delete(this.api + "incrementos/inc"+id)
   }
 
   //
