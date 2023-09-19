@@ -944,23 +944,53 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
+  // funciona   addpropietario(value) {
+  //   this.listprop.push({
+  //     id_propietario: value,
+  //   });
+
+  //   this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
+  //   // console.log(this.clientesfilter);
+
+  //   this.propietariostabla.push({
+  //     tipoid: this.clientesfilter[0].tipo_documento,
+  //     identificacion: this.clientesfilter[0].numero_documento,
+  //     nombres: this.clientesfilter[0].nombres,
+  //     apellidos: this.clientesfilter[0].apellidos,
+  //     razon: this.clientesfilter[0].razon_social,
+  //     id_propietario: this.clientesfilter[0].id_cliente,
+  //   });
+  // }
+
   addpropietario(value) {
-    this.listprop.push({
-      id_propietario: value,
-    });
-
-    this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
-    // console.log(this.clientesfilter);
-
-    this.propietariostabla.push({
-      tipoid: this.clientesfilter[0].tipo_documento,
-      identificacion: this.clientesfilter[0].numero_documento,
-      nombres: this.clientesfilter[0].nombres,
-      apellidos: this.clientesfilter[0].apellidos,
-      razon: this.clientesfilter[0].razon_social,
-      id_propietario: this.clientesfilter[0].id_cliente,
-    });
+    // Verificar si el propietario ya existe en listprop
+    const existsInList = this.listprop.some(item => item.id_propietario === value);
+  
+    if (!existsInList) {
+      // Agregar el propietario a listprop
+      this.listprop.push({
+        id_propietario: value,
+      });
+  
+      // Obtener información del propietario y agregarlo a propietariostabla
+      this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
+  
+      // Verificar si el propietario ya existe en propietariostabla
+      const existsInTable = this.propietariostabla.some(item => item.id_propietario === value);
+  
+      if (!existsInTable) {
+        this.propietariostabla.push({
+          tipoid: this.clientesfilter[0].tipo_documento,
+          identificacion: this.clientesfilter[0].numero_documento,
+          nombres: this.clientesfilter[0].nombres,
+          apellidos: this.clientesfilter[0].apellidos,
+          razon: this.clientesfilter[0].razon_social,
+          id_propietario: this.clientesfilter[0].id_cliente,
+        });
+      }
+    }
   }
+  
 
   delitem(i) {
     this.propietariostabla.splice(i, 1);
