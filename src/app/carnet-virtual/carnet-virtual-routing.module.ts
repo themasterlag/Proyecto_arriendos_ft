@@ -7,7 +7,7 @@ import { PersonalVinculadoComponent } from './personal-vinculado/personal-vincul
 
 const routes: Routes = [
   {
-    path: 'personal',
+    path: 'personalVinculado',
     component: PersonalVinculadoComponent,
     canActivate: [AuthGuard],
     data: { requiredPermissions: [8] }
