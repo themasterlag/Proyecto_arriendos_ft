@@ -14,26 +14,28 @@
                     </li>
                 </ul>
             </div>
-    
+
             <ul class="nav overflow-auto" id="navigation">
                 <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-                    <a *ngIf="menuItem.children.length < 1 && menuItem.active" class="nav-link" [routerLink]="[menuItem.path]">
+                    <a *ngIf="menuItem.children.length < 1 && menuItem.active" class="nav-link pl-2"
+                        [routerLink]="[menuItem.path]">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
                     </a>
-                    <div *ngIf="menuItem.children.length > 0 && menuItem.active">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                                {{menuItem.title}}
-                              </a>
-                              <div class="dropdown-menu">
-                                <a *ngFor="let Item of menuItem.children" class="nav-link dropdown-item" [routerLink]="[Item.path]">
-                                    <i class="material-icons">{{Item.icon}}</i>
-                                    <p>{{Item.title}}</p>
-                                </a>
-                              </div>
-                        </li>
-                    </div>
+                    
+
+                    <nav class="nav" *ngIf="menuItem.children.length > 0 && menuItem.active">
+                        <a class="nav-link pl-2" href="#{{menuItem.title}}" data-toggle="collapse">
+                            <i class="material-icons">{{menuItem.icon}}</i>
+                            <p>{{menuItem.title}}</p>
+                        </a>
+                        <div *ngFor="let childrenItem of menuItem.children">
+                            <a routerLinkActive="active" class="collapse nav-link pl-4" id="{{menuItem.title}}" [routerLink]="[childrenItem.path]">
+                                <i class="material-icons">{{childrenItem.icon}}</i>
+                                <p>{{childrenItem.title}}</p>
+                            </a>
+                        </div>
+                    </nav>
                 </li>
             </ul>
         </div>
@@ -42,7 +44,8 @@
     <div class="sidebar-footer">
         <div class="">
             <hr>
-            <button class="mx-0 btn btn-outline-danger w-100" (click)="cerrarSesion()"><i class="material-icons">logout</i> Cerrar sesion</button>
+            <button class="mx-0 btn btn-outline-danger w-100" (click)="cerrarSesion()"><i
+                    class="material-icons">logout</i> Cerrar sesion</button>
         </div>
     </div>
 </nav>

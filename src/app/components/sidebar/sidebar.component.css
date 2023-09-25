@@ -5,19 +5,36 @@
     border-radius: 25px;
 }
 .nav-link{
-    
     border-radius: 25px;
+}
+
+.active > nav { 
+    background-color: #adf8a6 !important; 
+    border-radius: 25px;
+}
+
+a.active {
+    background-color: #ffe203 !important; 
+    color: black !important;
 
 }
+
+a.active i{
+    color: black !important;
+}
+
 .active > a { 
     background-color: #ffe203 !important; 
     border-radius: 25px;
     color: black !important;
 }
+
+
 .sidebar .nav li a, .sidebar .nav li .dropdown-menu a{
     border-radius: 25px !important;
     overflow-y: scroll !important;
 }
+
 #logogana {
     border-radius: 35px;
     width: 180px;
