@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="modal fade show" style="display: block" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img class="card-img-top" src="./assets/img/logo-ganagana-amarillo-2.png" alt="Logo" />
+                </div>
+                <form #formularioCarnet="ngForm" (ngSubmit)="BuscarCarnet(formularioCarnet)" [noValidate]="false">
+                    <div class="modal-body">
+
+                        <strong>
+                            <h4 class="text-center">Consulta carnet virtual</h4>
+                        </strong>
+
+                        <hr class="mt-2">
+                        <div class="mx-3">
+                            <p for="documento">Numero de documento</p>
+                            <input type="number" name="documento" id="documento" class="py-4 form-control border border-secondary rounded" placeholder="Numero de documento" [(ngModel)]="documento" required>
+                        </div>
+                        <br>
+                        <div class="mx-3">
+                            <button type="submit" *ngIf="!spinner" class="w-100 btn rounded"
+                                style="background-color: #1b4f35;">Buscar persona</button>
+                            <button *ngIf="spinner" class="w-100 btn rounded" style="background-color: #1b4f35;"
+                                disabled>
+                                <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
+                                    <span class="sr-only">Buscando...</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CarnetVirtualRoutingModule } from './carnet-virtual-routing.module';
 import { PersonalVinculadoComponent } from './personal-vinculado/personal-vinculado.component';
+import { CarnetComponent } from './carnet/carnet.component';
 
 import { MatExpansionModule } from '@angular/material/expansion';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -14,7 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
-    PersonalVinculadoComponent
+    PersonalVinculadoComponent,
+    CarnetComponent
   ],
   imports: [
     CommonModule,
@@ -24,8 +26,6 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule
-
-  
   ]
 })
 export class CarnetVirtualModule { }

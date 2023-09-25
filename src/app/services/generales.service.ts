@@ -11,7 +11,9 @@ import { FOCUS_MONITOR_DEFAULT_OPTIONS } from "@angular/cdk/a11y"
   providedIn: "root",
 })
 export class GeneralesService {
-  api = Api.url
+  api = Api.url;
+  apiCarnet = Api.urlCarnet;
+
   constructor(private servicio: HttpClient) {}
 
   traerBase64(imagePath) {
@@ -433,4 +435,9 @@ export class GeneralesService {
     return this.servicio.delete(this.api + "/conceptos/delete/"+ id);
   }
 
+
+  // Carnet virtual
+  consultarCarnet(id){
+    return this.servicio.get(this.apiCarnet + "/carnet/"+ id, { responseType: 'arraybuffer' });
+  }
 }

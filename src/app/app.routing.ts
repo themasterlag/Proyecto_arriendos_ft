@@ -8,6 +8,8 @@ import { AuthGuard } from './auth/guard/authguard.guard';
 import { Pagina404Component } from './paginas-error/pagina404/pagina404.component';
 import { InautorizadoComponent } from './paginas-error/inautorizado/inautorizado.component';
 
+import { CarnetComponent } from './carnet-virtual/carnet/carnet.component';
+
 const routes: Routes =[
   {
     path: '',
@@ -24,6 +26,15 @@ const routes: Routes =[
         loadChildren: () => import('./inicio/login/login.component').then(m => m.LoginComponent)
       },
     ]
+  },
+
+  {
+    path: 'carnet',
+    component: CarnetComponent,
+  },
+  {
+    path: 'carnet/:documento',
+    component: CarnetComponent,
   },
 
   {

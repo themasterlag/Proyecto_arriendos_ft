@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  url: 'http://localhost:3000/api/arriendos/'
+  url: 'http://localhost:3000/api/arriendos/',
+  urlCarnet: 'http://localhost:3000/api/carnetVirtual/'
 };

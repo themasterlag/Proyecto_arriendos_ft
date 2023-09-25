@@ -8,5 +8,6 @@ export let Api = {
   // url: 'http://54.174.81.71/administramos_software/api_administramos/'
   //  url: 'http://10.250.9.36:3000/api/arriendos/'
   url: environment.url,
+  urlCarnet: environment.urlCarnet,
   // url: 'http://10.0.102.128:3000/api/arriendos/'
 };
