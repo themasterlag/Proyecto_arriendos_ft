@@ -1,1 +1,257 @@
-<p>personal-vinculado works!</p>
+<div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-info" id="banner">
+              <h4 class="card-title">Carnet</h4>
+              <p class="card-category">Gestion de carnets</p>
+            </div>
+  
+            <div class="card-body">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <h6 class="text-info">Tabla Personal</h6>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+  
+                      <hr>
+                      <mat-form-field appearance="standard">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput  placeholder="Buscar" #input>
+                      </mat-form-field>
+                      
+                      <table mat-table  class="mat-elevation-z8 tabla-usuarios" matSort>
+                      
+                        <ng-container matColumnDef="id">
+                          <th mat-header-cell *matHeaderCellDef> ID </th>
+                          <td mat-cell *matCellDef="let element"> {{element.cedula}} </td>
+                        </ng-container>
+      
+                        <ng-container matColumnDef="nombre">
+                          <th mat-header-cell *matHeaderCellDef > Nombre </th>
+                          <td mat-cell *matCellDef="let element"> {{element.nombre_usuario}} </td>
+                        </ng-container>
+                      
+                        <ng-container matColumnDef="apellido">
+                          <th mat-header-cell *matHeaderCellDef > Apellido </th>
+                          <td mat-cell *matCellDef="let element"> {{element.correo_usuario}} </td>
+                        </ng-container>    
+                        
+                        <ng-container matColumnDef="identificacion">
+                            <th mat-header-cell *matHeaderCellDef > Identificacion </th>
+                            <td mat-cell *matCellDef="let element"> {{element.correo_usuario}} </td>
+                          </ng-container> 
+                          
+                          <ng-container matColumnDef="cargo">
+                            <th mat-header-cell *matHeaderCellDef > Cargo </th>
+                            <td mat-cell *matCellDef="let element"> {{element.correo_usuario}} </td>
+                          </ng-container>  
+
+                          <ng-container matColumnDef="rh">
+                            <th mat-header-cell *matHeaderCellDef > RH </th>
+                            <td mat-cell *matCellDef="let element"> {{element.correo_usuario}} </td>
+                          </ng-container>  
+
+                          <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef > Estado </th>
+                            <td mat-cell *matCellDef="let element"> {{element.correo_usuario}} </td>
+                          </ng-container>  
+      
+                        <ng-container matColumnDef="Acciones">
+                          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                          <td mat-cell *matCellDef="let element">
+                            <button
+                              *ngIf="element.estado == 1"
+                              class="btn btn-info inhabilitar"
+                              (click)="cambiarEstadoUsuario(element)"
+                              >Inhabilitar
+                            </button>
+                            <button
+                              class="btn btn-info Habilitar"
+                              (click)="cambiarEstadoUsuario(element)"
+                              *ngIf="element.estado == 0"
+                              >Habilitar
+                            </button>
+                          </td>
+                        </ng-container>
+                      
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                      
+      
+                        <tr class="mat-row" *matNoDataRow>
+                          <td class="mat-cell" colspan="6">No hay información</td>
+                        </tr>
+      
+                      </table>
+
+                </mat-expansion-panel>
+              </mat-accordion>
+              <hr>
+<!-- _____________________________________________________________________________________________________________________________________ -->
+
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <h6 class="text-info">Añadir Personal</h6>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+  
+                  <form>
+                  <div class="row">
+                      <div class="col-12">
+                        <div class="row">
+                          <div class="col-4">
+                            <mat-form-field class="example-full-width">
+                              <input
+                                matInput
+                                placeholder="Nombres"
+                                type="text"
+                                id="Nombre"
+                                name="Nombre"
+                                ngModel
+                                required
+                              />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-4">
+                            <mat-form-field class="example-full-width">
+                              <input
+                                matInput
+                                placeholder="Apellidos"
+                                type="text"
+                                id="Apellidos"
+                                name="apellidos"
+                                ngModel
+                                required
+                              />
+                            </mat-form-field>
+                          </div>
+                          <div class="col-4">
+                            <mat-form-field class="example-full-width">
+                              <input
+                                matInput
+                                placeholder="Numero De Documento"
+                                type="number"
+                                id="numero_documento"
+                                name="numero_documento"
+                                ngModel
+                                required
+                              />
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-3">
+                                <mat-form-field class="example-full-width">
+                                    <input
+                                      matInput
+                                      placeholder="Cargo"
+                                      type="text"
+                                      id="Cargo"
+                                      name="Cargo"
+                                      ngModel
+                                      required
+                                    />
+                                  </mat-form-field>
+                              </div>
+                                <div class="col-3">
+                                  <mat-form-field class="example-full-width">
+                                    <mat-select
+                                      placeholder="rh"
+                                      id="rh"
+                                      name="rh"
+                                      ngModel
+                                      required
+                                    >
+                                      <mat-option value="A+">
+                                        A+
+                                      </mat-option>
+                                      <mat-option value="A-">
+                                        A-
+                                      </mat-option>
+          
+                                      <mat-option value="O+">
+                                          O+
+                                        </mat-option>
+                                        <mat-option value="O-">
+                                          O-
+                                        </mat-option>
+          
+                                        <mat-option value="B+">
+                                          B+
+                                        </mat-option>
+                                        <mat-option value="B-">
+                                          B-
+                                        </mat-option>
+          
+                                        <mat-option value="AB+">
+                                          AB+
+                                        </mat-option>
+                                        <mat-option value="AB-">
+                                          AB-
+                                        </mat-option>
+          
+                                        <mat-option value="RH NULO">
+                                          RH NULO
+                                        </mat-option>
+          
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                      <div class="col-6">
+                                        <mat-form-field class="example-full-width">
+                                          <input
+                                            matInput
+                                            placeholder="Correo Electronico"
+                                            type="text"
+                                            id="correo"
+                                            name="correo"
+                                            ngModel
+                                            required
+                                          />
+                                        </mat-form-field>
+                                      </div>
+
+                                      <div class="col-6">
+                                      <button
+                                      mat-raised-button
+                                      type="submit"
+                                      class="btn btn-success rounded-pill text-center"
+                                      id="button-guardar"
+                                    >
+                                      Guardar
+                                    </button>
+                                    <button
+                                      mat-raised-button
+                                      type="reset"
+                                      class="btn btn-danger rounded-pill text-center"
+                                      id="button-limpiar"                                                                         >
+                                      Limpiar
+                                    </button>
+                                </div>
+
+
+
+                  </div>
+                      </div>
+                    </div>
+                </form>
+                </mat-expansion-panel>
+  
+              </mat-accordion>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

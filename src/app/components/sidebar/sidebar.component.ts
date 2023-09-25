@@ -65,7 +65,7 @@ let nav = [
     id:null, 
     active:false, 
     children:[
-      { path: '/dashboard/carnetVirtual/personalVinculado', title: 'Personal vinculado', icon:'account_circle', class:'', id:8, active:false, children:[]},
+      { path: '/dashboard/carnetVirtual/personalVinculado', title: 'Personal vinculado', icon:'baby_changing_station', class:'', id:8, active:false, children:[]},
     ]
   },
 ];
