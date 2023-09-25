@@ -56,6 +56,18 @@ let nav = [
       { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:6, active:false, children:[]}, 
     ]
   },
+
+  { 
+    path: '', 
+    title: 'Carnet', 
+    icon:'call_to_action', 
+    class:'', 
+    id:null, 
+    active:false, 
+    children:[
+      { path: '/dashboard/personal-vinculado', title: 'Personal vinculado', icon:'account_circle', class:'', id:8, active:false, children:[]},
+    ]
+  },
 ];
 
 
