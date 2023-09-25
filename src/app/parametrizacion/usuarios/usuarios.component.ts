@@ -98,7 +98,7 @@ export class UsuariosComponent implements OnInit {
 
   registrarUsuario(){
 
-    // if(this.formularioUsuarios.valid){
+    if(this.formularioUsuarios.valid){
       let passwordform = null;
       let id_usuario = null;
 
@@ -174,7 +174,7 @@ export class UsuariosComponent implements OnInit {
           } })
       
       console.log(formUsuarios);
-    // }  
+    }  
   }
 
   formatoFecha(fecha){
