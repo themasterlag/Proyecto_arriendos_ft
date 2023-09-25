@@ -23,6 +23,15 @@ export const AdminLayoutRoutes: Routes = [
         }],
     },
     {
+        path: 'carnetVirtual',
+        canActivate: [AuthGuard],
+        children: [{
+            path: '',
+            canActivateChild: [AuthGuard],
+            loadChildren: () => import('../../carnet-virtual/carnet-virtual.module').then(m => m.CarnetVirtualModule)
+        }],
+    },
+    {
         path: 'inicio',
         component: InicioComponent
     },
