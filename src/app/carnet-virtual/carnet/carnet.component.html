@@ -15,7 +15,7 @@
                         <hr class="mt-2">
                         <div class="mx-3">
                             <p for="documento">Numero de documento</p>
-                            <input type="number" name="documento" id="documento" class="py-4 form-control border border-secondary rounded" placeholder="Numero de documento" [(ngModel)]="documento" required>
+                            <input type="number" name="documento" id="documento" class="py-4 form-control border border-secondary rounded text-center" placeholder="Numero de documento" [(ngModel)]="documento" required>
                         </div>
                         <br>
                         <div class="mx-3">
@@ -27,6 +27,7 @@
                                     <span class="sr-only">Buscando...</span>
                                 </div>
                             </button>
+                            <a routerLink="/" class="text-secondary" *ngIf="conToken()">Volver al inicio</a>
                         </div>
                     </div>
                 </form>

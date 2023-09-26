@@ -6,7 +6,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { LoginComponent } from './inicio/login/login.component';
 import { AuthGuard } from './auth/guard/authguard.guard';
 import { Pagina404Component } from './paginas-error/pagina404/pagina404.component';
-import { InautorizadoComponent } from './paginas-error/inautorizado/inautorizado.component';
+import { InhautorizadoComponent } from './paginas-error/inhautorizado/inhautorizado.component';
 
 import { CarnetComponent } from './carnet-virtual/carnet/carnet.component';
 
@@ -50,7 +50,7 @@ const routes: Routes =[
 
   {
     path: 'inautorizado',
-    component: InautorizadoComponent
+    component: InhautorizadoComponent
   },
   
   {

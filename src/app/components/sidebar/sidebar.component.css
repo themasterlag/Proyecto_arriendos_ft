@@ -29,6 +29,9 @@ a.active i{
     color: black !important;
 }
 
+ul hr {
+    background-color: #d1cece72;
+}
 
 .sidebar .nav li a, .sidebar .nav li .dropdown-menu a{
     border-radius: 25px !important;

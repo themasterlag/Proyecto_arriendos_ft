@@ -52,4 +52,12 @@ export class CarnetComponent implements OnInit {
     }
   }
 
+  conToken(){
+    let tieneToken = false;
+    if (sessionStorage.getItem("token")){
+      tieneToken = true;
+    }
+    return tieneToken;
+  }
+
 }
