@@ -73,4 +73,12 @@
     align-items: center; /* Esto alineará verticalmente los botones en el centro del contenedor */
   }
   
+
+  .derecha {
+
+    float: right; /* Alineado a la derecha */
+
+  }
+
+  
   

@@ -22,6 +22,9 @@
                         <mat-label>Buscar</mat-label>
                         <input matInput  placeholder="Buscar" #input>
                       </mat-form-field>
+
+                      
+                  <div class="col">
                       
                       <table mat-table  class="mat-elevation-z8 tabla-usuarios" matSort>
                       
@@ -87,7 +90,7 @@
                         </tr>
       
                       </table>
-
+                    </div>
                 </mat-expansion-panel>
               </mat-accordion>
               <hr>
@@ -222,11 +225,25 @@
                                         </mat-form-field>
                                       </div>
 
-                                      <div class="col-6">
+                                      <div class="col">
+
+                                        <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
+                                          <span>Seleccionar archivo</span>
+                                        </label>
+                                        <input 
+                                          type="file"
+                                          id="archivoExcel"
+                                          name="archivoExcel"
+                                          (change)="handleFileInput($event)"
+                                          accept=".xlsx,.xls"
+                                          required
+                                          style="display: none;"
+                                        />
+
                                       <button
                                       mat-raised-button
                                       type="submit"
-                                      class="btn btn-success rounded-pill text-center"
+                                      class="btn btn-success rounded-pill text-center derecha"
                                       id="button-guardar"
                                     >
                                       Guardar
@@ -234,11 +251,18 @@
                                     <button
                                       mat-raised-button
                                       type="reset"
-                                      class="btn btn-danger rounded-pill text-center"
+                                      class="btn btn-danger rounded-pill text-center derecha"
                                       id="button-limpiar"                                                                         >
                                       Limpiar
                                     </button>
+
+                                    
                                 </div>
+
+
+
+                              
+
 
 
 
