@@ -440,4 +440,9 @@ export class GeneralesService {
   consultarCarnet(id){
     return this.servicio.get(this.apiCarnet + "/carnet/"+ id, { responseType: 'arraybuffer' });
   }
+
+  descargaExcel(){
+    window.open(this.apiCarnet + "/personaVinculado/crearExcel", '_self');
+     // return this.servicio.get(this.apiCarnet + "/personaVinculado/crearExcel");
+  }
 }

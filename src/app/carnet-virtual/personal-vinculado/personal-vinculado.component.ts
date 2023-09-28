@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { GeneralesService } from "app/services/generales.service";
+import { error } from 'console';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-personal-vinculado',
@@ -9,9 +12,32 @@ export class PersonalVinculadoComponent implements OnInit {
 
   displayedColumns: string[] = ["id", "nombre", "apellido", "identificacion","cargo","rh","estado"];
 
-  constructor() { }
+  constructor(
+    public servicio: GeneralesService,
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  crearExcel(){
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
+    
+    Toast.fire({
+      icon: 'success',
+      title: 'Gerenando archivo'
+    })
+    this.servicio.descargaExcel();
+    
   }
 
   handleFileInput(event: any) {
