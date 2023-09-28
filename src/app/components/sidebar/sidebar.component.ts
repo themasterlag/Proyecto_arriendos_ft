@@ -16,7 +16,7 @@ let nav = [
   { 
     path: '', 
     title: 'Gestion', 
-    icon:'add_task', 
+    icon:'corporate_fare', 
     class:'', 
     id:null, 
     active:false, 
@@ -31,7 +31,7 @@ let nav = [
   { 
     path: '', 
     title: 'Parametrizacion', 
-    icon:'add_task', 
+    icon:'app_registration', 
     class:'', 
     id:null, 
     active:false, 
@@ -46,7 +46,7 @@ let nav = [
   { 
     path: '', 
     title: 'Acceso', 
-    icon:'add_task', 
+    icon:'rule', 
     class:'', 
     id:null, 
     active:false, 
