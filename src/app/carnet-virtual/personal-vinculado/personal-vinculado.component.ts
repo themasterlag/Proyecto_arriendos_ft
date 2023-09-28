@@ -1,9 +1,3 @@
-<<<<<<< Updated upstream
-import { Component, OnInit } from '@angular/core';
-import { GeneralesService } from "app/services/generales.service";
-import { error } from 'console';
-import Swal from 'sweetalert2';
-=======
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
@@ -23,7 +17,6 @@ interface Personal {
   // fecha_inhabilitado: string;
   // codigo_sitio_venta: number;
 }
->>>>>>> Stashed changes
 
 @Component({
   selector: 'app-personal-vinculado',
@@ -39,11 +32,6 @@ export class PersonalVinculadoComponent implements OnInit {
   cargo: string;
   rh: string;
 
-<<<<<<< Updated upstream
-  constructor(
-    public servicio: GeneralesService,
-  ) { }
-=======
 
   nombreOriginal: string = '';
   apellidoOriginal: string = '';
@@ -77,7 +65,6 @@ export class PersonalVinculadoComponent implements OnInit {
   constructor(public servicio: GeneralesService,) { 
     
   }
->>>>>>> Stashed changes
 
   ngOnInit(): void {
     this.traerPersonal();
