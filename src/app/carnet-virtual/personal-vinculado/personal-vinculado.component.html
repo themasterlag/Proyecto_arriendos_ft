@@ -25,66 +25,46 @@
                       <hr>
                       <mat-form-field appearance="standard">
                         <mat-label>Buscar</mat-label>
-                        <input matInput  placeholder="Buscar" #input>
+                        <input matInput (keyup)="filtrarPersonal($event)" placeholder="Buscar" #input>
                       </mat-form-field>
 
+
+
                       
-                  <div class="col">
+                      <table mat-table [dataSource]="dataSourcePersonal" class="mat-elevation-z8 tabla-usuarios" matSort>
                       
-                      <table mat-table  class="mat-elevation-z8 tabla-usuarios" matSort>
-                      
+
                         <ng-container matColumnDef="id">
-                          <th mat-header-cell *matHeaderCellDef> ID </th>
-                          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                          <th mat-header-cell *matHeaderCellDef class="custom-header"> ID </th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.id}} </td>
                         </ng-container>
-      
+
                         <ng-container matColumnDef="nombre">
-                          <th mat-header-cell *matHeaderCellDef > Nombre </th>
-                          <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                          <th mat-header-cell *matHeaderCellDef class="custom-header"> Nombre </th>
+                          <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.nombre}} </td>
                         </ng-container>
-                      
-                        <ng-container matColumnDef="apellido">
-                          <th mat-header-cell *matHeaderCellDef > Apellido </th>
-                          <td mat-cell *matCellDef="let element"> {{element.apellido}} </td>
-                        </ng-container>    
-                        
+
                         <ng-container matColumnDef="identificacion">
-                            <th mat-header-cell *matHeaderCellDef > Identificacion </th>
-                            <td mat-cell *matCellDef="let element"> {{element.identificacion}} </td>
+                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Identificacion </th>
+                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.identificacion}} </td>
                           </ng-container> 
                           
                           <ng-container matColumnDef="cargo">
-                            <th mat-header-cell *matHeaderCellDef > Cargo </th>
-                            <td mat-cell *matCellDef="let element"> {{element.cargo}} </td>
+                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Cargo </th>
+                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.cargo}} </td>
                           </ng-container>  
 
                           <ng-container matColumnDef="rh">
-                            <th mat-header-cell *matHeaderCellDef > RH </th>
-                            <td mat-cell *matCellDef="let element"> {{element.rh}} </td>
+                            <th mat-header-cell *matHeaderCellDef class="custom-header"> RH </th>
+                            <td mat-cell *matCellDef="let element"class="custom-cell"> {{element.rh}} </td>
                           </ng-container>  
 
                           <ng-container matColumnDef="estado">
-                            <th mat-header-cell *matHeaderCellDef > Estado </th>
-                            <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Estado </th>
+                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.estado}} </td>
                           </ng-container>  
       
-                        <!-- <ng-container matColumnDef="Acciones">
-                          <th mat-header-cell *matHeaderCellDef> Acciones </th>
-                          <td mat-cell *matCellDef="let element">
-                            <button
-                              *ngIf="element.estado == 1"
-                              class="btn btn-info inhabilitar"
-                              (click)="cambiarEstadoUsuario(element)"
-                              >Inhabilitar
-                            </button>
-                            <button
-                              class="btn btn-info Habilitar"
-                              (click)="cambiarEstadoUsuario(element)"
-                              *ngIf="element.estado == 0"
-                              >Habilitar
-                            </button>
-                          </td>
-                        </ng-container> -->
+
                       
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -93,9 +73,32 @@
                         <tr class="mat-row" *matNoDataRow>
                           <td class="mat-cell" colspan="6">No hay información</td>
                         </tr>
-      
+
                       </table>
-                    </div>
+
+                      <mat-paginator 
+                      [hidden]="dataSourcePersonal.data.length < 1"
+                      class="mat-elevation-z8"
+                      #paginatorPersonal
+                      [pageSizeOptions]="[5, 10, 20]"
+                      showFirstLastButtons
+                    >
+                  </mat-paginator>
+
+                  <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
+                    <span>Seleccionar archivo</span>
+                  </label>
+                  <input 
+                    type="file"
+                    id="archivoExcel"
+                    name="archivoExcel"
+                    (change)="handleFileInput($event)"
+                    accept=".xlsx,.xls"
+                    required
+                    style="display: none;"
+                  />
+
+             
                 </mat-expansion-panel>
               </mat-accordion>
               <hr>
@@ -109,7 +112,7 @@
                     </mat-panel-title>
                   </mat-expansion-panel-header>
   
-                  <form>
+                  <form #registrarPersona="ngForm" (ngSubmit)="registrarPersonal()" [noValidate]="false" >
                   <div class="row">
                       <div class="col-12">
                         <div class="row">
@@ -120,8 +123,8 @@
                                 placeholder="Nombres"
                                 type="text"
                                 id="Nombre"
-                                name="Nombre"
-                                ngModel
+                                name="añadirnombre"
+                                [(ngModel)]="datoEditarNom" 
                                 required
                               />
                             </mat-form-field>
@@ -133,8 +136,8 @@
                                 placeholder="Apellidos"
                                 type="text"
                                 id="Apellidos"
-                                name="apellidos"
-                                ngModel
+                                name="añadirapellido"
+                                [(ngModel)]="datoEditarApe" 
                                 required
                               />
                             </mat-form-field>
@@ -144,10 +147,10 @@
                               <input
                                 matInput
                                 placeholder="Numero De Documento"
-                                type="number"
+                                type="text"
                                 id="numero_documento"
-                                name="numero_documento"
-                                ngModel
+                                name="añadirdoc"
+                                [(ngModel)]="valorDoc" 
                                 required
                               />
                             </mat-form-field>
@@ -166,8 +169,8 @@
                                       placeholder="Cargo"
                                       type="text"
                                       id="Cargo"
-                                      name="Cargo"
-                                      ngModel
+                                      name="añadircargo"
+                                      [(ngModel)]="datoEditarCargo" 
                                       required
                                     />
                                   </mat-form-field>
@@ -177,8 +180,8 @@
                                     <mat-select
                                       placeholder="rh"
                                       id="rh"
-                                      name="rh"
-                                      ngModel
+                                      name="añadirrh"
+                                      [(ngModel)]="datoEditarRh" 
                                       required
                                     >
                                       <mat-option value="A+">
@@ -216,34 +219,8 @@
                                     </mat-select>
                                   </mat-form-field>
                                 </div>
-                                      <div class="col-6">
-                                        <mat-form-field class="example-full-width">
-                                          <input
-                                            matInput
-                                            placeholder="Correo Electronico"
-                                            type="text"
-                                            id="correo"
-                                            name="correo"
-                                            ngModel
-                                            required
-                                          />
-                                        </mat-form-field>
-                                      </div>
 
                                       <div class="col">
-
-                                        <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
-                                          <span>Seleccionar archivo</span>
-                                        </label>
-                                        <input 
-                                          type="file"
-                                          id="archivoExcel"
-                                          name="archivoExcel"
-                                          (change)="handleFileInput($event)"
-                                          accept=".xlsx,.xls"
-                                          required
-                                          style="display: none;"
-                                        />
 
                                       <button
                                       mat-raised-button
@@ -260,21 +237,15 @@
                                       id="button-limpiar"                                                                         >
                                       Limpiar
                                     </button>
+                                  </div>
 
-                                    
+                                  </div>
                                 </div>
-
-
+                              </div>
+                          </form>
 
                               
 
-
-
-
-                  </div>
-                      </div>
-                    </div>
-                </form>
                 </mat-expansion-panel>
   
               </mat-accordion>

@@ -441,8 +441,27 @@ export class GeneralesService {
     return this.servicio.get(this.apiCarnet + "/carnet/"+ id, { responseType: 'arraybuffer' });
   }
 
+<<<<<<< Updated upstream
   descargaExcel(){
     window.open(this.apiCarnet + "/personaVinculado/crearExcel", '_self');
      // return this.servicio.get(this.apiCarnet + "/personaVinculado/crearExcel");
   }
+=======
+  traerPersonal(){
+    return this.servicio.get(this.apiCarnet + "personaVinculado");
+  }
+
+  actualizarPersonal(datos: any) {
+    return this.servicio.patch(this.api + "personaVinculado/personal", datos)
+  }
+
+  enviarPersonal(datosCargos){
+    return this.servicio.post(this.api + "personaVinculado/personal", datosCargos);
+  }
+
+  enviarExcel(datosCargos){
+    return this.servicio.post(this.api + "personaVinculado", datosCargos);
+  }
+
+>>>>>>> Stashed changes
 }
