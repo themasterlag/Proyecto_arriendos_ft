@@ -18,7 +18,7 @@
                   </mat-expansion-panel-header>
 
                       <button
-                              class="btn btn-info Habilitar"
+                              class="btn btn-warning rounded-pill text-center"
                               (click)="crearExcel()"
                               >Habilitar
                             </button>
@@ -92,7 +92,8 @@
                     type="file"
                     id="archivoExcel"
                     name="archivoExcel"
-                    (change)="handleFileInput($event)"
+                    (change)="envioExcel($event)"
+                    enctype="multipart/form-data"
                     accept=".xlsx,.xls"
                     required
                     style="display: none;"
@@ -177,46 +178,16 @@
                               </div>
                                 <div class="col-3">
                                   <mat-form-field class="example-full-width">
-                                    <mat-select
-                                      placeholder="rh"
-                                      id="rh"
+                                    <input
+                                      matInput
+                                      placeholder="RH"
+                                      type="text"
+                                      id="Cargo"
                                       name="añadirrh"
+                                      max="3"
                                       [(ngModel)]="datoEditarRh" 
                                       required
-                                    >
-                                      <mat-option value="A+">
-                                        A+
-                                      </mat-option>
-                                      <mat-option value="A-">
-                                        A-
-                                      </mat-option>
-          
-                                      <mat-option value="O+">
-                                          O+
-                                        </mat-option>
-                                        <mat-option value="O-">
-                                          O-
-                                        </mat-option>
-          
-                                        <mat-option value="B+">
-                                          B+
-                                        </mat-option>
-                                        <mat-option value="B-">
-                                          B-
-                                        </mat-option>
-          
-                                        <mat-option value="AB+">
-                                          AB+
-                                        </mat-option>
-                                        <mat-option value="AB-">
-                                          AB-
-                                        </mat-option>
-          
-                                        <mat-option value="RH NULO">
-                                          RH NULO
-                                        </mat-option>
-          
-                                    </mat-select>
+                                    />
                                   </mat-form-field>
                                 </div>
 
@@ -243,8 +214,31 @@
                                 </div>
                               </div>
                           </form>
+                          <hr />
+                          <h5><strong>Buscar persona por su identificacion</strong></h5>
+                          <div class="row">
+                            <div class="col-3">
+                              <input
+                                class="formdata text-center form-control align-baseline mt-2"
+                                placeholder="Cedula Tercero"
+                                type="number"
+                                max="1000"
+                                [(ngModel)]="consulta_personal"
+                              />
+                            </div>
+                            
+                            <button
+                              class="btn btn-info rounded-pill text-center col-3"
+                              id="button-consultar"
+                              (click)="traerPersonal()"
+                            >
+                              Consultar
+                            </button>
 
-                              
+                            
+                          </div>
+          
+                      
 
                 </mat-expansion-panel>
   

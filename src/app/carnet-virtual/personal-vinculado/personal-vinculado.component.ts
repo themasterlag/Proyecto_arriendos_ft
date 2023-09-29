@@ -7,15 +7,15 @@ import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
 import { error } from 'console';
 
+
+
 interface Personal {
   id:number;
   nombre: string;
   apellido: string;
   identificacion: string;
   estado: boolean;
-  // fecha_fin: string;
-  // fecha_inhabilitado: string;
-  // codigo_sitio_venta: number;
+
 }
 
 @Component({
@@ -47,7 +47,7 @@ export class PersonalVinculadoComponent implements OnInit {
   datoEditarRh: string;
   datoEditarCorr: string;
 
-
+  archivoSeleccionado: File | null = null;
 
   listaPersonal:any = [];
   consultar: boolean = false;
@@ -95,22 +95,17 @@ export class PersonalVinculadoComponent implements OnInit {
     
   }
 
-  handleFileInput(event: any) {
-    const archivoSeleccionado = event.target.files[0];
-    console.log(archivoSeleccionado)
-    if (archivoSeleccionado) {
+  envioExcel(archivo){
+    let file = new FormData();
+    console.log(archivo.target.files[0])
+    file.append('file', archivo.target.files[0]);
+    // console.log(file, archivo);
+    this.servicio.enviarExcel(file).subscribe(
+      (res:any) => {
+        console.log(res);
+      }
+    )
 
-      this.servicio.enviarExcel(archivoSeleccionado).subscribe(
-        (res:any) => {
-          console.log(res);
-        },
-        (error)=>{
-
-        }
-      )
-      
-
-    }
   }
 
   consultarListaPersonal(){
@@ -181,6 +176,8 @@ export class PersonalVinculadoComponent implements OnInit {
       }
     )
   }
+
+  
 
 
 
@@ -257,6 +254,31 @@ export class PersonalVinculadoComponent implements OnInit {
         });
       }
     }
+  }
+
+  cambiarEstadoPersonal(usuario){
+    if(usuario.estado == 1){
+      this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
+        (res:any) => {
+          Swal.fire('Usuario inhabilitado', '', 'success');
+          this.tablaPersonal();
+        },
+        (error:any) => {
+          Swal.fire('Ocurrio un error', error.error.message, 'error');
+        }
+      )
+    }else{
+      this.servicio.habilitarUsuarios(usuario.id_usuario).subscribe(
+        (res:any) => {
+          Swal.fire('Usuario habilitado','', 'success');
+          this.tablaPersonal();
+        },
+        (error:any) => {
+          console.log(error.error);
+          Swal.fire('Ocurrio un error', error.error.message, 'error');
+        }
+      )
+    }    
   }
 
 }
