@@ -61,23 +61,26 @@ export class UsuariosComponent implements OnInit {
 
   traerUsuario(){
     
-    console.log(this.password);
-
-    if(this.consulta_usuario > 2000000000 ){
-      Swal.fire('Cedula invalida','','info');
-    } else {
-      this.servicio.traerUsuario(this.consulta_usuario).subscribe(
-        (res: any) => {
-          this.consultar = true;
-          this.password = false
-          console.log(res);
-          this.usuarioInfo = res;
-          this.llenarFormulario(res);
-        },
-        (error) => {
-          Swal.fire('Error al consultar', error.error.message, 'warning');
-        }
-      )
+    // console.log(this.password);
+    if(this.consulta_usuario != null){
+      if(this.consulta_usuario > 2000000000 ){
+        Swal.fire('Cedula invalida','','info');
+      } else {
+        this.servicio.traerUsuario(this.consulta_usuario).subscribe(
+          (res: any) => {
+            this.consultar = true;
+            this.password = false
+            console.log(res);
+            this.usuarioInfo = res;
+            this.llenarFormulario(res);
+          },
+          (error) => {
+            Swal.fire('Error al consultar', error.error.message, 'warning');
+          }
+        )
+      }
+    }else{
+      Swal.fire('El campo no puede estar vacío','','info');
     }
   }
 
