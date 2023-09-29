@@ -20,7 +20,6 @@ export class CarnetComponent implements OnInit {
   constructor(public servicio: GeneralesService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.documento = "65556160";
     if (this.route.snapshot.paramMap.get('documento')) {
       this.documento = this.route.snapshot.paramMap.get('documento');
     }

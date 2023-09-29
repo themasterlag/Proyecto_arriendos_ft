@@ -92,7 +92,27 @@ export class PersonalVinculadoComponent implements OnInit {
     // console.log(file, archivo);
     this.servicio.enviarExcel(file).subscribe(
       (res:any) => {
-        console.log(res);
+        Swal.fire({
+          toast: true,
+          icon: 'success',
+          title: 'Se ha cargado correctamente el archivo',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+      },
+      (error:any) => {
+        Swal.fire({
+          toast: true,
+          icon: 'error',
+          title: 'No se pudo cargar el archivo',
+          text: 'Verifique el formato del archivo',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
       }
     )
 
@@ -123,7 +143,7 @@ export class PersonalVinculadoComponent implements OnInit {
     this.enviarPersonal.controls.identificacion.setValue(infoPersonal.identificacion);
     this.enviarPersonal.controls.cargo.setValue(infoPersonal.cargo)
     this.enviarPersonal.controls.rh.setValue(infoPersonal.rh);
-  }
+  } 
 
   registrarPersonal(){
     if(this.enviarPersonal.valid){
@@ -161,7 +181,8 @@ export class PersonalVinculadoComponent implements OnInit {
                   Swal.fire('Persona actualizada con exito','','success');
                   this.consultar = false;
                   this.consulta_personal = null;
-                  this.limpiarFormulario();                
+                  this.limpiarFormulario();        
+                  this.tablaPersonal();
                 },
                 (error) => {
                   Swal.fire('Error al aztualizar persona', error.message, 'error');
@@ -178,6 +199,7 @@ export class PersonalVinculadoComponent implements OnInit {
 
                   this.consulta_personal = null;
                   this.limpiarFormulario();
+                  this.tablaPersonal();
                 },
                 (error) => {
                   Swal.fire('Error al crear personal ', error.error.message, 'error');
@@ -223,25 +245,36 @@ export class PersonalVinculadoComponent implements OnInit {
     if(personal.estado){
       this.servicio.inhabilitarPersonal(personal.id).subscribe(
         (res:any) => {
-          Swal.fire('persona inhabilitado', '', 'success');
-          this.cambiandoEstado = false;
+          Swal.fire('Personal inhabilitado', '', 'success')
+          .finally(()=>{
+            this.cambiandoEstado = false;
+            this.tablaPersonal();
+          });
         },
         (error:any) => {
-          Swal.fire('Ocurrio un error', error.error.message, 'error');
-          this.cambiandoEstado = false;
+          Swal.fire('Ocurrio un error', error.error.message, 'error')
+          .finally(()=>{
+            this.cambiandoEstado = false;
+            this.tablaPersonal();
+          });
         }
       );
-        this.tablaPersonal();
     }else{
       this.servicio.habilitarPersonal(personal.id).subscribe(
         (res:any) => {
-          Swal.fire('personal habilitado','', 'success');
-          this.cambiandoEstado = false;
+          Swal.fire('Personal habilitado','', 'success')
+          .finally(()=>{
+            this.cambiandoEstado = false;
+            this.tablaPersonal();
+          });
         },
         (error:any) => {
           console.log(error.error);
-          Swal.fire('Ocurrio un error', error.error.message, 'error');
-          this.cambiandoEstado = false;
+          Swal.fire('Ocurrio un error', error.error.message, 'error')
+          .finally(()=>{
+            this.cambiandoEstado = false;
+            this.tablaPersonal();
+          });
         }
       );
         this.tablaPersonal();  
