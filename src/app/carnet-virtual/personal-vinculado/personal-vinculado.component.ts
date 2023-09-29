@@ -24,13 +24,6 @@ interface Personal {
 })
 export class PersonalVinculadoComponent implements OnInit {
 
-  id: number;
-  nombre: string;
-  apellido: string;
-  identificacion: string;
-  cargo: string;
-  rh: string;
-
   panelOpenState = true;
 
   personalInfo: any;
@@ -106,17 +99,21 @@ export class PersonalVinculadoComponent implements OnInit {
   }
 
   traerPersonal(){
-      this.servicio.traerPersona(this.consulta_personal).subscribe(
-        (res: any) => {
-          this.consultar = true;
-          console.log(res);
-          this.personalInfo = res;
-          this.llenarFormulario(res);
-        },
-        (error) => {
-          Swal.fire('Error al consultar', error.error.message, 'warning');
-        }
-      )
+      if(this.consulta_personal == null){
+        Swal.fire('El campo identificación no puede estar vacio', '','question');
+      }else{
+        this.servicio.traerPersona(this.consulta_personal).subscribe(
+          (res: any) => {
+            this.consultar = true;
+            console.log(res);
+            this.personalInfo = res;
+            this.llenarFormulario(res);
+          },
+          (error) => {
+            Swal.fire('Error al consultar', error.error.message, 'warning');
+          }
+        )
+      }
     }
   
 
@@ -159,7 +156,6 @@ export class PersonalVinculadoComponent implements OnInit {
           if (result.isConfirmed){
             // console.log(this.idSubProcesos);
             if(this.consultar == true) {
-              console.log("blue label");
               this.servicio.actualizarPersonal(formPersonal).subscribe(
                 (res) => {
                   Swal.fire('Persona actualizada con exito','','success');
@@ -188,7 +184,8 @@ export class PersonalVinculadoComponent implements OnInit {
                 }
               )
             }
-          } })
+          } 
+        })
       
     }  
   }
