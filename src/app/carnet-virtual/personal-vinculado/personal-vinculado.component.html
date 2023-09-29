@@ -9,100 +9,7 @@
           </div>
 
           <div class="card-body">
-            <mat-accordion>
-              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" [expanded]="true">
 
-
-
-                <mat-expansion-panel-header (click)="tablaPersonal()">
-
-                  <mat-panel-title>
-                    <h6 class="text-info">Tabla Personal</h6>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-
-
-
-                <mat-form-field appearance="standard">
-                  <mat-label>Buscar</mat-label>
-                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input>
-                </mat-form-field>
-
-                <table mat-table [dataSource]="dataSourcePersonal" class="mat-elevation-z8 w-100 text-center">
-
-                  <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> ID </th>
-                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id}} </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="nombre">
-                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Nombre </th>
-                    <td mat-cell *matCellDef="let element" class="col-5"> {{element.nombre}} </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="identificacion">
-                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Identificacion </th>
-                    <td mat-cell *matCellDef="let element" class="col-2"> {{element.identificacion}} </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="cargo">
-                    <th mat-header-cell *matHeaderCellDef  class="text-center text-break"> Cargo </th>
-                    <td mat-cell *matCellDef="let element" class="col-3"> {{element.cargo}} </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="rh">
-                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> RH </th>
-                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.rh}} </td>
-                  </ng-container>
-
-                  <!-- <ng-container matColumnDef="estado" class="text-center text-break">
-                    <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.estado? "Activo": "Inactivo"}} </mat-cell>
-                  </ng-container> -->
-
-                  <ng-container matColumnDef="accion">
-                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Accion </th>
-                    <td mat-cell *matCellDef="let element" class="col-4"> 
-                      <button *ngIf="!element.estado && !cambiandoEstado" class="btn btn-success w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
-                        Activar
-                      </button>
-                      <button *ngIf="element.estado && !cambiandoEstado" class="btn btn-danger w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
-                        Inactivar
-                      </button>
-                      <button *ngIf="cambiandoEstado" class="btn btn-info w-100">
-                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
-                      </button>
-                    </td>
-                  </ng-container>
-
-
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                  <tr mat-row mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                  <tr class="mat-row text-center" *matNoDataRow>
-                    <td class="mat-cell text-center" colspan="6">No hay información</td>
-                  </tr>
-  
-
-                </table>
-
-                <mat-paginator [hidden]="dataSourcePersonal.data.length < 1" class="mat-elevation-z8" #paginatorPersonal
-                  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
-                </mat-paginator>
-
-                <br>
-
-                <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
-                  <span>Seleccionar archivo</span>
-                </label>
-                <input type="file" id="archivoExcel" name="archivoExcel" (change)="envioExcel($event)"
-                  enctype="multipart/form-data" accept=".xlsx,.xls" required style="display: none;" />
-
-                  <button class="btn btn-warning rounded-pill text-center" (click)="crearExcel()">Generar Excel de personal
-                  </button>
-
-              </mat-expansion-panel>
-            </mat-accordion>
             <hr>
             <!-- _____________________________________________________________________________________________________________________________________ -->
 
@@ -201,6 +108,104 @@
 
               </mat-expansion-panel>
 
+            </mat-accordion>
+
+
+            <hr>
+            
+            <mat-accordion>
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" [expanded]="true">
+
+
+
+                <mat-expansion-panel-header (click)="tablaPersonal()">
+
+                  <mat-panel-title>
+                    <h6 class="text-info">Tabla Personal</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+
+                <mat-form-field appearance="standard">
+                  <mat-label>Buscar</mat-label>
+                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input>
+                </mat-form-field>
+
+                <table mat-table [dataSource]="dataSourcePersonal" class="mat-elevation-z8 w-100 text-center">
+
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break "> ID </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Nombre </th>
+                    <td mat-cell *matCellDef="let element" class="col-5"> {{element.nombre}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="identificacion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Identificacion </th>
+                    <td mat-cell *matCellDef="let element" class="col-2"> {{element.identificacion}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cargo">
+                    <th mat-header-cell *matHeaderCellDef  class="text-center text-break"> Cargo </th>
+                    <td mat-cell *matCellDef="let element" class="col-3"> {{element.cargo}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="rh">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> RH </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.rh}} </td>
+                  </ng-container>
+
+                  <!-- <ng-container matColumnDef="estado" class="text-center text-break">
+                    <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.estado? "Activo": "Inactivo"}} </mat-cell>
+                  </ng-container> -->
+
+                  <ng-container matColumnDef="accion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Accion </th>
+                    <td mat-cell *matCellDef="let element" class="col-4"> 
+                      <button *ngIf="!element.estado && !cambiandoEstado" class="btn btn-success w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
+                        Activar
+                      </button>
+                      <button *ngIf="element.estado && !cambiandoEstado" class="btn btn-danger w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
+                        Inactivar
+                      </button>
+                      <button *ngIf="cambiandoEstado" class="btn btn-info w-100">
+                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </ng-container>
+
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                  <tr class="mat-row text-center" *matNoDataRow>
+                    <td class="mat-cell text-center" colspan="6">No hay información</td>
+                  </tr>
+  
+
+                </table>
+
+                <mat-paginator [hidden]="dataSourcePersonal.data.length < 1" class="mat-elevation-z8" #paginatorPersonal
+                  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                </mat-paginator>
+
+                <br>
+
+                <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
+                  <span>Cargar Excel</span>
+                </label>
+                <input type="file" id="archivoExcel" name="archivoExcel" (change)="envioExcel($event)"
+                  enctype="multipart/form-data" accept=".xlsx,.xls" required style="display: none;" />
+
+                  <button class="btn btn-warning rounded-pill text-center" (click)="crearExcel()">Generar Excel de personal
+                  </button>
+
+              </mat-expansion-panel>
             </mat-accordion>
 
           </div>
