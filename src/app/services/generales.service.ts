@@ -449,6 +449,11 @@ export class GeneralesService {
     return this.servicio.get(this.apiCarnet + "personaVinculado");
   }
 
+  traerPersona(id){
+    return this.servicio.get(this.apiCarnet + "personaVinculado/personalIdentificacion/" + id);
+  }
+
+
   actualizarPersonal(datos: any) {
     return this.servicio.patch(this.api + "personaVinculado/personal", datos)
   }
@@ -459,6 +464,19 @@ export class GeneralesService {
 
   enviarExcel(datosCargos){
     return this.servicio.post(this.api + "personaVinculado", datosCargos);
+  }
+
+
+  inhabilitarPersonal(id_usuario){
+    const body = { id: id_usuario };
+
+    return this.servicio.patch(this.api + "personaVinculado/inhabilitar", body);
+  }
+
+  habilitarPersonal(id_usuario){
+    const body = { id: id_usuario };
+
+    return this.servicio.patch(this.api + "personaVinculado/habilitar", body);
   }
 
 }

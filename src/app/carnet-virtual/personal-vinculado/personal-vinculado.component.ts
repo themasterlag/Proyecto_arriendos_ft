@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 import {MatSort} from '@angular/material/sort';
-import { error } from 'console';
 
 
 
@@ -32,14 +31,16 @@ export class PersonalVinculadoComponent implements OnInit {
   cargo: string;
   rh: string;
 
+  panelOpenState = true;
 
+  personalInfo: any;
   nombreOriginal: string = '';
   apellidoOriginal: string = '';
   identificacionOriginal: string;
   cargoOriginal: string = '';
   rhOriginal: string = '';
 
-
+  editar: boolean = false;
   datoEditarNom: string;
   datoEditarApe: string;
   valorDoc: string;
@@ -49,10 +50,10 @@ export class PersonalVinculadoComponent implements OnInit {
 
   archivoSeleccionado: File | null = null;
 
+  cambiandoEstado:boolean = false;
   listaPersonal:any = [];
   consultar: boolean = false;
   consulta_personal: any = null;
-  usuarioInfo: any;
   personal: any;
   personalFilter: any = [];
   tabla_personal: any;
@@ -60,18 +61,14 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("formularioPersonal") formularioPersonal: NgForm;
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
-  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","estado"];
+  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","accion"];
 
   constructor(public servicio: GeneralesService,) { 
     
   }
 
   ngOnInit(): void {
-    this.traerPersonal();
-  }
-
-  ejecutarConsultas(){
-    this.consultarListaPersonal();
+    this.tablaPersonal();
   }
 
   crearExcel(){
@@ -108,60 +105,107 @@ export class PersonalVinculadoComponent implements OnInit {
 
   }
 
-  consultarListaPersonal(){
-    this.servicio.traerPersonal().subscribe(
-      (res:any)=>{
-        
-        this.listaPersonal = res;
-
-      },
-      (err:any)=>{
-        Swal.fire("No se pudo consultar el personal", "", "error");
-      }
-    );
-  }
-
   traerPersonal(){
-  this.servicio.traerPersonal().subscribe(
-    (res) => {
-      this.consultar = true; 
-      this.personal = res;
-      this.tablaPersonal();
-    },
-    (error:any) =>{
-     Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+      this.servicio.traerPersona(this.consulta_personal).subscribe(
+        (res: any) => {
+          this.consultar = true;
+          console.log(res);
+          this.personalInfo = res;
+          this.llenarFormulario(res);
+        },
+        (error) => {
+          Swal.fire('Error al consultar', error.error.message, 'warning');
+        }
+      )
     }
-  )
-}
-
-  llenarFormulario(infoPersonal){
-    this.formularioPersonal.controls.id.setValue(infoPersonal.id);
-    this.formularioPersonal.controls.nombre.setValue(infoPersonal.nombre);
-    this.formularioPersonal.controls.apellido.setValue(infoPersonal.apellido);
-    this.formularioPersonal.controls.identificacion.setValue(infoPersonal.identificacion)
-    this.formularioPersonal.controls.cargo.setValue(infoPersonal.cargo);
-
-    this.filtrarPersonal(infoPersonal.proceso);
-    this.formularioPersonal.controls.rh.setValue(infoPersonal.rh);
-
-    this.formularioPersonal.controls.estado.setValue(infoPersonal.estado);
-  }
   
 
-
-  filtrarPersonal(event: Event){
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourcePersonal.filter = filterValue.trim().toLowerCase();
+  llenarFormulario(infoPersonal){
+    this.enviarPersonal.controls.nombre.setValue(infoPersonal.nombre);
+    this.enviarPersonal.controls.apellido.setValue(infoPersonal.apellido);
+    this.enviarPersonal.controls.identificacion.setValue(infoPersonal.identificacion);
+    this.enviarPersonal.controls.cargo.setValue(infoPersonal.cargo)
+    this.enviarPersonal.controls.rh.setValue(infoPersonal.rh);
   }
 
+  registrarPersonal(){
+    if(this.enviarPersonal.valid){
+      let id = null;
+
+
+      if(this.consultar == true){
+        id = this.personalInfo.id;
+      }
+
+      let formPersonal = {
+        nombre: this.enviarPersonal.controls.nombre.value,
+        apellido: this.enviarPersonal.controls.apellido.value,
+        identificacion: this.enviarPersonal.controls.identificacion.value,
+        cargo: this.enviarPersonal.controls.cargo.value,
+        rh: this.enviarPersonal.controls.rh.value,
+
+        rolid_rol: 1,
+        id: id,
+      }
+      console.log(formPersonal)
+      Swal
+        .fire({
+          title: "Seguro de guardar los cambios?",
+          showDenyButton: true,
+          confirmButtonText: "Guardar",
+          denyButtonText: `Cancelar`,
+        })
+        .then((result) => {
+          if (result.isConfirmed){
+            // console.log(this.idSubProcesos);
+            if(this.consultar == true) {
+              console.log("blue label");
+              this.servicio.actualizarPersonal(formPersonal).subscribe(
+                (res) => {
+                  Swal.fire('Persona actualizada con exito','','success');
+                  this.consultar = false;
+                  this.consulta_personal = null;
+                  this.limpiarFormulario();                
+                },
+                (error) => {
+                  Swal.fire('Error al aztualizar persona', error.message, 'error');
+                  //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+                }
+              )
+            } else {
+              this.servicio.enviarPersonal(formPersonal).subscribe(
+                (res:any) => {
+                  // console.log(res);
+                  Swal.fire('Personal creado con exito','','success');
+
+                  this.consultar = false;
+
+                  this.consulta_personal = null;
+                  this.limpiarFormulario();
+                },
+                (error) => {
+                  Swal.fire('Error al crear personal ', error.error.message, 'error');
+                }
+              )
+            }
+          } })
+      
+    }  
+  }
+
+
+
+
   tablaPersonal(){
+
     this.servicio.traerPersonal().subscribe(
       (res:any) => {
+        this.dataSourcePersonal.data = null
         this.tabla_personal = res.map((personal) => {
           return {
             id: personal.id,
-            nombre: personal.nombre + " " + personal.apellido,
             identificacion: personal.identificacion,
+            nombre: personal.nombre + " " + personal.apellido,
             cargo: personal.cargo,
             rh: personal.rh,
             estado: personal.estado,
@@ -177,110 +221,49 @@ export class PersonalVinculadoComponent implements OnInit {
     )
   }
 
-  
-
-
-
-
-
-  registrarPersonal() {
-    if (this.enviarPersonal.valid) {
-      const formularioPersonal = {
-        id: this.id,
-        nombre: this.enviarPersonal.controls.añadirnombre.value,
-        apellido: this.enviarPersonal.controls.añadirapellido.value,
-        identificacion: this.enviarPersonal.controls.añadirdoc.value,
-        cargo: this.enviarPersonal.controls.añadircargo.value,
-        rh: this.enviarPersonal.controls.añadirrh.value,
-        estado: true,
-
-        
-
-      };
-  
-      if (formularioPersonal.id) {
-        this.servicio.actualizarPersonal(formularioPersonal).subscribe(
-          (res: any) => {
-            this.nombreOriginal = this.datoEditarNom;
-            this.datoEditarNom = '';
-
-            this.apellidoOriginal = this.datoEditarApe;
-            this.datoEditarApe = '';
-
-            this.identificacionOriginal = this.valorDoc;
-            this.valorDoc = '';
-
-            this.cargoOriginal = this.datoEditarCargo;
-            this.datoEditarCargo = '';
-
-            this.rhOriginal = this.datoEditarRh;
-            this.datoEditarRh = '';
-
-
-
-            this.enviarPersonal.form.markAsPristine();
-            this.enviarPersonal.form.markAsUntouched();
-            this.enviarPersonal.resetForm();
-            this.ejecutarConsultas();
-            this.traerPersonal();
-            this.id = null;
-            Swal.fire("Cambios guardados con éxito", "", "success");
-          },
-          (err: any) => {
-            Swal.fire("No se pudieron guardar los cambios", "", "error");
-          }
-        );
-      } else {
-        Swal.fire({
-          title: "Seguro de guardar los cambios?",
-          showDenyButton: true,
-          confirmButtonText: "Guardar",
-          denyButtonText: `Cancelar`,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.servicio.enviarPersonal(formularioPersonal).subscribe(
-              (res: any) => {
-                Swal.fire("Personal guardado con éxito", "", "success");
-                this.enviarPersonal.form.markAsPristine();
-                this.enviarPersonal.form.markAsUntouched();
-                this.enviarPersonal.resetForm();
-                this.traerPersonal();
-              },
-              (error) => {
-               Swal.fire("No se encontro", "Error: "+error.error.message, "error");
-              }
-            );
-          }
-        });
-      }
-    }
-  }
-
-  cambiarEstadoPersonal(usuario){
-    if(usuario.estado == 1){
-      this.servicio.inhabilitarUsuarios(usuario.id_usuario).subscribe(
+  cambiarEstadoPersonal(personal){
+    this.cambiandoEstado = true;
+    if(personal.estado){
+      this.servicio.inhabilitarPersonal(personal.id).subscribe(
         (res:any) => {
-          Swal.fire('Usuario inhabilitado', '', 'success');
-          this.tablaPersonal();
+          Swal.fire('persona inhabilitado', '', 'success');
+          this.cambiandoEstado = false;
         },
         (error:any) => {
           Swal.fire('Ocurrio un error', error.error.message, 'error');
+          this.cambiandoEstado = false;
         }
-      )
+      );
+        this.tablaPersonal();
     }else{
-      this.servicio.habilitarUsuarios(usuario.id_usuario).subscribe(
+      this.servicio.habilitarPersonal(personal.id).subscribe(
         (res:any) => {
-          Swal.fire('Usuario habilitado','', 'success');
-          this.tablaPersonal();
+          Swal.fire('personal habilitado','', 'success');
+          this.cambiandoEstado = false;
         },
         (error:any) => {
           console.log(error.error);
           Swal.fire('Ocurrio un error', error.error.message, 'error');
+          this.cambiandoEstado = false;
         }
-      )
+      );
+        this.tablaPersonal();  
     }    
   }
 
-}
+  applyFilter(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourcePersonal.filter = filterValue.trim().toLowerCase();
+  }
 
+  limpiarFormulario(){
+    this.consulta_personal = null;
+    this.consultar = false;
+
+    this.enviarPersonal.form.markAsPristine(); // Marcar el formulario como "intocado"
+    this.enviarPersonal.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+    this.enviarPersonal.reset();
+  }
+
+}
 

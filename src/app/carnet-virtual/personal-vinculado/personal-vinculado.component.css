@@ -80,30 +80,6 @@
 
   }
 
-  .tabla-usuarios .mat-header-cell{
-    font-size: 16px;
-    text-align: center;
-}
 
-.tabla-usuarios .mat-cell {
-    font-size: 12px;
-    text-align: center;
-}
-  
-.tabla-usuarios {
-  text-align: center;
-  width: 100%;    
-}
-
-.custom-header {
-  width: 150px; /* Ancho fijo para las celdas de encabezado */
-}
-
-.custom-cell {
-  width: 150px; /* Ancho fijo para las celdas de datos */
-  white-space: nowrap; /* Evita que el contenido se ajuste automáticamente */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Trunca el texto que desborda */
-}
 
   

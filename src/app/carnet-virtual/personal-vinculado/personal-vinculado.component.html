@@ -1,251 +1,210 @@
 <div class="main-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header card-header-info" id="banner">
-              <h4 class="card-title">Carnet</h4>
-              <p class="card-category">Gestion de carnets</p>
-            </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Carnet</h4>
+            <p class="card-category">Gestion de carnets</p>
+          </div>
+
+          <div class="card-body">
+            <mat-accordion>
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" [expanded]="true">
+
+
+
+                <mat-expansion-panel-header (click)="tablaPersonal()">
+
+                  <mat-panel-title>
+                    <h6 class="text-info">Tabla Personal</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+
+                <mat-form-field appearance="standard">
+                  <mat-label>Buscar</mat-label>
+                  <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input>
+                </mat-form-field>
+
+                <table mat-table [dataSource]="dataSourcePersonal" class="mat-elevation-z8 w-100 text-center">
+
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> ID </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Nombre </th>
+                    <td mat-cell *matCellDef="let element" class="col-5"> {{element.nombre}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="identificacion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Identificacion </th>
+                    <td mat-cell *matCellDef="let element" class="col-2"> {{element.identificacion}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="cargo">
+                    <th mat-header-cell *matHeaderCellDef  class="text-center text-break"> Cargo </th>
+                    <td mat-cell *matCellDef="let element" class="col-3"> {{element.cargo}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="rh">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> RH </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.rh}} </td>
+                  </ng-container>
+
+                  <!-- <ng-container matColumnDef="estado" class="text-center text-break">
+                    <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.estado? "Activo": "Inactivo"}} </mat-cell>
+                  </ng-container> -->
+
+                  <ng-container matColumnDef="accion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Accion </th>
+                    <td mat-cell *matCellDef="let element" class="col-4"> 
+                      <button *ngIf="!element.estado && !cambiandoEstado" class="btn btn-success w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
+                        Activar
+                      </button>
+                      <button *ngIf="element.estado && !cambiandoEstado" class="btn btn-danger w-100 rounded-pill" (click)="cambiarEstadoPersonal(element)">
+                        Inactivar
+                      </button>
+                      <button *ngIf="cambiandoEstado" class="btn btn-info w-100">
+                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </ng-container>
+
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                  <tr class="mat-row text-center" *matNoDataRow>
+                    <td class="mat-cell text-center" colspan="6">No hay información</td>
+                  </tr>
   
-            <div class="card-body">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <h6 class="text-info">Tabla Personal</h6>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
 
-                      <button
-                              class="btn btn-warning rounded-pill text-center"
-                              (click)="crearExcel()"
-                              >Habilitar
-                            </button>
-                      <hr>
-                      <mat-form-field appearance="standard">
-                        <mat-label>Buscar</mat-label>
-                        <input matInput (keyup)="filtrarPersonal($event)" placeholder="Buscar" #input>
-                      </mat-form-field>
+                </table>
+
+                <mat-paginator [hidden]="dataSourcePersonal.data.length < 1" class="mat-elevation-z8" #paginatorPersonal
+                  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                </mat-paginator>
+
+                <br>
+
+                <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
+                  <span>Seleccionar archivo</span>
+                </label>
+                <input type="file" id="archivoExcel" name="archivoExcel" (change)="envioExcel($event)"
+                  enctype="multipart/form-data" accept=".xlsx,.xls" required style="display: none;" />
+
+                  <button class="btn btn-warning rounded-pill text-center" (click)="crearExcel()">Generar Excel de personal
+                  </button>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+            <hr>
+            <!-- _____________________________________________________________________________________________________________________________________ -->
+
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Añadir Personal</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <h5><strong>Buscar persona por su identificacion</strong></h5>
+                <div class="row">
+                  <div class="col-3">
+                    <input class="formdata text-center form-control align-baseline mt-2" placeholder="Identificacion"
+                      type="number" max="1000" [(ngModel)]="consulta_personal" />
+                  </div>
+
+                  <button class="btn btn-info rounded-pill text-center col-3" id="button-consultar"
+                    (click)="traerPersonal()">
+                    Consultar
+                  </button>
 
 
+                </div>
 
-                      
-                      <table mat-table [dataSource]="dataSourcePersonal" class="mat-elevation-z8 tabla-usuarios" matSort>
-                      
+                <hr />
 
-                        <ng-container matColumnDef="id">
-                          <th mat-header-cell *matHeaderCellDef class="custom-header"> ID </th>
-                          <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.id}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="nombre">
-                          <th mat-header-cell *matHeaderCellDef class="custom-header"> Nombre </th>
-                          <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.nombre}} </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="identificacion">
-                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Identificacion </th>
-                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.identificacion}} </td>
-                          </ng-container> 
-                          
-                          <ng-container matColumnDef="cargo">
-                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Cargo </th>
-                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.cargo}} </td>
-                          </ng-container>  
-
-                          <ng-container matColumnDef="rh">
-                            <th mat-header-cell *matHeaderCellDef class="custom-header"> RH </th>
-                            <td mat-cell *matCellDef="let element"class="custom-cell"> {{element.rh}} </td>
-                          </ng-container>  
-
-                          <ng-container matColumnDef="estado">
-                            <th mat-header-cell *matHeaderCellDef class="custom-header"> Estado </th>
-                            <td mat-cell *matCellDef="let element" class="custom-cell"> {{element.estado}} </td>
-                          </ng-container>  
-      
-
-                      
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                      
-      
-                        <tr class="mat-row" *matNoDataRow>
-                          <td class="mat-cell" colspan="6">No hay información</td>
-                        </tr>
-
-                      </table>
-
-                      <mat-paginator 
-                      [hidden]="dataSourcePersonal.data.length < 1"
-                      class="mat-elevation-z8"
-                      #paginatorPersonal
-                      [pageSizeOptions]="[5, 10, 20]"
-                      showFirstLastButtons
-                    >
-                  </mat-paginator>
-
-                  <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
-                    <span>Seleccionar archivo</span>
-                  </label>
-                  <input 
-                    type="file"
-                    id="archivoExcel"
-                    name="archivoExcel"
-                    (change)="envioExcel($event)"
-                    enctype="multipart/form-data"
-                    accept=".xlsx,.xls"
-                    required
-                    style="display: none;"
-                  />
-
-             
-                </mat-expansion-panel>
-              </mat-accordion>
-              <hr>
-<!-- _____________________________________________________________________________________________________________________________________ -->
-
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <h6 class="text-info">Añadir Personal</h6>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-  
-                  <form #registrarPersona="ngForm" (ngSubmit)="registrarPersonal()" [noValidate]="false" >
+                <form #registrarPersona="ngForm" (ngSubmit)="registrarPersonal()" [noValidate]="false">
                   <div class="row">
-                      <div class="col-12">
-                        <div class="row">
-                          <div class="col-4">
-                            <mat-form-field class="example-full-width">
-                              <input
-                                matInput
-                                placeholder="Nombres"
-                                type="text"
-                                id="Nombre"
-                                name="añadirnombre"
-                                [(ngModel)]="datoEditarNom" 
-                                required
-                              />
-                            </mat-form-field>
-                          </div>
-                          <div class="col-4">
-                            <mat-form-field class="example-full-width">
-                              <input
-                                matInput
-                                placeholder="Apellidos"
-                                type="text"
-                                id="Apellidos"
-                                name="añadirapellido"
-                                [(ngModel)]="datoEditarApe" 
-                                required
-                              />
-                            </mat-form-field>
-                          </div>
-                          <div class="col-4">
-                            <mat-form-field class="example-full-width">
-                              <input
-                                matInput
-                                placeholder="Numero De Documento"
-                                type="text"
-                                id="numero_documento"
-                                name="añadirdoc"
-                                [(ngModel)]="valorDoc" 
-                                required
-                              />
-                            </mat-form-field>
-                          </div>
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Nombres" type="text" id="nombre" name="nombre" ngModel
+                              required />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Apellidos" type="text" id="apellido" name="apellido" ngModel
+                              required />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Identificacion" type="text" id="identificacion"
+                              name="identificacion" ngModel required />
+                          </mat-form-field>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="row">
-                        <div class="col-12">
-                          <div class="row">
-                            <div class="col-3">
-                                <mat-form-field class="example-full-width">
-                                    <input
-                                      matInput
-                                      placeholder="Cargo"
-                                      type="text"
-                                      id="Cargo"
-                                      name="añadircargo"
-                                      [(ngModel)]="datoEditarCargo" 
-                                      required
-                                    />
-                                  </mat-form-field>
-                              </div>
-                                <div class="col-3">
-                                  <mat-form-field class="example-full-width">
-                                    <input
-                                      matInput
-                                      placeholder="RH"
-                                      type="text"
-                                      id="Cargo"
-                                      name="añadirrh"
-                                      max="3"
-                                      [(ngModel)]="datoEditarRh" 
-                                      required
-                                    />
-                                  </mat-form-field>
-                                </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-3">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Cargo" type="text" id="cargo" name="cargo" ngModel required />
+                          </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="RH" type="text" id="rh" name="rh" max="3" ngModel required />
+                          </mat-form-field>
+                        </div>
 
-                                      <div class="col">
 
-                                      <button
-                                      mat-raised-button
-                                      type="submit"
-                                      class="btn btn-success rounded-pill text-center derecha"
-                                      id="button-guardar"
-                                    >
-                                      Guardar
-                                    </button>
-                                    <button
-                                      mat-raised-button
-                                      type="reset"
-                                      class="btn btn-danger rounded-pill text-center derecha"
-                                      id="button-limpiar"                                                                         >
-                                      Limpiar
-                                    </button>
-                                  </div>
 
-                                  </div>
-                                </div>
-                              </div>
-                          </form>
-                          <hr />
-                          <h5><strong>Buscar persona por su identificacion</strong></h5>
-                          <div class="row">
-                            <div class="col-3">
-                              <input
-                                class="formdata text-center form-control align-baseline mt-2"
-                                placeholder="Cedula Tercero"
-                                type="number"
-                                max="1000"
-                                [(ngModel)]="consulta_personal"
-                              />
-                            </div>
-                            
-                            <button
-                              class="btn btn-info rounded-pill text-center col-3"
-                              id="button-consultar"
-                              (click)="traerPersonal()"
-                            >
-                              Consultar
-                            </button>
 
-                            
-                          </div>
-          
-                      
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col">
 
-                </mat-expansion-panel>
-  
-              </mat-accordion>
-  
-            </div>
+                          <button mat-raised-button type="submit"
+                            class="btn btn-success rounded-pill text-center derecha" id="button-guardar">
+                            Guardar
+                          </button>
+                          <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center derecha"
+                            id="button-limpiar" (click)="limpiarFormulario()">
+                            Limpiar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+                
+
+
+
+
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+
           </div>
         </div>
       </div>
     </div>
+  </div>
