@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GeneralesService } from "app/services/generales.service";
 import { NgForm } from "@angular/forms";
 import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
-import {MatSort} from '@angular/material/sort';
 
 
 
@@ -55,6 +54,8 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
   displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","accion"];
+  @ViewChild("archivoExcel") botonExcel: ElementRef;
+  enviandoExcel: boolean = false;
 
   constructor(public servicio: GeneralesService,) { 
     
@@ -86,12 +87,23 @@ export class PersonalVinculadoComponent implements OnInit {
   }
 
   envioExcel(archivo){
+    this.enviandoExcel = true;
+    Swal.fire({
+      toast: true,
+      icon: 'info',
+      title: 'Cargando archivo',
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true
+    });
+
     let file = new FormData();
-    console.log(archivo.target.files[0])
     file.append('file', archivo.target.files[0]);
-    // console.log(file, archivo);
     this.servicio.enviarExcel(file).subscribe(
       (res:any) => {
+        this.enviandoExcel = false;
+
         Swal.fire({
           toast: true,
           icon: 'success',
@@ -100,9 +112,13 @@ export class PersonalVinculadoComponent implements OnInit {
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true
+        }).finally(()=>{
+          this.botonExcel.nativeElement.value = null;
         });
       },
       (error:any) => {
+        this.enviandoExcel = false;
+
         Swal.fire({
           toast: true,
           icon: 'error',
@@ -112,6 +128,8 @@ export class PersonalVinculadoComponent implements OnInit {
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true
+        }).finally(()=>{
+          this.botonExcel.nativeElement.value = null;
         });
       }
     )

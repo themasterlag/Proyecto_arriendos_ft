@@ -196,14 +196,24 @@
 
                 <br>
 
-                <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
-                  <span>Cargar Excel</span>
-                </label>
-                <input type="file" id="archivoExcel" name="archivoExcel" (change)="envioExcel($event)"
-                  enctype="multipart/form-data" accept=".xlsx,.xls" required style="display: none;" />
-
+                <div class="row ml-1">
+                  <div *ngIf="!enviandoExcel">
+                    <label for="archivoExcel" class="btn btn-info rounded-pill text-center">
+                      <span>Cargar Excel</span>
+                    </label>
+                    <input type="file" #archivoExcel id="archivoExcel" name="archivoExcel" (change)="envioExcel($event)"
+                      enctype="multipart/form-data" accept=".xlsx,.xls" required style="display: none;" [disabled]="enviandoExcel"/>
+                  </div>
+                  <div *ngIf="enviandoExcel">
+                    <label for="archivoExcel" class="btn btn-dark rounded-pill text-center">
+                      <span>Cargando Excel...</span>
+                    </label>
+                    <input type="file"style="display: none;" disabled/>
+                  </div>
+  
                   <button class="btn btn-warning rounded-pill text-center" (click)="crearExcel()">Generar Excel de personal
                   </button>
+                </div>
 
               </mat-expansion-panel>
             </mat-accordion>
