@@ -36,6 +36,8 @@ export class RegistrarpdvComponent implements OnInit {
   panelOpenState = false;
   tipopersona: boolean = null;
   metodo_pago: boolean = null;
+  incrementoVDT: number;
+  incrementos: any;
   departamentos: any;
   municipios: any;
   municipiosfiltro: any;
@@ -174,6 +176,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.traermicrozonas();
     this.traerclientes();
    
+    this.traerIncrementos();
     this.traertipocuentas();
     this.traerpdv();
     // this.traerserviciospublicos();
@@ -1134,6 +1137,30 @@ export class RegistrarpdvComponent implements OnInit {
     )
   }
 
+  traerIncrementos() {
+    const idBuscado = 2; // Id que deseas buscar
+
+    this.servicio.traerIncrementos().subscribe(
+      (res: any[]) => {
+        const incrementoEncontrado = res.find(item => item.id_incremento === idBuscado);
+
+        if (incrementoEncontrado) {
+          const incrementoDeseado = incrementoEncontrado.incremento;
+          console.log(`Valor de incremento para el id ${idBuscado}: ${incrementoDeseado}`);
+          
+          this.incrementoVDT = incrementoDeseado;
+        } else {
+
+          Swal.fire("No se encontró", `No se encontró el objeto con id ${idBuscado}`, "error");
+        }
+      },
+      (error: any) => {
+        Swal.fire("No se encontró", "Error: " + error.error.message, "error");
+      }
+    );
+  }
+  
+
   addConceptos(value) {
     this.conceptosFilter = this.conceptos.filter((i) => i.id_concepto == value);
     
@@ -1190,7 +1217,8 @@ export class RegistrarpdvComponent implements OnInit {
                 valor: this.operacion,
               });              
               // console.log(this.municipios.find((element) => element.id_municipio == this.contrato.contrato.id_punto_venta_punto_de_ventum.id_municipio));
-              if (this.formulariocontrato.get('valor_canon').value > 1145000) {
+              
+              if (this.formulariocontrato.get('valor_canon').value > this.incrementoVDT) {
                 let consultarRTF = this.conceptos.filter((concepto) => concepto.codigo_concepto == 503)
                 this.operacionConceptos(consultarRTF[0].porcentaje_operacion, consultarRTF[0].tipo_concepto);
                 this.conceptosTabla.push({
@@ -1225,7 +1253,7 @@ export class RegistrarpdvComponent implements OnInit {
                 valor: this.operacion,
               });              
           }
-          if (this.formulariocontrato.get('valor_canon').value > 1145000) {
+          if (this.formulariocontrato.get('valor_canon').value > this.incrementoVDT) {
             let consultarRTF = this.conceptos.filter((concepto) => concepto.codigo_concepto == 503)
             this.operacionConceptos(consultarRTF[0].porcentaje_operacion, consultarRTF[0].tipo_concepto);
             this.conceptosTabla.push({
