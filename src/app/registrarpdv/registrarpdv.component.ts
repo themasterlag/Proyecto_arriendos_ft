@@ -343,8 +343,10 @@ export class RegistrarpdvComponent implements OnInit {
   }
   
   traeContrato() {
-
-    this.actualizar = true;
+    if(this.consulta_pdv == null){
+      Swal.fire('El campo de codigo punto de venta no puede estar vacio','','question');
+    } else{
+      this.actualizar = true;
     let id = this.consulta_pdv;
 
     this.buscarPuntosDeVenta();
@@ -402,6 +404,7 @@ export class RegistrarpdvComponent implements OnInit {
       }
     );
       this.formulariocontrato.get('valor_canon').disable()
+    }    
   }
 
   cargarDatosContrato(res){
