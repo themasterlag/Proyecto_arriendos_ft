@@ -7,7 +7,8 @@ import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { MatPaginator } from "@angular/material/paginator"
 import { MatTableDataSource } from "@angular/material/table"
-
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 interface Concepto {
   id_concepto: number;
@@ -24,6 +25,7 @@ interface Contratos {
   fecha_inhabilitado: string;
   codigo_sitio_venta: number;
   numero_documento: number;
+  inhabilitado: boolean;//modifique
 }
 @Component({
   selector: "app-registrarpdv",
@@ -84,7 +86,8 @@ export class RegistrarpdvComponent implements OnInit {
   contrato = null;
   concepto_municpio: any = [];
   pdv_busqueda = null;
-  pdv_id = null;
+  // pdv_id = null; 
+  pdv_id: number | null = null;
   tabla_contratos: any = [];
   valorCanon = null;
   canonGlobal = null;
@@ -97,7 +100,12 @@ export class RegistrarpdvComponent implements OnInit {
   @ViewChild('formularioTerceroReset') formularioTerceroReset: any;
   @ViewChild('formularioPdvReset') formularioPdvReset: any;
   @ViewChild('formularioContratoReset') formularioContratoReset: any;
-
+  contratosInhabilitados: Contratos[] = [];
+  codigo_sitio_venta: number;
+  puntosDeVenta: any[] = [];
+  mostrarMatSelect: boolean = true;
+  inhabilitado: boolean = false;
+  
   constructor(
     public servicio: GeneralesService,
     public formularioter: FormBuilder,
@@ -121,6 +129,7 @@ export class RegistrarpdvComponent implements OnInit {
       departamento: [null, Validators.required],
       fecha_creacion: [null],
     });
+    
 
     this.formulariopdv = this.formularioter.group({
       nombre_comercial: [null],
@@ -142,6 +151,7 @@ export class RegistrarpdvComponent implements OnInit {
       tipo_punto: [null],
       propietario: [null],
       departamento: [null],
+      inhabilitado: [false],
     });
 
     this.formulariocontrato = this.formularioter.group({
@@ -187,6 +197,9 @@ export class RegistrarpdvComponent implements OnInit {
     this.traerConceptoMunicpios();
     this.tablaContratos();
     this.traerBancos();
+    // this.inhabilitarPDV();
+    // this.mostrarDatosPuntoVenta();
+    // this.actualizarListaPuntosDeVenta();
   }
 
   traerConceptoMunicpios(){
@@ -210,7 +223,7 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
-  traerpdv() {
+   traerpdv() {
     this.servicio.traerPuntosDeVentaSinContrato().subscribe(
       (res: any) => {
         this.pdv = res;     
@@ -220,6 +233,31 @@ export class RegistrarpdvComponent implements OnInit {
       }
     );
   }
+
+  
+  
+  
+
+  // mostrarDatosPuntoVenta() {
+  //   if (this.pdv_id !== null) {
+  //     // Buscar el punto de venta en la lista pdv por su código_sitio_venta
+  //     const puntoDeVentaSeleccionado = this.pdv.find((item) => item.codigo_sitio_venta === this.pdv_id);
+  
+  //     if (puntoDeVentaSeleccionado) {
+  //       // Aquí puedes mostrar los datos del punto de venta seleccionado en tu interfaz de usuario
+  //       console.log('Datos del punto de venta seleccionado:', puntoDeVentaSeleccionado);
+  //       // this.nombreComercial = puntoDeVentaSeleccionado.nombre_comercial;
+  //       // this.direccion = puntoDeVentaSeleccionado.direccion;
+  //       // ...
+  //     } else {
+  //       Swal.fire('Punto de venta no encontrado', '', 'error');
+  //       // Manejar el caso en el que el punto de venta no se encuentre en la lista
+  //     }
+  //   } else {
+  //     // Manejar el caso en el que el usuario no ha seleccionado ningún punto de venta
+  //   }
+  // }
+  
 
   traerTercero(){
     // console.log(this.consulta_ter);
@@ -273,57 +311,116 @@ export class RegistrarpdvComponent implements OnInit {
     this.consulta_ter = null;
   }
 
-  traerPDV(){
-    this.servicio.traerPDv(this.pdv_id).subscribe(
-      (res:any) => {
+  // traerPDV(){
 
-        this.pdv_busqueda = res;
-        // console.log('Hola', this.pdv_busqueda);  
-        this.propietariostabla = []
-        // console.log(this.tipopunto);
+  //   this.servicio.traerPDv(this.pdv_id).subscribe(
+  //     (res:any) => {
+
+  //       this.pdv_busqueda = res;
+  //       // console.log('Hola', this.pdv_busqueda);  
+  //       this.propietariostabla = []
+  //       // console.log(this.tipopunto);
         
 
-        let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
+  //       let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
         
-        let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio)
-        this.filtrardepar(buscarDep[0].id_departamento);
+  //       let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio)
+  //       this.filtrardepar(buscarDep[0].id_departamento);
 
-        let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
+  //       let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
 
-        for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-          const element = this.pdv_busqueda.proppv[index];
-          this.addpropietario(element.id_propietario);
-        }
+  //       for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
+  //         const element = this.pdv_busqueda.proppv[index];
+  //         this.addpropietario(element.id_propietario);
+  //       }
         
-        // console.log(this.propietariostabla);
+  //       // console.log(this.propietariostabla);
 
         
-        this.formulariopdv.patchValue({
-          nombre_comercial: this.pdv_busqueda.nombre_comercial,
-          direccion: this.pdv_busqueda.direccion,
-          codigo_gipi: this.pdv_busqueda.codigo_gipi,
-          observaciones: this.pdv_busqueda.observacion,
-          linea_vista: this.pdv_busqueda.linea_vista,
-          sanitario: this.pdv_busqueda.sanitario,
-          lavamanos: this.pdv_busqueda.lavamanos,
-          poceta: this.pdv_busqueda.poceta,
-          latitud: this.pdv_busqueda.latitud,
-          longitud: this.pdv_busqueda.longitud,
-          numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-          area_local: this.pdv_busqueda.area_local,
-          codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-          codigo_oficina: this.pdv_busqueda.codigo_oficina,
-          tipo_punto: tipoPunto.id_tipo_contrato,
-          departamento: buscarDep[0].id_departamento,
-          id_municipio: buscaMuni[0].id_municipio
-        })
+  //       this.formulariopdv.patchValue({
+  //         nombre_comercial: this.pdv_busqueda.nombre_comercial,
+  //         direccion: this.pdv_busqueda.direccion,
+  //         codigo_gipi: this.pdv_busqueda.codigo_gipi,
+  //         observaciones: this.pdv_busqueda.observacion,
+  //         linea_vista: this.pdv_busqueda.linea_vista,
+  //         sanitario: this.pdv_busqueda.sanitario,
+  //         lavamanos: this.pdv_busqueda.lavamanos,
+  //         poceta: this.pdv_busqueda.poceta,
+  //         latitud: this.pdv_busqueda.latitud,
+  //         longitud: this.pdv_busqueda.longitud,
+  //         numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
+  //         area_local: this.pdv_busqueda.area_local,
+  //         codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
+  //         codigo_oficina: this.pdv_busqueda.codigo_oficina,
+  //         tipo_punto: tipoPunto.id_tipo_contrato,
+  //         departamento: buscarDep[0].id_departamento,
+  //         id_municipio: buscaMuni[0].id_municipio
+  //       })
         
-      },
-      (error:any) => {
-        Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+  //     },
+  //     (error:any) => {
+  //       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+  //     }
+  //   );
+  // }
+
+  traerPDV() {
+    if (this.pdv_id !== null) {
+      // Comprobar si el punto de venta está marcado como inhabilitado en localStorage
+      const estaInhabilitado = localStorage.getItem(`inhabilitado_${this.pdv_id}`);
+  
+      if (estaInhabilitado === 'true') {
+        // Mostrar una alerta si el punto de venta está inhabilitado en localStorage
+        Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
+      } else {
+        // El punto de venta no está marcado como inhabilitado en localStorage, continuar con la consulta
+        this.servicio.traerPDv(this.pdv_id).subscribe(
+          (res: any) => {
+            // Resto de la función para mostrar los detalles del punto de venta
+            this.pdv_busqueda = res;
+            this.propietariostabla = [];
+            let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
+            let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
+            this.filtrardepar(buscarDep[0].id_departamento);
+            let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
+  
+            for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
+              const element = this.pdv_busqueda.proppv[index];
+              this.addpropietario(element.id_propietario);
+            }
+  
+            this.formulariopdv.patchValue({
+              nombre_comercial: this.pdv_busqueda.nombre_comercial,
+              direccion: this.pdv_busqueda.direccion,
+              codigo_gipi: this.pdv_busqueda.codigo_gipi,
+              observaciones: this.pdv_busqueda.observacion,
+              linea_vista: this.pdv_busqueda.linea_vista,
+              sanitario: this.pdv_busqueda.sanitario,
+              lavamanos: this.pdv_busqueda.lavamanos,
+              poceta: this.pdv_busqueda.poceta,
+              latitud: this.pdv_busqueda.latitud,
+              longitud: this.pdv_busqueda.longitud,
+              numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
+              area_local: this.pdv_busqueda.area_local,
+              codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
+              codigo_oficina: this.pdv_busqueda.codigo_oficina,
+              tipo_punto: tipoPunto.id_tipo_contrato,
+              departamento: buscarDep[0].id_departamento,
+              id_municipio: buscaMuni[0].id_municipio
+            });
+          },
+          (error: any) => {
+            Swal.fire("No se encontró", "Error: " + error.error.message, "error");
+          }
+        );
       }
-    );
+    } else {
+      // Manejar el caso en el que el usuario no ha ingresado un código
+      // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+    }
   }
+  
+  
 
   buscarPuntosDeVenta(traerTodos = false){
     console.log(traerTodos);
@@ -950,7 +1047,7 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
-  // funciona   addpropietario(value) {
+  // addpropietario(value) {
   //   this.listprop.push({
   //     id_propietario: value,
   //   });
@@ -966,10 +1063,11 @@ export class RegistrarpdvComponent implements OnInit {
   //     razon: this.clientesfilter[0].razon_social,
   //     id_propietario: this.clientesfilter[0].id_cliente,
   //   });
-  // }
+  // } 
 
   addpropietario(value) {
     // Verificar si el propietario ya existe en listprop
+    
     const existsInList = this.listprop.some(item => item.id_propietario === value);
   
     if (!existsInList) {
@@ -993,9 +1091,475 @@ export class RegistrarpdvComponent implements OnInit {
           razon: this.clientesfilter[0].razon_social,
           id_propietario: this.clientesfilter[0].id_cliente,
         });
+          
       }
     }
   }
+
+  // este funciona inhabilitarPDV() {
+  //   if (this.pdv_id !== null) {
+  //     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+  
+  //     if (puntoDeVenta && puntoDeVenta.inhabilitado) {
+  //       // El punto de venta ya está inhabilitado, mostrar alerta
+  //       Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+  //     } else {
+  //       const currentDate = new Date();
+  //       const formattedDate = this.formatDate(currentDate);
+  
+  //       Swal.fire({
+  //         title: '¿Estás seguro de inhabilitar este punto de venta?',
+  //         text: 'Esta acción no se puede deshacer.',
+  //         icon: 'warning',
+  //         showCancelButton: true,
+  //         confirmButtonColor: '#3085d6',
+  //         cancelButtonColor: '#d33',
+  //         confirmButtonText: 'Sí, inhabilitar',
+  //         cancelButtonText: 'Cancelar',
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           Swal.fire({
+  //             title: 'Observación',
+  //             input: 'text',
+  //             showCancelButton: true,
+  //             confirmButtonText: 'Enviar',
+  //             icon: 'question',
+  //           }).then((result) => {
+  //             if (result.isConfirmed) {
+  //               let datos = {
+  //                 codigo_sitio_venta: this.pdv_id,
+  //                 fecha_inactivo: formattedDate,
+  //                 razon_inactivo: result.value,
+  //               };
+  
+  //               // Llama al servicio para inhabilitar el punto de venta
+  //               this.servicio.inhabilitarPDV(datos).subscribe(
+  //                 (res: any) => {
+  //                   if (res && res.codigo_sitio_venta) {
+  //                     // Actualiza la propiedad 'inhabilitado' del punto de venta a true
+  //                     if (puntoDeVenta) {
+  //                       puntoDeVenta.inhabilitado = true;
+  //                     }
+  
+  //                     // Almacena en localStorage que el punto de venta está inhabilitado
+  //                     localStorage.setItem(`inhabilitado_${this.pdv_id}`, 'true');
+  
+  //                     // Indica que el punto de venta está inhabilitado
+  //                     Swal.fire(`Punto de venta ${this.pdv_id} inhabilitado`, '', 'success');
+  
+  //                     // Limpia los datos relacionados con el punto de venta
+  //                     this.limpiarPdv();
+  //                   } else {
+  //                     // Manejar el caso en que no se haya inhabilitado correctamente
+  //                     Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
+  //                   }
+  //                 },
+  //                 (error) => {
+  //                   console.error('Error al inhabilitar el punto de venta:', error);
+  //                   Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
+  //                 }
+  //               );
+  //             }
+  //           });
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     // Manejar el caso en el que el usuario no ha ingresado un código
+  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+  //   }
+  // }
+  
+  inhabilitarPDV() {
+    if (this.pdv_id !== null) {
+      const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+  
+      // Comprobar si el punto de venta ya está inhabilitado en localStorage
+      const estaInhabilitado = localStorage.getItem(`inhabilitado_${this.pdv_id}`);
+  
+      if (puntoDeVenta && puntoDeVenta.inhabilitado) {
+        // El punto de venta ya está inhabilitado, mostrar alerta
+        Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+      } else if (estaInhabilitado === 'true') {
+        // El punto de venta está marcado como inhabilitado en localStorage, mostrar mensaje
+        Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
+      } else {
+        const currentDate = new Date();
+        const formattedDate = this.formatDate(currentDate);
+  
+        Swal.fire({
+          title: '¿Estás seguro de inhabilitar este punto de venta?',
+          text: 'Esta acción no se puede deshacer.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, inhabilitar',
+          cancelButtonText: 'Cancelar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: 'Observación',
+              input: 'text',
+              showCancelButton: true,
+              confirmButtonText: 'Enviar',
+              icon: 'question',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                let datos = {
+                  codigo_sitio_venta: this.pdv_id,
+                  fecha_inactivo: formattedDate,
+                  razon_inactivo: result.value,
+                };
+  
+                // Llama al servicio para inhabilitar el punto de venta
+                this.servicio.inhabilitarPDV(datos).subscribe(
+                  (res: any) => {
+                    if (res && res.codigo_sitio_venta) {
+                      // Actualiza la propiedad 'inhabilitado' del punto de venta a true
+                      if (puntoDeVenta) {
+                        puntoDeVenta.inhabilitado = true;
+                      }
+  
+                      // Almacena en localStorage que el punto de venta está inhabilitado
+                      localStorage.setItem(`inhabilitado_${this.pdv_id}`, 'true');
+  
+                      // Indica que el punto de venta está inhabilitado
+                      Swal.fire(`Punto de venta ${this.pdv_id} inhabilitado`, '', 'success');
+  
+                      // Limpia los datos relacionados con el punto de venta
+                      this.limpiarPdv();
+                    } else {
+                      // Manejar el caso en que no se haya inhabilitado correctamente
+                      Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
+                    }
+                  },
+                  (error) => {
+                    console.error('Error al inhabilitar el punto de venta:', error);
+                    Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
+                  }
+                );
+              }
+            });
+          }
+        });
+      }
+    } else {
+      // Manejar el caso en el que el usuario no ha ingresado un código
+      // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+    }
+  }
+  
+
+// inhabilitarPDV() {
+//   if (this.pdv_id !== null) {
+//     // Verificar si el punto de venta ya está inhabilitado
+//     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+
+//     if (puntoDeVenta && puntoDeVenta.inhabilitado) {
+//       // El punto de venta ya está inhabilitado, mostrar alerta
+//       Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+//     } else {
+//       // El punto de venta no está inhabilitado, mostrar cuadro de diálogo de confirmación
+//       const currentDate = new Date();
+//       const formattedDate = this.formatDate(currentDate);
+
+//       Swal.fire({
+//         title: '¿Estás seguro de inhabilitar este punto de venta?',
+//         text: 'Esta acción no se puede deshacer.',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Sí, inhabilitar',
+//         cancelButtonText: 'Cancelar',
+//       }).then((result) => {
+//         if (result.isConfirmed) {
+//           Swal.fire({
+//             title: 'Observación',
+//             input: 'text',
+//             showCancelButton: true,
+//             confirmButtonText: 'Enviar',
+//             icon: 'question',
+//           }).then((result) => {
+//             if (result.isConfirmed) {
+//               let datos = {
+//                 codigo_sitio_venta: this.pdv_id,
+//                 fecha_inactivo: formattedDate,
+//                 razon_inactivo: result.value,
+//               };
+
+//               // Llama al servicio para inhabilitar el punto de venta
+//               this.servicio.inhabilitarPDV(datos).subscribe(
+//                 (res: any) => {
+//                   if (res && res.codigo_sitio_venta) {
+//                     // Actualiza la propiedad 'inhabilitado' del punto de venta a true
+//                     if (puntoDeVenta) {
+//                       puntoDeVenta.inhabilitado = true;
+//                     }
+//                     const estaInhabilitado = localStorage.getItem(`inhabilitado_${this.pdv_id}`);
+//                     if (estaInhabilitado === 'true') {
+//                       // El punto de venta está inhabilitado, muestra una alerta
+//                       Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
+//                     } else 
+//                     // Indica que el punto de venta está inhabilitado
+//                     Swal.fire(
+//                       `Punto de venta ${this.pdv_id} inhabilitado`,
+//                       '',
+//                       'success'
+//                     );
+
+                   
+
+//                     // Limpia los datos relacionados con el punto de venta
+//                     this.limpiarPdv();
+//                   } else {
+//                     // Manejar el caso en que no se haya inhabilitado correctamente
+//                     Swal.fire(
+//                       'Error',
+//                       'Hubo un error al inhabilitar el punto de venta',
+//                       'error'
+//                     );
+//                   }
+//                 },
+//                 (error) => {
+//                   console.error('Error al inhabilitar el punto de venta:', error);
+//                   Swal.fire(
+//                     'Error',
+//                     'Hubo un error al inhabilitar el punto de venta',
+//                     'error'
+//                   );
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       });
+//     }
+//   } else {
+//     // Manejar el caso en el que el usuario no ha ingresado un código
+//     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+//   }
+// }
+
+
+
+
+// inhabilitarPDV() {
+//   if (this.pdv_id !== null) {
+//     // Verificar si el punto de venta ya está inhabilitado
+//     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+
+//     if (puntoDeVenta && puntoDeVenta.inhabilitado) {
+//       // El punto de venta ya está inhabilitado, mostrar alerta
+//       Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+//     } else {
+//       // El punto de venta no está inhabilitado, mostrar cuadro de diálogo de confirmación
+//       const currentDate = new Date();
+//       const formattedDate = this.formatDate(currentDate);
+
+//       Swal.fire({
+//         title: '¿Estás seguro de inhabilitar este punto de venta?',
+//         text: 'Esta acción no se puede deshacer.',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Sí, inhabilitar',
+//         cancelButtonText: 'Cancelar',
+//       }).then((result) => {
+//         if (result.isConfirmed) {
+//           Swal.fire({
+//             title: 'Observación',
+//             input: 'text',
+//             showCancelButton: true,
+//             confirmButtonText: 'Enviar',
+//             icon: 'question',
+//           }).then((result) => {
+//             if (result.isConfirmed) {
+//               let datos = {
+//                 codigo_sitio_venta: this.pdv_id,
+//                 fecha_inactivo: formattedDate,
+//                 razon_inactivo: result.value,
+//               };
+
+//               // Llama al servicio para inhabilitar el punto de venta
+//               this.servicio.inhabilitarPDV(datos).subscribe(
+//                 (res: any) => {
+//                   if (res && res.codigo_sitio_venta) {
+//                     // Actualiza la propiedad 'inhabilitado' del punto de venta a true
+//                     if (puntoDeVenta) {
+//                       puntoDeVenta.inhabilitado = true;
+//                     }
+
+//                     // Indica que el punto de venta está inhabilitado
+//                     Swal.fire(
+//                       `Punto de venta ${this.pdv_id} inhabilitado`,
+//                       '',
+//                       'success'
+//                     );
+
+//                     // Filtra los puntos de venta habilitados
+//                     const puntosDeVentaHabilitados = this.pdv.filter((pdv) => !pdv.inhabilitado);
+
+//                     // Asigna la lista de puntos de venta habilitados al desplegable
+//                     this.pdv = puntosDeVentaHabilitados;
+
+//                     // Limpia los datos relacionados con el punto de venta
+//                     this.limpiarPdv();
+//                   } else {
+//                     // Manejar el caso en que no se haya inhabilitado correctamente
+//                     Swal.fire(
+//                       'Error',
+//                       'Hubo un error al inhabilitar el punto de venta',
+//                       'error'
+//                     );
+//                   }
+//                 },
+//                 (error) => {
+//                   console.error('Error al inhabilitar el punto de venta:', error);
+//                   Swal.fire(
+//                     'Error',
+//                     'Hubo un error al inhabilitar el punto de venta',
+//                     'error'
+//                   );
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       });
+//     }
+//   } else {
+//     // Manejar el caso en el que el usuario no ha ingresado un código
+//     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+//   }
+// }
+
+// inhabilitarPDV() {
+//   if (this.pdv_id !== null) {
+//     // Verificar si el punto de venta ya está inhabilitado
+//     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+
+//     if (puntoDeVenta && puntoDeVenta.inhabilitado) {
+//       // El punto de venta ya está inhabilitado, mostrar alerta
+//       Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+//     } else {
+//       // El punto de venta no está inhabilitado, mostrar cuadro de diálogo de confirmación
+//       const currentDate = new Date();
+//       const formattedDate = this.formatDate(currentDate);
+
+//       Swal.fire({
+//         title: '¿Estás seguro de inhabilitar este punto de venta?',
+//         text: 'Esta acción no se puede deshacer.',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Sí, inhabilitar',
+//         cancelButtonText: 'Cancelar',
+//       }).then((result) => {
+//         if (result.isConfirmed) {
+//           Swal.fire({
+//             title: 'Observación',
+//             input: 'text',
+//             showCancelButton: true,
+//             confirmButtonText: 'Enviar',
+//             icon: 'question',
+//           }).then((result) => {
+//             if (result.isConfirmed) {
+//               let datos = {
+//                 codigo_sitio_venta: this.pdv_id,
+//                 fecha_inactivo: formattedDate,
+//                 razon_inactivo: result.value,
+//               };
+
+//               // Llama al servicio para inhabilitar el punto de venta
+//               this.servicio.inhabilitarPDV(datos).subscribe(
+//                 (res: any) => {
+//                   if (res && res.codigo_sitio_venta) {
+//                     // Actualiza la propiedad 'inhabilitado' del punto de venta a true
+//                     if (puntoDeVenta) {
+//                       puntoDeVenta.inhabilitado = true;
+//                     }
+
+//                     // Indica que el punto de venta está inhabilitado
+//                     Swal.fire(
+//                       `Punto de venta ${this.pdv_id} inhabilitado`,
+//                       '',
+//                       'success'
+//                     );
+
+//                     // Filtra los puntos de venta habilitados
+//                     const puntosDeVentaHabilitados = this.pdv.filter((pdv) => !pdv.inhabilitado);
+
+//                     // Asigna la lista de puntos de venta habilitados al desplegable
+//                     this.pdv = puntosDeVentaHabilitados;
+
+//                     // Oculta el mat-select después de inhabilitar
+//                     this.mostrarMatSelect = false;
+
+//                     // Limpia los datos relacionados con el punto de venta
+//                     this.limpiarPdv();
+//                   } else {
+//                     // Manejar el caso en que no se haya inhabilitado correctamente
+//                     Swal.fire(
+//                       'Error',
+//                       'Hubo un error al inhabilitar el punto de venta',
+//                       'error'
+//                     );
+//                   }
+//                 },
+//                 (error) => {
+//                   console.error('Error al inhabilitar el punto de venta:', error);
+//                   Swal.fire(
+//                     'Error',
+//                     'Hubo un error al inhabilitar el punto de venta',
+//                     'error'
+//                   );
+//                 }
+//               );
+//             }
+//           });
+//         }
+//       });
+//     }
+//   } else {
+//     // Manejar el caso en el que el usuario no ha ingresado un código
+//     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+//   }
+// }
+
+
+// private actualizarListaPuntosDeVenta() {
+//   this.servicio.traerPuntosDeVenta().subscribe(
+//     (res: any) => {
+//       this.pdv = res;
+      
+//     },
+//     (err) => {
+//       // Manejar errores si es necesario
+//       console.error('Error al obtener los datos de los puntos de venta:', err);
+//       Swal.fire('Error', 'Hubo un error al obtener la lista de puntos de venta', 'error');
+//     }
+//   );
+// }
+
+
+
+
+
+  // Función para consultar los contratos
+consultarContratos() {
+  // Filtrar los contratos inhabilitados
+  const contratosActivos = this.dataSourceContratos.data.filter(
+    (contrato) => !this.contratosInhabilitados.some((c) => c.id_contrato === contrato.id_contrato)
+  );
+
+  // Actualizar los datos de la tabla con los contratos activos
+  this.dataSourceContratos.data = contratosActivos;
+}
+
   
 
   delitem(i) {

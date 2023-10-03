@@ -56,6 +56,10 @@
     background-color: green !important;
     border-radius: 25px !important;
 }
+#button-inhabilitar{
+    background-color: red !important;
+    border-radius: 25px !important;
+}
 .w-75{
     border-radius: 25px;
 }

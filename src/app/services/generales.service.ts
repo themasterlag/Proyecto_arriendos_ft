@@ -53,6 +53,10 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "puntodeventa/update", form)
   }
 
+  inhabilitarPDV(datos) {
+    return this.servicio.patch(this.api + "puntodeventa/inhabilitar", datos)
+  }
+
   traerPuntosDeVentaSinContrato() {
     return this.servicio.get(this.api + "puntodeventa/sincontrato")
   }
