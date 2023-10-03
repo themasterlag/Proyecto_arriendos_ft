@@ -212,13 +212,13 @@
                                                 </th>
                                                 <td mat-cell *matCellDef="let element">
                                                     <button *ngIf="element.check && !spinner" [disabled]="spinner" class="btn btn-success rounded-pill px-4 py-2"
-                                                        (click)="cambiarEstadoPermiso(element)" matTooltip="Editar credito"
+                                                        (click)="cambiarEstadoPermiso(element)" matTooltip="Deshabilitar permiso"
                                                         matTooltipPosition="above" matTooltipClass="tooltipText">
                                                         <i class="fa fa-check-circle" aria-hidden="true"></i>
                                                     </button>
 
                                                     <button *ngIf="!element.check && !spinner" [disabled]="spinner" class="btn btn-danger rounded-pill px-4 py-2"
-                                                        (click)="cambiarEstadoPermiso(element)" matTooltip="Editar credito"
+                                                        (click)="cambiarEstadoPermiso(element)" matTooltip="Habilitar permiso"
                                                         matTooltipPosition="above" matTooltipClass="tooltipText">
                                                         <i class="fa fa-times-circle" aria-hidden="true"></i>
                                                     </button>
