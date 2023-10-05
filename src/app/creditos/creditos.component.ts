@@ -5,6 +5,7 @@ import { AutenticacionService } from 'app/auth/autenticacion.service';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import Swal from "sweetalert2";
+import { error } from 'console';
 
 @Component({
   selector: 'app-creditos',
@@ -192,7 +193,8 @@ export class CreditosComponent implements OnInit {
             this.ejecutarConsultas();
           },
           (err:any)=>{
-            Swal.fire("No se pudo eliminar el credito", "", "error");
+            console.log(err)
+            Swal.fire("No se pudo eliminar el credito", err.error.error.message, "error");
           }
         );
       }
@@ -208,12 +210,24 @@ export class CreditosComponent implements OnInit {
       confirmButtonColor: "#4caf50",
       denyButtonText: "Cancelar",
       showDenyButton: true,
+
     }).then((event) => {
       if (event.isConfirmed) {
+        const abono = event.value;
+
+        if (abono <= 0) {
+          Swal.fire("Error", "El valor a abonar debe ser mayor que 0.", "error");
+          return;
+        }
+  
+        if (abono > credito.saldo) {
+          Swal.fire("Error", "El valor a abonar no puede ser mayor que el saldo.", "error");
+          return;
+        } 
 
         Swal.fire({
           icon: "warning",
-          title: "¿Esta seguro de abonar $"+event.value+" credito?",
+          title: "¿Esta seguro de abonar $"+abono+" credito?",
           confirmButtonText: "Abonar",
           confirmButtonColor: "#4caf50",
           denyButtonText: "Cancelar",
@@ -224,7 +238,7 @@ export class CreditosComponent implements OnInit {
             let datos = new FormData();
             datos.append("id_saldo_credito", credito.id_saldo_credito);
             datos.append("id_usuario", this.servicioAutenticacion.getCargaUtil().id_usuario);
-            datos.append("valor_pago", event.value);
+            datos.append("valor_pago", abono);
 
             this.servicio.abonarCredito(datos).subscribe(
               (res:any)=>{
@@ -232,7 +246,8 @@ export class CreditosComponent implements OnInit {
                 this.ejecutarConsultas();
               },
               (err:any)=>{
-                Swal.fire("No se pudo abonar al credito", err.error, "error");
+                console.log(err)
+                Swal.fire("No se pudo abonar al credito", err.error.message.message, "error");
               }
             );
           }
