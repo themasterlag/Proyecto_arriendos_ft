@@ -36,10 +36,10 @@ let nav = [
     id:null, 
     active:false, 
     children:[
-      { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:6, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:6, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:6, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/incrementos', title: 'Incrementos', icon:'add_task', class:'', id:6, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:7, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:7, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:7, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/incrementos', title: 'Incrementos', icon:'add_task', class:'', id:7, active:false, children:[]},
     ]
   },
 

@@ -1713,7 +1713,7 @@ consultarContratos() {
 
         if (incrementoEncontrado) {
           const incrementoDeseado = incrementoEncontrado.incremento;
-          console.log(`Valor de incremento para el id ${idBuscado}: ${incrementoDeseado}`);
+          // console.log(`Valor de incremento para el id ${idBuscado}: ${incrementoDeseado}`);
           
           this.incrementoVDT = incrementoDeseado;
         } else {
