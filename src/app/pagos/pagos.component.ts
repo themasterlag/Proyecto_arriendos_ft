@@ -85,6 +85,35 @@ export class PagosComponent implements OnInit {
     // this.traerLiquidaciones();
   }
 
+
+  tipoCheck(){
+    let cantidad = this.responsableTablaNoPagados
+      .filter((responsable) => responsable["Check"]).length;
+
+    if (cantidad == this.responsableTablaNoPagados.length) {
+      return "todos"
+    }
+    else if (cantidad > 0){
+      return "intermedio"
+    }
+    else{
+      "nada"
+    }
+  }
+
+  toggleAllRows(){
+    if (this.tipoCheck() == "todos") {
+      this.responsableTablaNoPagados.forEach(element => {
+        element.Check = false;
+      });
+    }
+    else{
+      this.responsableTablaNoPagados.forEach(element => {
+        element.Check = true;
+      });
+    }
+  }
+
   preliquidarmes() {
     Loading.pulse("Cargando")
 
