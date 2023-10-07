@@ -39,7 +39,7 @@ export class CarnetComponent implements OnInit {
         },
         (error: any) => {
           if (error.status === 404) {
-            Swal.fire("No se encontro el numero de documento " + formularioCarnet.value.documento, "", "error");
+            Swal.fire("No se encontró el número de documento " + formularioCarnet.value.documento, "", "error");
           }
           else if (error.status === 401) {
             Swal.fire("La persona con documento: " + formularioCarnet.value.documento + " no se encuentra activa", "", "warning");

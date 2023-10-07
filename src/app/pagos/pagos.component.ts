@@ -85,6 +85,35 @@ export class PagosComponent implements OnInit {
     // this.traerLiquidaciones();
   }
 
+
+  tipoCheck(){
+    let cantidad = this.responsableTablaNoPagados
+      .filter((responsable) => responsable["Check"]).length;
+
+    if (cantidad == this.responsableTablaNoPagados.length) {
+      return "todos"
+    }
+    else if (cantidad > 0){
+      return "intermedio"
+    }
+    else{
+      "nada"
+    }
+  }
+
+  toggleAllRows(){
+    if (this.tipoCheck() == "todos") {
+      this.responsableTablaNoPagados.forEach(element => {
+        element.Check = false;
+      });
+    }
+    else{
+      this.responsableTablaNoPagados.forEach(element => {
+        element.Check = true;
+      });
+    }
+  }
+
   preliquidarmes() {
     Loading.pulse("Cargando")
 
@@ -657,105 +686,119 @@ export class PagosComponent implements OnInit {
   }
 
   darEstructuraNomina(tipo:any, datos:any) {
-    if (tipo == 0) {
-      datos = datos.map((element, i) => {
-        this.Pdv = [element.pvdetalle]
-        for (let j = 0; j < element.conceptos.length; j++) {
-          element.conceptos[j].valor = this.pagoConcepto[i][j].valor;
-        }
-        return {
-          // NO PAGADOS
-          num_contrato: element.id_contrato,
+    try {
+      if (tipo == 0) {
+        datos = datos.map((element, i) => {
+          this.Pdv = [element.pvdetalle]
+          for (let j = 0; j < element.conceptos.length; j++) {
+            let conceptoPago = [];
+            this.pagoConcepto.forEach((conceptos) => {
+              let concepts = conceptos.filter((concepto)=> concepto.id_contrato == element.id_contrato);
+              if (concepts.length > 0) {
+                conceptoPago = (concepts);
+              }
+            });
 
-          cod_punto_venta:
-            element.pvdetalle.codigo_sitio_venta,
-          punto_venta: element.pvdetalle.nombre_comercial,
-
-          valor_canon: this.valorCanon(element.valor_canon),
-          // incremento_anual: element.incremento_anual,
-          // incremento_adicional: element.incremento_adicional,
-          fecha_inicio_contrato: element.fecha_inicio_contrato,
-          fecha_fin_contrato: element.fecha_fin_contrato,
-          tipo_contrato: element.tipo_contrato,
-          valor_adminstracion: element.valor_adminstracion,
-          definicion: element.definicion,
-          poliza: element.poliza,
-
-          responsable_nit:
-            element.responsabledetalle.clientedetalle
-              .numero_documento,
-          responsable: element.responsabledetalle.clientedetalle
-            .razon_social
-            ? element.responsabledetalle.clientedetalle.razon_social
-            : element.responsabledetalle.clientedetalle.nombres +
-              element.responsabledetalle.clientedetalle.apellidos,
-
-          autorizado_nit:
-            element.autdetalle.clientedetalle
-              .numero_documento,
-          autorizado: element.autdetalle.clientedetalle
-            .razon_social
-            ? element.autdetalle.clientedetalle.razon_social
-            : element.autdetalle.clientedetalle.nombres +
-              element.autdetalle.clientedetalle.apellidos,
-
-          fecha_inactivo: element.fecha_inactivo,
-          razon_inactivo: element.razon_inactivo,
-
-          conceptos: element.conceptos,
-        }
-      })
-    } else {
-      datos = datos.map((element) => {
-        return {
-          // PAGADOS
-          codigo_verificacion: element.codigo_verificacion,
-          num_contrato: element.id_contrato,
-
-          cod_punto_venta:
-            element.pagodetalle[0].pvdetalle
-              .codigo_sitio_venta,
-          punto_venta:
-            element.pagodetalle[0].pvdetalle
-              .nombre_comercial,
-
-          valor_canon: element.canon,
-          fecha_pago: element.fecha_pago,
-          // incremento_anual: element.incremento_anual,
-          // incremento_adicional: element.incremento_adicional,
-          fecha_inicio_contrato: element.fecha_inicio_contrato,
-          fecha_fin_contrato: element.fecha_fin_contrato,
-          tipo_contrato: element.id_tipo_contrato,
-          valor_adminstracion: element.valor_adminstracion,
-          definicion: element.defiicion,
-          poliza: element.poliza,
-
-          responsable_nit:
-            element.pagodetalle[0].responsabledetalle.clientedetalle
-              .numero_documento,
-          responsable: element.pagodetalle[0].responsabledetalle.clientedetalle
-            .razon_social
-            ? element.pagodetalle[0].responsabledetalle.clientedetalle
-                .razon_social
-            : element.pagodetalle[0].responsabledetalle.clientedetalle.nombres +
-              element.pagodetalle[0].responsabledetalle.clientedetalle.apellidos,
-
-          autorizado_nit:
-            element.pagodetalle[0].autdetalle.clientedetalle
-              .numero_documento,
-          autorizado: element.pagodetalle[0].autdetalle.clientedetalle
-            .razon_social
-            ? element.pagodetalle[0].autdetalle.clientedetalle
-                .razon_social
-            : element.pagodetalle[0].autdetalle.clientedetalle.nombres +
-              element.pagodetalle[0].autdetalle.clientedetalle.apellidos,
-
-          conceptos: element.conceptos,
-        }
-      })
+            element.conceptos[j].valor = conceptoPago[j].valor;
+          }
+          return {
+            // NO PAGADOS
+            num_contrato: element.id_contrato,
+  
+            cod_punto_venta:
+              element.pvdetalle.codigo_sitio_venta,
+            punto_venta: element.pvdetalle.nombre_comercial,
+  
+            valor_canon: this.valorCanon(element.valor_canon),
+            // incremento_anual: element.incremento_anual,
+            // incremento_adicional: element.incremento_adicional,
+            fecha_inicio_contrato: element.fecha_inicio_contrato,
+            fecha_fin_contrato: element.fecha_fin_contrato,
+            tipo_contrato: element.tipo_contrato,
+            valor_adminstracion: element.valor_adminstracion,
+            definicion: element.definicion,
+            poliza: element.poliza,
+  
+            responsable_nit:
+              element.responsabledetalle.clientedetalle
+                .numero_documento,
+            responsable: element.responsabledetalle.clientedetalle
+              .razon_social
+              ? element.responsabledetalle.clientedetalle.razon_social
+              : element.responsabledetalle.clientedetalle.nombres +
+                element.responsabledetalle.clientedetalle.apellidos,
+  
+            autorizado_nit:
+              element.autdetalle.clientedetalle
+                .numero_documento,
+            autorizado: element.autdetalle.clientedetalle
+              .razon_social
+              ? element.autdetalle.clientedetalle.razon_social
+              : element.autdetalle.clientedetalle.nombres +
+                element.autdetalle.clientedetalle.apellidos,
+  
+            fecha_inactivo: element.fecha_inactivo,
+            razon_inactivo: element.razon_inactivo,
+  
+            conceptos: element.conceptos,
+          }
+        })
+      } else {
+        datos = datos.map((element) => {
+          return {
+            // PAGADOS
+            codigo_verificacion: element.codigo_verificacion,
+            num_contrato: element.id_contrato,
+  
+            cod_punto_venta:
+              element.pagodetalle[0].pvdetalle
+                .codigo_sitio_venta,
+            punto_venta:
+              element.pagodetalle[0].pvdetalle
+                .nombre_comercial,
+  
+            valor_canon: element.canon,
+            fecha_pago: element.fecha_pago,
+            // incremento_anual: element.incremento_anual,
+            // incremento_adicional: element.incremento_adicional,
+            fecha_inicio_contrato: element.fecha_inicio_contrato,
+            fecha_fin_contrato: element.fecha_fin_contrato,
+            tipo_contrato: element.id_tipo_contrato,
+            valor_adminstracion: element.valor_adminstracion,
+            definicion: element.defiicion,
+            poliza: element.poliza,
+  
+            responsable_nit:
+              element.pagodetalle[0].responsabledetalle.clientedetalle
+                .numero_documento,
+            responsable: element.pagodetalle[0].responsabledetalle.clientedetalle
+              .razon_social
+              ? element.pagodetalle[0].responsabledetalle.clientedetalle
+                  .razon_social
+              : element.pagodetalle[0].responsabledetalle.clientedetalle.nombres +
+                element.pagodetalle[0].responsabledetalle.clientedetalle.apellidos,
+  
+            autorizado_nit:
+              element.pagodetalle[0].autdetalle.clientedetalle
+                .numero_documento,
+            autorizado: element.pagodetalle[0].autdetalle.clientedetalle
+              .razon_social
+              ? element.pagodetalle[0].autdetalle.clientedetalle
+                  .razon_social
+              : element.pagodetalle[0].autdetalle.clientedetalle.nombres +
+                element.pagodetalle[0].autdetalle.clientedetalle.apellidos,
+  
+            conceptos: element.conceptos,
+          }
+        })
+      }
+  
+      console.log(datos);
+      return datos
+    } catch (error) {
+      Swal.fire("Hubo un error al generar la estructura del archivo", error, "error");
+      this.spinnerNomina = false;
     }
-
-    return datos
   }
 
   generarPreNomina(tipo:any) {

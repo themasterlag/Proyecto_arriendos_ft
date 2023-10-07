@@ -56,9 +56,6 @@
                         >
                           {{ year }}
                         </mat-option>
-                        <!-- <mat-option> -->
-                          <!-- <input type="number" (change)="asignaranio($event.value)" placeholder="Otro" class="ml-3 w-auto form-control"> -->
-                        <!-- </mat-option> -->
                       </mat-select>
                     </mat-form-field>
                   </div>
@@ -76,29 +73,6 @@
                 <hr />
 
                 <div class="row align-items-center" >
-                  <!-- <div class="col-md-3" align="center">
-                    <br />
-                    <mat-checkbox
-                      [(ngModel)]="no_responsable"
-                      >No Responsable</mat-checkbox
-                    >
-                  </div>
-                  <div class="col-md-3" align="center">
-                    <br />
-                    <mat-checkbox
-                      class="example-margin"
-                      [(ngModel)]="responsable"
-                      >Responsable</mat-checkbox
-                    >
-                  </div>
-                  <div class="col-md-3" align="center">
-                    <br />
-                    <mat-checkbox
-                      class="example-margin"
-                      [(ngModel)]="efectivo"
-                      >Efectivo</mat-checkbox
-                    >
-                  </div> -->
                   
                 </div>
                 <hr />
@@ -120,6 +94,11 @@
                                 *matHeaderCellDef
                                 class="text-center"
                               >
+                                <mat-checkbox class="mr-1"
+                                  (change)="$event ? toggleAllRows() : null"
+                                  [checked]="tipoCheck()=='todos'"
+                                  [indeterminate]="tipoCheck()=='intermedio'">
+                                </mat-checkbox>
                                 Check
                               </th>
                               <td

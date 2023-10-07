@@ -21,6 +21,7 @@
                         [routerLink]="[menuItem.path]">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
+                        <hr class="my-1">
                     </a>
 
                     <nav class="nav my-0" *ngIf="menuItem.children.length > 0 && menuItem.active">
@@ -35,8 +36,8 @@
                             </a>
                             <hr class="collapse my-1" id="{{menuItem.title}}">
                         </div>
+                        <hr class="my-1">
                     </nav>
-                    <hr class="my-1">
                 </li>
             </ul>
         </div>
