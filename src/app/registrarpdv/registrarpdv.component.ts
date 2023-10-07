@@ -93,7 +93,7 @@ export class RegistrarpdvComponent implements OnInit {
   canonGlobal = null;
   inhabilitar:any = null;
   inhabilitar_save: any = false;
-  displayedColumns: string[] = ["Codigo_Punto_Venta", "Numero_documento" ,"Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato", "Acciones"];
+  displayedColumns: string[] = ["Codigo_Punto_Venta", "Numero_documento" ,"Nombre_Comertcial", "Inicio_Contrato", "Fin_Contrato","anios_prorroga", "Acciones", ];
   dataSourceContratos: MatTableDataSource<Contratos> =
   new MatTableDataSource<Contratos>();
   @ViewChild("paginatorContratos") paginatorContratos: MatPaginator
@@ -843,6 +843,7 @@ export class RegistrarpdvComponent implements OnInit {
         rete_fuente: this.formulariocontrato.value.rete_fuente ? 7 : null,
       };
 
+      
       // //console.log(this.id_pago + "aqui metodo pago");
       let autorizado = {
         id_cliente: this.formulariocontrato.value.id_clienteautorizado,
@@ -871,6 +872,7 @@ export class RegistrarpdvComponent implements OnInit {
         id_responsable: 0,
         id_autorizado: 0,
         anios_prorroga: this.formulariocontrato.value.anios_prorroga
+
       };
       Swal
         .fire({
@@ -909,6 +911,7 @@ export class RegistrarpdvComponent implements OnInit {
 
                     datos.set("contrato", JSON.stringify(contrato).replace("{",'{"id_contrato":'+this.id_contrato+","));
                     datos.set("conceptos", JSON.stringify(conceptoValor));
+                    this.tablaContratos();
                     
                     
                     if(this.id_contrato != null){
@@ -1997,7 +2000,8 @@ consultarContratos() {
             fecha_inhabilitado: element.fecha_inactivo,
             id_punto_venta: element.pvdetalle.codigo_sitio_venta,
             nombre_comercial: element.pvdetalle.nombre_comercial,
-            numero_documento: element.responsabledetalle.clientedetalle.numero_documento
+            numero_documento: element.responsabledetalle.clientedetalle.numero_documento,
+            anios_prorroga: element.anios_prorroga
           }
         })
 
