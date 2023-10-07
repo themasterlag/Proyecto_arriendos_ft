@@ -52,18 +52,26 @@ export class CreditosComponent implements OnInit {
     this.consultarListaConceptos();
   }
 
-  consultarContratos(){
+  consultarContratos() {
     this.servicio.traerContratos().subscribe(
-      (res:any)=>{
+      (res: any) => {
         console.log(res);
         
-        this.listaContratos = res;
+        // Obtener la fecha actual
+        const fechaActual = new Date();
+        
+        // Filtrar los contratos cuya fecha de fin no ha pasado
+        this.listaContratos = res.filter((contrato) => {
+          const fecha_fin_contrato = new Date(contrato.fecha_fin_contrato); // Supongo que la propiedad se llama "fechaFin"
+          return fecha_fin_contrato > fechaActual;
+        });
       },
-      (err:any)=>{
-        Swal.fire("No se pudo consultar los creditos", "", "error");
+      (err: any) => {
+        Swal.fire("No se pudo consultar los créditos", "", "error");
       }
-    );  
+    );
   }
+  
 
   consultarListaCreditos(){
     this.servicio.traerListaCreditos().subscribe(
