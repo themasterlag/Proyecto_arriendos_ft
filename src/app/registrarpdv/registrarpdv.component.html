@@ -293,10 +293,14 @@
                     Consultar
                   </button>
 
-                  <button mat-raised-button class="btn btn-danger" 
+                  <!-- <button mat-raised-button class="btn btn-danger" 
                   id="button-inhabilitar" 
-                  (click)="inhabilitarPDV()">Inhabilitar PDV</button>
+                  (click)="inhabilitarPDV()">Inhabilitar PDV</button> -->
                   
+                  <button mat-raised-button class="btn btn-danger" 
+        id="button-inhabilitar" 
+        (click)="inhabilitarPDV(pdv_id)">Inhabilitar PDV</button>
+
 
                 </div>
                 <div class="row" *ngIf="propietariostabla.length > 0">
