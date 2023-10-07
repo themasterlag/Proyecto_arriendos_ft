@@ -196,14 +196,15 @@ export class PersonalVinculadoComponent implements OnInit {
             if(this.consultar == true) {
               this.servicio.actualizarPersonal(formPersonal).subscribe(
                 (res) => {
-                  Swal.fire('Persona actualizada con exito','','success');
-                  this.consultar = false;
-                  this.consulta_personal = null;
-                  this.limpiarFormulario();        
-                  this.tablaPersonal();
+                  Swal.fire('Persona actualizada con éxito','','success').then(
+                    ()=>{
+                      this.tablaPersonal();
+                      this.limpiarFormulario();        
+                    }
+                  );
                 },
                 (error) => {
-                  Swal.fire('Error al aztualizar persona', error.message, 'error');
+                  Swal.fire('Error al actualizar persona', error.message, 'error');
                   //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
                 }
               )
@@ -211,13 +212,12 @@ export class PersonalVinculadoComponent implements OnInit {
               this.servicio.enviarPersonal(formPersonal).subscribe(
                 (res:any) => {
                   // console.log(res);
-                  Swal.fire('Personal creado con exito','','success');
-
-                  this.consultar = false;
-
-                  this.consulta_personal = null;
-                  this.limpiarFormulario();
-                  this.tablaPersonal();
+                  Swal.fire('Personal creado con éxito','','success').then(
+                    ()=>{
+                      this.tablaPersonal();
+                      this.limpiarFormulario();
+                    }
+                  );
                 },
                 (error) => {
                   Swal.fire('Error al crear personal ', error.error.message, 'error');
@@ -310,7 +310,7 @@ export class PersonalVinculadoComponent implements OnInit {
 
     this.enviarPersonal.form.markAsPristine(); // Marcar el formulario como "intocado"
     this.enviarPersonal.form.markAsUntouched(); // Marcar el formulario como "no modificado"
-    this.enviarPersonal.reset();
+    this.enviarPersonal.resetForm();
   }
 
 }
