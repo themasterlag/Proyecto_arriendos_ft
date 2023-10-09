@@ -25,24 +25,7 @@ interface Personal {
 export class PersonalVinculadoComponent implements OnInit {
 
   panelOpenState = true;
-
-  fecha
-
   personalInfo: any;
-  nombreOriginal: string = '';
-  apellidoOriginal: string = '';
-  identificacionOriginal: string;
-  cargoOriginal: string = '';
-  rhOriginal: string = '';
-
-  editar: boolean = false;
-  datoEditarNom: string;
-  datoEditarApe: string;
-  valorDoc: string;
-  datoEditarCargo: string;
-  datoEditarRh: string;
-  datoEditarCorr: string;
-
   archivoSeleccionado: File | null = null;
 
   cambiandoEstado:boolean = false;
@@ -56,7 +39,7 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("formularioPersonal") formularioPersonal: NgForm;
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
-  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","fechaCre","fechaIn", "accion"];
+  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","categoria","fechaCre","fechaIn", "accion"];
   @ViewChild("archivoExcel") botonExcel: ElementRef;
   enviandoExcel: boolean = false;
 
@@ -164,6 +147,7 @@ export class PersonalVinculadoComponent implements OnInit {
     this.enviarPersonal.controls.identificacion.setValue(infoPersonal.identificacion);
     this.enviarPersonal.controls.cargo.setValue(infoPersonal.cargo)
     this.enviarPersonal.controls.rh.setValue(infoPersonal.rh);
+    this.enviarPersonal.controls.categoria.setValue(infoPersonal.categoria);
   } 
 
   registrarPersonal(){
@@ -181,6 +165,7 @@ export class PersonalVinculadoComponent implements OnInit {
         identificacion: this.enviarPersonal.controls.identificacion.value,
         cargo: this.enviarPersonal.controls.cargo.value,
         rh: this.enviarPersonal.controls.rh.value,
+        categoria: this.enviarPersonal.controls.categoria.value,
 
         rolid_rol: 1,
         id: id,
@@ -248,6 +233,7 @@ export class PersonalVinculadoComponent implements OnInit {
             nombre: personal.nombre + " " + personal.apellido,
             cargo: personal.cargo,
             rh: personal.rh,
+            categoria: personal.categoria,
             fecha_creacion: personal.fecha_creacion,
             fecha_inactivacion: personal.fecha_inactivacion,
             estado: personal.estado,
