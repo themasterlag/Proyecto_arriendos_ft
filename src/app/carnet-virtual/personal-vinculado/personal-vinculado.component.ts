@@ -14,6 +14,7 @@ interface Personal {
   identificacion: string;
   estado: boolean;
 
+
 }
 
 @Component({
@@ -24,6 +25,8 @@ interface Personal {
 export class PersonalVinculadoComponent implements OnInit {
 
   panelOpenState = true;
+
+  fecha
 
   personalInfo: any;
   nombreOriginal: string = '';
@@ -53,7 +56,7 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("formularioPersonal") formularioPersonal: NgForm;
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
-  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","accion"];
+  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","fechaCre","fechaIn", "accion"];
   @ViewChild("archivoExcel") botonExcel: ElementRef;
   enviandoExcel: boolean = false;
 
@@ -245,6 +248,8 @@ export class PersonalVinculadoComponent implements OnInit {
             nombre: personal.nombre + " " + personal.apellido,
             cargo: personal.cargo,
             rh: personal.rh,
+            fecha_creacion: personal.fecha_creacion,
+            fecha_inactivacion: personal.fecha_inactivacion,
             estado: personal.estado,
           }
         })
