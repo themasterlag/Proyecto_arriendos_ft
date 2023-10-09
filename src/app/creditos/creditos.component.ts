@@ -57,12 +57,12 @@ export class CreditosComponent implements OnInit {
       (res: any) => {
         console.log(res);
         
-        // Obtener la fecha actual
+
         const fechaActual = new Date();
         
-        // Filtrar los contratos cuya fecha de fin no ha pasado
+
         this.listaContratos = res.filter((contrato) => {
-          const fecha_fin_contrato = new Date(contrato.fecha_fin_contrato); // Supongo que la propiedad se llama "fechaFin"
+          const fecha_fin_contrato = new Date(contrato.fecha_fin_contrato); 
           return fecha_fin_contrato > fechaActual;
         });
       },
