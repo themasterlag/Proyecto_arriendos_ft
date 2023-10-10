@@ -799,7 +799,7 @@ export class RegistrarpdvComponent implements OnInit {
                 );
               } else {
                 // Manejar el caso en el que el usuario no ha ingresado un código
-                // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+                 Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
               }
             }
   
@@ -1833,6 +1833,8 @@ inhabilitarPDV(datos: any) {
 
                     // Limpia los datos relacionados con el punto de venta
                     this.limpiarPdv();
+                    this.formulariopdv.reset();
+
                   } else {
                     // Manejar el caso en que no se haya inhabilitado correctamente
                     Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
@@ -1850,7 +1852,7 @@ inhabilitarPDV(datos: any) {
     });
   } else {
     // Manejar el caso en el que el usuario no ha ingresado un código
-    // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+    Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
   }
 }
 
