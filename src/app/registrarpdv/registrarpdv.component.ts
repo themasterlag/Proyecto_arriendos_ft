@@ -106,7 +106,7 @@ export class RegistrarpdvComponent implements OnInit {
   mostrarMatSelect: boolean = true;
   inhabilitado: boolean = false;
   puntoVentaInhabilitado = false;
-
+  
   
   constructor(
     public servicio: GeneralesService,
@@ -757,6 +757,7 @@ export class RegistrarpdvComponent implements OnInit {
           // Verificar si la respuesta contiene la fecha de inhabilitación
           if (res && res.fecha_inactivo) {
             this.puntoVentaInhabilitado = true; // Actualiza la variable si está inhabilitado
+            this.pdv = this.pdv.filter(pdv => pdv.codigo_sitio_venta !== this.pdv_id);
             Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
           } else{
                       // El punto de venta no está inhabilitado, proceder a mostrar los detalles
@@ -904,8 +905,7 @@ export class RegistrarpdvComponent implements OnInit {
           entidad_bancaria: res.contrato.autdetalle.entidad_bancaria,        
           id_tipo_cuenta: res.contrato.autdetalle.id_tipo_cuenta,        
           numero_cuenta: res.contrato.autdetalle.numero_cuenta,        
-          incremento_adicional: res.contrato.incremento_adicional,    
-          anios_prorroga: res.contrato.anios_prorroga, 
+          incremento_adicional: res.contrato.incremento_adicional,        
           poliza: res.contrato.poliza,        
           incremento_anual: res.contrato.incremento_anual,        
           id_clienteresponsable: res.contrato.responsabledetalle.id_cliente,
@@ -1311,7 +1311,6 @@ export class RegistrarpdvComponent implements OnInit {
                           // this.formulariocontrato.reset();
                           this.formularioContratoReset.resetForm();
                           this.inhabilitar = null;
-                          this.tablaContratos();
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
@@ -1514,13 +1513,16 @@ export class RegistrarpdvComponent implements OnInit {
           razon: this.clientesfilter[0].razon_social,
           id_propietario: this.clientesfilter[0].id_cliente,
         });
+
+        this.pdv = this.pdv.filter(pdv => pdv.codigo_sitio_venta !== this.pdv_id);
       } else {
         // Si el propietario ya existe en propietariostabla, mostrar una alerta con SweetAlert
-        Swal.fire('Alerta', 'Este propietario ya ha sido agregado', 'warning');
+        Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
       }
     } else {
       // Si el propietario ya existe en listprop, mostrar una alerta con SweetAlert
-       Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
+        Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
+     
     }
   }
   
@@ -1779,15 +1781,34 @@ inhabilitarPDV(datos: any) {
   if (this.pdv_id !== null) {
     // Verificar si el punto de venta ya está inhabilitado
     if (this.puntoVentaInhabilitado) {
-      Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
+      // Swal.fire('Se encuentra inhabilitado, ¿Desea Habilitar?', '', 'warning');
+      Swal.fire({
+        title: 'Se encuentra inhabilitado, ¿Desea Habilitar?',
+        text: '',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, habilitar',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Llama a la función para habilitar pasando el código del sitio de venta
+          console.log('Valor de this.pdv_id:', this.pdv_id);
+          this.habilitarPuntoDeVenta(this.pdv_id);
+        }
+        
+      });
       return; // Evitar realizar la inhabilitación nuevamente
     }
+
+    
 
     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
 
     const currentDate = new Date();
     const formattedDate = this.formatDate(currentDate);
-
+ 
     Swal.fire({
       title: '¿Estás seguro de inhabilitar este punto de venta?',
       text: 'Esta acción no se puede deshacer.',
@@ -1831,6 +1852,8 @@ inhabilitarPDV(datos: any) {
                       this.puntoVentaInhabilitado = true;
                     }
 
+                    this.pdv = this.pdv.filter(pdv => pdv.codigo_sitio_venta !== this.pdv_id);
+
                     Swal.fire(`Punto de venta ${this.pdv_id} inhabilitado`, '', 'success');
 
                     // Limpia los datos relacionados con el punto de venta
@@ -1858,7 +1881,161 @@ inhabilitarPDV(datos: any) {
   }
 }
 
-  
+// inhabilitarPDV(datos: any) {
+//   if (this.pdv_id !== null) {
+//     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+
+//     if (puntoDeVenta) {
+//       // Verificar si el punto de venta ya está inhabilitado
+//       if (puntoDeVenta.inhabilitado) {
+//         Swal.fire({
+//           title: '¿Estás seguro de habilitar este punto de venta?',
+//           text: 'Esta acción no se puede deshacer.',
+//           icon: 'warning',
+//           showCancelButton: true,
+//           confirmButtonColor: '#3085d6',
+//           cancelButtonColor: '#d33',
+//           confirmButtonText: 'Sí, habilitar',
+//           cancelButtonText: 'Cancelar',
+//         }).then((result) => {
+//           if (result.isConfirmed) {
+//             // Llama al servicio para habilitar el punto de venta
+//             this.servicio.habilitarPDV(this.pdv_id).subscribe(
+//               (res: any) => {
+//                 console.log(res);
+//                 if (res && res.codigo_sitio_venta) {
+//                   // Actualiza la propiedad 'inhabilitado' del punto de venta a false
+//                   puntoDeVenta.inhabilitado = false;
+//                   // Actualiza la propiedad 'puntoVentaInhabilitado' a false si es necesario
+//                   this.puntoVentaInhabilitado = false;
+//                   // Limpia los datos relacionados con el punto de venta
+//                   this.limpiarPdv();
+//                   this.formulariopdv.reset();
+//                   Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+//                 } else {
+//                   // Manejar el caso en que no se haya habilitado correctamente
+//                   Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//                 }
+//               },
+//               (error) => {
+//                 console.error('Error al habilitar el punto de venta:', error);
+//                 Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//               }
+//             );
+//           }
+//         });
+//       } else {
+//         Swal.fire('Este punto de venta no está inhabilitado', '', 'warning');
+//       }
+//     } else {
+//       Swal.fire('Error', 'No se encontró el punto de venta', 'error');
+//     }
+//   } else {
+//     // Manejar el caso en el que el usuario no ha ingresado un código
+//     Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
+//   }
+// }
+
+
+// habilitarPuntoDeVenta(datos: any) {
+//   // Llama al servicio para habilitar el punto de venta
+//   this.servicio.habilitarPDV(datos).subscribe(
+//     (res: any) => {
+//       console.log(res);
+//       if (res && res.codigo_sitio_venta) {
+//         // Actualiza la propiedad 'inhabilitado' del punto de venta a false
+//         const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id );
+//         if (puntoDeVenta) {
+//           puntoDeVenta.inhabilitado = false;
+//           // Actualiza la propiedad 'puntoVentaInhabilitado' a false si es necesario
+//           this.puntoVentaInhabilitado = false;
+//         }
+//         // Limpia los datos relacionados con el punto de venta
+//         this.limpiarPdv();
+//         this.formulariopdv.reset();
+//         Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+//       } else {
+//         // Manejar el caso en que no se haya habilitado correctamente
+//         Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//       }
+//     },
+//     (error) => {
+//       console.error('Error al habilitar el punto de venta:', error);
+//       Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//     }
+//   );
+// } 
+
+
+// habilitarPuntoDeVenta(datos: any) {
+//   if (datos && datos.codigo_sitio_venta) { // Verifica que codigo_sitio_venta esté definido
+//     // Llama al servicio para habilitar el punto de venta
+//     this.servicio.habilitarPDV(datos).subscribe(
+//       (res: any) => {
+//         console.log(res);
+//         if (res && res.codigo_sitio_venta) {
+//           // Actualiza la propiedad 'inhabilitado' del punto de venta a false
+//           const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === datos.codigo_sitio_venta);
+//           if (puntoDeVenta) {
+//             puntoDeVenta.inhabilitado = false;
+//             // Actualiza la propiedad 'puntoVentaInhabilitado' a false si es necesario
+//             this.puntoVentaInhabilitado = false;
+//           }
+//           // Limpia los datos relacionados con el punto de venta
+//           this.limpiarPdv();
+//           this.formulariopdv.reset();
+//           Swal.fire(`Punto de venta ${datos.codigo_sitio_venta} habilitado`, '', 'success');
+//         } else {
+//           // Manejar el caso en que no se haya habilitado correctamente
+//           Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//         }
+//       },
+//       (error) => {
+//         console.error('Error al habilitar el punto de venta:', error);
+//         Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+//       }
+//     );
+//   } else {
+//     // Manejar el caso en que los datos no contienen codigo_sitio_venta
+//     Swal.fire('Error', 'Datos incompletos para habilitar el punto de venta', 'error');
+//   }
+// }
+
+habilitarPuntoDeVenta(codigo_sitio_venta) {
+  // Asegúrate de que la variable "codigo_sitio_venta" esté definida en esta función.
+  if (codigo_sitio_venta) {
+    // Llama al servicio para habilitar el punto de venta usando el código del sitio de venta
+    this.servicio.habilitarPDV({ codigo_sitio_venta  }).subscribe(
+      (res: any) => {
+        console.log(res);
+        if (res && res.codigo_sitio_venta) {
+          // Busca el punto de venta correspondiente en la lista y actualízalo
+          const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+          if (puntoDeVenta) {
+            puntoDeVenta.inhabilitado = false;
+            
+          }
+          Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+          // Limpia los datos relacionados con el punto de venta.
+          this.limpiarPdv();
+          this.formulariopdv.reset();
+          // Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+        } else {
+          // Maneja el caso en que no se haya habilitado correctamente.
+          Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+        }
+      },
+      (error) => {
+         console.error('Error al habilitar el punto de venta:', error);
+        Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
+      }
+    );
+  } else {
+    // Maneja el caso en que los datos no contienen el código del sitio de venta.
+    Swal.fire('Error', 'Datos incompletos para habilitar el punto de venta', 'error');
+  }
+}
+
 
 // private actualizarListaPuntosDeVenta() {
 //   this.servicio.traerPuntosDeVenta().subscribe(
