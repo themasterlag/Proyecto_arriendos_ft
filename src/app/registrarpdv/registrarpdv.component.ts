@@ -1575,6 +1575,7 @@ consultarContratos() {
     this.formulariocontrato.get('valor_canon').enable()
     this.inhabilitar = null;
     this.inhabilitar_save = false;
+    this.id_contrato = null;
   }
 
   limpiarPdv(): void {
