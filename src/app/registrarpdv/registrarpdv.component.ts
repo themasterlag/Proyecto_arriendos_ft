@@ -106,9 +106,10 @@ export class RegistrarpdvComponent implements OnInit {
   mostrarMatSelect: boolean = true;
   inhabilitado: boolean = false;
   puntoVentaInhabilitado = false;
-  
+  guardarDeshabilitado: boolean = false;
+  guardar: any;
 
-  
+
   constructor(
     public servicio: GeneralesService,
     public formularioter: FormBuilder,
@@ -241,25 +242,7 @@ export class RegistrarpdvComponent implements OnInit {
   
   
 
-  // mostrarDatosPuntoVenta() {
-  //   if (this.pdv_id !== null) {
-  //     // Buscar el punto de venta en la lista pdv por su código_sitio_venta
-  //     const puntoDeVentaSeleccionado = this.pdv.find((item) => item.codigo_sitio_venta === this.pdv_id);
   
-  //     if (puntoDeVentaSeleccionado) {
-  //       // Aquí puedes mostrar los datos del punto de venta seleccionado en tu interfaz de usuario
-  //       console.log('Datos del punto de venta seleccionado:', puntoDeVentaSeleccionado);
-  //       // this.nombreComercial = puntoDeVentaSeleccionado.nombre_comercial;
-  //       // this.direccion = puntoDeVentaSeleccionado.direccion;
-  //       // ...
-  //     } else {
-  //       Swal.fire('Punto de venta no encontrado', '', 'error');
-  //       // Manejar el caso en el que el punto de venta no se encuentre en la lista
-  //     }
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha seleccionado ningún punto de venta
-  //   }
-  // }
   
 
   traerTercero(){
@@ -314,441 +297,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.consulta_ter = null;
   }
 
-  // original traerPDV(){
-
-  //   this.servicio.traerPDv(this.pdv_id).subscribe(
-  //     (res:any) => {
-
-  //       this.pdv_busqueda = res;
-  //       // console.log('Hola', this.pdv_busqueda);  
-  //       this.propietariostabla = []
-  //       // console.log(this.tipopunto);
-        
-
-  //       let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-        
-  //       let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio)
-  //       this.filtrardepar(buscarDep[0].id_departamento);
-
-  //       let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);  
-
-  //       for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //         const element = this.pdv_busqueda.proppv[index];
-  //         this.addpropietario(element.id_propietario);
-  //       }
-        
-  //       // console.log(this.propietariostabla);
-
-        
-  //       this.formulariopdv.patchValue({
-  //         nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //         direccion: this.pdv_busqueda.direccion,
-  //         codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //         observaciones: this.pdv_busqueda.observacion,
-  //         linea_vista: this.pdv_busqueda.linea_vista,
-  //         sanitario: this.pdv_busqueda.sanitario,
-  //         lavamanos: this.pdv_busqueda.lavamanos,
-  //         poceta: this.pdv_busqueda.poceta,
-  //         latitud: this.pdv_busqueda.latitud,
-  //         longitud: this.pdv_busqueda.longitud,
-  //         numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //         area_local: this.pdv_busqueda.area_local,
-  //         codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //         codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //         tipo_punto: tipoPunto.id_tipo_contrato,
-  //         departamento: buscarDep[0].id_departamento,
-  //         id_municipio: buscaMuni[0].id_municipio
-  //       })
-        
-  //     },
-  //     (error:any) => {
-  //       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
-  //     }
-  //   );
-  // }
-
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Comprobar si el punto de venta está marcado como inhabilitado en localStorage
-  //     const estaInhabilitado = localStorage.getItem(`inhabilitado_${this.pdv_id}`);
-  
-  //     if (estaInhabilitado === 'true') {
-  //       // Mostrar una alerta si el punto de venta está inhabilitado en localStorage
-  //       Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
-  //     } else {
-  //       // El punto de venta no está marcado como inhabilitado en localStorage, continuar con la consulta
-  //       this.servicio.traerPDv(this.pdv_id).subscribe(
-  //         (res: any) => {
-  //           // Resto de la función para mostrar los detalles del punto de venta
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         },
-  //         (error: any) => {
-  //           Swal.fire("No se encontró", "Error: " + error.error.message, "error");
-  //         }
-  //       );
-  //     }
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-  
-
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si el punto de venta está inhabilitado en la base de datos
-  //         if (res && res.inhabilitado) {
-  //           Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
-  //         } else {// El punto de venta no está marcado como inhabilitado en localStorage, continuar con la consulta
-  //           this.servicio.traerPDv(this.pdv_id).subscribe(
-  //             (res: any) => {
-  //               // Resto de la función para mostrar los detalles del punto de venta
-  //               this.pdv_busqueda = res;
-  //               this.propietariostabla = [];
-  //               let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //               let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //               this.filtrardepar(buscarDep[0].id_departamento);
-  //               let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-      
-  //               for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //                 const element = this.pdv_busqueda.proppv[index];
-  //                 this.addpropietario(element.id_propietario);
-  //               }
-      
-  //               this.formulariopdv.patchValue({
-  //                 nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //                 direccion: this.pdv_busqueda.direccion,
-  //                 codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //                 observaciones: this.pdv_busqueda.observacion,
-  //                 linea_vista: this.pdv_busqueda.linea_vista,
-  //                 sanitario: this.pdv_busqueda.sanitario,
-  //                 lavamanos: this.pdv_busqueda.lavamanos,
-  //                 poceta: this.pdv_busqueda.poceta,
-  //                 latitud: this.pdv_busqueda.latitud,
-  //                 longitud: this.pdv_busqueda.longitud,
-  //                 numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //                 area_local: this.pdv_busqueda.area_local,
-  //                 codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //                 codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //                 tipo_punto: tipoPunto.id_tipo_contrato,
-  //                 departamento: buscarDep[0].id_departamento,
-  //                 id_municipio: buscaMuni[0].id_municipio
-  //               });
-  //             },
-  //             (error: any) => {
-  //               Swal.fire("No se encontró", "Error: " + error.error.message, "error");
-  //             }
-  //           );
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-  
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si la respuesta contiene la fecha de inhabilitación
-  //         if (res && res.fecha_inactivo) {
-  //           Swal.fire('Este punto de venta está inhabilitado', '', 'warning');
-  //         } else {
-  //           // El punto de venta no está inhabilitado, proceder a mostrar los detalles
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-  
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si la respuesta contiene la fecha de inhabilitación
-  //         if (res && res.fecha_inactivo) {
-  //           Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
-  //         } else {
-  //           // El punto de venta no está inhabilitado, proceder a mostrar los detalles
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-  
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si la respuesta contiene la fecha de inhabilitación
-  //         if (res && res.fecha_inactivo) {
-  //           Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
-  //         } else {
-  //           // El punto de venta no está inhabilitado, proceder a mostrar los detalles
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-  
-  
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si la respuesta contiene la fecha de inhabilitación
-  //         if (res && res.fecha_inactivo) {
-  //           Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
-  //         } else {
-  //           // El punto de venta no está inhabilitado, proceder a mostrar los detalles
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
-
-  // traerPDV() {
-  //   if (this.pdv_id !== null) {
-  //     // Realizar una solicitud para obtener los detalles del punto de venta
-  //     this.servicio.traerPDv(this.pdv_id).subscribe(
-  //       (res: any) => {
-  //         // Verificar si la respuesta contiene la fecha de inhabilitación
-  //         if (res && res.fecha_inactivo) {
-  //           Swal.fire('Este punto de venta ya está inhabilitado', '', 'warning');
-  //         } else {
-  //           // El punto de venta no está inhabilitado, proceder a mostrar los detalles
-  //           this.pdv_busqueda = res;
-  //           this.propietariostabla = [];
-  //           let tipoPunto = this.tipopunto.find((tipo) => tipo.id_tipo_contrato == this.pdv_busqueda.tipo_punto);
-  //           let buscarDep = this.municipios.filter((dep) => dep.id_municipio == this.pdv_busqueda.id_municipio);
-  //           this.filtrardepar(buscarDep[0].id_departamento);
-  //           let buscaMuni = this.municipiosfiltro.filter((mun) => mun.id_municipio == this.pdv_busqueda.id_municipio);
-  
-  //           for (let index = 0; index < this.pdv_busqueda.proppv.length; index++) {
-  //             const element = this.pdv_busqueda.proppv[index];
-  //             this.addpropietario(element.id_propietario);
-  //           }
-  
-  //           this.formulariopdv.patchValue({
-  //             nombre_comercial: this.pdv_busqueda.nombre_comercial,
-  //             direccion: this.pdv_busqueda.direccion,
-  //             codigo_gipi: this.pdv_busqueda.codigo_gipi,
-  //             observaciones: this.pdv_busqueda.observacion,
-  //             linea_vista: this.pdv_busqueda.linea_vista,
-  //             sanitario: this.pdv_busqueda.sanitario,
-  //             lavamanos: this.pdv_busqueda.lavamanos,
-  //             poceta: this.pdv_busqueda.poceta,
-  //             latitud: this.pdv_busqueda.latitud,
-  //             longitud: this.pdv_busqueda.longitud,
-  //             numero_ficha_catastral: this.pdv_busqueda.numero_ficha_catastral,
-  //             area_local: this.pdv_busqueda.area_local,
-  //             codigo_sitio_venta: this.pdv_busqueda.codigo_sitio_venta,
-  //             codigo_oficina: this.pdv_busqueda.codigo_oficina,
-  //             tipo_punto: tipoPunto.id_tipo_contrato,
-  //             departamento: buscarDep[0].id_departamento,
-  //             id_municipio: buscaMuni[0].id_municipio
-  //           });
-  //         }
-  //       },
-  //       (error: any) => {
-  //         Swal.fire('No se encontró', 'Error: ' + error.error.message, 'error');
-  //       }
-  //     );
-  //   } else {
-  //     // Manejar el caso en el que el usuario no ha ingresado un código
-  //     // Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
-  //   }
-  // }
+ 
 
   traerPDV() {
     if (this.pdv_id !== null) {
@@ -806,11 +355,6 @@ export class RegistrarpdvComponent implements OnInit {
               }
             }
   
-  
-  
-  
-  
-
   buscarPuntosDeVenta(traerTodos = false){
     console.log(traerTodos);
     if (this.actualizar || traerTodos) {
@@ -1102,7 +646,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   addservicio(value) {
     Confirm.prompt(
-      "Sistema De Gestion De Arriendos",
+      "Sistema Nexus",
       "Cual es el valor a pagar?",
       " ",
       "OK",
@@ -1439,95 +983,7 @@ export class RegistrarpdvComponent implements OnInit {
     }
   }
 
-  // addpropietario(value) {
-  //   this.listprop.push({
-  //     id_propietario: value,
-  //   });
-
-  //   this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
-  //   // console.log(this.clientesfilter);
-
-  //   this.propietariostabla.push({
-  //     tipoid: this.clientesfilter[0].tipo_documento,
-  //     identificacion: this.clientesfilter[0].numero_documento,
-  //     nombres: this.clientesfilter[0].nombres,
-  //     apellidos: this.clientesfilter[0].apellidos,
-  //     razon: this.clientesfilter[0].razon_social,
-  //     id_propietario: this.clientesfilter[0].id_cliente,
-  //   });
-  // } 
-
-  // addpropietario(value) {
-  //   // Verificar si el propietario ya existe en listprop
-    
-  //   const existsInList = this.listprop.some(item => item.id_propietario === value);
-  
-  //   if (!existsInList) {
-  //     // Agregar el propietario a listprop
-  //     this.listprop.push({
-  //       id_propietario: value,
-  //     });
-  
-  //     // Obtener información del propietario y agregarlo a propietariostabla
-  //     this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
-  
-  //     // Verificar si el propietario ya existe en propietariostabla
-  //     const existsInTable = this.propietariostabla.some(item => item.id_propietario === value);
-  
-  //     if (!existsInTable) {
-  //       this.propietariostabla.push({
-  //         tipoid: this.clientesfilter[0].tipo_documento,
-  //         identificacion: this.clientesfilter[0].numero_documento,
-  //         nombres: this.clientesfilter[0].nombres,
-  //         apellidos: this.clientesfilter[0].apellidos,
-  //         razon: this.clientesfilter[0].razon_social,
-  //         id_propietario: this.clientesfilter[0].id_cliente,
-  //       });
-          
-  //     }else{
-  //       Swal.fire('Alerta', 'Este propietario ya ha sido agregado', 'warning');
-  //     }
-  //   }
-  // }
-  
-  // addpropietario(value) {
-  //   // Verificar si el propietario ya existe en listprop
-  //   const existsInList = this.listprop.some(item => item.id_propietario === value);
-  
-  //   if (!existsInList) {
-  //     // Agregar el propietario a listprop
-  //     this.listprop.push({
-  //       id_propietario: value,
-  //     });
-  
-  //     // Obtener información del propietario y agregarlo a propietariostabla
-  //     this.clientesfilter = this.clientes.filter((i) => i.id_cliente == value);
-  
-  //     // Verificar si el propietario ya existe en propietariostabla
-  //     const existsInTable = this.propietariostabla.some(item => item.id_propietario === value);
-  
-  //     if (!existsInTable) {
-  //       this.propietariostabla.push({
-  //         tipoid: this.clientesfilter[0].tipo_documento,
-  //         identificacion: this.clientesfilter[0].numero_documento,
-  //         nombres: this.clientesfilter[0].nombres,
-  //         apellidos: this.clientesfilter[0].apellidos,
-  //         razon: this.clientesfilter[0].razon_social,
-  //         id_propietario: this.clientesfilter[0].id_cliente,
-  //       });
-
-  //       this.pdv = this.pdv.filter(pdv => pdv.codigo_sitio_venta !== this.pdv_id);
-  //     } else {
-  //       // Si el propietario ya existe en propietariostabla, mostrar una alerta con SweetAlert
-  //       Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
-  //     }
-  //   } else {
-  //     // Si el propietario ya existe en listprop, mostrar una alerta con SweetAlert
-  //       Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
-     
-  //   }
-  // }  
-  
+ 
   addpropietario(value) {
     // Verificar si el propietario ya existe en listprop
     const existsInList = this.listprop.some(item => item.id_propietario === value);
@@ -1556,17 +1012,12 @@ export class RegistrarpdvComponent implements OnInit {
       }
     }
   }
-  
-
-  
-  
-
 
 inhabilitarPDV(datos: any) {
   if (this.pdv_id !== null) {
-    // Verificar si el punto de venta ya está inhabilitado
+    
     if (this.puntoVentaInhabilitado) {
-      // Swal.fire('Se encuentra inhabilitado, ¿Desea Habilitar?', '', 'warning');
+      // El punto de venta ya está inhabilitado, muestra el diálogo de "Habilitar" y no permite guardar ni modificar.
       Swal.fire({
         title: 'Se encuentra inhabilitado, ¿Desea Habilitar?',
         text: '',
@@ -1582,18 +1033,15 @@ inhabilitarPDV(datos: any) {
           console.log('Valor de this.pdv_id:', this.pdv_id);
           this.habilitarPuntoDeVenta(this.pdv_id);
         }
-        
       });
       return; // Evitar realizar la inhabilitación nuevamente
     }
-
     
-
     const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
 
     const currentDate = new Date();
     const formattedDate = this.formatDate(currentDate);
- 
+
     Swal.fire({
       title: '¿Estás seguro de inhabilitar este punto de venta?',
       text: 'Esta acción no se puede deshacer.',
@@ -1637,14 +1085,14 @@ inhabilitarPDV(datos: any) {
                       this.puntoVentaInhabilitado = true;
                     }
 
-                    this.pdv = this.pdv.filter(pdv => pdv.codigo_sitio_venta !== this.pdv_id);
+                    // Deshabilita los campos del formulario
+                    this.formulariopdv.disable();
+
+                    // Deshabilita o esconde los botones de guardar
+                    
+                    this.deshabilitarBotones();
 
                     Swal.fire(`Punto de venta ${this.pdv_id} inhabilitado`, '', 'success');
-
-                    // Limpia los datos relacionados con el punto de venta
-                    this.limpiarPdv();
-                    this.formulariopdv.reset();
-
                   } else {
                     // Manejar el caso en que no se haya inhabilitado correctamente
                     Swal.fire('Error', 'Hubo un error al inhabilitar el punto de venta', 'error');
@@ -1666,33 +1114,40 @@ inhabilitarPDV(datos: any) {
   }
 }
 
+deshabilitarBotones() {
+  // Aquí puedes deshabilitar o esconder los botones de guardar y modificar según tu implementación.
+  // Por ejemplo:
+  this.guardar.disabled = true;
+  
+}
+
 
 habilitarPuntoDeVenta(codigo_sitio_venta) {
-  // Asegúrate de que la variable "codigo_sitio_venta" esté definida en esta función.
+ 
   if (codigo_sitio_venta) {
-    // Llama al servicio para habilitar el punto de venta usando el código del sitio de venta
-    this.servicio.habilitarPDV({ codigo_sitio_venta  }).subscribe(
+  
+    this.servicio.habilitarPDV({ codigo_sitio_venta }).subscribe(
       (res: any) => {
         console.log(res);
         if (res && res.codigo_sitio_venta) {
-          // Busca el punto de venta correspondiente en la lista y actualízalo
-          const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === this.pdv_id);
+        
+          const puntoDeVenta = this.pdv.find((pdv) => pdv.codigo_sitio_venta === codigo_sitio_venta);
           if (puntoDeVenta) {
             puntoDeVenta.inhabilitado = false;
-            
           }
-          Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+
+          Swal.fire(`Punto de venta ${codigo_sitio_venta} habilitado`, '', 'success');
           // Limpia los datos relacionados con el punto de venta.
           this.limpiarPdv();
           this.formulariopdv.reset();
-          // Swal.fire(`Punto de venta ${this.pdv_id} habilitado`, '', 'success');
+          this.deshabilitarBotones();
         } else {
           // Maneja el caso en que no se haya habilitado correctamente.
           Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
         }
       },
       (error) => {
-         console.error('Error al habilitar el punto de venta:', error);
+        console.error('Error al habilitar el punto de venta:', error);
         Swal.fire('Error', 'Hubo un error al habilitar el punto de venta', 'error');
       }
     );
@@ -1701,24 +1156,6 @@ habilitarPuntoDeVenta(codigo_sitio_venta) {
     Swal.fire('Error', 'Datos incompletos para habilitar el punto de venta', 'error');
   }
 }
-
-
-// private actualizarListaPuntosDeVenta() {
-//   this.servicio.traerPuntosDeVenta().subscribe(
-//     (res: any) => {
-//       this.pdv = res;
-      
-//     },
-//     (err) => {
-//       // Manejar errores si es necesario
-//       console.error('Error al obtener los datos de los puntos de venta:', err);
-//       Swal.fire('Error', 'Hubo un error al obtener la lista de puntos de venta', 'error');
-//     }
-//   );
-// }
-
-
-
 
 
   // Función para consultar los contratos
@@ -1923,7 +1360,7 @@ consultarContratos() {
         
         if(this.conceptosFilter[0].tipo_concepto == 3 || this.conceptosFilter[0].tipo_concepto == 4){
           Confirm.prompt(
-            "Sistema De Gestion De Arriendos",
+            "Sistema Nexus",
             `Cual es el valor del concepto ${this.conceptosFilter[0].nombre_concepto}?`  ,
             " ",
             "OK",

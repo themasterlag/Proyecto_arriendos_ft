@@ -575,10 +575,11 @@
                     Limpiar
                   </button>
                   <button
-                    mat-raised-button
-                    type="submit"
-                    class="btn btn-info pull-right"
-                    id="button-guardar"
+                  mat-raised-button
+                  type="submit"
+                  class="btn btn-info pull-right"
+                  id="button-guardar"
+                  [disabled]="guardarDeshabilitado"
                   >
                     Guardar
                   </button>
