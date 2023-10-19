@@ -104,11 +104,23 @@ export class ReportesComponent implements OnInit {
   generarReporteProximosRenovar(){
     Swal.fire({
       title: "Ingrese la cantidad de meses para generar el reporte",
-      input: "number",
+      html: '<input class=" text-center form-control w-50 d-inline-flex" id="fecha" plcaeholder="Fecha" type="date" formControlName="fecha" ></input>',
       showCancelButton: true,
     }).then((result) => {
       if(result.isConfirmed){
-        this.servicio.traerContratosRenovar(result.value).subscribe(
+
+        const fecha = (<HTMLInputElement>document.getElementById('fecha')).value;
+
+
+        const selectedDate = new Date(fecha);
+        const mes = selectedDate.getMonth() + 1;
+        const año = selectedDate.getFullYear();  
+  
+
+        console.log('Mes seleccionado:', mes , año);
+  
+
+        this.servicio.traerContratosRenovar(mes).subscribe(
           (res:any) =>{
             if (res.length > 0) {
               let workbook = XLSX.utils.book_new()
