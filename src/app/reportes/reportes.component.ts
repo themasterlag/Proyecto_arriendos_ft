@@ -117,15 +117,14 @@ export class ReportesComponent implements OnInit {
         const año = selectedDate.getFullYear();  
   
 
-        console.log('Mes seleccionado:', mes , año);
+        console.log(fecha);
   
 
-        this.servicio.traerContratosRenovar(mes).subscribe(
+        this.servicio.traerContratosRenovar(año,mes).subscribe(
           (res:any) =>{
             if (res.length > 0) {
               let workbook = XLSX.utils.book_new()
-              let cabeceras = ["Contrato", "Punto_venta", "Fecha_fin_contrato", "Cannon"]
-              let worksheet = XLSX.utils.aoa_to_sheet([cabeceras]);
+              // console.log(res);
               
               for (let i = 0; i < res.length; i++) {
                 for (let prop in res[i]) {
@@ -145,9 +144,14 @@ export class ReportesComponent implements OnInit {
     
                 res[i]["responsable"] = res[i]["responsabledetalle"]["clientedetalle"]["nombres"] + " " + res[i]["responsabledetalle"]["clientedetalle"]["apellidos"];
                 delete res[i]["responsabledetalle"];
-    
-                XLSX.utils.sheet_add_json(worksheet, [res[i]]);
+                console.log(res[i])
+
+                
               }
+              let cabeceras = Object.keys(res[0]);
+              let worksheet = XLSX.utils.aoa_to_sheet([cabeceras]);
+
+              XLSX.utils.sheet_add_json(worksheet, res);
     
               XLSX.utils.book_append_sheet(
                 workbook,
