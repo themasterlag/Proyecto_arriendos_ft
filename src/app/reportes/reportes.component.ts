@@ -58,7 +58,7 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporte(reporte){
-    console.log(reporte);
+    // console.log(reporte);
     if(this.mes == null && this.anio == null && reporte.periodo){
       Swal.fire('El periodo no puede estar vacio','','info')
     }else{
@@ -92,11 +92,11 @@ export class ReportesComponent implements OnInit {
   }
 
   generarReporteConsulta(reporte){
-    console.log(reporte);
+    // console.log(reporte);
     this.spinner = false;
     this.servicio.traerPdvReporte(this.mes,this.anio,reporte).subscribe(
       (res:any) => {
-        console.log(res);
+        // console.log(res);
       }
     )
   }
@@ -117,7 +117,7 @@ export class ReportesComponent implements OnInit {
         const año = selectedDate.getFullYear();  
   
 
-        console.log(fecha);
+        // console.log(fecha);
   
 
         this.servicio.traerContratosRenovar(año,mes).subscribe(
@@ -144,7 +144,7 @@ export class ReportesComponent implements OnInit {
     
                 res[i]["responsable"] = res[i]["responsabledetalle"]["clientedetalle"]["nombres"] + " " + res[i]["responsabledetalle"]["clientedetalle"]["apellidos"];
                 delete res[i]["responsabledetalle"];
-                console.log(res[i])
+                // console.log(res[i])
 
                 
               }
@@ -205,7 +205,7 @@ export class ReportesComponent implements OnInit {
 
   generarBase64(filtro) {
     this.datosPdf = [];
-    console.log(this.mes, this.anio);
+    // console.log(this.mes, this.anio);
     
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
@@ -215,7 +215,7 @@ export class ReportesComponent implements OnInit {
         var base64 = reader.result
         this.servicio.traerPdvReporte(this.mes,this.anio,filtro).subscribe(
           async (res:any) => {
-            console.log(res);            
+            // console.log(res);            
             for (let i = 0; i < res.length; i++) {
               const element = res[i];
               this.datosPdf.push(await this.comprobantePdfNoPagados(base64,element));
@@ -285,7 +285,7 @@ export class ReportesComponent implements OnInit {
       this.Pdv.canon
 
     total = totalDevengado - totalDeduccion
-    console.log(totalDeduccion, totalDevengado, total, "aqui")
+    // console.log(totalDeduccion, totalDevengado, total, "aqui")
 
     const documentDefinition = {
       content: [
@@ -599,7 +599,7 @@ export class ReportesComponent implements OnInit {
     documentos.forEach(element =>{
       pdfs.push(pdfMake.createPdf(element));
     });
-    console.log(pdfs, "blue label");    
+    // console.log(pdfs, "blue label");    
     let archivos = [];
 
     for (let i = 0; i < pdfs.length; i++) {
