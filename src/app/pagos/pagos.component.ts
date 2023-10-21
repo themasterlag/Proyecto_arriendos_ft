@@ -743,7 +743,7 @@ export class PagosComponent implements OnInit {
             conceptos: element.conceptos,
           }
         })
-      } else {
+      } else if (tipo == 1){
         datos = datos.map((element) => {
           return {
             // PAGADOS
@@ -801,49 +801,156 @@ export class PagosComponent implements OnInit {
     }
   }
 
-  generarPreNomina(tipo:any) {
+  buscarColumna(headers, nombre){
+    let index = null;
+    for (let i = 0; i < headers.length; i++) {
+      if (headers[i] == nombre) {
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  generarPreNominaHorizontal(tipo){
     this.spinnerNomina = true;
-    let listaSeleccionados = null
+    let listaSeleccionados = null;
 
     if (tipo == 0) {
       listaSeleccionados = this.responsableTablaNoPagados
         .filter((responsable) => responsable["Check"])
-        .map((responsable) => responsable["idContrato"])
+        .map((responsable) => responsable["idContrato"]);
     } else {
       if (this.responsableTablaNoPagados.length < 100) {
         listaSeleccionados = this.responsableTablaPagados
           .filter((responsable) => responsable["Check"])
-          .map((responsable) => responsable["id_pago_arriendo"])
+          .map((responsable) => responsable["id_pago_arriendo"]);
       } else {
-        Swal.fire("Primero debe pagar todos los contratos", "", "info")
-        throw new Error("No se ha pagado todos los contratos")
+        Swal.fire("Primero debe pagar todos los contratos", "", "info");
+        throw new Error("No se ha pagado todos los contratos");
       }
     }
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        // console.log(res)
-
-        res = this.darEstructuraNomina(tipo, res)
-        // console.log(res)
-
-        let workbook = XLSX.utils.book_new()
+        res = this.darEstructuraNomina(tipo, res);
+        let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0
-        let headers = Object.keys(res[0])
-        let worksheet = XLSX.utils.aoa_to_sheet([headers])
-        let contador = 2
-        worksheet["!merges"] = []
+        let headers = Object.keys(res[0]);
+        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
+        headers.splice(this.buscarColumna(headers, "conceptos"),2);
+
+        for (let i = 0; i < res.length; i++) {
+          let conceptos = res[i].conceptos;
+          for (let j = 0; j < conceptos.length; j++) {
+            if (!headers.find((conc)=> conceptos[j].conceptodetalle.nombre_concepto == conc)) {
+              headers.push(conceptos[j].conceptodetalle.nombre_concepto);
+            }
+
+            res[i].conceptos = conceptos[j].conceptodetalle.nombre_concepto;
+            res[i].valor_concepto =
+              tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
+            res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
+            conceptos[j].valor_concepto = res[i].valor_concepto;
+
+            delete res[i].conceptos;
+            delete res[i].valor_concepto;
+
+            headers.forEach(element => {   
+              if (!res[i][element]) {
+                res[i][element] = "----------";
+              }
+              if (conceptos[j].conceptodetalle.nombre_concepto == element) {
+                res[i][element] = conceptos[j].valor_concepto;
+              }
+            });
+          }
+        }
+
+        res.forEach(fila => {
+          headers.forEach(element => {   
+            if (!fila[element]) {
+              fila[element] = "----------";
+            }
+          });
+        });
+        
+        worksheet = XLSX.utils.aoa_to_sheet([headers]);
+
+        XLSX.utils.sheet_add_json(worksheet, res, {
+          skipHeader: true,
+          origin: -1,
+        });
+        
+        workbook["Props"] = { 
+          Author: "Generado por Software arriendos",
+          CreatedDate: new Date()
+        };
+
+        if (tipo == 1) {
+          worksheet["!protect"] = { password: "arriendosAdmin" }
+        }
+
+        XLSX.utils.book_append_sheet(
+          workbook,
+          worksheet,
+          tipo == 0
+            ? "PreNomina_" + this.mes + "_" + this.anio
+            : "Pagados_" + this.mes + "_" + this.anio
+        );
+        XLSX.writeFile(
+          workbook,
+          (tipo == 0
+            ? "H_PreNomina_" + this.mes + "_" + this.anio
+            : "H_Pagados_" + this.mes + "_" + this.anio) + ".xlsx"
+        );
+        this.spinnerNomina = false;
+      },
+      (err) => {
+        this.spinnerNomina = false;
+        console.error(err.message);
+      }
+    )
+  }
+
+  generarPreNomina(tipo:any) {
+    this.spinnerNomina = true;
+    let listaSeleccionados = null;
+
+    if (tipo == 0) {
+      listaSeleccionados = this.responsableTablaNoPagados
+        .filter((responsable) => responsable["Check"])
+        .map((responsable) => responsable["idContrato"]);
+    } else {
+      if (this.responsableTablaNoPagados.length < 100) {
+        listaSeleccionados = this.responsableTablaPagados
+          .filter((responsable) => responsable["Check"])
+          .map((responsable) => responsable["id_pago_arriendo"]);
+      } else {
+        Swal.fire("Primero debe pagar todos los contratos", "", "info");
+        throw new Error("No se ha pagado todos los contratos");
+      }
+    }
+
+    this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
+      (res: any[]) => {
+        res = this.darEstructuraNomina(tipo, res);
+        let workbook = XLSX.utils.book_new();
+        res[0].valor_concepto = 0;
+        let headers = Object.keys(res[0]);
+        let worksheet = XLSX.utils.aoa_to_sheet([headers]);
+        let contador = 2;
+        worksheet["!merges"] = [];
 
         for (let i = 0; i < res.length; i++) {
           for (let prop in res[i]) {
             if (res[i][prop] == null) {
-              res[i][prop] = "----------"
+              res[i][prop] = "----------";
             }
           }
 
-          let conceptos = res[i].conceptos
+          let conceptos = res[i].conceptos;
           for (let j = 0; j < conceptos.length; j++) {
-            res[i].conceptos = conceptos[j].conceptodetalle.nombre_concepto
+            res[i].conceptos = conceptos[j].conceptodetalle.nombre_concepto;
             res[i].valor_concepto =
               tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
             res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
@@ -851,7 +958,7 @@ export class PagosComponent implements OnInit {
               skipHeader: true,
               origin: -1,
             })
-            contador++
+            contador++;
           }
 
           for (let i = 0; i < Object.keys(res[0]).length - 2; i++) {
@@ -868,7 +975,7 @@ export class PagosComponent implements OnInit {
         };
 
         if (tipo == 1) {
-          worksheet["!protect"] = { password: "arriendosAdmin" }
+          worksheet["!protect"] = { password: "arriendosAdmin" };
         }
 
         XLSX.utils.book_append_sheet(
@@ -877,7 +984,7 @@ export class PagosComponent implements OnInit {
           tipo == 0
             ? "PreNomina_" + this.mes + "_" + this.anio
             : "Pagados_" + this.mes + "_" + this.anio
-        )
+        );
         XLSX.writeFile(
           workbook,
           (tipo == 0
