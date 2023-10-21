@@ -451,7 +451,8 @@ export class RegistrarpdvComponent implements OnInit {
           entidad_bancaria: res.contrato.autdetalle.entidad_bancaria,        
           id_tipo_cuenta: res.contrato.autdetalle.id_tipo_cuenta,        
           numero_cuenta: res.contrato.autdetalle.numero_cuenta,        
-          incremento_adicional: res.contrato.incremento_adicional,        
+          incremento_adicional: res.contrato.incremento_adicional,  
+          anios_prorroga: res.contrato.anios_prorroga,      
           poliza: res.contrato.poliza,        
           incremento_anual: res.contrato.incremento_anual,        
           id_clienteresponsable: res.contrato.responsabledetalle.id_cliente,
@@ -857,6 +858,7 @@ export class RegistrarpdvComponent implements OnInit {
                           // this.formulariocontrato.reset();
                           this.formularioContratoReset.resetForm();
                           this.inhabilitar = null;
+                          this.tablaContratos();
                           if (res.estado == "1") {
                             this.registroserviciocontrato(res.id);
                           }
