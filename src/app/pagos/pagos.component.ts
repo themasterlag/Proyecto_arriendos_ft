@@ -838,9 +838,12 @@ export class PagosComponent implements OnInit {
         let headers = Object.keys(res[0]);
         let worksheet = XLSX.utils.aoa_to_sheet([headers]);
         headers.splice(this.buscarColumna(headers, "conceptos"),2);
+        let totales = [];
 
         for (let i = 0; i < res.length; i++) {
           let conceptos = res[i].conceptos;
+          let devengados = 0;
+          let deducciones = 0;
           for (let j = 0; j < conceptos.length; j++) {
             if (!headers.find((conc)=> conceptos[j].conceptodetalle.nombre_concepto == conc)) {
               headers.push(conceptos[j].conceptodetalle.nombre_concepto);
@@ -852,6 +855,15 @@ export class PagosComponent implements OnInit {
             res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
             conceptos[j].valor_concepto = res[i].valor_concepto;
 
+            if (conceptos[j].conceptodetalle.tipo_concepto != 5) {
+              if (conceptos[j].valor_concepto < 0) {
+                deducciones += conceptos[j].valor_concepto;
+              }
+              else{
+                devengados += conceptos[j].valor_concepto;
+              }
+            }
+            
             delete res[i].conceptos;
             delete res[i].valor_concepto;
 
@@ -864,15 +876,24 @@ export class PagosComponent implements OnInit {
               }
             });
           }
+          totales.push({devengado:devengados, deduccion:deducciones})
         }
 
-        res.forEach(fila => {
+        // headers.push("Total_devengado","Total_deduccion", "Total");
+        // headers.push("Total_devengado","Total_deduccion");
+
+        for (let i = 0; i < res.length; i++) {
+          const fila = res[i];
           headers.forEach(element => {   
             if (!fila[element]) {
               fila[element] = "----------";
             }
           });
-        });
+
+          // fila["Total_devengado"] = totales[i].devengado + fila.valor_canon;
+          // fila["Total_deduccion"] = totales[i].deduccion;
+          // fila["Total"] = fila.valor_canon + totales[i].devengado + totales[i].deduccion;
+        }
         
         worksheet = XLSX.utils.aoa_to_sheet([headers]);
 
