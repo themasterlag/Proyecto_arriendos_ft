@@ -222,16 +222,19 @@ export class CreditosComponent implements OnInit {
     }).then((event) => {
       if (event.isConfirmed) {
         const abono = event.value;
+        const saldo = credito.credito_saldo;
 
-        if (abono <= 0) {
+        if (abono > saldo) {
+          Swal.fire("Error", "El valor que ingresó dejaría el saldo en : " + (saldo-abono), "info");
+          console.log(saldo);
+          return;
+        }
+
+        else if (abono <= 0) {
           Swal.fire("Error", "El valor a abonar debe ser mayor que 0.", "error");
           return;
         }
   
-        if (abono > credito.saldo) {
-          Swal.fire("Error", "El valor a abonar no puede ser mayor que el saldo.", "error");
-          return;
-        } 
 
         Swal.fire({
           icon: "warning",
