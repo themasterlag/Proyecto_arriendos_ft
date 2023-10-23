@@ -44,16 +44,16 @@ let nav = [
 
   { 
     path: '', 
-    title: 'Acceso', 
+    title: 'Accesibilidad', 
     icon:'rule', 
     class:'', 
     id:null, 
     active:false, 
     children:[
-      { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:6, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:5, active:false, children:[]},
       { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:5, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:7, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:6, active:false, children:[]}, 
+      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:5, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:5, active:false, children:[]}, 
     ]
   },
 

@@ -22,7 +22,7 @@ const routes: Routes = [
     path: 'permisos',
     component: PermisosComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermissions: [6] }
+    data: { requiredPermissions: [5] }
   },
   {
     path: 'bancos',
@@ -34,7 +34,7 @@ const routes: Routes = [
     path: 'cargos',
     component: CargosComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermissions: [7] }
+    data: { requiredPermissions: [5] }
   },
   {
     path: 'conceptos',
@@ -46,7 +46,7 @@ const routes: Routes = [
     path: 'procesos',
     component: ProcesosComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermissions: [7] } 
+    data: { requiredPermissions: [5] } 
   },
   {
     path: 'incrementos',
