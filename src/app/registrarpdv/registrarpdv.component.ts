@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { MatPaginator } from "@angular/material/paginator"
 import { MatTableDataSource } from "@angular/material/table"
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 interface Concepto {
   id_concepto: number;
@@ -72,6 +72,7 @@ export class RegistrarpdvComponent implements OnInit {
   serviciospublicos: any = [];
   pago_efectivo: boolean = true;
   pago_transferencia: boolean = false;
+  tipo_efectivo: number = 2; // 2 Efectivo, 3 Recaudo/convenio, 4 deposito judicial
   id_pago: any;
   incremento_anual = null;
   consulta_pdv: any = null;
@@ -104,11 +105,14 @@ export class RegistrarpdvComponent implements OnInit {
   codigo_sitio_venta: number;
   puntosDeVenta: any[] = [];
   mostrarMatSelect: boolean = true;
+  tipoBuscarContrato: string = "PDV";
   inhabilitado: boolean = false;
   puntoVentaInhabilitado = false;
   guardarDeshabilitado: boolean = false;
   guardar: any;
 
+  responsablesFiltrados: any = null;
+  autorizadosFiltrados: any = null;
 
   constructor(
     public servicio: GeneralesService,
@@ -159,11 +163,12 @@ export class RegistrarpdvComponent implements OnInit {
     });
 
     this.formulariocontrato = this.formularioter.group({
-      id_clienteresponsable: [null, Validators.required],
+      clienteresponsable: [null, Validators.required],
       iva: [null],
       rete_iva: [null],
       rete_fuente: [null],
-      id_clienteautorizado: [null, Validators.required],
+      clienteautorizado: [null, Validators.required],
+      tipo_pago_efectivo: [2],
       entidad_bancaria: [null],
       id_tipo_cuenta: [null],
       numero_cuenta: [null],
@@ -204,6 +209,30 @@ export class RegistrarpdvComponent implements OnInit {
     // this.inhabilitarPDV();
     // this.mostrarDatosPuntoVenta();
     // this.actualizarListaPuntosDeVenta();
+  }
+
+  
+
+  autoCompletarCliente(dato, tipo) {
+    const filterValue = dato
+
+    if (tipo == "responsable") {
+      this.responsablesFiltrados = this.clientes.filter(cliente => cliente["busqueda"].includes(filterValue) );
+    }
+    else if (tipo == "autorizado") {
+      this.autorizadosFiltrados = this.clientes.filter(cliente => cliente["busqueda"].includes(filterValue));
+    }
+
+  }
+
+  autoCompletarClienteLabel(cliente){
+    console.log("autoComp", cliente)
+    if (cliente && cliente.numero_documento) {
+      return cliente.nombres? (cliente.numero_documento +" - "+ cliente.nombres + " " + cliente.apellidos) : (cliente.numero_documento +" - "+ cliente.razon_social);
+    }
+    else{
+      return null;
+    }
   }
 
   traerConceptoMunicpios(){
@@ -371,70 +400,90 @@ export class RegistrarpdvComponent implements OnInit {
       this.traerpdv();
     }
   }
+
+  cargarContrato(res) {
+    // this.pdv = res;
+    let fecha_inactivo = '';
+    if (res.length > 1) {
+      this.contratos_pdv = res.map((datoConsulta) => {
+        console.log("Contratos",res);
+        if (datoConsulta.contrato.fecha_inactivo != null) {
+          fecha_inactivo = "(Inhabilitado)";
+        } else {
+          fecha_inactivo = "";
+        }
+        let responsable = datoConsulta.contrato.responsabledetalle.clientedetalle;
+        let nombre = responsable.razon_social == null ? responsable.nombres + " " + responsable.apellidos + " " + fecha_inactivo : responsable.razon_social + " " + fecha_inactivo
+
+        if (this.tipoBuscarContrato != "PDV") {
+          nombre = "PDV: " + datoConsulta.contrato.pvdetalle.codigo_sitio_venta + " - " + datoConsulta.contrato.pvdetalle.nombre_comercial + " " + fecha_inactivo;
+        }
+
+        return nombre
+      });
+
+      Swal.fire({
+        title: 'Punto de venta con varios contratos',
+        input: 'select',
+        inputOptions: this.contratos_pdv,
+        inputPlaceholder: this.tipoBuscarContrato != "PDV"?'Seleccione contrato por PDV': 'Seleccione un contrato por responsable',
+        confirmButtonText: 'Cargar contrato',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          return new Promise((resolve) => {
+            this.cargarDatosContrato(res[value]);
+            if (res[value].contrato.fecha_inactivo != null) {
+              this.inhabilitar_save = true;
+            } else {
+              this.inhabilitar_save = false;
+            }
+            resolve("");
+          })
+        }
+      });
+    }
+    else {
+      this.cargarDatosContrato(res[0]);
+      if (res[0].contrato.fecha_inactivo != null) {
+        this.inhabilitar_save = true;
+      } else {
+        this.inhabilitar_save = false;
+      }
+    }
+  }
   
   traeContrato() {
-    if(this.consulta_pdv == null){
-      Swal.fire('El campo de codigo punto de venta no puede estar vacio','','question');
-    } else{
+    if (this.consulta_pdv == null) {
+      Swal.fire('El campo de codigo punto de venta no puede estar vacio', '', 'question');
+    } else {
       this.actualizar = true;
-    let id = this.consulta_pdv;
 
-    this.buscarPuntosDeVenta();
+      this.buscarPuntosDeVenta();
 
-    this.servicio.traerContrato(id).subscribe(
-      (res: any) => {
-        // this.pdv = res;
-        let fecha_inactivo = '';
-        if (res.length > 1) {
-          this.contratos_pdv = res.map((datoConsulta) =>{
-            console.log(res);
-            if(datoConsulta.contrato.fecha_inactivo != null){
-              fecha_inactivo = "(Inhabilitado)";
-            }else{
-              fecha_inactivo = "";
-            }
-            let responsable = datoConsulta.contrato.responsabledetalle.clientedetalle;
-            let nombre = responsable.razon_social == null? responsable.nombres+" "+responsable.apellidos+" "+fecha_inactivo: responsable.razon_social+" "+fecha_inactivo
-
-            return nombre
-          });
-
-          Swal.fire({
-            title: 'Punto de venta con varios contratos',
-            input: 'select',
-            inputOptions: this.contratos_pdv,
-            inputPlaceholder: 'Seleccione un contrato por responsable',
-            confirmButtonText: 'Cargar contrato',
-            showCancelButton: true,
-            inputValidator: (value) => {
-              return new Promise((resolve) => {
-                this.cargarDatosContrato(res[value]);
-                if(res[value].contrato.fecha_inactivo != null){
-                  this.inhabilitar_save = true;
-                }else{
-                  this.inhabilitar_save = false;
-                }
-                resolve("");
-              })
-            }
-          });
-        }
-        else {
-          this.cargarDatosContrato(res[0]);
-          if(res[0].contrato.fecha_inactivo != null){
-            this.inhabilitar_save = true;
-          }else{
-            this.inhabilitar_save = false;
+      if (this.tipoBuscarContrato == "PDV") {
+        this.servicio.traerContrato(this.consulta_pdv).subscribe(
+          (res: any) => {
+            this.cargarContrato(res);
+          },
+          (err) => {
+            Swal.fire("Punto de venta no encontrado", "", "error");
+            console.log(err.message);
           }
-        }        
-      },
-      (err) => {
-        Swal.fire("Punto de venta no encontrado", "", "error");
-        console.log(err.message);
+        );
+      } else{
+        this.servicio.traerContratoCliente(this.tipoBuscarContrato, this.consulta_pdv).subscribe(
+          (res: any) => {
+            this.cargarContrato(res);
+          },
+          (err) => {
+            Swal.fire(this.tipoBuscarContrato + " no encontrado en un contrato", "", "error");
+            console.log(err.message);
+          }
+        );
       }
-    );
+
       this.formulariocontrato.get('valor_canon').disable()
-    }    
+    }
   }
 
   cargarDatosContrato(res){
@@ -447,7 +496,7 @@ export class RegistrarpdvComponent implements OnInit {
           fecha_inicio_contrato: res.contrato.fecha_inicio_contrato,        
           fecha_fin_contrato: res.contrato.fecha_fin_contrato,        
           definicion: res.contrato.definicion,
-          id_clienteautorizado: res.contrato.autdetalle.id_cliente,
+          clienteautorizado: res.contrato.autdetalle.clientedetalle,
           entidad_bancaria: res.contrato.autdetalle.entidad_bancaria,        
           id_tipo_cuenta: res.contrato.autdetalle.id_tipo_cuenta,        
           numero_cuenta: res.contrato.autdetalle.numero_cuenta,        
@@ -455,16 +504,17 @@ export class RegistrarpdvComponent implements OnInit {
           anios_prorroga: res.contrato.anios_prorroga,      
           poliza: res.contrato.poliza,        
           incremento_anual: res.contrato.incremento_anual,        
-          id_clienteresponsable: res.contrato.responsabledetalle.id_cliente,
+          clienteresponsable: res.contrato.responsabledetalle.clientedetalle,
           id_punto_venta: res.contrato.id_punto_venta,
         });
         console.log(this.formulariocontrato.get('valor_canon').value)
         this.formulariocontrato.value.valor_canon = this.formulariocontrato.get('valor_canon').value
         this.canonGlobal = this.formulariocontrato.get('valor_canon').value
         
-        if (res.contrato.autdetalle.metodo_pago == 2) {
+        if (res.contrato.autdetalle.metodo_pago > 1) {
           this.pago_transferencia = false;
           this.pago_efectivo = true;
+          this.tipo_efectivo = res.contrato.autdetalle.metodo_pago;
         } else
         {
           this.pago_efectivo = false;
@@ -568,6 +618,11 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerclientes().subscribe(
       (res) => {
         this.clientes = res;
+        this.clientes.forEach(cliente => {
+          cliente["busqueda"]=(cliente.numero_documento +" - "+ cliente.nombres + " " + cliente.apellidos + " " + cliente.razon_social);
+        });
+        this.responsablesFiltrados = this.clientes;
+        this.autorizadosFiltrados = this.clientes;
         //console.log(this.clientes);
       },
       (err) => {
@@ -687,6 +742,7 @@ export class RegistrarpdvComponent implements OnInit {
       Swal.fire("Guardado con Exito!", "", "success");
       this.consulta_pdv = null;
       this.id_contrato = null;
+      this.tipoBuscarContrato = "PDV";
       Loading.remove();
       this.limpiarContrato();
       this.formularioContratoReset.resetForm();
@@ -704,6 +760,7 @@ export class RegistrarpdvComponent implements OnInit {
           if (i == (this.listservicios.length - 1)) {
             Swal.fire("Guardado con Exito!", "", "success");
             this.consulta_pdv = null;
+            this.tipoBuscarContrato = "PDV";
             this.id_contrato = null;
             Loading.remove();
             this.limpiarContrato();
@@ -770,7 +827,7 @@ export class RegistrarpdvComponent implements OnInit {
     }
     else if (this.formulariocontrato.valid) {
       let responsable = {
-        id_cliente: this.formulariocontrato.value.id_clienteresponsable,
+        id_cliente: this.formulariocontrato.value.clienteresponsable.id_cliente,
         estado: "1",
         iva: this.formulariocontrato.value.iva ? 48 : null,
         rete_iva: this.formulariocontrato.value.rete_iva ? 9 : null,
@@ -780,10 +837,10 @@ export class RegistrarpdvComponent implements OnInit {
       
       // //console.log(this.id_pago + "aqui metodo pago");
       let autorizado = {
-        id_cliente: this.formulariocontrato.value.id_clienteautorizado,
-        metodo_pago: this.id_pago,
+        id_cliente: this.formulariocontrato.value.clienteautorizado.id_cliente,
+        metodo_pago: this.pago_efectivo?this.tipo_efectivo:this.id_pago,
         entidad_bancaria: this.formulariocontrato.value.entidad_bancaria,
-        numero_cuenta: this.formulariocontrato.value.numero_cuenta,
+        numero_cuenta: this.pago_transferencia || this.tipo_efectivo !=2?this.formulariocontrato.value.numero_cuenta:null,
         id_tipo_cuenta: this.formulariocontrato.value.id_tipo_cuenta,
       };
 
@@ -1573,6 +1630,7 @@ consultarContratos() {
     this.limpiarServicios();
     this.conceptosTabla = []
     this.consulta_pdv = null;
+    this.tipoBuscarContrato = "PDV";
     this.formulariocontrato.get('valor_canon').enable()
     this.inhabilitar = null;
     this.inhabilitar_save = false;

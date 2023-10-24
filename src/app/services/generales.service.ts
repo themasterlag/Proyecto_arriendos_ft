@@ -162,8 +162,12 @@ export class GeneralesService {
     return this.servicio.get(this.api + "contrato")
   }
 
-  traerContrato(id) {
-    return this.servicio.get(this.api + "contrato/pdv/" + id)
+  traerContrato(pdv) {
+    return this.servicio.get(this.api + "contrato/pdv/" + pdv)
+  }
+
+  traerContratoCliente(tipo, documento) {
+    return this.servicio.get(this.api + "contrato/cliente/" + tipo + "/" + documento);
   }
 
   traerPrenomina(tipo, ids) {
