@@ -15,31 +15,35 @@
                 </ul>
             </div>
 
+            
+            
             <ul class="nav overflow-auto" id="navigation">
-                <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-                    <a *ngIf="menuItem.children.length < 1 && menuItem.active" class="nav-link pl-2"
-                        [routerLink]="[menuItem.path]">
+                <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item main-menu-item-divider">
+                    <a *ngIf="menuItem.children.length < 1" class="nav-link pl-2">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
-                        <hr class="my-1">
                     </a>
-
-                    <nav class="nav my-0" *ngIf="menuItem.children.length > 0 && menuItem.active">
-                        <a class="nav-link pl-2" href="#{{menuItem.title}}" data-toggle="collapse">
+                    
+                    <nav class="nav my-0">
+                        <a class="nav-link pl-2" data-toggle="collapse" [attr.href]="'#' + menuItem.title">
                             <i class="material-icons">{{menuItem.icon}}</i>
                             <p>{{menuItem.title}}</p>
                         </a>
-                        <div *ngFor="let childrenItem of menuItem.children">
-                            <a routerLinkActive="active" class="collapse nav-link pl-4" id="{{menuItem.title}}" [routerLink]="[childrenItem.path]">
-                                <i class="material-icons">{{childrenItem.icon}}</i>
-                                <p>{{childrenItem.title}}</p>
-                            </a>
-                            <hr class="collapse my-1" id="{{menuItem.title}}">
+                        <div class="collapse" [attr.id]="menuItem.title">
+                            <!-- Línea divisoria entre la primera opción del submenú y las opciones principales -->
+                            <hr class="my-1 with-border-top">
+                            <div *ngFor="let childrenItem of menuItem.children">
+                                <a routerLinkActive="active" class="nav-link pl-4" [routerLink]="[childrenItem.path]">
+                                    <i class="material-icons">{{childrenItem.icon}}</i>
+                                    <p>{{childrenItem.title}}</p>
+                                </a>
+                                <hr class="my-1">
+                            </div>
                         </div>
-                        <hr class="my-1">
                     </nav>
                 </li>
             </ul>
+            
         </div>
     </div>
 

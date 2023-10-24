@@ -47,3 +47,23 @@ ul hr {
     max-height: 51vh;
     /* overflow-y: scroll !important; */
 }
+
+
+.with-border-top {
+    border-top: 1.8px solid #d1cece72;
+}
+
+/* Estilo para la única línea divisoria en el menú */
+.main-menu-item-divider {
+    border-bottom: 1px solid #ddd; /* Establece el estilo del borde para las opciones principales */
+    padding-bottom: 5px; /* Espacio opcional debajo del borde */
+}
+
+#navigation {
+    max-height: 300px; 
+    overflow-y: auto; /* Añade una barra de desplazamiento vertical cuando sea necesario */
+}
+
+.nav li {
+    list-style-type: none;
+}
