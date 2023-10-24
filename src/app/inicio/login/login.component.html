@@ -5,28 +5,33 @@
                 <div class="modal-header">
                     <img class="card-img-top" src="./assets/img/logo-ganagana-amarillo-2.png" alt="Logo" />
                 </div>
-                <div class="modal-body">
-                    <div *ngIf="errorLogin" class="alert" style="color: #8d363f; background-color: #f5c6cb;" role="alert">
-                        <h5 class="m-0"><strong>{{errorLogin}}</strong></h5>
-                    </div>        
-                    <div>
-                        <label for="usuario" class="ml-2">Usuario</label>
-                        <input id="usuario" type="text" class="form-control border" placeholder="Escibe aqui tu usuario" [(ngModel)]="usuario"/>
-                    </div>      
-                    
-                    <div>
-                        <label for="clave" class="ml-2 mt-2">Contraseña</label>
-                        <input id="clave" type="password" class="form-control border" placeholder="Contraseña" [(ngModel)]="clave"/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button *ngIf="!spinner" class="btn rounded" style="background-color: #1b4f35;" (click)="iniciarSesion()">Iniciar sesion</button>
-                    <button *ngIf="spinner" class="btn rounded" style="background-color: #1b4f35;" disabled> 
-                        <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
-                            <span class="sr-only">Ingresando...</span>
+                <form>
+                    <div class="modal-body">
+                        <div *ngIf="errorLogin" class="alert" style="color: #8d363f; background-color: #f5c6cb;" role="alert">
+                            <h5 class="m-0"><strong>{{errorLogin}}</strong></h5>
                         </div>
-                    </button>
-                </div>
+                        <div class="form-group">
+                            <label for="usuario" class="ml-2 text-dark">Usuario</label>
+                            <input id="usuario" type="text" name="email" class="form-control border" placeholder="Escibe aqui tu usuario"
+                                [(ngModel)]="usuario" />
+                        </div>
+                
+                        <div class="form-group">
+                            <label for="clave" class="ml-2 mt-2 text-dark">Contraseña</label>
+                            <input id="clave" type="password" name="password" class="form-control border" placeholder="Contraseña"
+                                [(ngModel)]="clave" />
+                        </div>
+                    </div>
+                    <div class="modal-footer d-block">
+                        <button *ngIf="!spinner" class="btn rounded w-75" type="submit" style="background-color: #1b4f35;"
+                            (click)="iniciarSesion()">Iniciar sesion</button>
+                        <button *ngIf="spinner" class="btn rounded w-auto" style="background-color: #1b4f35;" disabled>
+                            <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
+                                <span class="sr-only">Ingresando...</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
