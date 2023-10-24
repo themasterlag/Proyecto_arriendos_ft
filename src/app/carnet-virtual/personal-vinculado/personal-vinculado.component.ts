@@ -5,6 +5,11 @@ import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { data } from 'jquery';
+
 
 
 interface Personal {
@@ -24,6 +29,10 @@ interface Personal {
 })
 export class PersonalVinculadoComponent implements OnInit {
 
+  myControl = new FormControl('');
+  options: any = [];
+  filteredOptions: Observable<string[]>;
+
   panelOpenState = true;
   personalInfo: any;
   archivoSeleccionado: File | null = null;
@@ -39,7 +48,7 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("formularioPersonal") formularioPersonal: NgForm;
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
-  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","categoria","fechaCre","fechaIn", "accion"];
+  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","categoria","tipo_personal","fecha_creacion","fecha_inactivacion", "accion"];
   @ViewChild("archivoExcel") botonExcel: ElementRef;
   enviandoExcel: boolean = false;
 
@@ -49,7 +58,21 @@ export class PersonalVinculadoComponent implements OnInit {
 
   ngOnInit(): void {
     this.tablaPersonal();
+
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+
+    this.servicio.traerPersonal().subscribe((data: any) => {
+      console.log(data)
+      this.options =Array.from(new Set(data.map((elemento)=> elemento.tipo_personal)));
+      console.log(this.options)
+    });
+
+    
   }
+  
 
   crearExcel(){
     const Toast = Swal.mixin({
@@ -74,6 +97,7 @@ export class PersonalVinculadoComponent implements OnInit {
 
   envioExcel(archivo){
     this.enviandoExcel = true;
+    console.log(archivo,"----------------");
     Swal.fire({
       toast: true,
       icon: 'info',
@@ -84,11 +108,13 @@ export class PersonalVinculadoComponent implements OnInit {
       timerProgressBar: true
     });
 
+
     let file = new FormData();
     file.append('file', archivo.target.files[0]);
     this.servicio.enviarExcel(file).subscribe(
       (res:any) => {
         this.enviandoExcel = false;
+        
 
         Swal.fire({
           toast: true,
@@ -104,6 +130,8 @@ export class PersonalVinculadoComponent implements OnInit {
       },
       (error:any) => {
         this.enviandoExcel = false;
+        console.log(file,"+++++++++++++++++++++++");
+        console.error();
 
         Swal.fire({
           toast: true,
@@ -114,7 +142,9 @@ export class PersonalVinculadoComponent implements OnInit {
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true
+
         }).finally(()=>{
+
           this.botonExcel.nativeElement.value = null;
         });
       }
@@ -148,6 +178,8 @@ export class PersonalVinculadoComponent implements OnInit {
     this.enviarPersonal.controls.cargo.setValue(infoPersonal.cargo)
     this.enviarPersonal.controls.rh.setValue(infoPersonal.rh);
     this.enviarPersonal.controls.categoria.setValue(infoPersonal.categoria);
+    this.enviarPersonal.controls.tipo_personal.setValue(infoPersonal.tipo_personal);
+
   } 
 
   registrarPersonal(){
@@ -166,6 +198,7 @@ export class PersonalVinculadoComponent implements OnInit {
         cargo: this.enviarPersonal.controls.cargo.value,
         rh: this.enviarPersonal.controls.rh.value,
         categoria: this.enviarPersonal.controls.categoria.value,
+        tipo_personal: this.enviarPersonal.controls.tipo_personal.value,
 
         rolid_rol: 1,
         id: id,
@@ -234,6 +267,7 @@ export class PersonalVinculadoComponent implements OnInit {
             cargo: personal.cargo,
             rh: personal.rh,
             categoria: personal.categoria,
+            tipo_personal: personal.tipo_personal,
             fecha_creacion: personal.fecha_creacion,
             fecha_inactivacion: personal.fecha_inactivacion,
             estado: personal.estado,
@@ -288,6 +322,12 @@ export class PersonalVinculadoComponent implements OnInit {
       );
         this.tablaPersonal();  
     }    
+  }
+
+  private _filter(value: string): string[] {
+
+    const filterValue = value.toLowerCase();
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   applyFilter(event: Event){

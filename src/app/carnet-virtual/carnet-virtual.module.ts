@@ -16,6 +16,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
+
 
 
 
@@ -26,7 +29,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CarnetComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
+    MatAutocompleteModule,
     CarnetVirtualRoutingModule,
     MatExpansionModule,
     MatInputModule,
