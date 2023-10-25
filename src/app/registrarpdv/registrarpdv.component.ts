@@ -226,7 +226,7 @@ export class RegistrarpdvComponent implements OnInit {
   }
 
   autoCompletarClienteLabel(cliente){
-    console.log("autoComp", cliente)
+    // console.log("autoComp", cliente)
     if (cliente && cliente.numero_documento) {
       return cliente.nombres? (cliente.numero_documento +" - "+ cliente.nombres + " " + cliente.apellidos) : (cliente.numero_documento +" - "+ cliente.razon_social);
     }
@@ -635,7 +635,7 @@ export class RegistrarpdvComponent implements OnInit {
     this.servicio.traerConceptos().subscribe(
       (res) => {
         this.conceptos = res;
-        console.log(res);
+        // console.log(res);
       },
       (err) => {
         //console.log(err.message);
