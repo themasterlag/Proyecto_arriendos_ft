@@ -43,6 +43,8 @@ export class AutenticacionService {
     this.token = null;
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("permisos");
+    sessionStorage.clear();
+    localStorage.clear();
     new AdminLayoutModule;
     this.route.navigate(['/login']);
   }
