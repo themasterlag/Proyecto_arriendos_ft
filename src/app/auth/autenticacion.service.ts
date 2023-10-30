@@ -31,7 +31,7 @@ export class AutenticacionService {
       let ahora:any = new Date();
       let difTiempo = ((this.cargaUtil.exp - ahora)/1000)/60;
 
-      console.log(difTiempo,this.cargaUtil.exp,ahora)
+      // console.log(difTiempo,this.cargaUtil.exp,ahora)
       if(difTiempo < 0){
         Swal.fire({
           title: "Sesion caducada, por favor inicie nuevamente",
