@@ -11,7 +11,7 @@ export class NexusInterceptor implements HttpInterceptor {
         request: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        if (!request.url.includes('/api')) {
+        if (!request.url.includes('/api') || request.url.includes("login")) {
             return next.handle(request);
         }
         
