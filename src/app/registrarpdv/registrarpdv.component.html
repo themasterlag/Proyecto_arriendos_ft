@@ -826,7 +826,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="row">
-                        <mat-checkbox class="col-auto align-self-center" [checked]="!(contratos_pdv.length > 1)" (change)="buscarPuntosDeVenta(!($event.checked))">Es primer contrato del PDV</mat-checkbox>
+                        <mat-checkbox class="col-auto align-self-center" [checked]="esPrimerContrato" (change)="buscarPuntosDeVenta(!($event.checked))">Es primer contrato del PDV</mat-checkbox>
                         <mat-form-field class="col">
                           <mat-select
                             placeholder="Punto de venta"

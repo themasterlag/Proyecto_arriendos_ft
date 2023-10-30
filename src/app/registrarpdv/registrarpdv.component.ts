@@ -35,6 +35,9 @@ interface Contratos {
 
 export class RegistrarpdvComponent implements OnInit {
 
+  esPrimerContrato: boolean = true;
+
+
   panelOpenState = false;
   tipopersona: boolean = null;
   metodo_pago: boolean = null;
@@ -383,13 +386,18 @@ export class RegistrarpdvComponent implements OnInit {
                  Swal.fire('Error', 'Por favor, ingrese un código de punto de venta.', 'error');
               }
             }
+
+            
          
-  buscarPuntosDeVenta(traerTodos = false){
+  buscarPuntosDeVenta(traerTodos = true){
     console.log(traerTodos);
-    if (this.actualizar || traerTodos) {
+    if (traerTodos) {
       this.servicio.traerPuntosDeVenta().subscribe(
         (resPdv:any) => {
+          traerTodos = true;
           this.pdv = resPdv;
+          this.esPrimerContrato = false;
+          console.log();
         },
         (err) => {
           console.log(err.message);
@@ -398,6 +406,8 @@ export class RegistrarpdvComponent implements OnInit {
     }
     else{
       this.traerpdv();
+      traerTodos = true;
+      this.esPrimerContrato = true;
     }
   }
 
@@ -488,6 +498,7 @@ export class RegistrarpdvComponent implements OnInit {
 
   cargarDatosContrato(res){
     this.contrato = res;
+          this.buscarPuntosDeVenta();
         this.id_contrato = res.contrato.id_contrato;
         console.log(res)
         this.formulariocontrato.patchValue({
@@ -1299,6 +1310,7 @@ consultarContratos() {
                         this.propietariostabla = []
                         this.pdv_id = null;
                         this.pdv_busqueda = null;
+                        this.buscarPuntosDeVenta();
                       });
                   } else {
                     //console.log(res);
@@ -1624,6 +1636,7 @@ consultarContratos() {
   
 
   limpiarContrato(): void {
+    this.esPrimerContrato = true;
     this.formulariocontrato.reset();
     this.traerpdv();
     this.limpiarConceptos();
