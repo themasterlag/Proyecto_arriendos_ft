@@ -5,10 +5,13 @@ import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
 
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { data } from 'jquery';
+import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
+
+
+
 
 
 
@@ -29,9 +32,11 @@ interface Personal {
 })
 export class PersonalVinculadoComponent implements OnInit {
 
-  myControl = new FormControl('');
-  options: any = [];
-  filteredOptions: Observable<string[]>;
+  tipossFiltrados: any = null;
+  myControl = new FormControl();
+  options: any = null;
+  filteredOptions: any = null;
+
 
   panelOpenState = true;
   personalInfo: any;
@@ -59,18 +64,31 @@ export class PersonalVinculadoComponent implements OnInit {
   ngOnInit(): void {
     this.tablaPersonal();
 
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || '')),
-    );
+    
 
     this.servicio.traerPersonal().subscribe((data: any) => {
       console.log(data)
-      this.options =Array.from(new Set(data.map((elemento)=> elemento.tipo_personal)));
+      this.options = Array.from(new Set(data.map((elemento)=> elemento.tipo_personal)));
+      this.filteredOptions = this.options;
       console.log(this.options)
     });
+  }
 
-    
+  autoCompletarTipo(dato) {
+    console.log(dato)
+    const filterValue = dato.toLowerCase();
+    this.filteredOptions = this.options.filter(tipoPer => tipoPer.toLowerCase().includes(filterValue) );
+  }
+
+
+  autoCompletarTipoLabel(personal){
+    // console.log("autoComp", cliente)
+    if (personal) {
+      return personal;
+    }
+    else{
+      return null;
+    }
   }
   
 
@@ -162,7 +180,9 @@ export class PersonalVinculadoComponent implements OnInit {
             console.log(res);
             this.personalInfo = res;
             this.llenarFormulario(res);
+            this.tipossFiltrados = this.personalInfo;
           },
+
           (error) => {
             Swal.fire('Error al consultar', error.error.message, 'warning');
           }
@@ -172,6 +192,7 @@ export class PersonalVinculadoComponent implements OnInit {
   
 
   llenarFormulario(infoPersonal){
+    console.log(this.enviarPersonal)
     this.enviarPersonal.controls.nombre.setValue(infoPersonal.nombre);
     this.enviarPersonal.controls.apellido.setValue(infoPersonal.apellido);
     this.enviarPersonal.controls.identificacion.setValue(infoPersonal.identificacion);
@@ -220,7 +241,9 @@ export class PersonalVinculadoComponent implements OnInit {
                   Swal.fire('Persona actualizada con éxito','','success').then(
                     ()=>{
                       this.tablaPersonal();
-                      this.limpiarFormulario();        
+                      this.limpiarFormulario(); 
+                      this.ngOnInit(); 
+                        
                     }
                   );
                 },
@@ -325,10 +348,10 @@ export class PersonalVinculadoComponent implements OnInit {
   }
 
   private _filter(value: string): string[] {
-
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
+  
 
   applyFilter(event: Event){
     const filterValue = (event.target as HTMLInputElement).value;

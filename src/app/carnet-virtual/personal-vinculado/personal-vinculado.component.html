@@ -77,31 +77,26 @@
                             <input matInput placeholder="RH" type="text" id="rh" name="rh" max="3" ngModel required />
                           </mat-form-field>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                           <mat-form-field class="example-full-width">
                             <input matInput placeholder="Categoria" type="text" id="categoria" name="categoria" ngModel required />
                           </mat-form-field>
                         </div>
 
-                        <div class="col-2">
-                          <mat-form-field class="example-full-width">
-                            <mat-label>Tipo Personal</mat-label>
-                            <input type="text"
-                                  placeholder="Tipo"
-                                  id="tipo_personal"
-                                  name="tipo_personal"
-                                  aria-label="tipo_personal"
-                                  matInput
-                                  ngModel 
-                                  required
-                                  [matAutocomplete]="auto">
-                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                              <mat-option *ngFor="let options of filteredOptions | async" [value]="options">
-                                {{options}}
-                              </mat-option>
-                            </mat-autocomplete>
-                          </mat-form-field>
-                        </div>
+
+
+
+                          <div class="col-3">
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput name="tipo_personal" id="tipo_personal" (input)="autoCompletarTipo($event.target.value)"  ngModel required placeholder="Tipo Personal" [matAutocomplete]="tipoPersonal">
+                              <mat-autocomplete #tipoPersonal="matAutocomplete">
+                                <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                                  {{ option }}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </mat-form-field>
+                          </div>
+                          
 
 
 
