@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate {
     if (this.servicioAuth.validarToken()) {
       return true;
     }
-    this.router.navigateByUrl('/login');
+    // this.router.navigateByUrl('/login');
     return false;
   }
 

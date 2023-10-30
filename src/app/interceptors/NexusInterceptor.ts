@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import Swal from "sweetalert2";
 
@@ -14,7 +14,12 @@ export class NexusInterceptor implements HttpInterceptor {
         if (!request.url.includes('/api')) {
             return next.handle(request);
         }
-
+        
+        const nuevoReq = request.clone({
+            setHeaders:{
+                "x-access-token": sessionStorage.getItem("token")
+            }
+        });
         const url = new URL(request.url);
         const domain = url.protocol + '//' + url.hostname + ':' + url.port;
 
@@ -39,8 +44,36 @@ export class NexusInterceptor implements HttpInterceptor {
                         timerProgressBar: true,
                     });
                 }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", domain+"/api/arriendos/aut/renovar/"+sessionStorage.getItem("token"), true);
+                xhr.onload = () =>{
+                    const token = JSON.parse(xhr.response).token;
+                    if(token){
+                        sessionStorage.setItem("token", token);
+                    }
+                }
+                xhr.onerror = () => {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        title: 'Error en la sesion',
+                        text: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente",
+                        icon: 'error',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        timer: 5000,
+                        timerProgressBar: true,
+                    })
+                };
+                xhr.send();
+
                 localStorage.setItem('online', 'true');
-                return next.handle(request);
+                
+
+                return next.handle(nuevoReq);
             }),
             catchError((error) => {
                 if (error.status === 0) {
@@ -80,7 +113,7 @@ export class NexusInterceptor implements HttpInterceptor {
                         });
                     });
                 } else {
-                    return next.handle(request);
+                    return next.handle(nuevoReq);
                 }
             })
         );
@@ -104,9 +137,5 @@ export class NexusInterceptor implements HttpInterceptor {
             };
             xhr.send();
         });
-    }
-
-    requestReturn(req: HttpRequest<any>, next: HttpHandler) {
-        return next.handle(req);
     }
 }
