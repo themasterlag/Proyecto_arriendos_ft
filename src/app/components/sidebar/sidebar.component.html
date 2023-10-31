@@ -19,12 +19,12 @@
             
             <ul class="nav overflow-auto" id="navigation">
                 <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item main-menu-item-divider">
-                    <a *ngIf="menuItem.children.length < 1" class="nav-link pl-2">
+                    <a *ngIf="menuItem.children.length < 1" class="nav-link pl-2"  [routerLink]="[menuItems.path]">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
                     </a>
                     
-                    <nav class="nav my-0">
+                    <nav class="nav my-0" *ngIf="menuItem.children.length > 0">
                         <a class="nav-link pl-2" data-toggle="collapse" [attr.href]="'#' + menuItem.title">
                             <i class="material-icons">{{menuItem.icon}}</i>
                             <p>{{menuItem.title}}</p>

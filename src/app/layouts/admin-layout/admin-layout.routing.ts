@@ -32,6 +32,17 @@ export const AdminLayoutRoutes: Routes = [
         }],
     },
     {
+        path: 'novedades',
+        canActivate: [AuthGuard],
+        children: [{
+            path: '',
+            canActivateChild: [AuthGuard],
+            loadChildren: () => import('../../novedades/novedades.module').then(m => m.NovedadesModule)
+        }],
+    },
+    
+    
+    {
         path: 'inicio',
         component: InicioComponent
     },

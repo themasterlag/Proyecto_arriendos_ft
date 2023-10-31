@@ -69,6 +69,18 @@ let nav = [
       { path: '/carnet', title: 'Consultar carnet', icon:'badge', class:'', id:8, active:false, children:[]},
     ]
   },
+
+  { 
+    path: '', 
+    title: 'Novedades', 
+    icon:'feed', 
+    class:'', 
+    id:null, 
+    active:false, 
+    children:[
+      
+    ]
+  },
 ];
 
 
