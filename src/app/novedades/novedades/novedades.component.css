@@ -1,0 +1,76 @@
+.card {
+    background: #e8e8e8;
+    font-size: 18px;
+    border-radius: 25px;
+  }
+  
+  #banner {
+    border-radius: 25px;
+    background: #ffe203;
+  }
+  
+  .card-category {
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .card-title {
+    color: #1b4f35 !important;
+    font-weight: bold;
+    font-size: 21px;
+  }
+  
+  .card-body {
+    border-radius: 25px;
+  }
+  
+  #mat-expansion-panel-header-1 {
+    border-radius: 25px;
+  }
+  
+  .mat-accordion .mat-expansion-panel {
+    border-radius: 25px;
+    margin-bottom: 1%;
+  }
+  
+  .text-info {
+    color: #359b68 !important;
+    font-weight: 900;
+  }
+  
+  .text-black {
+    color: #000000;
+  }
+  
+  ::ng-deep .tooltipText {
+    transform: scale(1);
+    font-size: medium;
+  }
+  
+  .alertWarning {
+    border-radius: 25px;
+    background: #ffe203;
+  }
+  
+  .hrVertical {
+    /* height:100vh; */
+    width: 0.1%;
+    border-width: 0;
+    background-color: #939393;
+  }
+  
+  .añadir-cargo-container {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .botones-container {
+    display: flex; /* Esto hace que los botones estén en línea horizontalmente */
+    justify-content: space-between; /* Esto distribuirá los botones horizontalmente en el contenedor */
+    align-items: center; /* Esto alineará verticalmente los botones en el centro del contenedor */
+  }
+  
+  
