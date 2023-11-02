@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
           this.servicioAut.almacenarSesion(respuesta.token);
           this.route.navigateByUrl("/dashboard");
           this.spinner = false;
+          localStorage.setItem('online', 'true');
         }
       },
       (error) => {

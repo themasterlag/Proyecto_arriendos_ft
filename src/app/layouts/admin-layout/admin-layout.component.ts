@@ -1,10 +1,14 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy, PopStateEvent } from '@angular/common';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { Location, PopStateEvent } from '@angular/common';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import * as $ from "jquery";
 import { filter, Subscription } from 'rxjs';
 import { Loading } from "notiflix";
+import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
+import { Api } from "../../config"
+import { AutenticacionService } from 'app/auth/autenticacion.service'; 
 
 @Component({
   selector: 'app-admin-layout',
@@ -16,9 +20,68 @@ export class AdminLayoutComponent implements OnInit {
   private lastPoppedUrl: string;
   private yScrollStack: number[] = [];
 
-  constructor( public location: Location, private router: Router) {
+  tiempoInactividad = 3000000; // 50 minutos (en milisegundos)
+  temporizadorInactividad: any;
+  estadoInactividad: boolean = false;
+
+  constructor( public location: Location, private router: Router, public http:HttpClient, public autService: AutenticacionService) {
     this.router.onSameUrlNavigation="reload";
     Loading.pulse("Cargando");
+    this.resetInactivityTimer();
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  @HostListener('document:keydown', ['$event'])
+  resetInactivityTimer() {
+    clearTimeout(this.temporizadorInactividad);
+    this.temporizadorInactividad = setTimeout(() => {
+        if (!this.estadoInactividad) {
+        this.estadoInactividad = true;
+        Swal.fire({
+            icon: "question",
+            title: "¿Sigues ahí?",
+            showConfirmButton: true,
+            confirmButtonText: "Aquí estoy",
+            timer: 15000,
+            timerProgressBar: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result)=>{
+            if (result.isConfirmed) {
+                this.estadoInactividad = false;
+                this.http.get(Api.url+"aut/renovar/"+sessionStorage.getItem("token")).subscribe(
+                    (res:any)=>{
+                        if(res.token){
+                            sessionStorage.setItem("token", res.token);
+                            clearTimeout(this.temporizadorInactividad);
+                        }
+                    },
+                    (error:any)=>{
+                        Swal.fire({
+                            icon: "error",
+                            toast: true,
+                            position: "top-end",
+                            title: "No se pudo reanudar, cierre e inicie sesión nuevamente."
+                        });
+                        console.error(error);
+                    }
+                );
+            }
+            else{
+                Swal.fire({
+                    icon: "warning",
+                    title: "Sesión cerrada por inactividad."
+                });
+                this.autService.cerrarSesion();
+            }
+        });
+        console.log('El usuario está inactivo.');
+        }
+    }, this.tiempoInactividad);
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.temporizadorInactividad);
   }
 
   ngOnInit() {

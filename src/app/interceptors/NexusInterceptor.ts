@@ -71,7 +71,6 @@ export class NexusInterceptor implements HttpInterceptor {
                 xhr.send();
 
                 localStorage.setItem('online', 'true');
-                
 
                 return next.handle(nuevoReq);
             }),
