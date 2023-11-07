@@ -13,12 +13,14 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MotivoNovedadesComponent } from './motivoNovedades/motivoNovedades.component';
 
 
 
 @NgModule({
   declarations: [
-    NovedadesComponent
+    NovedadesComponent,
+    MotivoNovedadesComponent
   ],
   imports: [
     CommonModule,

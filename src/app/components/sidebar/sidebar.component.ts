@@ -79,6 +79,7 @@ let nav = [
     active:false, 
     children:[
       { path: '/dashboard/novedades/novedades', title: 'Novedades', icon:'attribution', class:'', id:9, active:false, children:[]},
+      { path: '/dashboard/novedades/motivoNovedades', title: 'Motivo Novedades', icon:'notepad icon', class:'', id:10, active:false, children:[]},
     ]
   },
 ];

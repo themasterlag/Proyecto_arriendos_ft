@@ -1080,6 +1080,8 @@ export class RegistrarpdvComponent implements OnInit {
         // Mostrar la alerta solo cuando se selecciona el mismo propietario en el desplegable dos veces
         Swal.fire('Alerta', 'Este propietario ya ha sido seleccionado', 'warning');
       }
+    }else{
+      Swal.fire('Alerta', 'Este propietario ya ha sido agregado', 'warning');
     }
   }
 
