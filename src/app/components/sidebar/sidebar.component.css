@@ -38,15 +38,15 @@ ul hr {
     overflow-y: scroll !important;
 }
 
-#logogana {
+#logo {
     border-radius: 35px;
-    width: 180px;
+    width: 90%;
 }
 
-#navigation {
-    max-height: 51vh;
+/* #navigation { */
+    /* max-height: 51vh; */
     /* overflow-y: scroll !important; */
-}
+/* } */
 
 
 .with-border-top {
@@ -60,7 +60,7 @@ ul hr {
 }
 
 #navigation {
-    max-height: 300px; 
+    /* max-height: 300px;  */
     overflow-y: auto; /* Añade una barra de desplazamiento vertical cuando sea necesario */
 }
 
