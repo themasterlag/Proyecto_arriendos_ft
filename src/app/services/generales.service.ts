@@ -486,4 +486,23 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "personaVinculado/habilitar", body);
   }
 
+  //Novedades
+
+  traerNovedades(){
+    return this.servicio.get(this.api + "novedad/");
+  }
+
+  traerNovedad(id){
+    return this.servicio.get(this.apiCarnet + "novedad/" + id);
+  }
+
+
+  actualizarNovedad(datos: any) {
+    return this.servicio.patch(this.api + "novedad/update", datos)
+  }
+
+  enviarNovedad(datos){
+    return this.servicio.post(this.api + "novedad/", datos);
+  }
+
 }

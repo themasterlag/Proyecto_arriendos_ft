@@ -1,30 +1,284 @@
 <div class="main-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header card-header-info" id="banner">
-              <h4 class="card-title">Novedades</h4>
-              <p class="card-category">Gestion de Novedades</p>
-            </div>
-  
-            <div class="card-body">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <h6 class="text-info">Añadir Novedad</h6>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-  
-  
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Novedades</h4>
+            <p class="card-category">Gestion de Novedades</p>
+          </div>
 
-                </mat-expansion-panel>
-  
-              </mat-accordion>
-  
-            </div>
+          <div class="card-body">
+
+            <hr>
+<!-- _____________________________________________________________________________________________________________________________________ -->
+
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Añadir una novedad</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- <h5><strong>Buscar novedad</strong></h5>
+                <div class="row">
+                  <div class="col-3">
+                    <input class="formdata text-center form-control align-baseline mt-2" placeholder="Buscar"
+                      type="number" max="1000" [(ngModel)]="consulta_novedades" />
+                  </div>
+
+                  <button class="btn btn-info rounded-pill text-center col-3" id="button-consultar"
+                    (click)="traerNovedades()">
+                    Consultar
+                  </button>
+
+
+                </div>
+
+                <hr /> -->
+
+                <form #registrarNovedades="ngForm" (ngSubmit)="registrarNovedad()" [noValidate]="false">
+
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-2">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio" ngModel
+                               required/>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-2">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fecha Fin" type="datetime-local" id="fecha_fin" name="fecha_fin" ngModel
+                            required />
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-2">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Motivo" type="text" id="id_motivo" name="id_motivo" ngModel
+                            required/>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-2">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Pago" type="text" id="tipo_pago" name="tipo_pago" ngModel
+                            required/>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Observacion" type="text" id="observacion" name="observacion" ngModel  
+                            required/>
+                          </mat-form-field>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-4">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion" ngModel  
+                            required/>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado" ngModel
+                            required/>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Documento" type="text" id="tipo_documento" name="tipo_documento" ngModel
+                            required/>
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+                        <div class="row">
+
+                          <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
+                            <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)" accept=".png, .jpg" required>
+                          </div>
+                          
+
+                        </div>
+
+
+
+                        <!-- <div class="col-3">
+                          <mat-form-field class="example-full-width">
+                            <input type="text" matInput name="tipo_personal" id="tipo_personal"
+                              (input)="autoCompletarTipo($event.target.value)" ngModel required
+                              placeholder="Tipo Personal" [matAutocomplete]="tipoPersonal">
+                            <mat-autocomplete #tipoPersonal="matAutocomplete">
+                              <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                                {{ option }}
+                              </mat-option>
+                            </mat-autocomplete>
+                          </mat-form-field>
+                        </div> -->
+
+                        <hr>
+                      </div>
+
+                      <div class="row">
+                        <div class="col">
+
+
+                          
+                          
+
+                          <button mat-raised-button type="submit"
+                            class="btn btn-success rounded-pill text-center derecha" id="button-guardar">
+                            Guardar
+                          </button>
+                          <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center derecha"
+                            id="button-limpiar" (click)="limpiarFormulario()">
+                            Limpiar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+
+                </form>
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+
+ <!-- ________________________________________________________________________________________________________________________ -->
+
+
+<!-- 
+            <hr>
+
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header (click)="tablaNovedades()">
+                  <mat-panel-title>
+                    <h6 class="text-info">Tabla de novedades</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+
+                <table mat-table [dataSource]="dataSourceNovedades" class="mat-elevation-z8 w-100 text-center">
+
+                  <ng-container matColumnDef="id_novedad">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break "> * </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id_novedad}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fecha_inicio">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Fecha Inicio </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.fecha_inicio}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fecha_fin">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Fecha Fin</th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.fecha_fin}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="id_motivo">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> id Motivo </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id_motivo}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="tipo_pago">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Tipo Pago </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.tipo_pago}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="observacion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Observacion </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.observacion}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fecha_creacion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Fecha Creacion </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.fecha_creacion}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="correo_notificacion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Correo Notificacion </th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.correo_notificacion}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="id_personalvinculado">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> id personal vinculado</th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.id_personalvinculado}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="firma_vinculado">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Firma vinculado</th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.firma_vinculado}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="tipo_documento">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Tipo Documento</th>
+                    <td mat-cell *matCellDef="let element" class="col-1"> {{element.tipo_documento}} </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="accion">
+                    <th mat-header-cell *matHeaderCellDef class="text-center text-break"> Accion </th>
+                    <td mat-cell *matCellDef="let element" class="col-1">
+                      <button *ngIf="!element.estado && !cambiandoEstado" class="btn btn-success w-100 rounded-pill"
+                        (click)="cambiarEstadoPersonal(element)">
+                        Activar
+                      </button>
+                      <button *ngIf="element.estado && !cambiandoEstado" class="btn btn-danger w-100 rounded-pill"
+                        (click)="cambiarEstadoPersonal(element)">
+                        Inactivar
+                      </button>
+                      <button *ngIf="cambiandoEstado" class="btn btn-info w-100 rounded-pill">
+                        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </ng-container>
+
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                  <tr class="mat-row text-center" *matNoDataRow>
+                    <td class="mat-cell text-center" colspan="6">No hay información</td>
+                  </tr>
+
+
+                </table>
+
+                <mat-paginator [hidden]="dataSourceNovedades.data.length < 1" class="mat-elevation-z8"
+                  #paginatorPersonal [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons>
+                </mat-paginator>
+
+                <br>
+
+              </mat-expansion-panel>
+
+            </mat-accordion>
+ -->
+
+
+
+
+
+
           </div>
         </div>
       </div>
     </div>
+  </div>
