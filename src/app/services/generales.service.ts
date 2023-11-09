@@ -8,6 +8,7 @@ import { HttpClient, HttpParams } from "@angular/common/http"
 export class GeneralesService {
   api = Api.url;
   apiCarnet = Api.urlCarnet;
+  apiNovedades = Api.urlNovedades;
 
   constructor(private servicio: HttpClient) {}
 
@@ -489,20 +490,20 @@ export class GeneralesService {
   //Novedades
 
   traerNovedades(){
-    return this.servicio.get(this.api + "novedad/");
+    return this.servicio.get(this.apiNovedades + "novedad/");
   }
 
   traerNovedad(id){
-    return this.servicio.get(this.apiCarnet + "novedad/" + id);
+    return this.servicio.get(this.apiNovedades + "novedad/" + id);
   }
 
 
   actualizarNovedad(datos: any) {
-    return this.servicio.patch(this.api + "novedad/update", datos)
+    return this.servicio.patch(this.apiNovedades + "novedad/update", datos)
   }
 
   enviarNovedad(datos){
-    return this.servicio.post(this.api + "novedad/", datos);
+    return this.servicio.post(this.apiNovedades + "novedad", datos);
   }
 
 }

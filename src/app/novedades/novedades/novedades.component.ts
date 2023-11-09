@@ -4,6 +4,7 @@ import { NgForm } from "@angular/forms";
 import Swal from "sweetalert2";
 import { MatTableDataSource } from "@angular/material/table"
 import { MatPaginator } from "@angular/material/paginator"
+import { ActivatedRoute } from '@angular/router';
 
 import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
 
@@ -23,7 +24,11 @@ interface novedades {
 })
 export class NovedadesComponent implements OnInit {
 
-  imagen: File;
+  usuarioEncontrado = false;
+  spinner:boolean = false;
+  documento:string = null;
+
+  imagen: any;
   @ViewChild("registrarNovedades") enviarNovedad: NgForm;
   consultar: boolean = false;
   novedadesInfo: any;
@@ -32,21 +37,66 @@ export class NovedadesComponent implements OnInit {
   dataSourceNovedades: MatTableDataSource<novedades> =  new MatTableDataSource<any>();
   displayedColumns: string[] = ["id_novedad","fecha_inicio","fecha_fin","id_motivo","tipo_pago","observacion","fecha_creacion","correo_notificacion","id_personalvinculado","firma_vinculado","tipo_documento","accion"];
 
-  constructor(public servicio: GeneralesService,) { }
+  constructor(public servicio: GeneralesService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if (this.route.snapshot.paramMap.get('documento')) {
+      this.documento = this.route.snapshot.paramMap.get('documento');
+    }
   }
 
-  onFileSelected(event: any) {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement.files && inputElement.files[0]) {
-      const fileName = inputElement.files[0].name;
-      const labelElement = document.querySelector('.custom-file-label');
-      if (labelElement) {
-        labelElement.textContent = fileName;
+// Interfaz para buscar______________________________________________________________________________________________
+
+BuscarCarnet(formularioCarnet: NgForm) {
+  if (formularioCarnet.valid) {
+    this.spinner = true;
+
+    this.servicio.consultarCarnet(formularioCarnet.value.documento).subscribe(
+      (res: any) => {
+        // Aquí puedes realizar acciones específicas cuando encuentras un usuario,
+        // pero por ahora, simplemente actualizaremos el valor de usuarioEncontrado.
+        this.usuarioEncontrado = true;
+
+        this.spinner = false;
+      },
+      (error: any) => {
+        if (error.status === 404) {
+          Swal.fire("No se encontró el número de documento " + formularioCarnet.value.documento, "", "error");
+        } else if (error.status === 401) {
+          // Puedes eliminar esta línea ya que no necesitas abrir un PDF.
+          // this.usuarioEncontrado = true;
+        } else {
+          Swal.fire("No se pudo consultar carnet", "", "error");
+        }
+        this.spinner = false;
       }
-      // Aquí puedes realizar cualquier otra acción que necesites con el archivo seleccionado
+    );
+  }
+}
+
+  
+
+  conToken(){
+    let tieneToken = false;
+    if (sessionStorage.getItem("token")){
+      tieneToken = true;
     }
+    return tieneToken;
+  }
+
+  // __________________________________________________________________________________________________________________
+  
+  onFileSelected(event: any) {
+    console.log(event.target.files[0]);
+    this.imagen = event.target.files[0];
+    // const inputElement = event.target as HTMLInputElement;
+    // if (inputElement.files && inputElement.files[0]) {
+    //   const fileName = inputElement.files[0].name;
+    //   const labelElement = document.querySelector('.custom-file-label');
+    //   if (labelElement) {
+    //     labelElement.textContent = fileName;
+    //   }
+    // }
   }
   
   
@@ -112,7 +162,7 @@ export class NovedadesComponent implements OnInit {
       datos.append('Imagen', this.imagen);
       datos.append('Novedad', JSON.stringify(formNovedades));
 
-      console.log(datos)
+      console.log(this.imagen," ----------------------------------")
       Swal
         .fire({
           title: "Seguro de guardar los cambios?",
@@ -126,7 +176,7 @@ export class NovedadesComponent implements OnInit {
             if(this.consultar == true) {
               this.servicio.actualizarNovedad(formNovedades).subscribe(
                 (res) => {
-                  Swal.fire('Persona actualizada con éxito','','success').then(
+                  Swal.fire('Novedad actualizada con éxito','','success').then(
                     ()=>{
                       this.tablaNovedades();
                       this.limpiarFormulario(); 
@@ -136,7 +186,7 @@ export class NovedadesComponent implements OnInit {
                   );
                 },
                 (error) => {
-                  Swal.fire('Error al actualizar persona', error.message, 'error');
+                  Swal.fire('Error al actualizar novedad', error.message, 'error');
                   //Swal.fire("No se encontro", "Error: "+error.error.message, "error");
                 }
               )
@@ -152,7 +202,8 @@ export class NovedadesComponent implements OnInit {
                   );
                 },
                 (error) => {
-                  Swal.fire('Error al crear personal ', error.error.message, 'error');
+                  console.log(datos);
+                  Swal.fire('Error al crear novedad ', error.error.message, 'error');
                 }
               )
             }

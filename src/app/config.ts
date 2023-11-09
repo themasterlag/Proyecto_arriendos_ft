@@ -9,5 +9,6 @@ export let Api = {
   //  url: 'http://10.250.9.36:3000/api/arriendos/'
   url: environment.url,
   urlCarnet: environment.urlCarnet,
+  urlNovedades: environment.urlNovedades,
   // url: 'http://10.0.102.128:3000/api/arriendos/'
 };
