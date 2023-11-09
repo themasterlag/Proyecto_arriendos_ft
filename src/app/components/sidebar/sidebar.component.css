@@ -4,6 +4,9 @@
 .nav-item{
     border-radius: 25px;
 }
+.nav-link:hover{
+    background-color: #ddd;
+}
 .nav-link{
     border-radius: 25px;
 }

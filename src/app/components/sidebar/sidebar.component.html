@@ -26,7 +26,7 @@
                     <nav class="nav my-0" *ngIf="menuItem.children.length > 0">
                         <a class="nav-link pl-2" data-toggle="collapse" [attr.href]="'#' + menuItem.title">
                             <i class="material-icons">{{menuItem.icon}}</i>
-                            <p>{{menuItem.title}}</p>
+                            <p class="dropdown-toggle">{{menuItem.title}}</p>
                         </a>
                         <div class="collapse" [attr.id]="menuItem.title">
                             <!-- Línea divisoria entre la primera opción del submenú y las opciones principales -->
