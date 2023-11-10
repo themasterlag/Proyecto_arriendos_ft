@@ -81,4 +81,20 @@
     height: 100%;
     overflow: auto;
   }
+
+/* estilos-personalizados.css */
+
+.card-header-custom {
+  background: #fff; /* Establecer el fondo blanco */
+  border-radius: 25px;
+}
+
+
+
+  
+
+  
+
+  
+
   

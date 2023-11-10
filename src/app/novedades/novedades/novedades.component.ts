@@ -24,9 +24,13 @@ interface novedades {
 })
 export class NovedadesComponent implements OnInit {
 
+  usuarioEncontradoTemplate: any;
   usuarioEncontrado = false;
   spinner:boolean = false;
   documento:string = null;
+
+  panelOpenState = false;
+  userData: any;
 
   imagen: any;
   @ViewChild("registrarNovedades") enviarNovedad: NgForm;
@@ -43,28 +47,32 @@ export class NovedadesComponent implements OnInit {
     if (this.route.snapshot.paramMap.get('documento')) {
       this.documento = this.route.snapshot.paramMap.get('documento');
     }
+    this.tablaNovedades();
   }
 
 // Interfaz para buscar______________________________________________________________________________________________
 
-BuscarCarnet(formularioCarnet: NgForm) {
+BuscarPersonal(formularioCarnet: NgForm) {
   if (formularioCarnet.valid) {
     this.spinner = true;
 
-    this.servicio.consultarCarnet(formularioCarnet.value.documento).subscribe(
+    this.servicio.traerPersona(formularioCarnet.value.documento).subscribe(
       (res: any) => {
-        // Aquí puedes realizar acciones específicas cuando encuentras un usuario,
-        // pero por ahora, simplemente actualizaremos el valor de usuarioEncontrado.
         this.usuarioEncontrado = true;
-
         this.spinner = false;
+
+        this.userData = {
+          nombreCompleto: res.nombre + ' ' + res.apellido,
+          identificacion: res.identificacion,
+          cargo: res.cargo,
+        };  // Corrige la coma aquí
+
       },
       (error: any) => {
         if (error.status === 404) {
           Swal.fire("No se encontró el número de documento " + formularioCarnet.value.documento, "", "error");
         } else if (error.status === 401) {
-          // Puedes eliminar esta línea ya que no necesitas abrir un PDF.
-          // this.usuarioEncontrado = true;
+          // Manejar según sea necesario
         } else {
           Swal.fire("No se pudo consultar carnet", "", "error");
         }
@@ -73,6 +81,10 @@ BuscarCarnet(formularioCarnet: NgForm) {
     );
   }
 }
+
+
+
+
 
   
 
@@ -89,14 +101,6 @@ BuscarCarnet(formularioCarnet: NgForm) {
   onFileSelected(event: any) {
     console.log(event.target.files[0]);
     this.imagen = event.target.files[0];
-    // const inputElement = event.target as HTMLInputElement;
-    // if (inputElement.files && inputElement.files[0]) {
-    //   const fileName = inputElement.files[0].name;
-    //   const labelElement = document.querySelector('.custom-file-label');
-    //   if (labelElement) {
-    //     labelElement.textContent = fileName;
-    //   }
-    // }
   }
   
   
