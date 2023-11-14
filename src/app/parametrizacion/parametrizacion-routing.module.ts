@@ -10,6 +10,7 @@ import { CargosComponent } from './cargos/cargos.component';
 import { ConceptosComponent } from './conceptos/conceptos.component';
 import { ProcesosComponent } from './procesos/procesos.component';
 import { IncrementosComponent } from './incrementos/incrementos.component';
+import { MotivoNovedadesComponent } from 'app/novedades/motivoNovedades/motivoNovedades.component';
 
 const routes: Routes = [
   {
@@ -34,7 +35,7 @@ const routes: Routes = [
     path: 'cargos',
     component: CargosComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermissions: [5] }
+    data: { requiredPermissions: [7] }
   },
   {
     path: 'conceptos',
@@ -46,15 +47,20 @@ const routes: Routes = [
     path: 'procesos',
     component: ProcesosComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermissions: [5] } 
+    data: { requiredPermissions: [7] } 
   },
   {
     path: 'incrementos',
     component: IncrementosComponent,
     canActivate: [AuthGuard],
     data: { requiredPermissions: [7] } 
+  },
+  {
+    path: 'motivoNovedades',
+    component: MotivoNovedadesComponent,
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [7] }
   }
-
   
 ];
 

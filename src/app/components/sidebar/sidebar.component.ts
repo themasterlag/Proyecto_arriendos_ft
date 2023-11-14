@@ -39,6 +39,7 @@ let nav = [
       { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:7, active:false, children:[]},
       { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:7, active:false, children:[]},
       { path: '/dashboard/parametrizacion/incrementos', title: 'Incrementos', icon:'add_task', class:'', id:7, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/motivoNovedades', title: 'Motivo Novedades', icon:'notepad icon', class:'', id:7, active:false, children:[]},
     ]
   },
 
@@ -79,7 +80,6 @@ let nav = [
     active:false, 
     children:[
       { path: '/dashboard/novedades/novedades', title: 'Novedades', icon:'attribution', class:'', id:9, active:false, children:[]},
-      { path: '/dashboard/novedades/motivoNovedades', title: 'Motivo Novedades', icon:'notepad icon', class:'', id:10, active:false, children:[]},
     ]
   },
 ];
