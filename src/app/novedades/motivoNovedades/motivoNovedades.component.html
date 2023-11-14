@@ -1,30 +1,137 @@
 <div class="main-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header card-header-info" id="banner">
-              <h4 class="card-title">Motivo Novedades</h4>
-              <p class="card-category">Gestion Motivo Novedades</p>
-            </div>
-  
-            <div class="card-body">
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <h6 class="text-info">Añadir Motivo Novedad</h6>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-  
-  
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info" id="banner">
+            <h4 class="card-title">Motivo Novedades</h4>
+            <p class="card-category">Gestion Motivo Novedades</p>
+          </div>
 
-                </mat-expansion-panel>
-  
-              </mat-accordion>
-  
-            </div>
+          <hr>
+
+          <div class="card-body">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <h6 class="text-info">Añadir Motivo Novedad</h6>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- ---------------------------------------------------------------------------------------------------->
+
+
+
+                <div class="col">
+                  <div class="añadir-cargo-container">
+                    <h5 class="titulo-añadir"><strong>Añadir Motivo Novedad</strong></h5>
+                
+                    <form #registrarMotivoNovedad="ngForm" (ngSubmit)="registrarMotivoNovedades()" [noValidate]="false">
+                      <div class="form-group">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Nombre" type="text" name="nombre" [(ngModel)]="EditarNovedad" required />
+                        </mat-form-field>
+                      </div>
+                
+                      <div class="form-group">
+                        <mat-form-field class="example-full-width">
+                          <textarea matInput placeholder="Ingrese una descripción" rows="3" name="descripcion" [(ngModel)]="EditarDescripcion" required></textarea>
+                        </mat-form-field>
+                      </div>
+                
+                      <div class="d-flex justify-content-start">
+                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center mr-2" id="button-guardar">
+                          Guardar
+                        </button>
+                
+                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                          Limpiar
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                
+                <!-- ----------------------------------------------------------------------------------------------->
+                <hr>
+
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="row align-items-center">
+                        <div class="col-12">
+                          <div class="table-responsive">
+                            <table mat-table [dataSource]="dataSourceMotivosNovedaes" class="table thead-dark">
+
+                              <ng-container matColumnDef="id_motivo">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande"> *
+                                </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_motivo}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Nombre </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.nombre}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="descripcion">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Descripcion </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.descripcion}}
+                                </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Acciones</th>
+                                <td mat-cell *matCellDef="let element" class="text-center">
+                                  <div class="acciones-container">
+
+                                    <!--botones -->
+
+                                    <button class="btn btn-info rounded-pill" (click)="editarNovedad(element)"
+                                      matTooltip="Editar Novedad" matTooltipPosition="above"
+                                      matTooltipClass="tooltipText">
+                                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </button>
+
+                                    <button class="btn btn-danger rounded-pill " (click)="eliminarMotivoNovedad(element)"
+                                      mat-raised-button matTooltip="Eliminar Motivo" matTooltipPosition="above"
+                                      matTooltipClass="tooltipText">
+                                      <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </ng-container>
+
+                              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+
+                              <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="6">
+                                  No hay información</td>
+                              </tr>
+
+                            </table>
+                            <mat-paginator [hidden]="dataSourceMotivosNovedaes.data.length < 1" class="mat-elevation-z8"
+                              #paginatorMotivoNovedad [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons>
+                            </mat-paginator>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+
+            </mat-accordion>
+
           </div>
         </div>
       </div>
     </div>
+  </div>

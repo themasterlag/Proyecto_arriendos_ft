@@ -487,7 +487,7 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "personaVinculado/habilitar", body);
   }
 
-  //Novedades
+  //Novedades && Motivo Novedades
 
   traerNovedades(){
     return this.servicio.get(this.apiNovedades + "novedad/");
@@ -497,7 +497,6 @@ export class GeneralesService {
     return this.servicio.get(this.apiNovedades + "novedad/" + id);
   }
 
-
   actualizarNovedad(datos: any) {
     return this.servicio.patch(this.apiNovedades + "novedad/update", datos)
   }
@@ -506,4 +505,24 @@ export class GeneralesService {
     return this.servicio.post(this.apiNovedades + "novedad", datos);
   }
 
+
+  traerMotivosNovedes(){
+    return this.servicio.get(this.apiNovedades + "motivoNovedad/");
+  }
+  traerMotivoNovedad(id){
+    return this.servicio.get(this.apiNovedades + "motivoNovedad/" + id);
+  }
+
+  actualizarMotivoNovedad(datos: any) {
+    console.log(datos)
+    return this.servicio.patch(this.apiNovedades + "motivoNovedad/update/"+ datos.id_motivo, datos)
+  }
+
+  enviarMotivoNovedad(datos){
+    return this.servicio.post(this.apiNovedades + "motivoNovedad/registrar", datos);
+  }
+
+  eliminarMotivoNovedad(id){
+    return this.servicio.delete(this.apiNovedades + "motivoNovedad/"+ id);
+  }
 }
