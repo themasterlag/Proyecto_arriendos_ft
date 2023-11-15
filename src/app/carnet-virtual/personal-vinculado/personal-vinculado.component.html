@@ -67,26 +67,26 @@
                   <div class="row">
                     <div class="col-12">
                       <div class="row">
-                        <div class="col-3">
+                        <div class="col-4">
                           <mat-form-field class="example-full-width">
                             <input matInput placeholder="Cargo" type="text" id="cargo" name="cargo" ngModel required />
                           </mat-form-field>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                           <mat-form-field class="example-full-width">
                             <input matInput placeholder="RH" type="text" id="rh" name="rh" max="3" ngModel required />
                           </mat-form-field>
                         </div>
-                        <div class="col-3">
+                        <!-- <div class="col-3">
                           <mat-form-field class="example-full-width">
                             <input matInput placeholder="Categoria" type="text" id="categoria" name="categoria" ngModel required />
                           </mat-form-field>
-                        </div>
+                        </div> -->
 
 
 
 
-                          <div class="col-3">
+                          <div class="col-4">
                             <mat-form-field class="example-full-width">
                               <input type="text" matInput name="tipo_personal" id="tipo_personal" (input)="autoCompletarTipo($event.target.value)"  ngModel required placeholder="Tipo Personal" [matAutocomplete]="tipoPersonal">
                               <mat-autocomplete #tipoPersonal="matAutocomplete">

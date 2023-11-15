@@ -49,7 +49,7 @@ export class AdminLayoutComponent implements OnInit {
         }).then((result)=>{
             if (result.isConfirmed) {
                 this.estadoInactividad = false;
-                this.http.get(Api.url+"aut/renovar/"+sessionStorage.getItem("token")).subscribe(
+                this.http.post(Api.url+"aut/renovar/",{token:sessionStorage.getItem("token")}).subscribe(
                     (res:any)=>{
                         if(res.token){
                             sessionStorage.setItem("token", res.token);
@@ -61,7 +61,7 @@ export class AdminLayoutComponent implements OnInit {
                             icon: "error",
                             toast: true,
                             position: "top-end",
-                            title: "No se pudo reanudar, cierre e inicie sesión nuevamente."
+                            title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
                         });
                         console.error(error);
                     }

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Api } from "../config"
 import { HttpClient, HttpParams } from "@angular/common/http"
+import Swal from "sweetalert2";
 
 @Injectable({
   providedIn: "root",
@@ -450,8 +451,32 @@ export class GeneralesService {
   }
 
   descargaExcel(){
-    window.open(this.apiCarnet + "/personaVinculado/crearExcel", '_self');
-     // return this.servicio.get(this.apiCarnet + "/personaVinculado/crearExcel");
+    const url = this.apiCarnet + "/personaVinculado/crearExcel";
+
+    const headers = {
+      "x-access-token": sessionStorage.getItem("token")
+    };
+
+    const requestOptions = {
+      method: 'GET',
+      headers: new Headers(headers),
+    };
+
+    fetch(url, requestOptions)
+    .then(response => {
+      const filename = response.headers.get('Content-Disposition').split('filename=')[1];
+      console.log(response);
+      return response.blob().then(blob => ({ blob, filename }));
+    })
+    .then(data => {
+      const blobUrl = URL.createObjectURL(data.blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = data.filename;
+      a.click();
+    })
+    .catch(error => Swal.fire("Error",'Error en la solicitud:'+ error, "error"));
+    // return this.servicio.get(this.apiCarnet + "/personaVinculado/crearExcel");
   }
   traerPersonal(){
     return this.servicio.get(this.apiCarnet + "personaVinculado");

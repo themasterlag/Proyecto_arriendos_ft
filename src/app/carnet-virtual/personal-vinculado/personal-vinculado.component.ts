@@ -53,7 +53,7 @@ export class PersonalVinculadoComponent implements OnInit {
   @ViewChild("formularioPersonal") formularioPersonal: NgForm;
   @ViewChild("paginatorPersonal") paginatorPersonal: MatPaginator
   dataSourcePersonal: MatTableDataSource<Personal> =  new MatTableDataSource<any>();
-  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","categoria","tipo_personal","fecha_creacion","fecha_inactivacion", "accion"];
+  displayedColumns: string[] = ["id", "nombre", "identificacion","cargo","rh","tipo_personal","fecha_creacion","fecha_inactivacion", "accion"];
   @ViewChild("archivoExcel") botonExcel: ElementRef;
   enviandoExcel: boolean = false;
 
@@ -198,7 +198,6 @@ export class PersonalVinculadoComponent implements OnInit {
     this.enviarPersonal.controls.identificacion.setValue(infoPersonal.identificacion);
     this.enviarPersonal.controls.cargo.setValue(infoPersonal.cargo)
     this.enviarPersonal.controls.rh.setValue(infoPersonal.rh);
-    this.enviarPersonal.controls.categoria.setValue(infoPersonal.categoria);
     this.enviarPersonal.controls.tipo_personal.setValue(infoPersonal.tipo_personal);
 
   } 
@@ -218,7 +217,6 @@ export class PersonalVinculadoComponent implements OnInit {
         identificacion: this.enviarPersonal.controls.identificacion.value,
         cargo: this.enviarPersonal.controls.cargo.value,
         rh: this.enviarPersonal.controls.rh.value,
-        categoria: this.enviarPersonal.controls.categoria.value,
         tipo_personal: this.enviarPersonal.controls.tipo_personal.value,
 
         rolid_rol: 1,
@@ -289,7 +287,6 @@ export class PersonalVinculadoComponent implements OnInit {
             nombre: personal.nombre + " " + personal.apellido,
             cargo: personal.cargo,
             rh: personal.rh,
-            categoria: personal.categoria,
             tipo_personal: personal.tipo_personal,
             fecha_creacion: personal.fecha_creacion,
             fecha_inactivacion: personal.fecha_inactivacion,

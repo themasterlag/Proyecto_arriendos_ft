@@ -17,26 +17,26 @@
 
             
             <ul class="nav overflow-auto h-100 max-h-100" id="navigation">
-                <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item main-menu-item-divider">
-                    <a *ngIf="menuItem.children.length < 1" class="nav-link pl-2"  [routerLink]="[menuItems.path]">
+                <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item" [ngClass]="menuItem.active?'main-menu-item-divider':''">
+                    <a *ngIf="menuItem.children.length < 1 && menuItem.active" class="nav-link pl-2"  [routerLink]="[menuItems.path]">
                         <i class="material-icons">{{menuItem.icon}}</i>
                         <p>{{menuItem.title}}</p>
                     </a>
                     
-                    <nav class="nav my-0" *ngIf="menuItem.children.length > 0">
+                    <nav class="nav my-0" *ngIf="menuItem.children.length > 0 && menuItem.active">
                         <a class="nav-link pl-2" data-toggle="collapse" [attr.href]="'#' + menuItem.title">
                             <i class="material-icons">{{menuItem.icon}}</i>
                             <p class="dropdown-toggle">{{menuItem.title}}</p>
                         </a>
                         <div class="collapse" [attr.id]="menuItem.title">
                             <!-- Línea divisoria entre la primera opción del submenú y las opciones principales -->
-                            <hr class="my-1 with-border-top">
                             <div *ngFor="let childrenItem of menuItem.children">
-                                <a routerLinkActive="active" class="nav-link pl-4" [routerLink]="[childrenItem.path]">
+                                <hr *ngIf="childrenItem.active" class="my-1 with-border-top">
+                                <a *ngIf="childrenItem.active" routerLinkActive="active" class="nav-link pl-4" [routerLink]="[childrenItem.path]">
                                     <i class="material-icons">{{childrenItem.icon}}</i>
                                     <p>{{childrenItem.title}}</p>
                                 </a>
-                                <hr class="my-1">
+                                <hr *ngIf="childrenItem.active" class="my-1">
                             </div>
                         </div>
                     </nav>

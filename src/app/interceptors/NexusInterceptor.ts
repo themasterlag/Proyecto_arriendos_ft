@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import Swal from "sweetalert2";
 
 @Injectable()
 export class NexusInterceptor implements HttpInterceptor {
+    constructor(public http:HttpClient){}
 
     intercept(
         request: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        if (!request.url.includes('/api') || request.url.includes("login")) {
+        if (!request.url.includes('/api') || request.url.includes("login") || request.url.includes("aut/renovar")) {
             return next.handle(request);
         }
         
@@ -45,30 +46,22 @@ export class NexusInterceptor implements HttpInterceptor {
                     });
                 }
 
-                const xhr = new XMLHttpRequest();
-                xhr.open("GET", domain+"/api/arriendos/aut/renovar/"+sessionStorage.getItem("token"), true);
-                xhr.onload = () =>{
-                    const token = JSON.parse(xhr.response).token;
-                    if(token){
-                        sessionStorage.setItem("token", token);
+                this.http.post(domain+"/api/arriendos/aut/renovar",{token:sessionStorage.getItem("token")}).subscribe(
+                    (res:any)=>{
+                        if(res.token){
+                            sessionStorage.setItem("token", res.token);
+                        }
+                    },
+                    (error:any)=>{
+                        Swal.fire({
+                            icon: "error",
+                            toast: true,
+                            position: "top-end",
+                            title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
+                        });
+                        console.error(error);
                     }
-                }
-                xhr.onerror = () => {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        title: 'Error en la sesion',
-                        text: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente",
-                        icon: 'error',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        showCloseButton: true,
-                        timer: 5000,
-                        timerProgressBar: true,
-                    })
-                };
-                xhr.send();
+                );
 
                 localStorage.setItem('online', 'true');
 
