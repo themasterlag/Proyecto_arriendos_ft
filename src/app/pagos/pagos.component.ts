@@ -715,7 +715,7 @@ export class PagosComponent implements OnInit {
             fecha_inicio_contrato: element.fecha_inicio_contrato,
             fecha_fin_contrato: element.fecha_fin_contrato,
             tipo_contrato: element.tipo_contrato,
-            valor_adminstracion: element.valor_adminstracion,
+            // valor_adminstracion: element.valor_adminstracion,
             definicion: element.definicion,
             poliza: element.poliza,
   

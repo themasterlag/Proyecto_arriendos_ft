@@ -41,8 +41,8 @@ export class NexusInterceptor implements HttpInterceptor {
                         allowEscapeKey: false,
                         showConfirmButton: false,
                         showCloseButton: true,
-                        timer: 7000,
-                        timerProgressBar: true,
+                        // timer: 7000,
+                        // timerProgressBar: true,
                     });
                 }
 
@@ -91,8 +91,8 @@ export class NexusInterceptor implements HttpInterceptor {
                             allowEscapeKey: false,
                             showConfirmButton: false,
                             showCloseButton: true,
-                            timer: 5000,
-                            timerProgressBar: true,
+                            // timer: 8000,
+                            // timerProgressBar: true,
                         }).then(() => {
                             const customError = new HttpErrorResponse({
                                 error: errorMessage,
