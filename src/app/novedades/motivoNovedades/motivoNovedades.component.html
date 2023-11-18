@@ -21,37 +21,96 @@
 
                 <!-- ---------------------------------------------------------------------------------------------------->
 
-
-
-                <div class="col">
-                  <div class="añadir-cargo-container">
                     <h5 class="titulo-añadir"><strong>Añadir Motivo Novedad</strong></h5>
                 
                     <form #registrarMotivoNovedad="ngForm" (ngSubmit)="registrarMotivoNovedades()" [noValidate]="false">
-                      <div class="form-group">
-                        <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Nombre" type="text" name="nombre" [(ngModel)]="EditarNovedad" required />
-                        </mat-form-field>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-4">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Nombre" type="text" name="nombre" [(ngModel)]="EditarNovedad" required />
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-4">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Cantidad " type="text" id="limite_cantidad" name="limite_cantidad" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="cantidad_dias_pagos" type="text" id="cantidad_dias_pagos" name="cantidad_dias_pagos" ngModel required />
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                
-                      <div class="form-group">
-                        <mat-form-field class="example-full-width">
-                          <textarea matInput placeholder="Ingrese una descripción" rows="3" name="descripcion" [(ngModel)]="EditarDescripcion" required></textarea>
-                        </mat-form-field>
+    
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-4">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="cada_cuantos_meses" type="text" id="cada_cuantos_meses" name="cada_cuantos_meses" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-2">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="fecha_inicio" type="date" id="fecha_inicio" name="fecha_inicio" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-2">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="fecha_fin" type="date" id="fecha_fin" name="fecha_fin" ngModel required />
+                              </mat-form-field>
+                            </div>
+
+                            <div class="col-3">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="id_tipo_pago" type="text" id="id_tipo_pago" name="id_tipo_pago" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-11">
+                              <mat-form-field class="example-full-width">
+                                <textarea matInput placeholder="Ingrese una descripción" rows="3" name="descripcion" [(ngModel)]="EditarDescripcion" required></textarea>
+                              </mat-form-field>
+                            </div>
+    
+    
+    
+                              <!-- <div class="col-4">
+                                <mat-form-field class="example-full-width">
+                                  <input type="text" matInput name="tipo_personal" id="tipo_personal" (input)="autoCompletarTipo($event.target.value)"  ngModel required placeholder="Tipo Personal" [matAutocomplete]="tipoPersonal">
+                                  <mat-autocomplete #tipoPersonal="matAutocomplete">
+                                    <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                                      {{ option }}
+                                    </mat-option>
+                                  </mat-autocomplete>
+                                </mat-form-field>
+                              </div> -->
+                            
+    
+                          </div>
+                       
+                          <div class="row">
+                            <div class="col">
+    
+                              <div class="d-flex justify-content-start">
+                                <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center mr-2" id="button-guardar">
+                                  Guardar
+                                </button>
+                        
+                                <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                                  Limpiar
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                
-                      <div class="d-flex justify-content-start">
-                        <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center mr-2" id="button-guardar">
-                          Guardar
-                        </button>
-                
-                        <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
-                          Limpiar
-                        </button>
-                      </div>
+    
                     </form>
-                  </div>
-                </div>
                 
                 <!-- ----------------------------------------------------------------------------------------------->
                 <hr>
@@ -79,8 +138,43 @@
                               <ng-container matColumnDef="descripcion">
                                 <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
                                   Descripcion </th>
-                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.descripcion}}
-                                </td>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.descripcion}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="limite_cantidad">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Limite cantidad </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.limite_cantidad}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="cada_cuantos_meses">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Cada cuando </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.cada_cuantos_meses}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="fecha_inicio">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Inicio </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.fecha_inicio}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="fecha_fin">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Fin </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.fecha_fin}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="cantidad_dias_pagos">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Dias pagos </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.cantidad_dias_pagos}} </td>
+                              </ng-container>
+
+                              <ng-container matColumnDef="id_tipo_pago">
+                                <th mat-header-cell *matHeaderCellDef class="tabla-header text-center titulo-grande">
+                                  Tipo de pago </th>
+                                <td mat-cell class="text-center" *matCellDef="let element"> {{element.id_tipo_pago}} </td>
                               </ng-container>
 
                               <ng-container matColumnDef="acciones">

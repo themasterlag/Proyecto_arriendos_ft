@@ -30,7 +30,7 @@ export class MotivoNovedadesComponent implements OnInit {
   tabla_motivosNovedaes: any;
   motivosNovedaes: any;
   listaMotivosNovedades : any = [];
-  displayedColumns: string[] = ["id_motivo", "nombre", "descripcion", "acciones"];
+  displayedColumns: string[] = ["id_motivo", "nombre", "descripcion","limite_cantidad","cada_cuantos_meses","fecha_inicio","fecha_fin","cantidad_dias_pagos","id_tipo_pago","acciones"];
   @ViewChild("paginatorMotivoNovedad") paginatorMotivoNovedad: MatPaginator;
   @ViewChild("registrarMotivoNovedad") registrarMotivoNovedad: NgForm;
   dataSourceMotivosNovedaes: MatTableDataSource<motivoNovedad> =  new MatTableDataSource<motivoNovedad>();
