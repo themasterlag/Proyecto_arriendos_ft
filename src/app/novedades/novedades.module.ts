@@ -14,13 +14,15 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MotivoNovedadesComponent } from './motivoNovedades/motivoNovedades.component';
+import { TipoPagoNovedadesComponent } from './tipo-pago-novedades/tipo-pago-novedades.component';
 
 
 
 @NgModule({
   declarations: [
     NovedadesComponent,
-    MotivoNovedadesComponent
+    MotivoNovedadesComponent,
+    TipoPagoNovedadesComponent
   ],
   imports: [
     CommonModule,

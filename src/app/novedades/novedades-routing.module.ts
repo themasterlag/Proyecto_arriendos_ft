@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NovedadesComponent } from './novedades/novedades.component';
 import { AuthGuard } from 'app/auth/guard/authguard.guard';
+import { TipoPagoNovedadesComponent } from './tipo-pago-novedades/tipo-pago-novedades.component';
 
 
 const routes: Routes = [
@@ -18,7 +19,13 @@ const routes: Routes = [
     component: NovedadesComponent,
     canActivate: [AuthGuard],
     data: { requiredPermissions: [9] }
-  }
+  },
+  {
+    path: 'tipopago',
+    component: TipoPagoNovedadesComponent,
+    canActivate: [AuthGuard],
+    data: { requiredPermissions: [9] }
+  },
 ];
 
 @NgModule({

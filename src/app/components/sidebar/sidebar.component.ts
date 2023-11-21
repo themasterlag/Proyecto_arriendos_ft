@@ -79,7 +79,8 @@ let nav = [
     id:null, 
     active:false, 
     children:[
-      { path: '/dashboard/novedades/novedades', title: 'Novedades', icon:'attribution', class:'', id:9, active:false, children:[]},
+      { path: '/dashboard/novedades/novedades', title: 'Novedades', icon:'event_available', class:'', id:9, active:false, children:[]},
+      { path: '/dashboard/novedades/tipopago', title: 'Tipo pago novedades', icon:'list_alt', class:'', id:9, active:false, children:[]},
     ]
   },
 ];
