@@ -512,7 +512,7 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "personaVinculado/habilitar", body);
   }
 
-  //Novedades && Motivo Novedades
+  //Novedades && Motivo Novedades && tipo pago novedad
 
   traerNovedades(){
     return this.servicio.get(this.apiNovedades + "novedad/");
@@ -544,10 +544,16 @@ export class GeneralesService {
   }
 
   enviarMotivoNovedad(datos){
+    console.log(datos,"_____________________________")
     return this.servicio.post(this.apiNovedades + "motivoNovedad/registrar", datos);
   }
 
   eliminarMotivoNovedad(id){
     return this.servicio.delete(this.apiNovedades + "motivoNovedad/"+ id);
   }
+
+  traerTipoPagosNovedades(){
+    return this.servicio.get(this.apiNovedades + "tipoPago/");
+  }
+
 }

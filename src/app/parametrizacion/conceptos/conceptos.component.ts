@@ -98,10 +98,13 @@ export class ConceptosComponent implements OnInit {
         },
         (err:any) => {
           // console.log(err);
+          this.consultar = null;
+          this.limpiarFormulario();
           Swal.fire("Concepto no encontrado", err.error.message, "error");
         }
       )
     }else{
+      this.consultar = null;
       Swal.fire("No se aceptan codigos vacios","","info");
     }    
   }

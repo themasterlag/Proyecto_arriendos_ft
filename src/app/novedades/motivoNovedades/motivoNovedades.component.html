@@ -29,20 +29,39 @@
                           <div class="row">
                             <div class="col-4">
                               <mat-form-field class="example-full-width">
-                                <input matInput placeholder="Nombre" type="text" name="nombre" [(ngModel)]="EditarNovedad" required />
+                                <input matInput placeholder="Nombre" type="tetx" name="nombre"  required />
                               </mat-form-field>
                             </div>
 
+                            <div class="col-2">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Cantidad " type="number" id="limite_cantidad" min="0" matTooltip="Cuantas veces se puede pedir"  matTooltipClass="tooltipText" name="limite_cantidad" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            <div class="col-2">
+                              <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Cantidad de dias" matTooltip="Cuantos dias se pagan"  matTooltipClass="tooltipText" type="number" min="0" id="cantidad_dias_pagos" name="cantidad_dias_pagos" ngModel required />
+                              </mat-form-field>
+                            </div>
+                            
                             <div class="col-4">
                               <mat-form-field class="example-full-width">
-                                <input matInput placeholder="Cantidad " type="text" id="limite_cantidad" name="limite_cantidad" ngModel required />
+                                <mat-select
+                                  placeholder="Tipo de pago"
+                                  name="id_tipo_pago"
+                                  ngModel
+                                  (selectionChange)="filtrarTipoPago($event.value)"
+                                >
+                                  <mat-option
+                                    [value]="d.id"
+                                    *ngFor="let d of tipoPago"
+                                  >
+                                    {{ d.nombre }}
+                                  </mat-option>
+                                </mat-select>
                               </mat-form-field>
                             </div>
-                            <div class="col-3">
-                              <mat-form-field class="example-full-width">
-                                <input matInput placeholder="cantidad_dias_pagos" type="text" id="cantidad_dias_pagos" name="cantidad_dias_pagos" ngModel required />
-                              </mat-form-field>
-                            </div>
+                            
                           </div>
                         </div>
                       </div>
@@ -50,30 +69,36 @@
                       <div class="row">
                         <div class="col-12">
                           <div class="row">
-                            <div class="col-4">
-                              <mat-form-field class="example-full-width">
-                                <input matInput placeholder="cada_cuantos_meses" type="text" id="cada_cuantos_meses" name="cada_cuantos_meses" ngModel required />
-                              </mat-form-field>
-                            </div>
-                            <div class="col-2">
-                              <mat-form-field class="example-full-width">
-                                <input matInput placeholder="fecha_inicio" type="date" id="fecha_inicio" name="fecha_inicio" ngModel required />
-                              </mat-form-field>
-                            </div>
-                            <div class="col-2">
-                              <mat-form-field class="example-full-width">
-                                <input matInput placeholder="fecha_fin" type="date" id="fecha_fin" name="fecha_fin" ngModel required />
-                              </mat-form-field>
-                            </div>
+                        
+                              <div class="col-2 d-flex align-items-center">
+                                <mat-checkbox [(ngModel)]="mostrarFechas" [ngModelOptions]="{standalone: true}" >Fecha especifica</mat-checkbox>
+                              </div>
+                           
+                              <div class="col-2">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput placeholder="Cuantos meses" type="number" min="0" id="cada_cuantos_meses" matTooltip="Cada cuantos meses se puede pedir el permiso"  matTooltipClass="tooltipText" name="cada_cuantos_meses"
+                                         [(ngModel)]="cadaCuantosMeses" [disabled]="mostrarFechas" required />
+                                </mat-form-field>
+                              </div>
+                            
+                              <div class="col-3" [hidden]="!mostrarFechas">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput placeholder="fecha inicio" type="date" id="fecha_inicio" name="fecha_inicio" ngModel required />
+                                </mat-form-field>
+                              </div>
+                            
+                              <div class="col-3" [hidden]="!mostrarFechas">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput placeholder="fecha fin" type="date" id="fecha_fin" name="fecha_fin" ngModel required />
+                                </mat-form-field>
+                              </div>
 
-                            <div class="col-3">
+                            
+
+
+                            <div class="col-12">
                               <mat-form-field class="example-full-width">
-                                <input matInput placeholder="id_tipo_pago" type="text" id="id_tipo_pago" name="id_tipo_pago" ngModel required />
-                              </mat-form-field>
-                            </div>
-                            <div class="col-11">
-                              <mat-form-field class="example-full-width">
-                                <textarea matInput placeholder="Ingrese una descripción" rows="3" name="descripcion" [(ngModel)]="EditarDescripcion" required></textarea>
+                                <textarea matInput placeholder="Ingrese una descripción" rows="3" name="descripcion" ngModel required></textarea>
                               </mat-form-field>
                             </div>
     
@@ -111,9 +136,21 @@
                       </div>
     
                     </form>
+
+                  </mat-expansion-panel>
+
+                </mat-accordion>
                 
                 <!-- ----------------------------------------------------------------------------------------------->
                 <hr>
+                
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        <h6 class="text-info">Añadir Motivo Novedad</h6>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
 
                 <div class="container-fluid">
                   <div class="row">
@@ -185,7 +222,7 @@
 
                                     <!--botones -->
 
-                                    <button class="btn btn-info rounded-pill" (click)="editarNovedad(element)"
+                                    <button class="btn btn-info rounded-pill" (click)="traerMotivosNovedad(element)"
                                       matTooltip="Editar Novedad" matTooltipPosition="above"
                                       matTooltipClass="tooltipText">
                                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -220,6 +257,8 @@
                     </div>
                   </div>
                 </div>
+
+
               </mat-expansion-panel>
 
             </mat-accordion>
