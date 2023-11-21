@@ -87,6 +87,7 @@ export class MotivoNovedadesComponent implements OnInit {
     }else{
       this.mostrarFechas = false;
       this.consultar = true;
+      this.novedadInfo = novedadInfo;
 
       this.registrarMotivoNovedad.setValue(element);
     }
