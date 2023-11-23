@@ -1,73 +1,120 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header card-header-info" id="banner">
-                        <h4 class="card-title">Tipos de pago de novedad</h4>
-                    </div>
-                    <div class="card-body">
-                        <mat-accordion>
-                            <mat-expansion-panel hideToggle> </mat-expansion-panel>
-                            <mat-expansion-panel [expanded]="panelOpenState">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title>
-                                        <h6 class="text-info">Registro de tipo</h6>
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                
-                                <!--formulario de tipo-->
-                                <form #formularioUsuarios="ngForm" (ngSubmit)="registrarTipo()" [noValidate]="false">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <table class="table table-striped table-hover">
-                                                <thead>
-                                                    <th>#</th>
-                                                    <td>Nombre</td>
-                                                    <td>Descripcion</td>
-                                                    <td>Acciones</td>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th>1</th>
-                                                        <td>nombre 1</td>
-                                                        <td>des</td>
-                                                        <td>
-                                                            <button class="btn">Editar</button>
-                                                            <button class="btn">Inhabilitar</button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-4">
-                                            <mat-form-field>
-                                                <input matInput placeholder="Nombre del tipo" type="text" name="nombre" ngModel required />
-                                            </mat-form-field>
-
-                                            <mat-form-field>
-                                                <textarea matInput  placeholder="Descripcion del tipo " type="text" name="descripcion" ngModel required></textarea>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <button mat-raised-button type="submit" class="btn btn-success rounded-pill pull-right"
-                                        id="button-guardar">
-                                        Guardar
-                                    </button>
-                                    <button mat-raised-button type="reset" class="btn btn-danger rounded-pill pull-right"
-                                        id="button-limpiar" (click)="limpiarFormulario()">
-                                        Limpiar
-                                    </button>
-                                </form>
-                            </mat-expansion-panel>
-                        </mat-accordion>
-                        <hr>
-                        
-                    </div>
-                </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-info" id="banner">
+              <h4 class="card-title">Tipo Pago</h4>
+              <p class="card-category">Gestion de Tipos de Pagos</p>
             </div>
+  
+            <div class="card-body">
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <h6 class="text-info">Añadir Tipo Pago</h6>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+  
+  
+                  <div class="row">
+  
+  
+                      <div class="col">
+  
+                      <div class="añadir-cargo-container">
+  
+                        <form #registrarTipoPago="ngForm" (ngSubmit)="registrarTiposPagos()" [noValidate]="false" class="d-flex align-items-center">
+  
+                          <mat-form-field class="example-full-width flex-grow-1 mr-2">
+                            <input matInput placeholder="Nombre" type="text" name="nombre" [(ngModel)]="datoEditarNom" required />
+                          </mat-form-field>
+                        
+                          <mat-form-field class="example-full-width flex-grow-1 mr-2">
+                            <input matInput placeholder="Descripcion" type="text" name="descripcion" [(ngModel)]="datoEditarDes" required />
+                          </mat-form-field>
+                        
+                          <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center" id="button-guardar">
+                            Guardar
+                          </button>
+                        
+                          <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center" id="button-limpiar" (click)="limpiarFormulario()">
+                            Limpiar
+                          </button>
+                        
+                        </form>
+                      </div>
+                      </div>
+                        
+  
+  
+  
+                      <div class="col-12">
+  
+                    <div class="col row align-items-center">
+                      <div class="table-responsive">
+                        <table mat-table [dataSource]="dataSourceTipoPago"
+                          class="w-100 text-center table table-striped table-hover">
+  
+                          <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef class="text-center"> * </th>
+                            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                          </ng-container>
+  
+                          <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef class="text-center"> incrementos </th>
+                            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                          </ng-container>
+  
+                          <ng-container matColumnDef="descripcion">
+                            <th mat-header-cell *matHeaderCellDef class="text-center"> valor incremento</th>
+                            <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+                          </ng-container>
+  
+                          <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef class="text-center"> fecha </th>
+                            <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                          </ng-container>
+  
+                          <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+                            <td mat-cell *matCellDef="let element">
+  
+                              <button class="btn btn-info rounded-pill" (click)="editarTipoPago(element)"
+                                matTooltip="Editar Tipo pago" matTooltipPosition="above" matTooltipClass="tooltipText">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              </button>
+  
+                            </td>
+                          </ng-container>
+  
+                          <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" colspan="8">No hay Tipos de pago</td>
+                          </tr>
+  
+                          <tr mat-header-row *matHeaderRowDef="ColumnasTipoPago"></tr>
+                          <tr mat-row *matRowDef="let row; columns: ColumnasTipoPago;"></tr>
+                        </table>
+  
+                        <mat-paginator [hidden]="dataSourceTipoPago.data.length < 1" class="mat-elevation-z8"
+                          #paginatorTipoPago [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons>
+                        </mat-paginator>
+                      </div>
+                    </div>
+  
+  
+  
+                    </div>
+  
+                  </div>
+  
+                </mat-expansion-panel>
+  
+              </mat-accordion>
+  
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>

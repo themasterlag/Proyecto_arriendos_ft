@@ -556,4 +556,17 @@ export class GeneralesService {
     return this.servicio.get(this.apiNovedades + "tipoPago/");
   }
 
+  traerTipoPagoNovedad(id){
+    return this.servicio.get(this.apiNovedades + "tipoPago/" + id);
+  }
+
+  actualizarTipoPagoNovedad(datos: any) {
+    return this.servicio.patch(this.api + "tipoPago/update", datos)
+  }
+
+  enviarTipoPagoNovedad(datos){
+    return this.servicio.post(this.apiNovedades + "tipoPago/", datos);
+  }
+
+
 }
