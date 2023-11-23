@@ -561,6 +561,7 @@ export class GeneralesService {
   }
 
   actualizarTipoPagoNovedad(datos: any) {
+    console.log(datos)
     return this.servicio.patch(this.api + "tipoPago/update", datos)
   }
 
