@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { NovedadesRoutingModule } from './novedades-routing.module';
 import { NovedadesComponent } from './novedades/novedades.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';

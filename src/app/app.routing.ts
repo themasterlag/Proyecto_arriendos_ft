@@ -9,6 +9,7 @@ import { Pagina404Component } from './paginas-error/pagina404/pagina404.componen
 import { InhautorizadoComponent } from './paginas-error/inhautorizado/inhautorizado.component';
 
 import { CarnetComponent } from './carnet-virtual/carnet/carnet.component';
+import { NovedadesComponent } from './novedades/novedades/novedades.component';
 
 const routes: Routes =[
   {
@@ -35,6 +36,11 @@ const routes: Routes =[
   {
     path: 'carnet/:documento',
     component: CarnetComponent,
+  },
+
+  {
+    path: 'novedad',
+    component: NovedadesComponent,
   },
 
   {

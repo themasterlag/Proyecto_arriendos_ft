@@ -82,19 +82,12 @@
     overflow: auto;
   }
 
-/* estilos-personalizados.css */
 
 .card-header-custom {
   background: #fff; /* Establecer el fondo blanco */
   border-radius: 25px;
 }
 
-
-
-  
-
-  
-
-  
-
-  
+.header-logo{
+  background-color: #ffe80a;
+}

@@ -1,48 +1,156 @@
 <div class="container-fluid">
-  <div *ngIf="!usuarioEncontrado; else usuarioEncontradoTemplate">
-    <!-- Modal Body 1 -->
-    <div class="modal fade show" style="display: block" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="card-img-top" src="./assets/img/Banner Nexus.png" alt="Logo" />
-          </div>
-          <form #formularioCarnet="ngForm" (ngSubmit)="BuscarPersonal(formularioCarnet)" [noValidate]="false">
-            <div class="modal-body">
-              <strong>
-                <h4 class="text-center">Consulta Novedades</h4>
-              </strong>
-              <hr class="mt-2">
-              <div class="mx-3">
-                <p for="documento">Número de documento</p>
-                <input type="number" name="documento" id="documento" class="py-4 form-control border border-secondary rounded text-center" placeholder="Numero de documento" [(ngModel)]="documento" required>
-              </div>
-              <br>
-              <div class="mx-3">
-                <button type="submit" *ngIf="!spinner" class="w-100 btn rounded" style="background-color: #1b4f35;">Buscar persona</button>
-                <button *ngIf="spinner" class="w-100 btn rounded" style="background-color: #1b4f35;" disabled>
-                  <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
-                    <span class="sr-only">Buscando...</span>
-                  </div>
-                </button>
-                <a routerLink="/" class="text-secondary" *ngIf="conToken()">Volver al inicio</a>
-              </div>
+  <!-- Modal Body 1 -->
+  <div class="modal fade show" style="display: block" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" [ngClass]="usuarioEncontrado?'modal-xl':''" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center header-logo mt-4 mx-4 rounded">
+          <img class="card-img-top align-self-center" [ngClass]="usuarioEncontrado?'w-25':''" src="./assets/img/Banner Nexus.png" alt="Logo" />
+        </div>
+        <div class="modal-body">
+          <form *ngIf="!usuarioEncontrado" #formularioCarnet="ngForm" (ngSubmit)="BuscarPersonal(formularioCarnet)" [noValidate]="false">
+            <strong>
+              <h4 class="text-center">Consulta Novedades</h4>
+            </strong>
+            <hr class="mt-2">
+            <div class="mx-3">
+              <p for="documento">Número de documento</p>
+              <input type="number" name="documento" id="documento"
+                class="py-4 form-control border border-secondary rounded text-center"
+                placeholder="Numero de documento" [(ngModel)]="documento" required>
+            </div>
+            <br>
+            <div class="mx-3">
+              <button type="submit" *ngIf="!spinner" class="w-100 btn rounded"
+                style="background-color: #1b4f35;">Buscar persona</button>
+              <button *ngIf="spinner" class="w-100 btn rounded" style="background-color: #1b4f35;" disabled>
+                <div class="spinner-border text-light spinner-border-sm py-0 my-0" role="status">
+                  <span class="sr-only">Buscando...</span>
+                </div>
+              </button>
+              <a routerLink="/" class="text-secondary" *ngIf="conToken()">Volver al inicio</a>
             </div>
           </form>
+          <div *ngIf="usuarioEncontrado">
+            <div class="card-header card-header-info card-header-custom" *ngIf="usuarioEncontrado && userData">
+              <h5 class="card-title">{{ userData.nombreCompleto }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Identificación: {{ userData.identificacion }} | Cargo: {{ userData.cargo }}
+              </h6>
+            </div>
+        
+            <form #registrarNovedades="ngForm" class="mx-3" (ngSubmit)="registrarNovedad()" [noValidate]="false">
+        
+              <div class="row">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-2">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio"
+                          ngModel required />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="col-2">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fecha Fin" type="datetime-local" id="fecha_fin" name="fecha_fin" ngModel
+                          required />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="col-2">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Motivo" type="text" id="id_motivo" name="id_motivo" ngModel required />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="col-2">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Pago" type="text" id="tipo_pago" name="tipo_pago" ngModel required />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="col-4">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Observacion" type="text" id="observacion" name="observacion" ngModel
+                          required />
+                      </mat-form-field>
+                    </div>
+        
+                  </div>
+                </div>
+              </div>
+        
+              <div class="row">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-4">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion"
+                          ngModel required />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado"
+                          ngModel required />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Documento" type="text" id="tipo_documento" name="tipo_documento" ngModel
+                          required />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-group input-group-sm mb-3">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
+                      <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)"
+                        accept=".png, .jpg" required>
+                    </div>
+                  </div>
+        
+                  <hr>
+                </div>
+        
+                <div>
+        
+                </div>
+        
+                
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="btn btn-info rounded-pill" *ngIf="conToken()" (click)="retroceder()">Volver atras</button>
+                </div>
+                <div class="col">
+                  <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center pull-right"
+                    id="button-guardar">
+                    Guardar
+                  </button>
+                  <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center pull-right"
+                    id="button-limpiar" (click)="limpiarFormulario()">
+                    Limpiar
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Modal Body 2 -->
-  <ng-container *ngIf="usuarioEncontrado; else body2Template">
+  <!-- <ng-container *ngIf="usuarioEncontrado; else body2Template">
     <div class="card-header card-header-info card-header-custom" *ngIf="usuarioEncontrado && userData">
       <h5 class="card-title">{{ userData.nombreCompleto }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">
-          Identificación: {{ userData.identificacion }} | Cargo: {{ userData.cargo }}
+        Identificación: {{ userData.identificacion }} | Cargo: {{ userData.cargo }}
       </h6>
-    </div>
-    <hr>
+    </div> -->
+    <!-- <hr>
 
     <h5><strong>Buscar novedad</strong></h5>
     <div class="row">
@@ -55,49 +163,45 @@
         (click)="traerNovedades()">
         Consultar
       </button>
-
-
     </div>
 
-    <hr />
+    <hr/> -->
 
-    <form #registrarNovedades="ngForm" (ngSubmit)="registrarNovedad()" [noValidate]="false">
+    <!-- <form #registrarNovedades="ngForm" (ngSubmit)="registrarNovedad()" [noValidate]="false">
 
       <div class="row">
         <div class="col-12">
           <div class="row">
             <div class="col-2">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio" ngModel
-                   required/>
+                <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio"
+                  ngModel required />
               </mat-form-field>
             </div>
 
             <div class="col-2">
               <mat-form-field class="example-full-width">
                 <input matInput placeholder="Fecha Fin" type="datetime-local" id="fecha_fin" name="fecha_fin" ngModel
-                required />
+                  required />
               </mat-form-field>
             </div>
 
             <div class="col-2">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Motivo" type="text" id="id_motivo" name="id_motivo" ngModel
-                required/>
+                <input matInput placeholder="Motivo" type="text" id="id_motivo" name="id_motivo" ngModel required />
               </mat-form-field>
             </div>
 
             <div class="col-2">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Pago" type="text" id="tipo_pago" name="tipo_pago" ngModel
-                required/>
+                <input matInput placeholder="Pago" type="text" id="tipo_pago" name="tipo_pago" ngModel required />
               </mat-form-field>
             </div>
 
             <div class="col-4">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Observacion" type="text" id="observacion" name="observacion" ngModel  
-                required/>
+                <input matInput placeholder="Observacion" type="text" id="observacion" name="observacion" ngModel
+                  required />
               </mat-form-field>
             </div>
 
@@ -110,76 +214,57 @@
           <div class="row">
             <div class="col-4">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion" ngModel  
-                required/>
+                <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion"
+                  ngModel required />
               </mat-form-field>
             </div>
             <div class="col-3">
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado" ngModel
-                required/>
+                <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado"
+                  ngModel required />
               </mat-form-field>
             </div>
             <div class="col-3">
               <mat-form-field class="example-full-width">
                 <input matInput placeholder="Documento" type="text" id="tipo_documento" name="tipo_documento" ngModel
-                required/>
+                  required />
               </mat-form-field>
             </div>
           </div>
-
-            <div class="row">
-
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
-                <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)" accept=".png, .jpg" required>
-              </div>
-              
-
-            </div>
-
-
-
-            <!-- <div class="col-3">
-              <mat-form-field class="example-full-width">
-                <input type="text" matInput name="tipo_personal" id="tipo_personal"
-                  (input)="autoCompletarTipo($event.target.value)" ngModel required
-                  placeholder="Tipo Personal" [matAutocomplete]="tipoPersonal">
-                <mat-autocomplete #tipoPersonal="matAutocomplete">
-                  <mat-option *ngFor="let option of filteredOptions" [value]="option">
-                    {{ option }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div> -->
-
-            <hr>
-          </div>
-
           <div class="row">
-            <div class="col">
-
-
-              
-              
-
-              <button mat-raised-button type="submit"
-                class="btn btn-success rounded-pill text-center derecha" id="button-guardar">
-                Guardar
-              </button>
-              <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center derecha"
-                id="button-limpiar" (click)="limpiarFormulario()">
-                Limpiar
-              </button>
+            <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
+              <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)"
+                accept=".png, .jpg" required>
             </div>
+          </div>
+
+          <hr>
+        </div>
+
+        <div>
+
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center derecha"
+              id="button-guardar">
+              Guardar
+            </button>
+            <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center derecha"
+              id="button-limpiar" (click)="limpiarFormulario()">
+              Limpiar
+            </button>
           </div>
         </div>
+      </div>
 
 
     </form>
 
     <hr>
-    
+
     <table mat-table [dataSource]="dataSourceNovedades" class="mat-elevation-z8 w-100 text-center">
 
       <ng-container matColumnDef="id_novedad">
@@ -266,20 +351,17 @@
 
     </table>
 
-    <mat-paginator [hidden]="dataSourceNovedades.data.length < 1" class="mat-elevation-z8"
-      #paginatorPersonal [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons>
+    <mat-paginator [hidden]="dataSourceNovedades.data.length < 1" class="mat-elevation-z8" #paginatorPersonal
+      [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons>
     </mat-paginator>
 
     <br>
 
 
-  </ng-container>
+  </ng-container> -->
 
-  <ng-template #body2Template>
+  <!-- <ng-template #body2Template> -->
     <!-- Puedes poner aquí el contenido específico para cuando el usuario no es encontrado -->
     <!-- Por ejemplo, mostrar un mensaje indicando que el usuario no fue encontrado -->
-  </ng-template>
+  <!-- </ng-template> -->
 </div>
-
-
-

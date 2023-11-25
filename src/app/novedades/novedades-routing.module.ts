@@ -14,12 +14,12 @@ const routes: Routes = [
   //   data: { requiredPermissions: [9] } // El permiso para novedades es el 9
   // },
 
-  {
-    path: 'novedades',
-    component: NovedadesComponent,
-    canActivate: [AuthGuard],
-    data: { requiredPermissions: [9] }
-  },
+  // {
+  //   path: 'novedades',
+  //   component: NovedadesComponent,
+  //   canActivate: [AuthGuard],
+  //   data: { requiredPermissions: [9] }
+  // },
   {
     path: 'tipopago',
     component: TipoPagoNovedadesComponent,

@@ -24,7 +24,6 @@ interface novedades {
 })
 export class NovedadesComponent implements OnInit {
 
-  usuarioEncontradoTemplate: any;
   usuarioEncontrado = false;
   spinner:boolean = false;
   documento:string = null;
@@ -50,43 +49,42 @@ export class NovedadesComponent implements OnInit {
     this.tablaNovedades();
   }
 
-// Interfaz para buscar______________________________________________________________________________________________
-
-BuscarPersonal(formularioCarnet: NgForm) {
-  if (formularioCarnet.valid) {
-    this.spinner = true;
-
-    this.servicio.traerPersona(formularioCarnet.value.documento).subscribe(
-      (res: any) => {
-        this.usuarioEncontrado = true;
-        this.spinner = false;
-
-        this.userData = {
-          nombreCompleto: res.nombre + ' ' + res.apellido,
-          identificacion: res.identificacion,
-          cargo: res.cargo,
-        };  // Corrige la coma aquí
-
-      },
-      (error: any) => {
-        if (error.status === 404) {
-          Swal.fire("No se encontró el número de documento " + formularioCarnet.value.documento, "", "error");
-        } else if (error.status === 401) {
-          // Manejar según sea necesario
-        } else {
-          Swal.fire("No se pudo consultar carnet", "", "error");
-        }
-        this.spinner = false;
-      }
-    );
+  retroceder(formulario: NgForm){
+    formulario.reset();
+    this.usuarioEncontrado = false;
   }
-}
 
+  // Interfaz para buscar______________________________________________________________________________________________
 
+  BuscarPersonal(formulario: NgForm) {
+    if (formulario.valid) {
+      this.spinner = true;
 
+      this.servicio.traerPersona(formulario.value.documento).subscribe(
+        (res: any) => {
+          this.usuarioEncontrado = true;
+          this.spinner = false;
 
+          this.userData = {
+            nombreCompleto: res.nombre + ' ' + res.apellido,
+            identificacion: res.identificacion,
+            cargo: res.cargo,
+          };  // Corrige la coma aquí
 
-  
+        },
+        (error: any) => {
+          if (error.status === 404) {
+            Swal.fire("No se encontró el número de documento " + formulario.value.documento, "", "error");
+          } else if (error.status === 401) {
+            // Manejar según sea necesario
+          } else {
+            Swal.fire("No se pudo consultar carnet", "", "error");
+          }
+          this.spinner = false;
+        }
+      );
+    }
+  }
 
   conToken(){
     let tieneToken = false;

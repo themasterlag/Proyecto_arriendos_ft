@@ -9,9 +9,27 @@ import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { NexusInterceptor } from './interceptors/NexusInterceptor';
 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
+    MatExpansionModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatSortModule,
+    MatTooltipModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
