@@ -27,6 +27,7 @@ export class TipoPagoNovedadesComponent implements OnInit {
   datoEditarDes: string;
   consultar: boolean = false;
   consulta_tipoPago: any = null;
+  cambiandoEstado: boolean = false;
 
   tipoPago: any;
   tabla_tipoPago: any;
@@ -169,6 +170,51 @@ export class TipoPagoNovedadesComponent implements OnInit {
       }
     }
   }
+
+  cambiarEstadoTipoPago(tipoPago) {
+    this.cambiandoEstado = true;
+  
+    if (tipoPago.estado == false) {
+      this.servicio.cambiarEstadoTipoPagoNovedad(tipoPago).subscribe(
+        (res: any) => {
+          Swal.fire('Se habilito el tipo de pago', '', 'success')
+            .finally(() => {
+              this.cambiandoEstado = false;
+              this.traerTipoPago();
+              this.tablaTipoPAago();
+            });
+        },
+        (error: any) => {
+          Swal.fire('Ocurrió un error', error.error.message, 'error')
+            .finally(() => {
+              this.cambiandoEstado = false;
+              this.traerTipoPago();
+              this.tablaTipoPAago();
+            });
+        }
+      );
+    } else {
+      this.servicio.cambiarEstadoTipoPagoNovedad(tipoPago).subscribe(
+        (res: any) => {
+          Swal.fire('Se inhabilito el tipo de pago', '', 'success')
+            .finally(() => {
+              this.cambiandoEstado = false;
+              this.traerTipoPago();
+              this.tablaTipoPAago();
+            });
+        },
+        (error: any) => {
+          Swal.fire('Ocurrió un error', error.error.message, 'error')
+            .finally(() => {
+              this.cambiandoEstado = false;
+              this.traerTipoPago();
+              this.tablaTipoPAago();
+            });
+        }
+      );
+    }
+  }
+  
 
 
   limpiarFormulario(){

@@ -569,5 +569,15 @@ export class GeneralesService {
     return this.servicio.post(this.apiNovedades + "tipoPago/", datos);
   }
 
+  inhabilitarTipoPagoNovedad(id){
+    const body = { id: id };
+
+    return this.servicio.patch(this.api + "tipoPago/inhabilitar", body);
+  }
+
+  cambiarEstadoTipoPagoNovedad(body){
+    return this.servicio.put(this.api + "tipoPago/cambiarEstado", body);
+  }
+
 
 }
