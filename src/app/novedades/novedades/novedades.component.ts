@@ -27,9 +27,21 @@ export class NovedadesComponent implements OnInit {
   usuarioEncontrado = false;
   spinner:boolean = false;
   documento:string = null;
+  descripcionMotivoSeleccionado: string;
+  motivosDetallados: any[];
+  informacionRelacionada: any;
+  tipoPagoRelacionado: any;
+  nombreTipoPago: string;
+  Usuarios: any;
+
+
 
   panelOpenState = false;
   userData: any;
+  motivoNovedad: any = [];
+  motivoSeleccionado: any;
+  motivoSeleccionadoAceptado: any;
+  tiposPagos: any;
 
   imagen: any;
   @ViewChild("registrarNovedades") enviarNovedad: NgForm;
@@ -39,6 +51,7 @@ export class NovedadesComponent implements OnInit {
   tabla_novedades: any;
   dataSourceNovedades: MatTableDataSource<novedades> =  new MatTableDataSource<any>();
   displayedColumns: string[] = ["id_novedad","fecha_inicio","fecha_fin","id_motivo","tipo_pago","observacion","fecha_creacion","correo_notificacion","id_personalvinculado","firma_vinculado","tipo_documento","accion"];
+  prueba:any = [{id:1},{id:2}];
 
   constructor(public servicio: GeneralesService, private route: ActivatedRoute) { }
 
@@ -47,12 +60,13 @@ export class NovedadesComponent implements OnInit {
       this.documento = this.route.snapshot.paramMap.get('documento');
     }
     this.tablaNovedades();
+
+    this.traerMotivos();
+    this.traerTiposdepago();
+    this.traerUsuarios();
   }
 
-  retroceder(formulario: NgForm){
-    formulario.reset();
-    this.usuarioEncontrado = false;
-  }
+
 
   // Interfaz para buscar______________________________________________________________________________________________
 
@@ -100,8 +114,63 @@ export class NovedadesComponent implements OnInit {
     console.log(event.target.files[0]);
     this.imagen = event.target.files[0];
   }
+
+  onMotivoSeleccionado(motivo) {
+    this.informacionRelacionada = motivo.descripcion;
+    this.tipoPagoRelacionado = motivo.id_tipo_pago;
+
+    this.motivoSeleccionadoAceptado = false;
+
+    // this.servicio.traerTipoPagoNovedad(this.tipoPagoRelacionado).subscribe(
+    //   (respuesta: any) => {
+    //     if (respuesta && respuesta.nombre) {
+    //       this.nombreTipoPago = respuesta.nombre;
+    //     } else {
+    //       console.error('La respuesta no contiene la propiedad "nombre".', respuesta);
+    //     }
+    //   },
+    //   (error) => {
+    //     console.error('Error al obtener el nombre del tipo de pago:', error);
+    //   }
+    // );
+  }
   
   
+  traerMotivos() {
+    this.servicio.traerMotivosNovedes().subscribe(
+      (res) => {
+        this.motivoNovedad = res;
+        console.log(this.motivoNovedad)
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  traerUsuarios() {
+    this.servicio.traerTodosUsuarios().subscribe(
+      (res) => {
+        this.Usuarios = res;
+        console.log(this.Usuarios)
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  traerTiposdepago() {
+    this.servicio.traerTipoPagosNovedades().subscribe(
+      (res) => {
+        this.tiposPagos = res;
+        console.log(this.tiposPagos)
+      },
+      (err) => {
+        //console.log(err);
+      }
+    );
+  }
 
   traerNovedades(){
     if(this.consulta_novedades == null){
@@ -245,14 +314,39 @@ export class NovedadesComponent implements OnInit {
     )
   }
 
+  filtrarMotivo(value) {
+    console.log(value)
+  }
+
+  irASiguiente() {
+    this.motivoSeleccionadoAceptado = true;
+    console.log(this.enviarNovedad)
+    this.enviarNovedad.controls["id_tipo_pago"].setValue(this.tipoPagoRelacionado);
+
+  }
+
+  retroceder(formulario: NgForm){
+    // formulario.reset();
+    this.consulta_novedades = null;
+    this.motivoSeleccionado = false;
+    this.consultar = false;
+    this.enviarNovedad.form.markAsPristine(); 
+    this.enviarNovedad.form.markAsUntouched(); 
+    this.enviarNovedad.resetForm();
+    this.usuarioEncontrado = false;
+  }
+
 
   limpiarFormulario(){
     this.consulta_novedades = null;
     this.consultar = false;
 
-    this.enviarNovedad.form.markAsPristine(); // Marcar el formulario como "intocado"
-    this.enviarNovedad.form.markAsUntouched(); // Marcar el formulario como "no modificado"
+    this.enviarNovedad.form.markAsPristine(); 
+    this.enviarNovedad.form.markAsUntouched(); 
     this.enviarNovedad.resetForm();
+
   }
+
+
 
 }

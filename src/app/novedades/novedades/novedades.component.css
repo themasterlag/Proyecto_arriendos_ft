@@ -91,3 +91,24 @@
 .header-logo{
   background-color: #ffe80a;
 }
+
+.modal{
+  z-index: 0;
+}
+
+.informacion-relacionada {
+  font-size: 18px; /* Tamaño del texto */
+  text-align: center; /* Centrar el texto */
+  margin-top: 10px; /* Espacio superior */
+}
+
+.noeditable{
+  cursor: not-allowed;
+  }
+
+  .input-readonly {
+    background-color: #eee; /* Color de fondo gris para indicar readonly */
+    color: #666; /* Color de texto oscuro */
+    cursor: not-allowed; /* Cambia el cursor para indicar que no se puede editar */
+  }
+

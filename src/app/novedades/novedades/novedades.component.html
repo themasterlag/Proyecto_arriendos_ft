@@ -30,117 +30,217 @@
               <a routerLink="/" class="text-secondary" *ngIf="conToken()">Volver al inicio</a>
             </div>
           </form>
-          <div *ngIf="usuarioEncontrado">
-            <div class="card-header card-header-info card-header-custom" *ngIf="usuarioEncontrado && userData">
-              <h5 class="card-title">{{ userData.nombreCompleto }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">
-                Identificación: {{ userData.identificacion }} | Cargo: {{ userData.cargo }}
-              </h6>
-            </div>
-        
-            <form #registrarNovedades="ngForm" class="mx-3" (ngSubmit)="registrarNovedad()" [noValidate]="false">
-        
-              <div class="row">
-                <div class="col-12">
-                  <div class="row">
-                    <div class="col-2">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio"
-                          ngModel required />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="col-2">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fecha Fin" type="datetime-local" id="fecha_fin" name="fecha_fin" ngModel
-                          required />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="col-2">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Motivo" type="text" id="id_motivo" name="id_motivo" ngModel required />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="col-2">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Pago" type="text" id="tipo_pago" name="tipo_pago" ngModel required />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="col-4">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Observacion" type="text" id="observacion" name="observacion" ngModel
-                          required />
-                      </mat-form-field>
-                    </div>
-        
-                  </div>
-                </div>
-              </div>
-        
-              <div class="row">
-                <div class="col-12">
-                  <div class="row">
-                    <div class="col-4">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion"
-                          ngModel required />
-                      </mat-form-field>
-                    </div>
-                    <div class="col-3">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado"
-                          ngModel required />
-                      </mat-form-field>
-                    </div>
-                    <div class="col-3">
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Documento" type="text" id="tipo_documento" name="tipo_documento" ngModel
-                          required />
-                      </mat-form-field>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="input-group input-group-sm mb-3">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
-                      <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)"
-                        accept=".png, .jpg" required>
-                    </div>
-                  </div>
-        
-                  <hr>
-                </div>
-        
-                <div>
-        
-                </div>
-        
-                
-              </div>
 
-              <div class="row">
-                <div class="col">
-                  <button type="button" class="btn btn-info rounded-pill" *ngIf="conToken()" (click)="retroceder()">Volver atras</button>
-                </div>
-                <div class="col">
-                  <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center pull-right"
-                    id="button-guardar">
-                    Guardar
-                  </button>
-                  <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center pull-right"
-                    id="button-limpiar" (click)="limpiarFormulario()">
-                    Limpiar
-                  </button>
-                </div>
+          <div *ngIf="usuarioEncontrado" class="row align-items-center">
+            <div class="col-6">
+              <!-- Contenido a la izquierda -->
+              <div class="card-header card-header-info card-header-custom">
+                <h4 class="card-title">{{ userData.nombreCompleto }}</h4>
+                <h5 class="card-subtitle mb-2 text-muted">
+                  Identificación: {{ userData.identificacion }} | Cargo: {{ userData.cargo }}
+                </h5>
               </div>
-            </form>
+            </div>
+  
+            <div class="col-6">
+              <!-- Contenido a la derecha -->
+              <div class="col">
+                <mat-form-field class="example-full-width">
+                  <mat-select
+                    placeholder="Motivo"
+                    name="id_motivo"
+                    [(ngModel)]="motivoSeleccionado"
+                    (selectionChange)="onMotivoSeleccionado($event.value)"
+                  >
+                    <mat-option
+                      [value]="d"
+                      *ngFor="let d of motivoNovedad"
+                    >
+                      {{ d.nombre }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+  
+            <div class="col-12" *ngIf="motivoSeleccionado ">
+
+              <div class="informacion-relacionada">
+                <h3>Descripcion del motivo:  </h3>
+                <h5>{{ informacionRelacionada }}</h5>
+
+                <button mat-button class="btn-success rounded-pill" (click)="irASiguiente()">Aceptar</button>
+              </div>
+            </div>
+
+            <div class="col-12" [hidden]="!motivoSeleccionadoAceptado">
+
+              <form #registrarNovedades="ngForm" class="mx-3" (ngSubmit)="registrarNovedad()" [noValidate]="false">
+
+                <hr>
+        
+                <div class="row">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-2">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fecha Inicio" type="datetime-local" id="fecha_inicio" name="fecha_inicio"
+                            ngModel required />
+                        </mat-form-field>
+                      </div>
+          
+                      <div class="col-2">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fecha Fin" type="datetime-local" id="fecha_fin" name="fecha_fin" ngModel
+                            required />
+                        </mat-form-field>
+                      </div>
+        
+
+                    <!-- <div class="col-3 " >
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Tipo de pago" class="input-readonly" type="text" id="id_tipo_pago" name="id_tipo_pago" ngModel 
+                          />
+                      </mat-form-field>
+                    </div> -->
+
+                      <div class="col-3">
+                        <mat-form-field class="example-full-width">
+                          <mat-select
+                            placeholder="Tipo de pago"
+                            name="id_tipo_pago"
+                            ngModel disabled
+                          >
+                            <mat-option
+                              [value]="d.id"
+                              *ngFor="let d of tiposPagos"
+                            >
+                              {{ d.nombre }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+          
+
+                      <div class="col-5">
+                        <mat-form-field class="example-full-width">
+                          <mat-select
+                            placeholder="Quien autoriza"
+                            name="personal"
+                          >
+                            <mat-option
+                              [value]="d"
+                              *ngFor="let d of Usuarios"
+                            >
+                              {{ d.nombres + " " + d.apellidos}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+          
+                    </div>
+                  </div>
+                </div>
+          
+                <div class="row">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-4">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Correo" type="text" id="correo_notificacion" name="correo_notificacion"
+                            ngModel required />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-4">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Personal" type="text" id="id_personalvinculado" name="id_personalvinculado"
+                            ngModel required />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-4">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Documento" type="number" id="tipo_documento" name="tipo_documento" ngModel
+                            required />
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col">
+                        <mat-form-field class="example-full-width">
+                          <textarea matInput placeholder="Observacion" rows="3" type="text" id="observacion" name="observacion" ngModel required></textarea>
+                        </mat-form-field>
+                      </div>
+
+                  </div>
+
+                    <hr>
+
+                    <h3>Aexos:  </h3>
+                    <h4>Ingresar los archivos nesesarios en un .zip o en un.rar</h4>
+
+                    <div class="row">
+                      <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Firma</span>
+                        <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)"
+                          accept=".png, .jpg" required>
+                      </div>
+
+                      <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Anexos Zip</span>
+                        <input type="file" class="form-control" id="file-upload" (change)="onFileSelected($event)"
+                          accept=".zip, .rar" required>
+                      </div>
+
+                    </div>
+
+
+          
+                    <hr>
+                  </div>
+          
+                  <div>
+          
+                  </div>
+          
+                  
+                </div>
+
+
+  
+                <div class="row">
+                  <div class="col">
+                    <button type="button" class="btn btn-info rounded-pill" *ngIf="conToken()" (click)="retroceder()">Volver atras</button>
+                  </div>
+                  <div class="col">
+                    <button mat-raised-button type="submit" class="btn btn-success rounded-pill text-center pull-right"
+                      id="button-guardar">
+                      Guardar
+                    </button>
+                    <button mat-raised-button type="reset" class="btn btn-danger rounded-pill text-center pull-right"
+                      id="button-limpiar" (click)="limpiarFormulario()">
+                      Limpiar
+                    </button>
+                  </div>
+                </div>
+
+
+              </form>
+            </div>
+
+            </div>
+
+
           </div>
-        </div>
+        
       </div>
     </div>
-  </div>
+            </div>
+        
+
 
   <!-- Modal Body 2 -->
   <!-- <ng-container *ngIf="usuarioEncontrado; else body2Template">
