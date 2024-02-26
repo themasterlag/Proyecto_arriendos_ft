@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
   providedIn: "root",
 })
 export class ApiServiceService {
-  url: string = "http://10.250.9.42:3000/api/arriendos/";
+  url: string = "http://10.0.102.128:3000/api/arriendos/"; // "http://10.250.9.42:3000/api/arriendos/"; // 10.0.102.128
 
   constructor(private http: HttpClient) {}
 
