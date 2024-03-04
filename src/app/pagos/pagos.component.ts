@@ -35,10 +35,11 @@ export class PagosComponent implements OnInit {
   consulta: boolean = false
   mes: any = 0
   anio: any = 0
+  concepto = '3';
   valselects: boolean = false
   page: number = 0
   search: string = ""
-  listarResponsable: any[] = []
+  //listarResponsable: any[] = []
   yearList: number[] = []
   consultaDatos: any
   iva: any
@@ -142,6 +143,8 @@ export class PagosComponent implements OnInit {
     this.validaciondatos()
   }
 
+  
+
   validaciondatos() {
     if (this.anio != 0 && this.mes != 0) {
       this.valselects = true
@@ -195,7 +198,7 @@ export class PagosComponent implements OnInit {
         this.anio == 0 ||
         this.mes == 0
       ) {
-        Swal.fire("Debe seleeccionar un recuadro", "", "info")
+        Swal.fire("Debe seleccionar un periodo y un año valido", "", "info")
         this.dataSourceNoPagados.data = null
         this.dataSourcePagados.data = null
       }else{
@@ -204,6 +207,23 @@ export class PagosComponent implements OnInit {
         this.traerNoPagados()
         this.traerPagados()
       }
+  }
+
+  asignarConcepto(concepto) {
+    switch (concepto) {
+      case "001":
+        this.responsable = false;
+        this.no_responsable = true;
+        break;
+      case "002":
+        this.responsable = true;
+        this.no_responsable = false;
+        break;
+      default:
+        this.responsable = true;
+        this.no_responsable = true;
+        break;
+    }
   }
 
   traerPagados() {
@@ -248,8 +268,8 @@ export class PagosComponent implements OnInit {
   traerNoPagados() {
     let datosConsulta = {
       DT: {
-        no_responsable: true,
-        responsable: true,
+        no_responsable: this.no_responsable,
+        responsable: this.responsable,
         efectivo: true,
       },
       TD: 2,

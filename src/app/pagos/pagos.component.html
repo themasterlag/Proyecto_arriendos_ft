@@ -59,6 +59,19 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
+                  <div class="col-md-3">
+                    <mat-form-field class="w-100 float-left">
+                      <mat-select
+                        placeholder="Concepto"
+                        [(value)]="concepto"
+                        (selectionChange)="asignarConcepto($event.value)"
+                      >
+                      <mat-option value="001">NO RESPONSABLES</mat-option>
+                      <mat-option value="002">RESPONSABLES</mat-option>
+                      <mat-option value="3">TODOS</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
                   <div class="col-md-2" align="center">
                     <button
                       mat-raised-button
