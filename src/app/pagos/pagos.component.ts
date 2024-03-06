@@ -821,15 +821,19 @@ export class PagosComponent implements OnInit {
     }
   }
 
-  buscarColumna(headers, nombre){
-    let index = null;
-    for (let i = 0; i < headers.length; i++) {
-      if (headers[i] == nombre) {
-        index = i;
-      }
-    }
-    return index;
+  // buscarColumna(headers, nombre){
+  //   let index = null;
+  //   for (let i = 0; i < headers.length; i++) {
+  //     if (headers[i] == nombre) {
+  //       index = i;
+  //     }
+  //   }
+  //   return index;
+  // }
+  buscarColumna(headers, nombre) {
+    return headers.findIndex(header => header === nombre);
   }
+
 
   generarPreNominaHorizontal(tipo){
     this.spinnerNomina = true;
@@ -852,7 +856,7 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        res = this.darEstructuraNomina(tipo, res);
+        // res = this.darEstructuraNomina(tipo, res);
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0
         let headers = Object.keys(res[0]);
@@ -974,7 +978,7 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        res = this.darEstructuraNomina(tipo, res);
+        // res = this.darEstructuraNomina(tipo, res);
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
