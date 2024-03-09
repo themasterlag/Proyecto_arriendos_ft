@@ -972,7 +972,7 @@ export class PagosComponent implements OnInit {
           .map((responsable) => responsable["id_pago_arriendo"]);
       } else {
         Swal.fire("Primero debe pagar todos los contratos", "", "info");
-        throw new Error("No se ha pagado todos los contratos");
+        throw new Error("No se han pagado todos los contratos");
       }
     }
 

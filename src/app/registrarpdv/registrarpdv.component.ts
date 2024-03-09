@@ -492,7 +492,7 @@ export class RegistrarpdvComponent implements OnInit {
         );
       }
 
-      this.formulariocontrato.get('valor_canon').disable()
+      this.formulariocontrato.get('valor_canon')
     }
   }
 
