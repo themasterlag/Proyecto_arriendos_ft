@@ -168,19 +168,25 @@ export class GeneralesService {
   }
 
   traerPrenomina(tipo, ids) {
-    let datos = new HttpParams()
-    if (tipo == 0) {
-      datos = datos.append("idContratos", JSON.stringify(ids))
-      return this.servicio.get(this.api + "preliquidacion/prenomina", {
-        params: datos,
-      })
-    } else {
-      datos = datos.append("idPagos", JSON.stringify(ids))
-      return this.servicio.get(this.api + "preliquidacion/nomina", {
-        params: datos,
-      })
-    }
+    const body = tipo == 0 ? { idContratos: ids } : { idPagos: ids };
+    const url = tipo == 0 ? this.api + "preliquidacion/prenomina" : this.api + "preliquidacion/nomina";
+    return this.servicio.post(url, body);
   }
+
+  // traerPrenomina(tipo, ids) {
+  //   let datos = new HttpParams()
+  //   if (tipo == 0) {
+  //     datos = datos.append("idContratos", JSON.stringify(ids))
+  //     return this.servicio.get(this.api + "preliquidacion/prenomina", {
+  //       params: datos,
+  //     })
+  //   } else {
+  //     datos = datos.append("idPagos", JSON.stringify(ids))
+  //     return this.servicio.get(this.api + "preliquidacion/nomina", {
+  //       params: datos,
+  //     })
+  //   }
+  // }
 
   traerListaPagos(datosConsulta) {
     let datos = new HttpParams()
