@@ -732,12 +732,12 @@ export class PagosComponent implements OnInit {
             valor_canon: this.valorCanon(element.valor_canon),
             // incremento_anual: element.incremento_anual,
             // incremento_adicional: element.incremento_adicional,
-            fecha_inicio_contrato: element.fecha_inicio_contrato,
-            fecha_fin_contrato: element.fecha_fin_contrato,
-            tipo_contrato: element.tipo_contrato,
+            // fecha_inicio_contrato: element.fecha_inicio_contrato,
+            // fecha_fin_contrato: element.fecha_fin_contrato,
+            // tipo_contrato: element.tipo_contrato,
             // valor_adminstracion: element.valor_adminstracion,
-            definicion: element.definicion,
-            poliza: element.poliza,
+            // definicion: element.definicion,
+            // poliza: element.poliza,
   
             responsable_nit:
               element.responsabledetalle.clientedetalle
@@ -745,22 +745,27 @@ export class PagosComponent implements OnInit {
             responsable: element.responsabledetalle.clientedetalle
               .razon_social
               ? element.responsabledetalle.clientedetalle.razon_social
-              : element.responsabledetalle.clientedetalle.nombres +
+              : element.responsabledetalle.clientedetalle.nombres + " " +
                 element.responsabledetalle.clientedetalle.apellidos,
-  
+                
+            // autorizado_nit:
+            //   element.autdetalle.clientedetalle
+            //     .numero_documento,
+            // autorizado: element.autdetalle.clientedetalle
+            //   .razon_social
+            //   ? element.autdetalle.clientedetalle.razon_social
+            //   : element.autdetalle.clientedetalle.nombres +
+            //     element.autdetalle.clientedetalle.apellidos,
             autorizado_nit:
-              element.autdetalle.clientedetalle
-                .numero_documento,
-            autorizado: element.autdetalle.clientedetalle
-              .razon_social
+              element.autdetalle?.clientedetalle?.numero_documento ?? 'Valor por defecto',
+              autorizado: element.autdetalle?.clientedetalle?.razon_social
               ? element.autdetalle.clientedetalle.razon_social
-              : element.autdetalle.clientedetalle.nombres +
-                element.autdetalle.clientedetalle.apellidos,
+              : `${element.autdetalle?.clientedetalle?.nombres ?? ''} 
+              ${element.autdetalle?.clientedetalle?.apellidos ?? ''}`.trim() || 'Valor por defecto',
+            // fecha_inactivo: element.fecha_inactivo,
+            // razon_inactivo: element.razon_inactivo,
   
-            fecha_inactivo: element.fecha_inactivo,
-            razon_inactivo: element.razon_inactivo,
-  
-            conceptos: element.conceptos,
+              conceptos: element.conceptos,
           }
         })
       } else if (tipo == 1){
@@ -791,22 +796,22 @@ export class PagosComponent implements OnInit {
             responsable_nit:
               element.pagodetalle[0].responsabledetalle.clientedetalle
                 .numero_documento,
-            responsable: element.pagodetalle[0].responsabledetalle.clientedetalle
-              .razon_social
-              ? element.pagodetalle[0].responsabledetalle.clientedetalle
-                  .razon_social
-              : element.pagodetalle[0].responsabledetalle.clientedetalle.nombres +
-                element.pagodetalle[0].responsabledetalle.clientedetalle.apellidos,
+            // responsable: element.pagodetalle[0].responsabledetalle.clientedetalle
+            //   .razon_social
+            //   ? element.pagodetalle[0].responsabledetalle.clientedetalle
+            //       .razon_social
+            //   : element.pagodetalle[0].responsabledetalle.clientedetalle.nombres +
+            //     element.pagodetalle[0].responsabledetalle.clientedetalle.apellidos,
   
-            autorizado_nit:
-              element.pagodetalle[0].autdetalle.clientedetalle
-                .numero_documento,
-            autorizado: element.pagodetalle[0].autdetalle.clientedetalle
-              .razon_social
-              ? element.pagodetalle[0].autdetalle.clientedetalle
-                  .razon_social
-              : element.pagodetalle[0].autdetalle.clientedetalle.nombres +
-                element.pagodetalle[0].autdetalle.clientedetalle.apellidos,
+            // autorizado_nit:
+            //   element.pagodetalle[0].autdetalle.clientedetalle
+            //     .numero_documento,
+            // autorizado: element.pagodetalle[0].autdetalle.clientedetalle
+            //   .razon_social
+            //   ? element.pagodetalle[0].autdetalle.clientedetalle
+            //       .razon_social
+            //   : element.pagodetalle[0].autdetalle.clientedetalle.nombres +
+            //     element.pagodetalle[0].autdetalle.clientedetalle.apellidos,
   
             conceptos: element.conceptos,
           }
@@ -816,7 +821,7 @@ export class PagosComponent implements OnInit {
       console.log(datos);
       return datos
     } catch (error) {
-      Swal.fire("Hubo un error al generar la estructura del archivo", error, "error");
+      Swal.fire("Hubo un error al generar la estructura del archivo", error.message, "error");
       this.spinnerNomina = false;
     }
   }
@@ -856,13 +861,14 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        // res = this.darEstructuraNomina(tipo, res);
+        res = this.darEstructuraNomina(tipo, res);
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0
         let headers = Object.keys(res[0]);
         let worksheet = XLSX.utils.aoa_to_sheet([headers]);
         headers.splice(this.buscarColumna(headers, "conceptos"),2);
         let totales = [];
+        // console.log( "Estos son los headers HORIZONTAL", headers )
 
         for (let i = 0; i < res.length; i++) {
           let conceptos = res[i].conceptos;
@@ -903,8 +909,8 @@ export class PagosComponent implements OnInit {
           totales.push({devengado:devengados, deduccion:deducciones})
         }
 
-        // headers.push("Total_devengado","Total_deduccion", "Total");
-        // headers.push("Total_devengado","Total_deduccion");
+        headers.push("Total_devengado","Total_deduccion", "Total");
+        headers.push("Total_devengado","Total_deduccion");
 
         for (let i = 0; i < res.length; i++) {
           const fila = res[i];
@@ -914,9 +920,9 @@ export class PagosComponent implements OnInit {
             }
           });
 
-          // fila["Total_devengado"] = totales[i].devengado + fila.valor_canon;
-          // fila["Total_deduccion"] = totales[i].deduccion;
-          // fila["Total"] = fila.valor_canon + totales[i].devengado + totales[i].deduccion;
+          fila["Total_devengado"] = totales[i].devengado + fila.valor_canon;
+          fila["Total_deduccion"] = totales[i].deduccion;
+          fila["Total"] = fila.valor_canon + totales[i].devengado + totales[i].deduccion;
         }
         
         worksheet = XLSX.utils.aoa_to_sheet([headers]);
@@ -978,11 +984,12 @@ export class PagosComponent implements OnInit {
 
     this.servicio.traerPrenomina(tipo, listaSeleccionados).subscribe(
       (res: any[]) => {
-        // res = this.darEstructuraNomina(tipo, res);
+        res = this.darEstructuraNomina(tipo, res);
         let workbook = XLSX.utils.book_new();
         res[0].valor_concepto = 0;
         let headers = Object.keys(res[0]);
         let worksheet = XLSX.utils.aoa_to_sheet([headers]);
+        // console.log( "Estos son los headers", headers )
         let contador = 2;
         worksheet["!merges"] = [];
 
@@ -1351,11 +1358,11 @@ export class PagosComponent implements OnInit {
       // console.log(conceptosDeducidos);      
 
       totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
-      // console.log(totalDeduccion);      
+      // console.log("Deduccion",totalDeduccion);      
 
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
         this.Pdv[0].pagoarrdetalle[0].canon) 
-      // console.log(totalDevengado)  
+      console.log("Devengado",totalDevengado)  
 
       total = Math.round(totalDevengado - totalDeduccion);
       
