@@ -1764,6 +1764,52 @@ consultarContratos() {
     })
     
   }
+
+  renovarContrato(contrato){
+    // console.log(contrato);
+    let duracionContrato = 0;
+
+    let anioInicio = new Date(contrato.fecha_inicio_contrato).getFullYear();
+    let anioFin = new Date(contrato.fecha_fin_contrato).getFullYear();
+
+    if(contrato.anios_prorroga == null) {  
+      duracionContrato = anioFin - anioInicio;
+    }
+    else{
+      duracionContrato = contrato.anios_prorroga;
+    }
+    console.log("Duración contrato", duracionContrato);
+
+    const new_fecha_fin_contrato = new Date(contrato.fecha_fin_contrato);
+    console.log("Fecha contrato antes", new_fecha_fin_contrato)
+    new_fecha_fin_contrato.setFullYear(anioFin + duracionContrato);
+    console.log("Fecha contrato después", new_fecha_fin_contrato)
+    const formattedDate = this.formatDate(new_fecha_fin_contrato);
+    console.log(formattedDate);
+
+    Swal.fire({
+      title: 'Renovación de Contrato',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      icon: "question",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // console.log(result.value);
+        let datos = {
+          id: contrato.id_contrato,
+          fecha_fin_contrato: formattedDate 
+        }
+        // console.log(datos);       
+        this.servicio.renovarContratos(datos).subscribe(
+            (res:any) => {
+            // console.log(res);
+            Swal.fire(`Contrato ${contrato.id_contrato} renovado ${duracionContrato} años más`,'', 'success') 
+            this.tablaContratosRenovar();           
+        })        
+      }
+    })  
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceContratos.filter = filterValue.trim().toLowerCase();

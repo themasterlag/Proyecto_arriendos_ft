@@ -67,12 +67,11 @@
                       <button
                         class="btn btn-info"
                         id="btn-renovar"
-                        (click)="inhabilitarContrato(element)"
+                        (click)="renovarContrato(element)"
                         *ngIf="element.fecha_inhabilitado == null"
                         [disabled]="element.fecha_inhabilitado"
                         >Renovar
                     </button>
-                    <p  class="mb-0"  *ngIf="element.fecha_inhabilitado != null">Inhabilitado</p>
                     </td>
                   </ng-container>
                 
