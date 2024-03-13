@@ -1698,7 +1698,6 @@ consultarContratos() {
   tablaContratosRenovar(){
     this.servicio.traerContratosRenovarSiguienteMes().subscribe(
       (res:any) => {
-        console.log(res);
 
         this.tabla_contratos = res.map((element) => {          
           
@@ -1714,11 +1713,8 @@ consultarContratos() {
           }
         })
 
-        // console.log(this.tabla_contratos)
-
         this.dataSourceContratos.data = this.tabla_contratos;
-        this.dataSourceContratos.paginator = this.paginatorContratos;
-        
+        this.dataSourceContratos.paginator = this.paginatorContratos;       
       }
     )
   }
@@ -1766,11 +1762,11 @@ consultarContratos() {
   }
 
   renovarContrato(contrato){
-    // console.log(contrato);
+
     let duracionContrato = 0;
 
-    let anioInicio = new Date(contrato.fecha_inicio_contrato).getFullYear();
-    let anioFin = new Date(contrato.fecha_fin_contrato).getFullYear();
+    let anioInicio = new Date(contrato.fecha_inicio).getFullYear();
+    let anioFin = new Date(contrato.fecha_fin).getFullYear();
 
     if(contrato.anios_prorroga == null) {  
       duracionContrato = anioFin - anioInicio;
@@ -1778,14 +1774,10 @@ consultarContratos() {
     else{
       duracionContrato = contrato.anios_prorroga;
     }
-    console.log("Duración contrato", duracionContrato);
 
-    const new_fecha_fin_contrato = new Date(contrato.fecha_fin_contrato);
-    console.log("Fecha contrato antes", new_fecha_fin_contrato)
+    const new_fecha_fin_contrato = new Date(contrato.fecha_fin + "T00:00:00");
     new_fecha_fin_contrato.setFullYear(anioFin + duracionContrato);
-    console.log("Fecha contrato después", new_fecha_fin_contrato)
     const formattedDate = this.formatDate(new_fecha_fin_contrato);
-    console.log(formattedDate);
 
     Swal.fire({
       title: 'Renovación de Contrato',
@@ -1794,16 +1786,13 @@ consultarContratos() {
       icon: "question",
     }).then((result) => {
       if (result.isConfirmed) {
-        // console.log(result.value);
         let datos = {
           id: contrato.id_contrato,
-          fecha_fin_contrato: formattedDate 
-        }
-        // console.log(datos);       
+          new_fecha_fin_contrato: formattedDate 
+        }    
         this.servicio.renovarContratos(datos).subscribe(
             (res:any) => {
-            // console.log(res);
-            Swal.fire(`Contrato ${contrato.id_contrato} renovado ${duracionContrato} años más`,'', 'success') 
+            Swal.fire(`Contrato ${contrato.id_contrato} renovado ${duracionContrato} años más`,'', 'success');
             this.tablaContratosRenovar();           
         })        
       }
