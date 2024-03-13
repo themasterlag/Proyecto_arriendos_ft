@@ -1695,6 +1695,34 @@ consultarContratos() {
     )
   }
 
+  tablaContratosRenovar(){
+    this.servicio.traerContratosRenovarSiguienteMes().subscribe(
+      (res:any) => {
+        console.log(res);
+
+        this.tabla_contratos = res.map((element) => {          
+          
+          return {
+            id_contrato: element.id_contrato,
+            fecha_inicio: element.fecha_inicio_contrato,
+            fecha_fin: element.fecha_fin_contrato,
+            fecha_inhabilitado: element.fecha_inactivo,
+            id_punto_venta: element.pvdetalle.codigo_sitio_venta,
+            nombre_comercial: element.pvdetalle.nombre_comercial,
+            numero_documento: element.responsabledetalle.clientedetalle.numero_documento,
+            anios_prorroga: element.anios_prorroga
+          }
+        })
+
+        // console.log(this.tabla_contratos)
+
+        this.dataSourceContratos.data = this.tabla_contratos;
+        this.dataSourceContratos.paginator = this.paginatorContratos;
+        
+      }
+    )
+  }
+
   formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');

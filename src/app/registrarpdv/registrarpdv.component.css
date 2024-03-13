@@ -84,6 +84,11 @@
     border-radius: 25px;
     background-color : red;
 }
+
+#btn-renovar {
+    border-radius: 25px; 
+    background-color : green !important; 
+}
 .input::-webkit-inner-spin-button,
 .input::-webkit-outer-spin-button {
   display: none;
