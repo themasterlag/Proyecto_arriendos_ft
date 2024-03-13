@@ -1792,7 +1792,8 @@ consultarContratos() {
         }    
         this.servicio.renovarContratos(datos).subscribe(
             (res:any) => {
-            Swal.fire(`Contrato ${contrato.id_contrato} renovado ${duracionContrato} años más`,'', 'success');
+            const terminoAnios = duracionContrato === 1 ? "año" : "años";
+            Swal.fire(`Contrato ${contrato.id_contrato} renovado ${duracionContrato} ${terminoAnios} más`,'', 'success');
             this.tablaContratosRenovar();           
         })        
       }
