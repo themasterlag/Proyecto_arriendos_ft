@@ -681,7 +681,7 @@ export class PagosComponent implements OnInit {
 
   // traerInformacionIncremento(element){
   //   // console.log(element);
-  //   this.servicio.traerIncremento(element.idContrato).subscribe(
+  //   this.servicio.calcularIncrementoContrato(element.idContrato).subscribe(
   //     (res:any) => {
   //       // console.log(res);
   //       this.contratoIncremento = res     

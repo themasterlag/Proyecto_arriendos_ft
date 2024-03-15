@@ -203,7 +203,7 @@ export class GeneralesService {
     return this.servicio.get(this.api + "incrementos");
   }
 
-  traerIncremento(id){
+  calcularIncrementoContrato(id){
     return this.servicio.get(this.api + "reportes/valor-incremento/" + id)
   }
 
