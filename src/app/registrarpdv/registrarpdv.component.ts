@@ -180,7 +180,7 @@ export class RegistrarpdvComponent implements OnInit {
       fecha_fin_contrato: [null, Validators.required],
       valor_canon: [null, Validators.required],
       valor_adminstracion: [null],
-      incremento_anual: [null],
+      incremento_anual: [false],
       incremento_adicional: [null],
       poliza: [false],
       definicion: [null],
@@ -833,6 +833,9 @@ export class RegistrarpdvComponent implements OnInit {
 
   registrocontrato(): void {
     // Loading.pulse("Cargando");
+    // Convertir el estado del checkbox de incremento anual a `null` o `1`
+    const incrementoAnual = this.formulariocontrato.value.incremento_anual ? 1 : null;
+    const incrementoAdicional = this.formulariocontrato.value.incremento_adicional;
     if (this.conceptosTabla.length == 0) {
       Swal.fire('La tabla conceptos no puede estar vacia','', 'warning');
     }
@@ -859,9 +862,10 @@ export class RegistrarpdvComponent implements OnInit {
         id_punto_venta: this.formulariocontrato.value.id_punto_venta,
         id_usuario: this.autenticacion.getCargaUtil().id_usuario,
         valor_canon: this.formulariocontrato.get('valor_canon').value,
-        incremento_anual: this.checkIpc(
-          this.formulariocontrato.value.incremento_anual
-        ),
+        incremento_anual: incrementoAnual,
+        // incremento_anual: this.checkIpc(
+        //   this.formulariocontrato.value.incremento_anual
+        // ),
         incremento_adicional:
           this.formulariocontrato.value.incremento_adicional,
         fecha_inicio_contrato:
@@ -876,6 +880,14 @@ export class RegistrarpdvComponent implements OnInit {
         anios_prorroga: this.formulariocontrato.value.anios_prorroga
 
       };
+      const datosContrato = {
+        // Otros campos de tu formulario aquí...
+        incremento_anual: incrementoAnual,
+        incremento_adicional: incrementoAdicional,
+      };
+  
+      // Luego puedes enviar `datosContrato` a tu backend o realizar la lógica necesaria
+      console.log(datosContrato);
       Swal
         .fire({
           title: "Seguro de guardar los cambios?",
