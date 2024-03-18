@@ -8,7 +8,15 @@ body {
     background-color: #3498db;
     color: white;
     text-align: center;
-    padding: 2rem;
+}
+
+.card-body {
+    padding: 0%;
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    padding-bottom: 0%;
 }
 
 main {
