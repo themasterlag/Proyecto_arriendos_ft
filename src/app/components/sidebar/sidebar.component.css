@@ -70,3 +70,8 @@ ul hr {
 .nav li {
     list-style-type: none;
 }
+
+.sidebar-footer {
+    margin: 5%;
+    padding-bottom: 5%;
+}
