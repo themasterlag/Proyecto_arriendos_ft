@@ -10,6 +10,12 @@ body {
     text-align: center;
 }
 
+.animacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .card-body {
     padding: 0%;
     margin-bottom: 1rem;
