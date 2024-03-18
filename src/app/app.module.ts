@@ -19,6 +19,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { LottieModule } from 'ngx-lottie';
+import player from 'lottie-web';
+
+export function playerFactory() {
+  return player;
+}
+
 @NgModule({
   imports: [
     MatExpansionModule,
@@ -37,6 +44,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ComponentsModule,
     RouterModule,
     AppRoutingModule,
+    LottieModule.forRoot({ player: playerFactory })
   ],
   declarations: [
     AppComponent,

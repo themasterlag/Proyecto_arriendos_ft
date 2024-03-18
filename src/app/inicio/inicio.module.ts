@@ -9,7 +9,12 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { InicioComponent } from './inicio/inicio.component';
 
+import { LottieModule } from 'ngx-lottie';
+import player from 'lottie-web';
 
+export function playerFactory() {
+  return player;
+}
 
 @NgModule({
   declarations: [
@@ -23,6 +28,7 @@ import { InicioComponent } from './inicio/inicio.component';
     HttpClientModule,
     RouterModule,
     InicioRoutingModule,
+    LottieModule.forRoot({ player: playerFactory })
   ]
 })
 export class InicioModule { }

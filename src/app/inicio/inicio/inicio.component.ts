@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AnimationOptions } from 'ngx-lottie';
 
 @Component({
   selector: 'app-inicio',
@@ -11,5 +12,9 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  options: AnimationOptions = {
+    path: '../../../assets/json/WelcomePeople.json' // download the JSON version of animation in your project directory and add the path to it like ./assets/animations/example.json
+  };
 
 }
