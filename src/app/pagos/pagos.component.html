@@ -84,6 +84,13 @@
                   </div>
                 </div>
                 <hr />
+                <div class="col-md-12">
+                  <h5><strong>Filtro para buscar información en la tabla</strong></h5>
+                  <mat-form-field appearance="standard">
+                    <mat-label>Buscar información por cualquier valor de las columnas</mat-label>
+                    <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input>
+                  </mat-form-field> 
+                </div>
 
                 <div class="row align-items-center" >
                   

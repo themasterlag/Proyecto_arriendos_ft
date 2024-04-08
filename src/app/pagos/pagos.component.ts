@@ -231,11 +231,11 @@ export class PagosComponent implements OnInit {
         efectivo: this.efectivo,
       },
       TD: 1,
-      RF: { anio: this.anio, mes: this.mes },
+      RF: { anio: this.anio, mes: this.mes }
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-        // console.log("Pagados", res)
+        //console.log("Pagados", res)
 
         this.responsableTablaPagados = res
         for (let i = 0; i < this.responsableTablaPagados.length; i++) {
@@ -277,7 +277,7 @@ export class PagosComponent implements OnInit {
        this.concepPre = []
        this.concepPos = []
         this.noPagadosLista = res
-        console.log(this.noPagadosLista);
+        console.log("NO PAGADOS", this.noPagadosLista);
         
         this.responsableTablaNoPagados = res.map((e:any) => {
           
@@ -302,14 +302,35 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  CalcularValorTablas(datos: any){
+  valorTotalArriendo() {
+    this.servicio.contratosAVencer().subscribe(
+      (res:any) => {
+        res.forEach((contrato: any) => {
+          console.log('CONTRATO A PAGAR:', totalAPagar);
+          var diaCorte = new Date(contrato.fecha_inicio_contrato).getDate() + 1;
+          console.log("DÍA CORTE", diaCorte);
+          var porcentajeIncrementos = (contrato.incremento + contrato.incremento_adicional)/100;
+          console.log("PORCENTAJE INCREMENTOS", porcentajeIncrementos);
+          var canonAntiguo = contrato.valor_canon - (contrato.valor_canon * porcentajeIncrementos);
+          console.log("CANON ANTIGUO", canonAntiguo);
+          var valorDiasCanonAntiguo = (canonAntiguo/30)*diaCorte;
+          console.log("VALOR DÍAS CANON ANTIGUO", valorDiasCanonAntiguo);
+          var valorDiasCanonNuevo = (contrato.valor_canon/30)*(30 - diaCorte);
+          console.log("VALOR DÍAS CANON NUEVO", valorDiasCanonNuevo);
 
+          var totalAPagar = valorDiasCanonAntiguo + valorDiasCanonNuevo;
+          console.log('TOTAL A PAGAR:', totalAPagar);
+        });
+      })
+  }
+
+  CalcularValorTablas(datos: any) {
     let total = 0
-    let fechaInicioContrato = new Date(datos.fecha_inicio_contrato)
-    let fechaFinContrato = new Date(datos.fecha_fin_contrato)
+    let fechaInicioContrato = new Date(datos.fecha_inicio_contrato + "T00:00:00")
+    let fechaFinContrato = new Date(datos.fecha_fin_contrato + "T00:00:00")
     let conceptosDEV = []
     let conceptosDeC = []
-    let canonaPagar: number = 0
+    //let canonaPagar: number = 0
     // conceptos deducidos y devengados despues del incremento
     let conceptosDEVIncremento = []
     let conceptosDeCIncremento = []
@@ -318,7 +339,7 @@ export class PagosComponent implements OnInit {
     let conceptosDespuesIncremento: any[] = _.cloneDeep(datos.conceptos)
     let conceptosAjuste: any[] = _.cloneDeep(datos.conceptos)
      //prueba copiando datos a otra variable para aplicar el incremento nada mas
-     let datosConIncremento = _.cloneDeep(datos)
+    let datosConIncremento = _.cloneDeep(datos)
 
     let diasTrabajar = 30 - (fechaInicioContrato.getDate() + 1) 
     let diasPago = (fechaInicioContrato.getDate() + 1)
@@ -328,7 +349,7 @@ export class PagosComponent implements OnInit {
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       datos.canon = ((datos.valor_canon / 30) * diasTrabajar)
       total = (datos.valor_canon / 30) * diasTrabajar
-      conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos,diasTrabajar)
+      conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos, diasTrabajar)
 
       this.pagoConcepto.push(conceptosAntesIncremento)
           
@@ -417,6 +438,12 @@ export class PagosComponent implements OnInit {
     datos.total = (total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)+ valorConceptosIncrementados)
     
     return Math.round(total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)+ valorConceptosIncrementados)
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceNoPagados.filter = filterValue.trim().toLowerCase();
+    this.dataSourcePagados.filter = filterValue.trim().toLowerCase();
   }
 
  // separarPagoConcepto

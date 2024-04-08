@@ -212,7 +212,6 @@ export class RegistrarpdvComponent implements OnInit {
     // this.inhabilitarPDV();
     // this.mostrarDatosPuntoVenta();
     // this.actualizarListaPuntosDeVenta();
-    this.valorTotalArriendo()
   }
 
   
@@ -1730,28 +1729,6 @@ consultarContratos() {
         this.dataSourceContratos.paginator = this.paginatorContratos;       
       }
     )
-  }
-
-  valorTotalArriendo() {
-    this.servicio.contratosAVencer().subscribe(
-      (res:any) => {
-        res.forEach((contrato: any) => {
-          console.log('CONTRATO A PAGAR:', totalAPagar);
-          var diaCorte = new Date(contrato.fecha_inicio_contrato).getDate() + 1;
-          console.log("DÍA CORTE", diaCorte);
-          var porcentajeIncrementos = (contrato.incremento + contrato.incremento_adicional)/100;
-          console.log("PORCENTAJE INCREMENTOS", porcentajeIncrementos);
-          var canonAntiguo = contrato.valor_canon - (contrato.valor_canon * porcentajeIncrementos);
-          console.log("CANON ANTIGUO", canonAntiguo);
-          var valorDiasCanonAntiguo = (canonAntiguo/30)*diaCorte;
-          console.log("VALOR DÍAS CANON ANTIGUO", valorDiasCanonAntiguo);
-          var valorDiasCanonNuevo = (contrato.valor_canon/30)*(30 - diaCorte);
-          console.log("VALOR DÍAS CANON NUEVO", valorDiasCanonNuevo);
-
-          var totalAPagar = valorDiasCanonAntiguo + valorDiasCanonNuevo;
-          console.log('TOTAL A PAGAR:', totalAPagar);
-        });
-      })
   }
 
   formatDate(date: Date): string {
