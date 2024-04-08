@@ -271,6 +271,10 @@ export class GeneralesService {
     return this.servicio.patch(this.api + "contrato/renovarcontrato", datos)
   }
 
+  contratosAVencer() {
+    return this.servicio.get(this.api + "contrato/contratosAVencer")
+  }
+
   // Creditos
   traerListaCreditos() {
     return this.servicio.get(this.api + "saldo-credito")

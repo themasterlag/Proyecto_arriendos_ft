@@ -194,19 +194,16 @@ export class PagosComponent implements OnInit {
     })
   }
   llenarTablas() {
-    if(
-        this.anio == 0 ||
-        this.mes == 0
-      ) {
-        Swal.fire("Debe seleccionar un periodo y un año valido", "", "info")
-        this.dataSourceNoPagados.data = null
-        this.dataSourcePagados.data = null
-      }else{
-        this.noPagadosEnviar = [];
-        this.pagoConcepto = []
-        this.traerNoPagados()
-        this.traerPagados()
-      }
+    if(this.anio == 0 || this.mes == 0) {
+      Swal.fire("Debe seleccionar un periodo y un año valido", "", "info")
+      this.dataSourceNoPagados.data = null
+      this.dataSourcePagados.data = null
+    }else {
+      this.noPagadosEnviar = [];
+      this.pagoConcepto = []
+      this.traerNoPagados()
+      this.traerPagados()
+    }
   }
 
   asignarConcepto(concepto) {

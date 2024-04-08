@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GeneralesService } from "app/services/generales.service";
 import { AutenticacionService } from "app/auth/autenticacion.service";
-import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Loading, Confirm } from "notiflix";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
@@ -212,6 +212,7 @@ export class RegistrarpdvComponent implements OnInit {
     // this.inhabilitarPDV();
     // this.mostrarDatosPuntoVenta();
     // this.actualizarListaPuntosDeVenta();
+    this.valorTotalArriendo()
   }
 
   
@@ -416,7 +417,7 @@ export class RegistrarpdvComponent implements OnInit {
     let fecha_inactivo = '';
     if (res.length > 1) {
       this.contratos_pdv = res.map((datoConsulta) => {
-        console.log("Contratos",res);
+        //console.log("Contratos",res);
         if (datoConsulta.contrato.fecha_inactivo != null) {
           fecha_inactivo = "(Inhabilitado)";
         } else {
@@ -1729,6 +1730,28 @@ consultarContratos() {
         this.dataSourceContratos.paginator = this.paginatorContratos;       
       }
     )
+  }
+
+  valorTotalArriendo() {
+    this.servicio.contratosAVencer().subscribe(
+      (res:any) => {
+        res.forEach((contrato: any) => {
+          console.log('CONTRATO A PAGAR:', totalAPagar);
+          var diaCorte = new Date(contrato.fecha_inicio_contrato).getDate() + 1;
+          console.log("DÍA CORTE", diaCorte);
+          var porcentajeIncrementos = (contrato.incremento + contrato.incremento_adicional)/100;
+          console.log("PORCENTAJE INCREMENTOS", porcentajeIncrementos);
+          var canonAntiguo = contrato.valor_canon - (contrato.valor_canon * porcentajeIncrementos);
+          console.log("CANON ANTIGUO", canonAntiguo);
+          var valorDiasCanonAntiguo = (canonAntiguo/30)*diaCorte;
+          console.log("VALOR DÍAS CANON ANTIGUO", valorDiasCanonAntiguo);
+          var valorDiasCanonNuevo = (contrato.valor_canon/30)*(30 - diaCorte);
+          console.log("VALOR DÍAS CANON NUEVO", valorDiasCanonNuevo);
+
+          var totalAPagar = valorDiasCanonAntiguo + valorDiasCanonNuevo;
+          console.log('TOTAL A PAGAR:', totalAPagar);
+        });
+      })
   }
 
   formatDate(date: Date): string {
