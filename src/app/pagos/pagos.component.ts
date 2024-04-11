@@ -383,19 +383,18 @@ export class PagosComponent implements OnInit {
       conceptosDeC = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
 
     
-    } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()){
+    } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()) {
       // Cuando estamos en un mes intermedio del contrato
       // Calcula una parte del canon sin incremento hasta la fecha de inicio del incremento 
       // y el resto con el incremento aplicado.
 
       // Calcular la parte antes del incremento
       // El valor del canon
-      var diaCorte = fechaInicioContrato.getDate();
-      total = (datos.valor_canon / 30) * diaCorte;
+      total = (datos.valor_canon / 30) * diasTrabajar;
 
       // valor de los conceptos antes del incremento
      
-      conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento, diasPago);
+      conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento, diasTrabajar);
     
       this.concepPre.push(conceptosAntesIncremento)
       console.log("Conceptos PreIncremento: ", conceptosAntesIncremento)
@@ -416,28 +415,34 @@ export class PagosComponent implements OnInit {
       let porcentaje = ((datos.incremento+datos.incremento_adicional) / 100)+1
       console.log("Porcentaje de incremento aplicado a conceptos: ", porcentaje);
 
-      datosConIncremento.conceptos = this.incrementoConceptos(datosConIncremento.conceptos,porcentaje)
+      datosConIncremento.conceptos = this.incrementoConceptos(datosConIncremento.conceptos, porcentaje);
 
-      conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasTrabajar);
+      conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasPago);
 
       this.noPagadosEnviar.push(datosConIncremento)
      
-      conceptosDespuesIncremento = this.incrementoConceptos(conceptosDespuesIncremento,porcentaje)
+      conceptosDespuesIncremento = this.incrementoConceptos(conceptosDespuesIncremento, porcentaje);
       this.concepPos.push(conceptosDespuesIncremento)
       // Se le suma la parte del canon con el incremento
 
       this.sumaPagoConcepto(this.concepPre, this.concepPos)
 
-      total+=(valorCanonConIncremento/30) * diasPago;
+      total += (valorCanonConIncremento/30) * diasPago;
       
       datos.canon = total
       this.canonIncremento = total
       
       // ahora se le setea los valores de los conceptos incrementados dependiendo si son dev o dec
-      conceptosDEVIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+      conceptosDEVIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
      
-      conceptosDeCIncremento= conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+      conceptosDeCIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
      
+      console.log("conceptosDEVIncremento", conceptosDEVIncremento);
+      console.log("conceptosDeCIncremento", conceptosDeCIncremento);
+      console.log("datos", datos);
+      console.log("conceptosAntesIncremento", conceptosAntesIncremento);
+      console.log("conceptosDespuesIncremento", conceptosDespuesIncremento);
+      
     } else {
       // Cuando se da cualquier otro caso
       // Se cobra el canon completo sin cambios.
@@ -465,7 +470,7 @@ export class PagosComponent implements OnInit {
 
  // separarPagoConcepto
 
-  ajusteConceptosATrabajar(conceptos:any,dias:any){
+  ajusteConceptosATrabajar(conceptos:any, dias:any){
     let conceptosTrabajados = conceptos
     // console.log('Dias a pagar: ', dias);
     
