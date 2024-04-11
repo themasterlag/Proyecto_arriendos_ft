@@ -1206,11 +1206,11 @@ export class PagosComponent implements OnInit {
     return conceptosValidados
   }
 
-  aplicarIncremento(pdv:any){
+  aplicarIncremento(idContrato:any){
     let listaInc = []
     // console.log("se aplica incremento");
     
-    let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.codigo_punto_venta == pdv)
+    let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.id_contrato == idContrato)
     // console.log(contratoIncremento);
     
     let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato)
@@ -1226,7 +1226,7 @@ export class PagosComponent implements OnInit {
         
         let calcularpost = (((contratoIncremento[0].valor_canon / 30) * diaspost) * (operacionIncremento + 1))
         // console.log('Valor dias con incremento',calcularpost);
-               
+        
         let sumaValoresCanon = calcularpre + calcularpost; 
         let conceptosDeducidos = 0
         let conceptosDevengados = 0
@@ -1303,14 +1303,15 @@ export class PagosComponent implements OnInit {
       return listaInc 
   }
 
+  // ------------------------- AQUI SE GENERAN LOS COMPROBANTES ---------------------------------------
 
   comprobantePdfNoPagados(base64, datos, tipoPago) {
-    console.log(datos, this.contatoPDF)
+    console.log("DATOS DEL CONTRATO GENERADO", datos, this.contatoPDF)
 
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_contrato == datos
     )
-    console.log(this.Pdv, "hola");
+    console.log("HOLA DESDE EL COMPROBANTE", this.Pdv );
     
     if (
       this.Pdv[0].autdetalle.clientedetalle.tipo_documento ==
@@ -1330,9 +1331,9 @@ export class PagosComponent implements OnInit {
     let total = 0
     let fechaPago = ""
 
-    let fechaIn = new Date(this.contatoPDF[0].fecha_inicio_contrato)
+    let fechaIn = new Date(this.contatoPDF[0].fecha_inicio_contrato + "T00:00:00")
 
-    let fechaFin = new Date(this.contatoPDF[0].fecha_fin_contrato)
+    let fechaFin = new Date(this.contatoPDF[0].fecha_fin_contrato + "T00:00:00")
 
     
     if(fechaIn.getFullYear() < this.anio && fechaIn.getMonth()+1 == this.mes && fechaFin.getFullYear() > this.anio && tipoPago == 1){
@@ -1345,17 +1346,20 @@ export class PagosComponent implements OnInit {
       conceptosDevengados = lista.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6        
       )
-      //  console.log(conceptosDevengados);      
+      console.log("Lista" + lista)
+      console.log("CONCEPTOS DEVENGADOS ", conceptosDevengados);      
       
       conceptosDeducidos = lista.filter(
         (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6      
       )
 
+      console.log("CONCEPTOS DEDUCIDOS ", conceptosDeducidos);  
+
       totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
 
       totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.canonIncremento);
       
-      //  console.log('ded', totalDeduccion, '\n dev', totalDevengado);       
+      console.log('DEDUCCION', totalDeduccion, '\n DEVENGADO', totalDevengado);       
 
       total = Math.round(totalDevengado - totalDeduccion);
       
@@ -1364,7 +1368,7 @@ export class PagosComponent implements OnInit {
     }
      else if (tipoPago == 1) {
       // Se calculo el valor a pagar para el primer mes del contrato
-      // console.log("aquii el tipo pago 1");
+      console.log("TIPO DE PAGO 1");
       
       conceptosDevengados = this.Pdv[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
@@ -1386,6 +1390,7 @@ export class PagosComponent implements OnInit {
       totalDevengado = Math.round(totalDevengado);
     } else if (tipoPago == 2) {
       // console.log("Pagados blue label");
+      console.log("TIPO DE PAGO 2");
       
       conceptosDevengados = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
