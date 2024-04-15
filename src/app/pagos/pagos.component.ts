@@ -10,7 +10,7 @@ import * as pdfMake from "pdfmake/build/pdfmake"
 import * as pdfFonts from "pdfmake/build/vfs_fonts"
 declare var require: any
 const htmlToPdfmake = require("html-to-pdfmake")
-;(pdfMake as any).vfs = pdfFonts.pdfMake.vfs
+  ; (pdfMake as any).vfs = pdfFonts.pdfMake.vfs
 import Swal from "sweetalert2"
 import { AngularCsv } from "angular-csv-ext/dist/Angular-csv"
 import * as XLSX from "xlsx"
@@ -60,7 +60,7 @@ export class PagosComponent implements OnInit {
     new MatTableDataSource<PeriodicElement>()
   dataSourcePagados: MatTableDataSource<PeriodicElement> =
     new MatTableDataSource<PeriodicElement>()
-  noPagadosEnviar : any[] = []
+  noPagadosEnviar: any[] = []
   concepPre: any[] = []
   concepPos: any[] = []
   pagoConcepto: any[] = []
@@ -73,13 +73,13 @@ export class PagosComponent implements OnInit {
   tipoPago: number = 0
   spinnerNomina: boolean = false;
 
-  constructor(private servicio: GeneralesService, public servicioAutenticacion: AutenticacionService) {}
+  constructor(private servicio: GeneralesService, public servicioAutenticacion: AutenticacionService) { }
 
   ngOnInit(): void {
     // Loading.pulse("Cargando")
     // Loading.remove()
     const currentYear = new Date().getFullYear()
-    for (let i = currentYear ; i >= currentYear-10; i--) {
+    for (let i = currentYear; i >= currentYear - 10; i--) {
       this.yearList.push(i)
     }
     // this.dataSource.paginator = this.paginator;
@@ -87,28 +87,28 @@ export class PagosComponent implements OnInit {
   }
 
 
-  tipoCheck(){
+  tipoCheck() {
     let cantidad = this.responsableTablaNoPagados
       .filter((responsable) => responsable["Check"]).length;
 
     if (cantidad == this.responsableTablaNoPagados.length) {
       return "todos"
     }
-    else if (cantidad > 0){
+    else if (cantidad > 0) {
       return "intermedio"
     }
-    else{
+    else {
       "nada"
     }
   }
 
-  toggleAllRows(){
+  toggleAllRows() {
     if (this.tipoCheck() == "todos") {
       this.responsableTablaNoPagados.forEach(element => {
         element.Check = false;
       });
     }
-    else{
+    else {
       this.responsableTablaNoPagados.forEach(element => {
         element.Check = true;
       });
@@ -143,7 +143,7 @@ export class PagosComponent implements OnInit {
     this.validaciondatos()
   }
 
-  
+
 
   validaciondatos() {
     if (this.anio != 0 && this.mes != 0) {
@@ -177,7 +177,7 @@ export class PagosComponent implements OnInit {
       //   this.aplicarIncremento(sitioVenta)
       // } else 
       if (this.contatoPDF != null && tipoPago != 4) {
-        this.comprobantePdfNoPagados(base64, idContrato, tipoPago)        
+        this.comprobantePdfNoPagados(base64, idContrato, tipoPago)
       } else Swal.fire("No hay contratos", "", "error")
     })
   }
@@ -194,11 +194,11 @@ export class PagosComponent implements OnInit {
     })
   }
   llenarTablas() {
-    if(this.anio == 0 || this.mes == 0) {
+    if (this.anio == 0 || this.mes == 0) {
       Swal.fire("Debe seleccionar un periodo y un año valido", "", "info")
       this.dataSourceNoPagados.data = null
       this.dataSourcePagados.data = null
-    }else {
+    } else {
       this.noPagadosEnviar = [];
       this.pagoConcepto = []
       this.traerNoPagados()
@@ -274,14 +274,14 @@ export class PagosComponent implements OnInit {
     }
     this.servicio.traerListaPagos(datosConsulta).subscribe(
       (res: any) => {
-       this.concepPre = []
-       this.concepPos = []
+        this.concepPre = []
+        this.concepPos = []
         this.noPagadosLista = res
         // console.log("NO PAGADOS", this.noPagadosLista);
-        
-        this.responsableTablaNoPagados = res.map((e:any) => {
-          
-          let totalValor = this.CalcularValorTablas(e); 
+
+        this.responsableTablaNoPagados = res.map((e: any) => {
+
+          let totalValor = this.CalcularValorTablas(e);
           return {
             idContrato: e.id_contrato,
             Check: true,
@@ -305,7 +305,7 @@ export class PagosComponent implements OnInit {
   CalcularValorTablas(datos: any) {
     let total = 0
     let fechaInicioContrato = new Date(datos.fecha_inicio_contrato + "T00:00:00")
-    let fechaFinContrato = new Date(datos.fecha_fin_contrato  + "T00:00:00")
+    let fechaFinContrato = new Date(datos.fecha_fin_contrato + "T00:00:00")
     let conceptosDEV = []
     let conceptosDeC = []
     //let canonaPagar: number = 0
@@ -326,12 +326,12 @@ export class PagosComponent implements OnInit {
     //console.log("Fecha Fin Contrato: ", fechaFinContrato)
     // Calcular Días con y sin Incremento
     // DIAS ANTES DEL INCREMENTO
-    let diasTrabajar = fechaInicioContrato.getDate() 
+    let diasTrabajar = fechaInicioContrato.getDate()
     // DIAS DESPUES DEL INCREMENTO
     let diasPago = 30 - fechaInicioContrato.getDate()
     //console.log("Dias a trabajar (sin incremento): ", diasTrabajar);
     //console.log("Dias de pago (con incremento): ", diasPago);
-    
+
     // Aplicar el Incremento a Partir de fechaInicioContrato 
     // Calcula el canon por los días restantes del mes.
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
@@ -340,35 +340,35 @@ export class PagosComponent implements OnInit {
       conceptosAntesIncremento = this.ajusteConceptosATrabajar(datos.conceptos, diasTrabajar)
 
       this.pagoConcepto.push(conceptosAntesIncremento)
-          
+
       conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499)
-   
+
       conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
-      
-    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
+
+    } else if (fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes) {
       // Cuando el fin de contrato es en el mes actual
       // Calcula el canon solo hasta la fecha de finalización.
-      datos.canon = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
-      total = (datos.valor_canon / 30) * (fechaFinContrato.getDate()+1)
+      datos.canon = (datos.valor_canon / 30) * (fechaFinContrato.getDate() + 1)
+      total = (datos.valor_canon / 30) * (fechaFinContrato.getDate() + 1)
       for (let i = 0; i < conceptosAjuste.length; i++) {
-        conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)    
-      }      
-      
+        conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)
+      }
+
       this.pagoConcepto.push(conceptosAjuste)
 
       conceptosDEV = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
-     
+
       conceptosDeC = conceptosAjuste.filter((concepto) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
 
-    
-    } else if(fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()) {
 
-      let hoy =  new Date();
-      let mesHoy = hoy.getMonth();
+    } else if (fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getFullYear() < this.anio && this.anio < fechaFinContrato.getFullYear()) {
+
+      let hoy = new Date();
+      let mesHoy = hoy.getMonth() + 1;
       let diaHoy = hoy.getDate();
 
-      if(fechaInicioContrato.getMonth() <= mesHoy && fechaInicioContrato.getDate() <= diaHoy) {
-        var porcentajeIncrementos = (datos.incremento + datos.incremento_adicional)/100;
+      if (fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getDate() <= diaHoy) {
+        var porcentajeIncrementos = (datos.incremento + datos.incremento_adicional) / 100;
         var valorCanonAntiguo = datos.valor_canon - (datos.valor_canon * porcentajeIncrementos);
         datosConIncremento.valor_canon = Math.round(valorCanonAntiguo);
         total = (valorCanonAntiguo / 30) * diasTrabajar;
@@ -378,21 +378,21 @@ export class PagosComponent implements OnInit {
         conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento, diasTrabajar);
         this.noPagadosEnviar.push(datosConIncremento)
         this.concepPos.push(conceptosAntesIncremento)
-        
+
         conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasPago);
         this.concepPre.push(conceptosDespuesIncremento);
-        conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
-        conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+        conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+        conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
 
         this.sumaPagoConcepto(this.concepPre, this.concepPos)
 
-        total += (datos.valor_canon/30) * diasPago;
-      
+        total += (datos.valor_canon / 30) * diasPago;
+
         datos.canon = total
 
-        conceptosDEVIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
-      
-        conceptosDeCIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+        conceptosDEVIncremento = conceptosDespuesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+
+        conceptosDeCIncremento = conceptosDespuesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
       }
       else {
 
@@ -403,10 +403,10 @@ export class PagosComponent implements OnInit {
         conceptosAntesIncremento = this.ajusteConceptosATrabajar(conceptosAntesIncremento, diasTrabajar);
         // Agregar a conceptos antes los valores antes del incremento
         this.concepPre.push(conceptosAntesIncremento)
-        
-        conceptosDEV = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)         
-        conceptosDeC = conceptosAntesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
-        
+
+        conceptosDEV = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+        conceptosDeC = conceptosAntesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+
         let valorCanonConIncremento = ((((datos.incremento + datos.incremento_adicional) / 100) * datos.valor_canon) + datos.valor_canon)
         datosConIncremento.valor_canon = Math.round(valorCanonConIncremento);
 
@@ -414,19 +414,19 @@ export class PagosComponent implements OnInit {
 
         datosConIncremento.conceptos = this.incrementoConceptos(datosConIncremento.conceptos, porcentaje);
         this.noPagadosEnviar.push(datosConIncremento)
-      
+
         conceptosDespuesIncremento = this.ajusteConceptosATrabajar(conceptosDespuesIncremento, diasPago);
         conceptosDespuesIncremento = this.incrementoConceptos(conceptosDespuesIncremento, porcentaje);
         this.concepPos.push(conceptosDespuesIncremento)
 
         this.sumaPagoConcepto(this.concepPre, this.concepPos)
-        total += (valorCanonConIncremento/30) * diasPago;      
+        total += (valorCanonConIncremento / 30) * diasPago;
         datos.canon = total
         this.canonIncremento = total
 
-        conceptosDEVIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)   
-        conceptosDeCIncremento = conceptosDespuesIncremento.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
-      } 
+        conceptosDEVIncremento = conceptosDespuesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+        conceptosDeCIncremento = conceptosDespuesIncremento.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+      }
     } else {
       // Cuando se da cualquier otro caso
       // Se cobra el canon completo sin cambios.
@@ -434,16 +434,16 @@ export class PagosComponent implements OnInit {
       datos.canon = total
       this.pagoConcepto.push(datos.conceptos)
 
-      conceptosDEV = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
+      conceptosDEV = datos.conceptos.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto <= 499 && concepto.conceptodetalle.tipo_concepto != 6)
 
-      conceptosDeC = datos.conceptos.filter((concepto:any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
+      conceptosDeC = datos.conceptos.filter((concepto: any) => concepto.conceptodetalle.codigo_concepto > 499 || concepto.conceptodetalle.tipo_concepto == 6)
     }
 
-    let valorConceptosIncrementados = this.valorTotalConceptos(conceptosDEVIncremento,1)-this.valorTotalConceptos(conceptosDeCIncremento,1)+0
-    datos.total = (total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)+ valorConceptosIncrementados)
-    console.log("--------- PUNTO DE VENTA", datos.codigo_punto_venta, "--------- \n", 
-    "Total final a pagar: ", datos.total, "--------- \n","Total canon: ", datos.valor_canon);
-    return Math.round(total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1)+ valorConceptosIncrementados)
+    let valorConceptosIncrementados = this.valorTotalConceptos(conceptosDEVIncremento, 1) - this.valorTotalConceptos(conceptosDeCIncremento, 1) + 0
+    datos.total = (total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1) + valorConceptosIncrementados)
+    console.log("--------- PUNTO DE VENTA", datos.codigo_punto_venta, "--------- \n",
+      "Total final a pagar: ", datos.total, "--------- \n", "Total canon: ", datos.valor_canon);
+    return Math.round(total + this.valorTotalConceptos(conceptosDEV, 1) - this.valorTotalConceptos(conceptosDeC, 1) + valorConceptosIncrementados)
   }
 
   applyFilter(event: Event) {
@@ -452,42 +452,42 @@ export class PagosComponent implements OnInit {
     this.dataSourcePagados.filter = filterValue.trim().toLowerCase();
   }
 
- // separarPagoConcepto
+  // separarPagoConcepto
 
-  ajusteConceptosATrabajar(conceptos:any, dias:any){
+  ajusteConceptosATrabajar(conceptos: any, dias: any) {
     let conceptosTrabajados = conceptos
     // console.log('Dias a pagar: ', dias);
-    
-    for (let index = 0; index < conceptosTrabajados.length; index++) {     
-      
+
+    for (let index = 0; index < conceptosTrabajados.length; index++) {
+
       conceptosTrabajados[index].valor = (conceptosTrabajados[index].valor / 30) * dias
-      
+
     }
     return conceptosTrabajados
   }
 
-  incrementoConceptos(conceptos:any, porcentajeIncremento:any) {
+  incrementoConceptos(conceptos: any, porcentajeIncremento: any) {
     let conceptosAjustados = conceptos
-    let valorConfigurado =  porcentajeIncremento
-    for(let i = 0; i<conceptosAjustados.length; i++) {
-       if(conceptosAjustados[i].conceptodetalle.incremento == 1 || conceptosAjustados[i].conceptodetalle.tipo_concepto == 5) {
+    let valorConfigurado = porcentajeIncremento
+    for (let i = 0; i < conceptosAjustados.length; i++) {
+      if (conceptosAjustados[i].conceptodetalle.incremento == 1 || conceptosAjustados[i].conceptodetalle.tipo_concepto == 5) {
         conceptosAjustados[i].valor = conceptosAjustados[i].valor * valorConfigurado
       }
     }
     return conceptosAjustados
   }
 
-  disminucionConceptos(conceptos:any, porcentajeDisminucion:any) {
-    for(let i = 0; i<conceptos.length; i++) {
-       if(conceptos[i].conceptodetalle.incremento == 1 || conceptos[i].conceptodetalle.tipo_concepto == 5) {
-        conceptos[i].valor = conceptos[i].valor - (conceptos[i].valor * porcentajeDisminucion) 
+  disminucionConceptos(conceptos: any, porcentajeDisminucion: any) {
+    for (let i = 0; i < conceptos.length; i++) {
+      if (conceptos[i].conceptodetalle.incremento == 1 || conceptos[i].conceptodetalle.tipo_concepto == 5) {
+        conceptos[i].valor = conceptos[i].valor - (conceptos[i].valor * porcentajeDisminucion)
       }
     }
     return conceptos
   }
 
 
-  informacionContrato(){
+  informacionContrato() {
     let operacionConcepto;
     let conceptosActualizar = [];
     for (let index = 0; index < this.noPagadosLista.length; index++) {
@@ -499,26 +499,26 @@ export class PagosComponent implements OnInit {
       for (let i = 0; i < elementLista.conceptos.length; i++) {
         const conceptos = elementLista.conceptos[i];
 
-        if(fecha_inicio.getFullYear() == this.anio && (fecha_inicio.getMonth() +1) == this.mes){
-          operacionConcepto = ((conceptos.valor / 30) * diasTrabajar).toFixed(1);  
+        if (fecha_inicio.getFullYear() == this.anio && (fecha_inicio.getMonth() + 1) == this.mes) {
+          operacionConcepto = ((conceptos.valor / 30) * diasTrabajar).toFixed(1);
 
           let idPagoarriendo = this.pagoArriendo.filter((element) => element.id_contrato == elementLista.id_contrato)
           // console.log(idPagoarriendo, "Filtro");
-          
+
           conceptosActualizar.push({
             id_concepto: conceptos.id_concepto,
             valor: (parseFloat(operacionConcepto)),
             id_pago_arriendo: idPagoarriendo[0].id_pago_arriendo
           })
 
-        }                
-      }             
+        }
+      }
     }
     this.servicio.actuallizarContratos(conceptosActualizar).subscribe(
-      (res:any) => {
+      (res: any) => {
         // console.log(res);        
       }
-    )    
+    )
     // console.log(conceptosActualizar);    
   }
 
@@ -565,7 +565,7 @@ export class PagosComponent implements OnInit {
           new Date(this.anio, this.mes - 1, 1)
         )
         // console.log(nopagados);
-        
+
 
         const listaEnviar = nopagados.map((element) => {
           return {
@@ -582,13 +582,12 @@ export class PagosComponent implements OnInit {
           }
         })
         console.log(listaEnviar);
-        let noPagadosActualizar = this.noPagadosEnviar.filter((noPagadoEnv) =>
-          { 
-            let che =
-            nopagados.find((noPagado) => 
-            noPagado.codigo_punto_venta == noPagadoEnv.codigo_punto_venta );
-            return che
-          }          
+        let noPagadosActualizar = this.noPagadosEnviar.filter((noPagadoEnv) => {
+          let che =
+            nopagados.find((noPagado) =>
+              noPagado.codigo_punto_venta == noPagadoEnv.codigo_punto_venta);
+          return che
+        }
         )
         console.log(listaEnviar);
         // return true;
@@ -602,7 +601,7 @@ export class PagosComponent implements OnInit {
             this.llenarTablas();
             //Servicio que actualiza el servicio el contrato que tuvo incremento
             this.servicio.actualizarContrato(noPagadosActualizar).subscribe(
-              (res:any) => {
+              (res: any) => {
               },
               (err: any) => {
                 console.error(err)
@@ -617,11 +616,11 @@ export class PagosComponent implements OnInit {
     })
   }
 
-  encontrarConceptosContrato(idContrato){
-    let encontrado =  false;
+  encontrarConceptosContrato(idContrato) {
+    let encontrado = false;
     let listaConceptos = [];
     for (let i = 0; i < this.pagoConcepto.length && !encontrado; i++) {
-      if(idContrato == this.pagoConcepto[i][0]["id_contrato"]){
+      if (idContrato == this.pagoConcepto[i][0]["id_contrato"]) {
         encontrado = true;
         listaConceptos.push(this.pagoConcepto[i])
       }
@@ -629,18 +628,18 @@ export class PagosComponent implements OnInit {
     return listaConceptos;
   }
 
-  sumaPagoConcepto(pre:any[], post:any[]){
-    
-    
-    let total:any[] = []
+  sumaPagoConcepto(pre: any[], post: any[]) {
+
+
+    let total: any[] = []
     // sumar pre[i][j].valor + post[i][j].valor => pre[i][j].id_contrato == post[i][j].id_contrato
     // almacenar total =[{ id_concepto, valor}]
     for (let i = 0; i < pre.length; i++) {
       for (let j = 0; j < pre[i].length; j++) {
-          let sum = Math.floor(pre[i][j].valor + post[i][j].valor);
-          total.push({ conceptodetalle:post[i][j]["conceptodetalle"], id_contrato_concepto:post[i][j]["id_contrato_concepto"], id_contrato: pre[i][j].id_contrato, id_concepto:  pre[i][j].id_concepto, valor: sum });
+        let sum = Math.floor(pre[i][j].valor + post[i][j].valor);
+        total.push({ conceptodetalle: post[i][j]["conceptodetalle"], id_contrato_concepto: post[i][j]["id_contrato_concepto"], id_contrato: pre[i][j].id_contrato, id_concepto: pre[i][j].id_concepto, valor: sum });
       }
-    }   
+    }
     this.pagoConcepto.push(total)
   }
 
@@ -677,7 +676,7 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  generarCsv(tipo:any) {
+  generarCsv(tipo: any) {
     let data = []
     let puntosV = []
 
@@ -729,7 +728,7 @@ export class PagosComponent implements OnInit {
   //   )    
   // }
 
-  generarBase64(element:any, tipoPago:number) {
+  generarBase64(element: any, tipoPago: number) {
     const imagePath = "../../assets/img/logo_pie_ganagana.png"
     this.servicio.traerBase64(imagePath).subscribe((blob) => {
       const reader = new FileReader()
@@ -739,13 +738,13 @@ export class PagosComponent implements OnInit {
         console.log("Tipo del pago: ", element)
         if (tipoPago == 1) {
           this.traerContratoPDF(element.idContrato, base64, tipoPago)
-        } else {this.traerContratoPagadoPDF(element.id_contrato, base64, tipoPago)}
+        } else { this.traerContratoPagadoPDF(element.id_contrato, base64, tipoPago) }
       }
     })
     // this.traerInformacionIncremento(element);
   }
 
-  darEstructuraNomina(tipo:any, datos:any) {
+  darEstructuraNomina(tipo: any, datos: any) {
     try {
       if (tipo == 0) {
         datos = datos.map((element, i) => {
@@ -753,7 +752,7 @@ export class PagosComponent implements OnInit {
           for (let j = 0; j < element.conceptos.length; j++) {
             let conceptoPago = [];
             this.pagoConcepto.forEach((conceptos) => {
-              let concepts = conceptos.filter((concepto)=> concepto.id_contrato == element.id_contrato);
+              let concepts = conceptos.filter((concepto) => concepto.id_contrato == element.id_contrato);
               if (concepts.length > 0) {
                 conceptoPago = (concepts);
               }
@@ -764,11 +763,11 @@ export class PagosComponent implements OnInit {
           return {
             // NO PAGADOS
             num_contrato: element.id_contrato,
-  
+
             cod_punto_venta:
               element.pvdetalle.codigo_sitio_venta,
             punto_venta: element.pvdetalle.nombre_comercial,
-  
+
             valor_canon: this.valorCanon(element.valor_canon),
             // incremento_anual: element.incremento_anual,
             // incremento_adicional: element.incremento_adicional,
@@ -778,7 +777,7 @@ export class PagosComponent implements OnInit {
             // valor_adminstracion: element.valor_adminstracion,
             // definicion: element.definicion,
             // poliza: element.poliza,
-  
+
             responsable_nit:
               element.responsabledetalle.clientedetalle
                 .numero_documento,
@@ -786,8 +785,8 @@ export class PagosComponent implements OnInit {
               .razon_social
               ? element.responsabledetalle.clientedetalle.razon_social
               : element.responsabledetalle.clientedetalle.nombres + " " +
-                element.responsabledetalle.clientedetalle.apellidos,
-                
+              element.responsabledetalle.clientedetalle.apellidos,
+
             // autorizado_nit:
             //   element.autdetalle.clientedetalle
             //     .numero_documento,
@@ -798,30 +797,30 @@ export class PagosComponent implements OnInit {
             //     element.autdetalle.clientedetalle.apellidos,
             autorizado_nit:
               element.autdetalle?.clientedetalle?.numero_documento ?? 'Valor por defecto',
-              autorizado: element.autdetalle?.clientedetalle?.razon_social
+            autorizado: element.autdetalle?.clientedetalle?.razon_social
               ? element.autdetalle.clientedetalle.razon_social
               : `${element.autdetalle?.clientedetalle?.nombres ?? ''} 
               ${element.autdetalle?.clientedetalle?.apellidos ?? ''}`.trim() || 'Valor por defecto',
             // fecha_inactivo: element.fecha_inactivo,
             // razon_inactivo: element.razon_inactivo,
-  
-              conceptos: element.conceptos,
+
+            conceptos: element.conceptos,
           }
         })
-      } else if (tipo == 1){
+      } else if (tipo == 1) {
         datos = datos.map((element) => {
           return {
             // PAGADOS
             codigo_verificacion: element.codigo_verificacion,
             num_contrato: element.id_contrato,
-  
+
             cod_punto_venta:
               element.pagodetalle[0].pvdetalle
                 .codigo_sitio_venta,
             punto_venta:
               element.pagodetalle[0].pvdetalle
                 .nombre_comercial,
-  
+
             valor_canon: element.canon,
             fecha_pago: element.fecha_pago,
             // incremento_anual: element.incremento_anual,
@@ -832,7 +831,7 @@ export class PagosComponent implements OnInit {
             valor_adminstracion: element.valor_adminstracion,
             definicion: element.defiicion,
             poliza: element.poliza,
-  
+
             responsable_nit:
               element.pagodetalle[0].responsabledetalle.clientedetalle
                 .numero_documento,
@@ -842,7 +841,7 @@ export class PagosComponent implements OnInit {
             //       .razon_social
             //   : element.pagodetalle[0].responsabledetalle.clientedetalle.nombres +
             //     element.pagodetalle[0].responsabledetalle.clientedetalle.apellidos,
-  
+
             // autorizado_nit:
             //   element.pagodetalle[0].autdetalle.clientedetalle
             //     .numero_documento,
@@ -852,12 +851,12 @@ export class PagosComponent implements OnInit {
             //       .razon_social
             //   : element.pagodetalle[0].autdetalle.clientedetalle.nombres +
             //     element.pagodetalle[0].autdetalle.clientedetalle.apellidos,
-  
+
             conceptos: element.conceptos,
           }
         })
       }
-  
+
       console.log(datos);
       return datos
     } catch (error) {
@@ -880,7 +879,7 @@ export class PagosComponent implements OnInit {
   }
 
 
-  generarPreNominaHorizontal(tipo){
+  generarPreNominaHorizontal(tipo) {
     this.spinnerNomina = true;
     let listaSeleccionados = null;
 
@@ -906,7 +905,7 @@ export class PagosComponent implements OnInit {
         res[0].valor_concepto = 0
         let headers = Object.keys(res[0]);
         let worksheet = XLSX.utils.aoa_to_sheet([headers]);
-        headers.splice(this.buscarColumna(headers, "conceptos"),2);
+        headers.splice(this.buscarColumna(headers, "conceptos"), 2);
         let totales = [];
         // console.log( "Estos son los headers HORIZONTAL", headers )
 
@@ -915,29 +914,29 @@ export class PagosComponent implements OnInit {
           let devengados = 0;
           let deducciones = 0;
           for (let j = 0; j < conceptos.length; j++) {
-            if (!headers.find((conc)=> conceptos[j].conceptodetalle.nombre_concepto == conc)) {
+            if (!headers.find((conc) => conceptos[j].conceptodetalle.nombre_concepto == conc)) {
               headers.push(conceptos[j].conceptodetalle.nombre_concepto);
             }
 
             res[i].conceptos = conceptos[j].conceptodetalle.nombre_concepto;
             res[i].valor_concepto =
               tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
-            res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
+            res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499 ? res[i].valor_concepto * -1 : res[i].valor_concepto
             conceptos[j].valor_concepto = res[i].valor_concepto;
 
             if (conceptos[j].conceptodetalle.tipo_concepto != 5) {
               if (conceptos[j].valor_concepto < 0) {
                 deducciones += conceptos[j].valor_concepto;
               }
-              else{
+              else {
                 devengados += conceptos[j].valor_concepto;
               }
             }
-            
+
             delete res[i].conceptos;
             delete res[i].valor_concepto;
 
-            headers.forEach(element => {   
+            headers.forEach(element => {
               if (!res[i][element]) {
                 res[i][element] = "----------";
               }
@@ -946,15 +945,15 @@ export class PagosComponent implements OnInit {
               }
             });
           }
-          totales.push({devengado:devengados, deduccion:deducciones})
+          totales.push({ devengado: devengados, deduccion: deducciones })
         }
 
-        headers.push("Total_devengado","Total_deduccion", "Total");
-        headers.push("Total_devengado","Total_deduccion");
+        headers.push("Total_devengado", "Total_deduccion", "Total");
+        headers.push("Total_devengado", "Total_deduccion");
 
         for (let i = 0; i < res.length; i++) {
           const fila = res[i];
-          headers.forEach(element => {   
+          headers.forEach(element => {
             if (!fila[element]) {
               fila[element] = "----------";
             }
@@ -964,15 +963,15 @@ export class PagosComponent implements OnInit {
           fila["Total_deduccion"] = totales[i].deduccion;
           fila["Total"] = fila.valor_canon + totales[i].devengado + totales[i].deduccion;
         }
-        
+
         worksheet = XLSX.utils.aoa_to_sheet([headers]);
 
         XLSX.utils.sheet_add_json(worksheet, res, {
           skipHeader: true,
           origin: -1,
         });
-        
-        workbook["Props"] = { 
+
+        workbook["Props"] = {
           Author: "Generado por Software arriendos",
           CreatedDate: new Date()
         };
@@ -1003,7 +1002,7 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  generarPreNomina(tipo:any) {
+  generarPreNomina(tipo: any) {
     this.spinnerNomina = true;
     let listaSeleccionados = null;
 
@@ -1045,7 +1044,7 @@ export class PagosComponent implements OnInit {
             res[i].conceptos = conceptos[j].conceptodetalle.nombre_concepto;
             res[i].valor_concepto =
               tipo == 0 ? conceptos[j].valor : conceptos[j].pago_concepto_valor
-            res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499? res[i].valor_concepto * -1 : res[i].valor_concepto
+            res[i].valor_concepto = conceptos[j].conceptodetalle.codigo_concepto > 499 ? res[i].valor_concepto * -1 : res[i].valor_concepto
             XLSX.utils.sheet_add_json(worksheet, [res[i]], {
               skipHeader: true,
               origin: -1,
@@ -1061,7 +1060,7 @@ export class PagosComponent implements OnInit {
           }
         }
 
-        workbook["Props"] = { 
+        workbook["Props"] = {
           Author: "Generado por Software Nexus",
           CreatedDate: new Date()
         };
@@ -1092,7 +1091,7 @@ export class PagosComponent implements OnInit {
     )
   }
 
-  organizarConceptos(conceptos:any, tipoPago:number) {
+  organizarConceptos(conceptos: any, tipoPago: number) {
     let lista = []
     if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
@@ -1110,12 +1109,12 @@ export class PagosComponent implements OnInit {
       return lista
     }
   }
-  darvalorConceptos(conceptos:any, tipoPago:number) {
+  darvalorConceptos(conceptos: any, tipoPago: number) {
     let lista = []
     if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
-        if(tipoPago == 3){
-          let valorSinDecimales = Math.round(conceptos[index].valor_incremento);        
+        if (tipoPago == 3) {
+          let valorSinDecimales = Math.round(conceptos[index].valor_incremento);
           lista.push({
             text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
           })
@@ -1124,38 +1123,38 @@ export class PagosComponent implements OnInit {
           lista.push({
             text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
           })
-        }        
+        }
       }
       return lista
     } else {
       for (let index = 0; index < conceptos.length; index++) {
         let valorSinDecimales = Math.round(conceptos[index].pago_concepto_valor);
         lista.push({
-        text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
+          text: `\n  ${valorSinDecimales.toLocaleString("es-ES")}`,
         })
       }
       return lista
     }
   }
-  valorTotalConceptos(conceptos:any, tipoPago:number) {
+  valorTotalConceptos(conceptos: any, tipoPago: number) {
     let total = 0
 
     if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
-        if (tipoPago == 3){
-          if (!(conceptos[index].conceptodetalle.tipo_concepto == 5)){
+        if (tipoPago == 3) {
+          if (!(conceptos[index].conceptodetalle.tipo_concepto == 5)) {
             total += (conceptos[index].valor_incremento)
-          } else if ((conceptos[index].conceptodetalle.tipo_concepto == 5)) { 
+          } else if ((conceptos[index].conceptodetalle.tipo_concepto == 5)) {
             total += (conceptos[index].valor_incremento)
           }
           // console.log(conceptos[index].valor_incremento);
         } else {
           if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
-          total += (conceptos[index].valor)
+            total += (conceptos[index].valor)
         }
       }
       return Math.round(total)
-      
+
     } else {
       for (let index = 0; index < conceptos.length; index++) {
         if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
@@ -1164,144 +1163,233 @@ export class PagosComponent implements OnInit {
       return Math.round(total)
     }
   }
-  valorCanon(valorCanon:number) {
+  valorCanon(valorCanon: number) {
     let total = 0
     let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato + "T00:00:00")
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato  + "T00:00:00")
-    
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato + "T00:00:00")
+
     let diasTrabajar = 30 - (fechaInicioContrato.getDate())
     // console.log(diasTrabajar);
-    
+
 
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       total = ((valorCanon / 30) * diasTrabajar)
-    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ){
+    } else if (fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes) {
       total = ((valorCanon / 30) * fechaFinContrato.getDate())
     } else {
       total = valorCanon
     }
     // console.log(total);
-    
+
     return total
   }
-  validarValorTrabajarConceptos(conceptos:any) {
+  validarValorTrabajarConceptos(conceptos: any) {
     let conceptosValidados = conceptos
     let total = 0
-    let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato  + "T00:00:00")
-    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato  + "T00:00:00")
-       
+    let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato + "T00:00:00")
+    let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato + "T00:00:00")
+
     let diasTrabajar = 30 - fechaInicioContrato.getDate()
 
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
-        conceptosValidados = this.ajusteConceptosATrabajar(conceptosValidados,diasTrabajar)
+      conceptosValidados = this.ajusteConceptosATrabajar(conceptosValidados, diasTrabajar)
       // conceptosValidados = conceptos
-    } else if(fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes ) {
+    } else if (fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes) {
       // total = ((valorCanon / 30) * fechaFinContrato.getDate()+1)
       conceptosValidados = this.ajusteConceptosATrabajar(conceptosValidados, fechaFinContrato.getDate())
       // console.log("fecha fin", fechaFinContrato.getDate()+1);      
-      
+
     } else {
       conceptosValidados = conceptos
     }
-    
-    
+
+
     return conceptosValidados
   }
 
-  aplicarIncremento(idContrato:any){
+  aplicarIncremento(idContrato: any) {
     let listaInc = []
     // console.log("se aplica incremento");
-    
+
     let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.id_contrato == idContrato)
     // console.log(contratoIncremento);
-    
+
     let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato + "T00:00:00")
-    
-    if(FechaInicio.getFullYear() < this.anio && FechaInicio.getMonth()+1 == this.mes)
-      {              
-        let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()))
-        // console.log('valor canon a dias',calcularpre);
-        
-        let diaspost = 30 - (FechaInicio.getDate())
-        let operacionIncremento = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100
-        // console.log(operacionIncremento.toFixed(4));
-        
-        let calcularpost = (((contratoIncremento[0].valor_canon / 30) * diaspost) * (operacionIncremento + 1))
-        // console.log('Valor dias con incremento',calcularpost);
-        
-        let sumaValoresCanon = calcularpre + calcularpost; 
-        let conceptosDeducidos = 0
-        let conceptosDevengados = 0
-        // console.log(this.contratoIncremento);   
-        this.contratoIncremento = sumaValoresCanon     
-        
-        let conceptoPre
-        let conceptoPost 
-        let sumaConceptoDev
-        let sumaConceptoDed
-        let totalConceptosDev = 0
-        let totalConceptosDed = 0
-        let totalContrato:number
 
-        // console.log(contratoIncremento[0].conceptos)
+    if (FechaInicio.getFullYear() < this.anio && FechaInicio.getMonth() + 1 == this.mes) {
+      let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()))
+      // console.log('valor canon a dias',calcularpre);
 
-        for (let index = 0; index < contratoIncremento[0].conceptos.length; index++) {
-          const element = contratoIncremento[0].conceptos;
-          
-          if(element[index].conceptodetalle.incremento == 1 && element[index].conceptodetalle.tipo_concepto != 5){
-            if(element[index].conceptodetalle.codigo_concepto <= 499){
-              let actual = element[index]
-              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
-              conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento+1)) 
-              sumaConceptoDev = conceptoPre + conceptoPost
-              totalConceptosDev += sumaConceptoDev
-              actual.valor_incremento = sumaConceptoDev
-              listaInc.push(actual)
-              // console.log(actual.valor_incremento);
-              
-              // console.log(parseInt(sumaConceptoDev), "incremento dev");              
-            } else {
-              let actual = element[index]
-              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
-              conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1)) 
-              sumaConceptoDed = conceptoPre + conceptoPost
-              // console.log(sumaConceptoDed);              
-              totalConceptosDed += sumaConceptoDed
-              actual.valor_incremento = sumaConceptoDed
-              // console.log(actual.valor_incremento);
-              
-              
-              listaInc.push(actual)
-              // console.log(parseInt(sumaConceptoDed), "incremento ded");              
-            }
-          } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto <= 499) {
+      let diaspost = 30 - (FechaInicio.getDate())
+      let operacionIncremento = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100
+      // console.log(operacionIncremento.toFixed(4));
+
+      let calcularpost = (((contratoIncremento[0].valor_canon / 30) * diaspost) * (operacionIncremento + 1))
+      // console.log('Valor dias con incremento',calcularpost);
+
+      let sumaValoresCanon = calcularpre + calcularpost;
+      let conceptosDeducidos = 0
+      let conceptosDevengados = 0
+      // console.log(this.contratoIncremento);   
+      this.contratoIncremento = sumaValoresCanon
+
+      let conceptoPre
+      let conceptoPost
+      let sumaConceptoDev
+      let sumaConceptoDed
+      let totalConceptosDev = 0
+      let totalConceptosDed = 0
+      let totalContrato: number
+
+      // console.log(contratoIncremento[0].conceptos)
+
+      for (let index = 0; index < contratoIncremento[0].conceptos.length; index++) {
+        const element = contratoIncremento[0].conceptos;
+
+        if (element[index].conceptodetalle.incremento == 1 && element[index].conceptodetalle.tipo_concepto != 5) {
+          if (element[index].conceptodetalle.codigo_concepto <= 499) {
             let actual = element[index]
-            conceptosDevengados += element[index].valor
-            actual.valor_incremento = element[index].valor
+            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
+            conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1))
+            sumaConceptoDev = conceptoPre + conceptoPost
+            totalConceptosDev += sumaConceptoDev
+            actual.valor_incremento = sumaConceptoDev
             listaInc.push(actual)
-            // console.log(parseInt(element[index].valor.toFixed(0)), "concepto dev");            
-          } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto > 499){
+            // console.log(actual.valor_incremento);
+
+            // console.log(parseInt(sumaConceptoDev), "incremento dev");              
+          } else {
             let actual = element[index]
-            conceptosDeducidos += element[index].valor
-            actual.valor_incremento = element[index].valor  
+            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
+            conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1))
+            sumaConceptoDed = conceptoPre + conceptoPost
+            // console.log(sumaConceptoDed);              
+            totalConceptosDed += sumaConceptoDed
+            actual.valor_incremento = sumaConceptoDed
+            // console.log(actual.valor_incremento);
+
+
             listaInc.push(actual)
-            // console.log(parseInt(element[index].valor), "concepto ded");            
-          } else if (element[index].conceptodetalle.tipo_concepto == 5) {
-            let actual = element[index]
-            actual.valor_incremento = this.contratoIncremento
-            listaInc.push(actual)
-          } 
+            // console.log(parseInt(sumaConceptoDed), "incremento ded");              
+          }
+        } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto <= 499) {
+          let actual = element[index]
+          conceptosDevengados += element[index].valor
+          actual.valor_incremento = element[index].valor
+          listaInc.push(actual)
+          // console.log(parseInt(element[index].valor.toFixed(0)), "concepto dev");            
+        } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto > 499) {
+          let actual = element[index]
+          conceptosDeducidos += element[index].valor
+          actual.valor_incremento = element[index].valor
+          listaInc.push(actual)
+          // console.log(parseInt(element[index].valor), "concepto ded");            
+        } else if (element[index].conceptodetalle.tipo_concepto == 5) {
+          let actual = element[index]
+          actual.valor_incremento = this.contratoIncremento
+          listaInc.push(actual)
         }
-        // console.log((totalConceptosDed + conceptosDeducidos));
-        // console.log((sumaValoresCanon + totalConceptosDev + conceptosDevengados));
-        
-        
-        totalContrato = (sumaValoresCanon + totalConceptosDev + conceptosDevengados) - (totalConceptosDed + conceptosDeducidos)
-        // console.log(totalContrato.toFixed(0), "valor total");        
-    }  
-      // console.log(listaInc);
-          
-      return listaInc 
+      }
+      // console.log((totalConceptosDed + conceptosDeducidos));
+      // console.log((sumaValoresCanon + totalConceptosDev + conceptosDevengados));
+
+
+      totalContrato = (sumaValoresCanon + totalConceptosDev + conceptosDevengados) - (totalConceptosDed + conceptosDeducidos)
+      // console.log(totalContrato.toFixed(0), "valor total");        
+    }
+    // console.log(listaInc);
+
+    return listaInc
+  }
+
+  aplicarDisminucion(idContrato: any) {
+    let listaInc = []
+    // console.log("se aplica incremento");
+
+    let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.id_contrato == idContrato)
+    // console.log(contratoIncremento);
+
+    let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato + "T00:00:00")
+
+    if (FechaInicio.getFullYear() < this.anio && FechaInicio.getMonth() + 1 == this.mes) {
+
+      let diasAntesIncremento = FechaInicio.getDate();
+      let diaspost = 30 - diasAntesIncremento;
+      let porcentajeDisminucion = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100;
+      let valorCanonAntiguo = contratoIncremento[0].valor_canon - (contratoIncremento[0].valor_canon * porcentajeDisminucion);
+      let calcularpre = (valorCanonAntiguo / 30) * diasAntesIncremento;
+
+      let calcularpost = (contratoIncremento[0].valor_canon / 30) * diaspost;
+
+      let sumaValoresCanon = calcularpre + calcularpost;
+      let conceptosDeducidos = 0
+      let conceptosDevengados = 0 
+      this.contratoIncremento = sumaValoresCanon
+
+      let conceptoPre
+      let conceptoPost
+      let sumaConceptoDev
+      let sumaConceptoDed
+      let totalConceptosDev = 0
+      let totalConceptosDed = 0
+      let totalContrato: number
+
+      for (let index = 0; index < contratoIncremento[0].conceptos.length; index++) {
+        const element = contratoIncremento[0].conceptos;
+
+        if (element[index].conceptodetalle.incremento == 1 && element[index].conceptodetalle.tipo_concepto != 5) {
+          if (element[index].conceptodetalle.codigo_concepto <= 499) {
+            let actual = element[index];
+            let valorCanonAntiguo = element[index].valor - (element[index].valor * porcentajeDisminucion);
+            conceptoPre = (valorCanonAntiguo / 30) * diasAntesIncremento;
+            conceptoPost = (element[index].valor / 30) * diaspost;
+            sumaConceptoDev = conceptoPre + conceptoPost
+            totalConceptosDev += sumaConceptoDev
+            actual.valor_incremento = sumaConceptoDev
+            listaInc.push(actual)             
+          } else {
+            let actual = element[index]
+            let valorCanonAntiguo = element[index].valor - (element[index].valor * porcentajeDisminucion);
+            conceptoPre = (valorCanonAntiguo / 30) * diasAntesIncremento;
+            conceptoPost = (element[index].valor / 30) * diaspost;
+            sumaConceptoDed = conceptoPre + conceptoPost
+            // console.log(sumaConceptoDed);              
+            totalConceptosDed += sumaConceptoDed
+            actual.valor_incremento = sumaConceptoDed
+            // console.log(actual.valor_incremento);
+
+
+            listaInc.push(actual)
+            // console.log(parseInt(sumaConceptoDed), "incremento ded");              
+          }
+        } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto <= 499) {
+          let actual = element[index]
+          conceptosDevengados += element[index].valor
+          actual.valor_incremento = element[index].valor
+          listaInc.push(actual)
+          // console.log(parseInt(element[index].valor.toFixed(0)), "concepto dev");            
+        } else if (element[index].conceptodetalle.tipo_concepto != 5 && element[index].conceptodetalle.codigo_concepto > 499) {
+          let actual = element[index]
+          conceptosDeducidos += element[index].valor
+          actual.valor_incremento = element[index].valor
+          listaInc.push(actual)
+          // console.log(parseInt(element[index].valor), "concepto ded");            
+        } else if (element[index].conceptodetalle.tipo_concepto == 5) {
+          let actual = element[index]
+          actual.valor_incremento = this.contratoIncremento
+          listaInc.push(actual)
+        }
+      }
+      // console.log((totalConceptosDed + conceptosDeducidos));
+      // console.log((sumaValoresCanon + totalConceptosDev + conceptosDevengados));
+
+
+      totalContrato = (sumaValoresCanon + totalConceptosDev + conceptosDevengados) - (totalConceptosDed + conceptosDeducidos)
+      // console.log(totalContrato.toFixed(0), "valor total");        
+    }
+    // console.log(listaInc);
+
+    return listaInc
   }
 
   // ------------------------- AQUI SE GENERAN LOS COMPROBANTES ---------------------------------------
@@ -1312,8 +1400,7 @@ export class PagosComponent implements OnInit {
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_contrato == datos
     )
-    console.log("HOLA DESDE EL COMPROBANTE", this.Pdv );
-    
+
     if (
       this.Pdv[0].autdetalle.clientedetalle.tipo_documento ==
       "Nit"
@@ -1322,7 +1409,7 @@ export class PagosComponent implements OnInit {
         this.Pdv[0].autdetalle.clientedetalle.razon_social
     } else {
       this.tipoCliente =
-        this.Pdv[0].autdetalle.clientedetalle.nombres+' '+this.Pdv[0].autdetalle.clientedetalle.apellidos
+        this.Pdv[0].autdetalle.clientedetalle.nombres + ' ' + this.Pdv[0].autdetalle.clientedetalle.apellidos
     }
 
     let conceptosDevengados = {}
@@ -1336,40 +1423,72 @@ export class PagosComponent implements OnInit {
 
     let fechaFin = new Date(this.contatoPDF[0].fecha_fin_contrato + "T00:00:00")
 
-    
-    if(fechaIn.getFullYear() < this.anio && fechaIn.getMonth()+1 == this.mes && fechaFin.getFullYear() > this.anio && tipoPago == 1){
-      let lista = this.aplicarIncremento(datos);
-      // console.log(lista);
-      // console.log(fechaIn.getFullYear()+1);      
 
-      tipoPago = 3;
-          
-      conceptosDevengados = lista.filter(
-        (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6        
-      )
-      console.log("CONCEPTOS DEVENGADOS ", conceptosDevengados);      
+    if (fechaIn.getFullYear() < this.anio && fechaIn.getMonth() + 1 == this.mes && fechaFin.getFullYear() > this.anio && tipoPago == 1) {
       
-      conceptosDeducidos = lista.filter(
-        (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6      
-      )
+      let hoy = new Date();
+      let mesHoy = hoy.getMonth();
+      let diaHoy = hoy.getDate();
 
-      console.log("CONCEPTOS DEDUCIDOS ", conceptosDeducidos);  
+      if (fechaIn.getMonth() <= this.mes && fechaIn.getDate() <= diaHoy) {
+        let lista = this.aplicarDisminucion(datos);
 
-      totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
+        tipoPago = 3;
 
-      totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago));
-      
-      console.log('DEDUCCION', totalDeduccion, '\n DEVENGADO', totalDevengado);       
+        conceptosDevengados = lista.filter(
+          (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
+        )
+        console.log("CONCEPTOS DEVENGADOS ", conceptosDevengados);
 
-      total = Math.round(totalDevengado - totalDeduccion);
-      
-      totalDeduccion = Math.round(totalDeduccion);
-      totalDevengado = Math.round(totalDevengado);
+        conceptosDeducidos = lista.filter(
+          (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6
+        )
+
+        console.log("CONCEPTOS DEDUCIDOS ", conceptosDeducidos);
+
+        totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
+
+        totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago));
+
+        console.log('DEDUCCION', totalDeduccion, '\n DEVENGADO', totalDevengado);
+
+        total = Math.round(totalDevengado - totalDeduccion);
+
+        totalDeduccion = Math.round(totalDeduccion);
+        totalDevengado = Math.round(totalDevengado);
+
+      } else {
+        let lista = this.aplicarIncremento(datos);
+
+        tipoPago = 3;
+
+        conceptosDevengados = lista.filter(
+          (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
+        )
+        console.log("CONCEPTOS DEVENGADOS ", conceptosDevengados);
+
+        conceptosDeducidos = lista.filter(
+          (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6
+        )
+
+        console.log("CONCEPTOS DEDUCIDOS ", conceptosDeducidos);
+
+        totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
+
+        totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago));
+
+        console.log('DEDUCCION', totalDeduccion, '\n DEVENGADO', totalDevengado);
+
+        total = Math.round(totalDevengado - totalDeduccion);
+
+        totalDeduccion = Math.round(totalDeduccion);
+        totalDevengado = Math.round(totalDevengado);
+      }
     }
-     else if (tipoPago == 1) {
+    else if (tipoPago == 1) {
       // Se calculo el valor a pagar para el primer mes del contrato
       console.log("TIPO DE PAGO 1");
-      
+
       conceptosDevengados = this.Pdv[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
       )
@@ -1385,36 +1504,36 @@ export class PagosComponent implements OnInit {
         this.valorCanon(this.Pdv[0].valor_canon))
 
       total = Math.round(totalDevengado - totalDeduccion);
-      
+
       totalDeduccion = Math.round(totalDeduccion);
       totalDevengado = Math.round(totalDevengado);
     } else if (tipoPago == 2) {
       // console.log("Pagados blue label");
       console.log("TIPO DE PAGO 2");
-      
+
       conceptosDevengados = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6
       )
       // console.log(conceptosDevengados);
-      
+
       conceptosDeducidos = this.Pdv[0].pagoarrdetalle[0].contconceptos.filter(
         (element) => element.conceptodetalle.codigo_concepto > 499 || element.conceptodetalle.tipo_concepto == 6
       )
 
       // console.log(conceptosDeducidos);      
 
-      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))  
+      totalDeduccion = Math.round(this.valorTotalConceptos(conceptosDeducidos, tipoPago))
       // console.log("Deduccion",totalDeduccion);      
 
       totalDevengado = Math.round(this.valorTotalConceptos(conceptosDevengados, tipoPago) +
-        this.Pdv[0].pagoarrdetalle[0].canon) 
-      console.log("Devengado",totalDevengado)  
+        this.Pdv[0].pagoarrdetalle[0].canon)
+      console.log("Devengado", totalDevengado)
 
       total = Math.round(totalDevengado - totalDeduccion);
-      
+
       totalDeduccion = Math.round(totalDeduccion);
       totalDevengado = Math.round(totalDevengado);
-      
+
       fechaPago = this.Pdv[0].pagoarrdetalle[0].fecha_pago
     }
     const documentDefinition = {
@@ -1508,7 +1627,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${tipoPago == 2? this.Pdv[0].pagoarrdetalle[0].canon: this.Pdv[0].valor_canon}`,
+                      text: `${tipoPago == 2 ? this.Pdv[0].pagoarrdetalle[0].canon : this.Pdv[0].valor_canon}`,
                     },
                   ],
                 },
@@ -1548,7 +1667,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${(this.Pdv[0].autdetalle.entidadbancaria != null?this.Pdv[0].autdetalle.entidadbancaria.entidad_bancaria: "Efectivo")}`,
+                      text: `${(this.Pdv[0].autdetalle.entidadbancaria != null ? this.Pdv[0].autdetalle.entidadbancaria.entidad_bancaria : "Efectivo")}`,
                     },
                   ],
                 },
@@ -1559,7 +1678,7 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${(this.Pdv[0].autdetalle.numero_cuenta != null?this.Pdv[0].autdetalle.numero_cuenta:"No aplica")}`,
+                      text: `${(this.Pdv[0].autdetalle.numero_cuenta != null ? this.Pdv[0].autdetalle.numero_cuenta : "No aplica")}`,
                     },
                   ],
                 },
@@ -1570,9 +1689,8 @@ export class PagosComponent implements OnInit {
                       bold: true,
                     },
                     {
-                      text: `${
-                        tipoPago == 1 || 3 ? this.formatDate(new Date()) : fechaPago
-                      }`,
+                      text: `${tipoPago == 1 || 3 ? this.formatDate(new Date()) : fechaPago
+                        }`,
                     },
                   ],
                 },
@@ -1777,9 +1895,6 @@ export class PagosComponent implements OnInit {
         )
       },
     }
-
-    
     pdfMake.createPdf(documentDefinition).open()
   }
-
 }
