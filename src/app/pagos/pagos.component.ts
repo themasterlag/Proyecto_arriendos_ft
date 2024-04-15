@@ -1149,8 +1149,11 @@ export class PagosComponent implements OnInit {
     if (tipoPago == 1 || tipoPago == 3) {
       for (let index = 0; index < conceptos.length; index++) {
         if (tipoPago == 3){
-          if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
-          total += (conceptos[index].valor_incremento)
+          if (!(conceptos[index].conceptodetalle.tipo_concepto == 5)){
+            total += (conceptos[index].valor_incremento)
+          } else if ((conceptos[index].conceptodetalle.tipo_concepto == 5)) { 
+            total += (conceptos[index].valor_incremento)
+          }
           // console.log(conceptos[index].valor_incremento);
         } else {
           if (!(conceptos[index].conceptodetalle.tipo_concepto == 5))
@@ -1218,14 +1221,14 @@ export class PagosComponent implements OnInit {
     let contratoIncremento = this.noPagadosLista.filter((contrato) => contrato.id_contrato == idContrato)
     // console.log(contratoIncremento);
     
-    let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato)
+    let FechaInicio = new Date(this.contatoPDF[0].fecha_inicio_contrato + "T00:00:00")
     
     if(FechaInicio.getFullYear() < this.anio && FechaInicio.getMonth()+1 == this.mes)
       {              
-        let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()+1))
+        let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()))
         // console.log('valor canon a dias',calcularpre);
         
-        let diaspost = 30 - (FechaInicio.getDate()+1)
+        let diaspost = 30 - (FechaInicio.getDate())
         let operacionIncremento = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100
         // console.log(operacionIncremento.toFixed(4));
         
@@ -1251,11 +1254,10 @@ export class PagosComponent implements OnInit {
         for (let index = 0; index < contratoIncremento[0].conceptos.length; index++) {
           const element = contratoIncremento[0].conceptos;
           
-
           if(element[index].conceptodetalle.incremento == 1 && element[index].conceptodetalle.tipo_concepto != 5){
             if(element[index].conceptodetalle.codigo_concepto <= 499){
               let actual = element[index]
-              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate()+1)
+              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
               conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento+1)) 
               sumaConceptoDev = conceptoPre + conceptoPost
               totalConceptosDev += sumaConceptoDev
@@ -1266,7 +1268,7 @@ export class PagosComponent implements OnInit {
               // console.log(parseInt(sumaConceptoDev), "incremento dev");              
             } else {
               let actual = element[index]
-              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate()+1)
+              conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
               conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1)) 
               sumaConceptoDed = conceptoPre + conceptoPost
               // console.log(sumaConceptoDed);              
@@ -1351,7 +1353,6 @@ export class PagosComponent implements OnInit {
       conceptosDevengados = lista.filter(
         (element) => element.conceptodetalle.codigo_concepto <= 499 && element.conceptodetalle.tipo_concepto != 6        
       )
-      console.log("Lista" + lista)
       console.log("CONCEPTOS DEVENGADOS ", conceptosDevengados);      
       
       conceptosDeducidos = lista.filter(
@@ -1362,7 +1363,7 @@ export class PagosComponent implements OnInit {
 
       totalDeduccion = (this.valorTotalConceptos(conceptosDeducidos, tipoPago));
 
-      totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago) + this.canonIncremento);
+      totalDevengado = (this.valorTotalConceptos(conceptosDevengados, tipoPago));
       
       console.log('DEDUCCION', totalDeduccion, '\n DEVENGADO', totalDevengado);       
 
