@@ -326,9 +326,9 @@ export class PagosComponent implements OnInit {
     //console.log("Fecha Fin Contrato: ", fechaFinContrato)
     // Calcular Días con y sin Incremento
     // DIAS ANTES DEL INCREMENTO
-    let diasTrabajar = fechaInicioContrato.getDate()
+    let diasTrabajar = fechaInicioContrato.getDate() - 1;
     // DIAS DESPUES DEL INCREMENTO
-    let diasPago = 30 - fechaInicioContrato.getDate()
+    let diasPago = 30 - diasTrabajar;
     //console.log("Dias a trabajar (sin incremento): ", diasTrabajar);
     //console.log("Dias de pago (con incremento): ", diasPago);
 
@@ -348,10 +348,10 @@ export class PagosComponent implements OnInit {
     } else if (fechaFinContrato.getFullYear() == this.anio && fechaFinContrato.getMonth() + 1 == this.mes) {
       // Cuando el fin de contrato es en el mes actual
       // Calcula el canon solo hasta la fecha de finalización.
-      datos.canon = (datos.valor_canon / 30) * (fechaFinContrato.getDate() + 1)
-      total = (datos.valor_canon / 30) * (fechaFinContrato.getDate() + 1)
+      datos.canon = (datos.valor_canon / 30) * (fechaFinContrato.getDate())
+      total = (datos.valor_canon / 30) * (fechaFinContrato.getDate())
       for (let i = 0; i < conceptosAjuste.length; i++) {
-        conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate() + 1)
+        conceptosAjuste[i].valor = (conceptosAjuste[i].valor / 30) * (fechaFinContrato.getDate())
       }
 
       this.pagoConcepto.push(conceptosAjuste)
@@ -369,7 +369,7 @@ export class PagosComponent implements OnInit {
 
       if (fechaInicioContrato.getMonth() + 1 == this.mes && fechaInicioContrato.getDate() <= diaHoy) {
         var porcentajeIncrementos = (datos.incremento + datos.incremento_adicional) / 100;
-        var valorCanonAntiguo = datos.valor_canon - (datos.valor_canon * porcentajeIncrementos);
+        var valorCanonAntiguo = datos.valor_canon / (1 + porcentajeIncrementos);
         datosConIncremento.valor_canon = Math.round(valorCanonAntiguo);
         total = (valorCanonAntiguo / 30) * diasTrabajar;
 
@@ -480,7 +480,7 @@ export class PagosComponent implements OnInit {
   disminucionConceptos(conceptos: any, porcentajeDisminucion: any) {
     for (let i = 0; i < conceptos.length; i++) {
       if (conceptos[i].conceptodetalle.incremento == 1 || conceptos[i].conceptodetalle.tipo_concepto == 5) {
-        conceptos[i].valor = conceptos[i].valor - (conceptos[i].valor * porcentajeDisminucion)
+        conceptos[i].valor = conceptos[i].valor / (1 + porcentajeDisminucion);
       }
     }
     return conceptos
@@ -492,7 +492,7 @@ export class PagosComponent implements OnInit {
     let conceptosActualizar = [];
     for (let index = 0; index < this.noPagadosLista.length; index++) {
       const elementLista = this.noPagadosLista[index];
-      const fecha_inicio = new Date(this.noPagadosLista[index].fecha_inicio_contrato)
+      const fecha_inicio = new Date(this.noPagadosLista[index].fecha_inicio_contrato);
       fecha_inicio.setDate(fecha_inicio.getDate())
       let diasTrabajar = 30 - fecha_inicio.getDate()
 
@@ -1168,7 +1168,7 @@ export class PagosComponent implements OnInit {
     let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato + "T00:00:00")
     let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato + "T00:00:00")
 
-    let diasTrabajar = 30 - (fechaInicioContrato.getDate())
+    let diasTrabajar = 30 - (fechaInicioContrato.getDate() - 1);
     // console.log(diasTrabajar);
 
 
@@ -1189,7 +1189,7 @@ export class PagosComponent implements OnInit {
     let fechaInicioContrato = new Date(this.Pdv[0].fecha_inicio_contrato + "T00:00:00")
     let fechaFinContrato = new Date(this.Pdv[0].fecha_fin_contrato + "T00:00:00")
 
-    let diasTrabajar = 30 - fechaInicioContrato.getDate()
+    let diasTrabajar = 30 - fechaInicioContrato.getDate() - 1
 
     if (fechaInicioContrato.getFullYear() == this.anio && fechaInicioContrato.getMonth() + 1 == this.mes) {
       conceptosValidados = this.ajusteConceptosATrabajar(conceptosValidados, diasTrabajar)
@@ -1220,7 +1220,7 @@ export class PagosComponent implements OnInit {
       let calcularpre = ((contratoIncremento[0].valor_canon / 30) * (FechaInicio.getDate()))
       // console.log('valor canon a dias',calcularpre);
 
-      let diaspost = 30 - (FechaInicio.getDate())
+      let diaspost = 30 - (FechaInicio.getDate() - 1)
       let operacionIncremento = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100
       // console.log(operacionIncremento.toFixed(4));
 
@@ -1249,7 +1249,7 @@ export class PagosComponent implements OnInit {
         if (element[index].conceptodetalle.incremento == 1 && element[index].conceptodetalle.tipo_concepto != 5) {
           if (element[index].conceptodetalle.codigo_concepto <= 499) {
             let actual = element[index]
-            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
+            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate() - 1)
             conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1))
             sumaConceptoDev = conceptoPre + conceptoPost
             totalConceptosDev += sumaConceptoDev
@@ -1260,7 +1260,7 @@ export class PagosComponent implements OnInit {
             // console.log(parseInt(sumaConceptoDev), "incremento dev");              
           } else {
             let actual = element[index]
-            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate())
+            conceptoPre = (element[index].valor / 30) * (FechaInicio.getDate() - 1)
             conceptoPost = (((element[index].valor / 30) * diaspost) * (operacionIncremento + 1))
             sumaConceptoDed = conceptoPre + conceptoPost
             // console.log(sumaConceptoDed);              
@@ -1313,10 +1313,10 @@ export class PagosComponent implements OnInit {
 
     if (FechaInicio.getFullYear() < this.anio && FechaInicio.getMonth() + 1 == this.mes) {
 
-      let diasAntesIncremento = FechaInicio.getDate();
+      let diasAntesIncremento = FechaInicio.getDate() - 1;
       let diaspost = 30 - diasAntesIncremento;
       let porcentajeDisminucion = (contratoIncremento[0].incremento + contratoIncremento[0].incremento_adicional) / 100;
-      let valorCanonAntiguo = contratoIncremento[0].valor_canon - (contratoIncremento[0].valor_canon * porcentajeDisminucion);
+      let valorCanonAntiguo = contratoIncremento[0].valor_canon / (1 + porcentajeDisminucion);
       let calcularpre = (valorCanonAntiguo / 30) * diasAntesIncremento;
 
       let calcularpost = (contratoIncremento[0].valor_canon / 30) * diaspost;
@@ -1430,7 +1430,7 @@ export class PagosComponent implements OnInit {
       let mesHoy = hoy.getMonth();
       let diaHoy = hoy.getDate();
 
-      if (fechaIn.getMonth() <= this.mes && fechaIn.getDate() <= diaHoy) {
+      if (fechaIn.getMonth() + 1 >= this.mes && fechaIn.getDate() <= diaHoy) {
         let lista = this.aplicarDisminucion(datos);
 
         tipoPago = 3;
