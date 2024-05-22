@@ -1397,6 +1397,9 @@ export class PagosComponent implements OnInit {
   comprobantePdfNoPagados(base64, datos, tipoPago) {
     console.log("DATOS DEL CONTRATO GENERADO", datos, this.contatoPDF)
 
+    const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+    const mesSeleccionado = meses[this.mes - 1];
+
     this.Pdv = this.contatoPDF.filter(
       (pdv) => pdv.id_contrato == datos
     )
@@ -1718,14 +1721,19 @@ export class PagosComponent implements OnInit {
         {
           columns: [
             {
-              text: {
-                text: "Concepto: ",
-                bold: true,
-              },
-              alignment: "left",
-              margin: [28, 10, 0, 0],
+              text: [
+                {
+                  text: `\nConcepto: `,
+                  bold: true,
+                },
+                {
+                  text: `PAGO CANON DE ARRENDAMIENTO, MES DE ${mesSeleccionado}`,
+                },
+              ],
             },
           ],
+          alignment: "left",
+          margin: [28, 10, 0, 0],
         },
         {
           columns: [
