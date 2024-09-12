@@ -56,9 +56,12 @@ export class AuthGuard implements CanActivate {
   validarPermisos(next, requiredPermissions){
     const storedPermissions = JSON.parse(sessionStorage.getItem('permisos'));
     // Verificar si el usuario tiene los permisos requeridos
-    const hasRequiredPermissions = requiredPermissions.every(
-      (requiredPermission: string) => storedPermissions.some((storedPermission: any) => storedPermission.id_permiso == requiredPermission)
-    );
+    var hasRequiredPermissions = true;
+    if (storedPermissions != "all") {
+      hasRequiredPermissions = requiredPermissions.every(
+        (requiredPermission: string) => storedPermissions.some((storedPermission: any) => storedPermission.id_permiso == requiredPermission)
+      );
+    }
 
     if (hasRequiredPermissions) {
       return true;

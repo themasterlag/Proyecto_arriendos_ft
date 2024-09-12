@@ -25,7 +25,13 @@ export class AutenticacionService {
     if (this.token != null) {
       this.cargaUtil = jwt_decode(this.token)
       if (this.cargaUtil.permisos) {
-        sessionStorage.setItem("permisos", JSON.stringify(this.cargaUtil.permisos.permisodetalle));
+        if (this.cargaUtil.permisos == "all") {
+          console.log("permisos", JSON.stringify(this.cargaUtil.permisos))
+          sessionStorage.setItem("permisos", JSON.stringify(this.cargaUtil.permisos));
+        }
+        else{
+          sessionStorage.setItem("permisos", JSON.stringify(this.cargaUtil.permisos.permisodetalle));
+        }
       }
       this.cargaUtil.exp = new Date(this.cargaUtil.exp * 1000);
       let ahora:any = new Date();

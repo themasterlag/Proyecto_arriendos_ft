@@ -49,23 +49,23 @@ export class AdminLayoutComponent implements OnInit {
         }).then((result)=>{
             if (result.isConfirmed) {
                 this.estadoInactividad = false;
-                this.http.post(Api.url+"aut/renovar/",{token:sessionStorage.getItem("token")}).subscribe(
-                    (res:any)=>{
-                        if(res.token){
-                            sessionStorage.setItem("token", res.token);
-                            clearTimeout(this.temporizadorInactividad);
-                        }
-                    },
-                    (error:any)=>{
-                        Swal.fire({
-                            icon: "error",
-                            toast: true,
-                            position: "top-end",
-                            title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
-                        });
-                        console.error(error);
-                    }
-                );
+                // this.http.post(Api.url+"aut/renovar/",{token:sessionStorage.getItem("token")}).subscribe(
+                //     (res:any)=>{
+                //         if(res.token){
+                //             sessionStorage.setItem("token", res.token);
+                //             clearTimeout(this.temporizadorInactividad);
+                //         }
+                //     },
+                //     (error:any)=>{
+                //         Swal.fire({
+                //             icon: "error",
+                //             toast: true,
+                //             position: "top-end",
+                //             title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
+                //         });
+                //         console.error(error);
+                //     }
+                // );
             }
             else{
                 Swal.fire({

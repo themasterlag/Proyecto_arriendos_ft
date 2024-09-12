@@ -99,26 +99,43 @@ export class SidebarComponent implements OnInit {
 
   constructor(public servicioAuth:AutenticacionService) {
     let permisos:any = sessionStorage.getItem('permisos');
-    
+    console.log(permisos)
     if (permisos) {
       permisos = JSON.parse(permisos);
-      permisos.forEach(permiso => {
+      if (permisos == "all") {
         nav.forEach(element => {
           if (element.children.length > 0) {
             element.children.forEach(item => {
-              if (item.id == permiso.id_permiso) {
                 element.active = true;
                 item.active = true;
-              }
+              
             });
           }
           else{
-            if (element.id == permiso.id_permiso) {
               element.active = true;
-            }
+            
           }
         });
-      });
+      }
+      else{
+        permisos.forEach(permiso => {
+          nav.forEach(element => {
+            if (element.children.length > 0) {
+              element.children.forEach(item => {
+                if (item.id == permiso.id_permiso) {
+                  element.active = true;
+                  item.active = true;
+                }
+              });
+            }
+            else{
+              if (element.id == permiso.id_permiso) {
+                element.active = true;
+              }
+            }
+          });
+        });
+      }
     }
   }
 

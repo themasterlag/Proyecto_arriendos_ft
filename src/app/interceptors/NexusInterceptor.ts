@@ -13,14 +13,19 @@ export class NexusInterceptor implements HttpInterceptor {
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         if (!request.url.includes('/api') || request.url.includes("login") || request.url.includes("aut/renovar")) {
-            return next.handle(request);
+            const nuevoReq = request.clone({
+                withCredentials : true
+            });
+            return next.handle(nuevoReq);
         }
         
         const nuevoReq = request.clone({
             setHeaders:{
                 "x-access-token": sessionStorage.getItem("token")
-            }
+            },
+            withCredentials : true
         });
+
         const url = new URL(request.url);
         const domain = url.protocol + '//' + url.hostname + ':' + url.port;
 
@@ -46,22 +51,22 @@ export class NexusInterceptor implements HttpInterceptor {
                     });
                 }
 
-                this.http.post(domain+"/api/arriendos/aut/renovar",{token:sessionStorage.getItem("token")}).subscribe(
-                    (res:any)=>{
-                        if(res.token){
-                            sessionStorage.setItem("token", res.token);
-                        }
-                    },
-                    (error:any)=>{
-                        Swal.fire({
-                            icon: "error",
-                            toast: true,
-                            position: "top-end",
-                            title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
-                        });
-                        console.error(error);
-                    }
-                );
+                // this.http.post(domain+"/api/arriendos/aut/renovar",{token:sessionStorage.getItem("token")}, {withCredentials: true}).subscribe(
+                //     (res:any)=>{
+                //         if(res.token){
+                //             sessionStorage.setItem("token", res.token);
+                //         }
+                //     },
+                //     (error:any)=>{
+                //         Swal.fire({
+                //             icon: "error",
+                //             toast: true,
+                //             position: "top-end",
+                //             title: "No se pudo renovar la sesion, se recomienda cerrar la sesion e iniciar nuevamente."
+                //         });
+                //         console.error(error);
+                //     }
+                // );
 
                 localStorage.setItem('online', 'true');
 
@@ -70,40 +75,40 @@ export class NexusInterceptor implements HttpInterceptor {
             catchError((error) => {
                 if (error.status === 0) {
                     console.log('Sin conexión', error);
-                    localStorage.setItem('online', 'false');
+                    // localStorage.setItem('online', 'false');
 
-                    const errorMessage = 'No se pudo conectar al servidor.';
+                    // const errorMessage = 'No se pudo conectar al servidor.';
 
-                    const headers = request.headers.set(
-                        'X-Error-Type',
-                        'AvailabilityError'
-                    );
+                    // const headers = request.headers.set(
+                    //     'X-Error-Type',
+                    //     'AvailabilityError'
+                    // );
 
-                    // Mostrar el Swal y esperar a que se cierre
-                    return new Observable<HttpEvent<any>>((observer) => {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            title: 'Error en la conexión',
-                            text: errorMessage,
-                            icon: 'error',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            showConfirmButton: false,
-                            showCloseButton: true,
-                            // timer: 8000,
-                            // timerProgressBar: true,
-                        }).then(() => {
-                            const customError = new HttpErrorResponse({
-                                error: errorMessage,
-                                status: 503,
-                                statusText: 'Error de red',
-                                url: request.url,
-                                headers: headers,
-                            });
-                            observer.error(customError);
-                        });
-                    });
+                    // // Mostrar el Swal y esperar a que se cierre
+                    // return new Observable<HttpEvent<any>>((observer) => {
+                    //     Swal.fire({
+                    //         toast: true,
+                    //         position: 'top-end',
+                    //         title: 'Error en la conexión',
+                    //         text: errorMessage,
+                    //         icon: 'error',
+                    //         allowOutsideClick: false,
+                    //         allowEscapeKey: false,
+                    //         showConfirmButton: false,
+                    //         showCloseButton: true,
+                    //         // timer: 8000,
+                    //         // timerProgressBar: true,
+                    //     }).then(() => {
+                    //         const customError = new HttpErrorResponse({
+                    //             error: errorMessage,
+                    //             status: 503,
+                    //             statusText: 'Error de red',
+                    //             url: request.url,
+                    //             headers: headers,
+                    //         });
+                    //         observer.error(customError);
+                    //     });
+                    // });
                 } else {
                     return next.handle(nuevoReq);
                 }
@@ -115,6 +120,7 @@ export class NexusInterceptor implements HttpInterceptor {
         // Realiza una solicitud HEAD al dominio para verificar la disponibilidad
         return new Observable((observer) => {
             const xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
             xhr.open('GET', domain);
             xhr.onload = () => {
                 if (xhr.status != 0) {
