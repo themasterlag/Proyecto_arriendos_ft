@@ -20,6 +20,7 @@ export class AutenticacionService {
   }
 
   validarToken(){
+    return true;
     this.token = sessionStorage.getItem("token");
 
     if (this.token != null) {

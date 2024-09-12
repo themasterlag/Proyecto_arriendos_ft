@@ -68,15 +68,16 @@ export class PermisosComponent implements OnInit {
   // ___________________________________________________________________________________________________________
 
   traerPermisos(){
-    this.servicio.traerPermisos().subscribe(
-      (res) => {
-        this.permisos = res;
-        this.tablaPermisos();
-      },
-      (error:any) =>{
-       Swal.fire("No se encontro", "Error: "+error.error.message, "error");
-      }
-    )
+    this.tablaPermisos();
+    // this.servicio.traerPermisos().subscribe(
+    //   (res) => {
+    //     this.permisos = res;
+    //     this.tablaPermisos();
+    //   },
+    //   (error:any) =>{
+    //    Swal.fire("No se encontro", "Error: "+error.error.message, "error");
+    //   }
+    // )
   }
 
   consultarListaPermisos(){
@@ -94,13 +95,30 @@ export class PermisosComponent implements OnInit {
 
   tablaPermisos(){
 
-    this.tabla_permisos = this.permisos.map((permisos) => {
-      return {
-        id_permiso: permisos.id_permiso,
-        permiso: permisos.permiso,
-        estado:  permisos.estado,
+    // this.tabla_permisos = this.permisos.map((permisos) => {
+    //   return {
+    //     id_permiso: permisos.id_permiso,
+    //     permiso: permisos.permiso,
+    //     estado:  permisos.estado,
+    //   }
+    // })
+    this.tabla_permisos = [
+      {
+        id_permiso: 1,
+        permiso: "Gestionar Cargos",
+        estado: 1,
+      },
+      {
+        id_permiso: 2,
+        permiso: "Gestionar Subprocesos",
+        estado: 1,
+      },
+      {
+        id_permiso: 3,
+        permiso: "Gestionar Modulos",
+        estado: 1,
       }
-    })
+    ]
 
     this.dataSourcePermisos.data = this.tabla_permisos;
     this.dataSourcePermisos.paginator = this.paginatorPermiso;

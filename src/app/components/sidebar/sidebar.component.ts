@@ -19,12 +19,12 @@ let nav = [
     icon:'corporate_fare', 
     class:'', 
     id:null, 
-    active:false, 
+    active:true, 
     children:[
-      { path: '/dashboard/register', title: 'Registro',  icon:'app_registration', class: '', id:1, active:false, children:[]},
+      { path: '/dashboard/register', title: 'Registro',  icon:'app_registration', class: '', id:1, active:true, children:[]},
       { path: '/dashboard/pagos', title: 'Pagos',  icon:'bubble_chart', class: '', id:2, children:[]},
-      { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:3, active:false, children:[] },
-      { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:4, active:false, children:[] },
+      { path: '/dashboard/creditos', title: 'Creditos',  icon:'credit_card', class: '',id:3, active:true, children:[] },
+      { path: '/dashboard/reportes', title: 'Reportes',  icon:'inventory_2', class: '',id:4, active:true, children:[] },
     ]
   },
 
@@ -34,12 +34,12 @@ let nav = [
     icon:'app_registration', 
     class:'', 
     id:null, 
-    active:false, 
+    active:true, 
     children:[
-      { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:7, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:7, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/incrementos', title: 'Incrementos', icon:'add_task', class:'', id:7, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/motivoNovedades', title: 'Motivo Novedades', icon:'notepad icon', class:'', id:7, active:false, children:[]},
+      { path: '/dashboard/parametrizacion/conceptos', title: 'Conceptos', icon:'queue', class:'', id:7, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/bancos', title: 'Gestion bancos', icon:'account_balance', class:'', id:7, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/incrementos', title: 'Incrementos', icon:'add_task', class:'', id:7, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/motivoNovedades', title: 'Motivo Novedades', icon:'notepad icon', class:'', id:7, active:true, children:[]},
     ]
   },
 
@@ -49,12 +49,12 @@ let nav = [
     icon:'rule', 
     class:'', 
     id:null, 
-    active:false, 
+    active:true, 
     children:[
-      { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:5, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:5, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:5, active:false, children:[]},
-      { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:5, active:false, children:[]}, 
+      { path: '/dashboard/parametrizacion/permisos', title: 'Gestion permisos', icon:'admin_panel_settings', class:'', id:5, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/usuarios', title: 'Usuarios', icon:'account_circle', class:'', id:5, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/procesos', title: 'Procesos', icon:'account_tree', class:'', id:5, active:true, children:[]},
+      { path: '/dashboard/parametrizacion/cargos', title: 'Cargos', icon:'manage_accounts', class:'', id:5, active:true, children:[]}, 
     ]
   },
 
@@ -64,10 +64,10 @@ let nav = [
     icon:'call_to_action', 
     class:'', 
     id:null, 
-    active:false, 
+    active:true, 
     children:[
-      { path: '/dashboard/carnetVirtual/personalVinculado', title: 'Personal vinculado', icon:'attribution', class:'', id:8, active:false, children:[]},
-      { path: '/carnet', title: 'Consultar carnet', icon:'badge', class:'', id:8, active:false, children:[]},
+      { path: '/dashboard/carnetVirtual/personalVinculado', title: 'Personal vinculado', icon:'attribution', class:'', id:8, active:true, children:[]},
+      { path: '/carnet', title: 'Consultar carnet', icon:'badge', class:'', id:8, active:true, children:[]},
     ]
   },
 
@@ -77,10 +77,10 @@ let nav = [
     icon:'feed', 
     class:'', 
     id:null, 
-    active:false, 
+    active:true, 
     children:[
-      { path: '/novedad', title: 'Novedades', icon:'event_available', class:'', id:9, active:false, children:[]},
-      { path: '/dashboard/novedades/tipopago', title: 'Tipo pago novedades', icon:'list_alt', class:'', id:9, active:false, children:[]},
+      { path: '/novedad', title: 'Novedades', icon:'event_available', class:'', id:9, active:true, children:[]},
+      { path: '/dashboard/novedades/tipopago', title: 'Tipo pago novedades', icon:'list_alt', class:'', id:9, active:true, children:[]},
     ]
   },
 ];

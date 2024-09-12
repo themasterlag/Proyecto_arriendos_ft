@@ -6,7 +6,8 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 })
 export class ApiServiceService {
   // url: string = "http://10.0.102.128:3000/api/arriendos/";
-  url: string = "http://localhost:3000/api/arriendos/"; // "http://10.250.9.42:3000/api/arriendos/"; // 10.0.102.128
+  // url: string = "http://localhost:3000/api/arriendos/"; // "http://10.250.9.42:3000/api/arriendos/"; // 10.0.102.128
+  url: string = "3000-idx-arriendosbk-1726111308907.cluster-2xid2zxbenc4ixa74rpk7q7fyk.cloudworkstations.dev/api/arriendos/"
 
   constructor(private http: HttpClient) {}
 

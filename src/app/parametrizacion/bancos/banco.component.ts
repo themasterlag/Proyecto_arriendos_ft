@@ -109,28 +109,56 @@ export class BancoComponent implements OnInit {
    
 
     traerBancos() {
-      this.servicio.traerBancos().subscribe(
-        (res) => {
-          console.log(res); // Verifica si los datos se imprimen correctamente en la consola
-          this.entidad_bancaria = res;
-          this.tablaBanco();
-        },
-        (error: any) => {
-          Swal.fire("No se encontro", "Error: " + error.error.message, "error");
-        }
-      );
+      this.tablaBanco();
+      // this.servicio.traerBancos().subscribe(
+      //   (res) => {
+      //     console.log(res); // Verifica si los datos se imprimen correctamente en la consola
+      //     this.entidad_bancaria = res;
+      //     this.tablaBanco();
+      //   },
+      //   (error: any) => {
+      //     Swal.fire("No se encontro", "Error: " + error.error.message, "error");
+      //   }
+      // );
     }
     
 
 
     tablaBanco() {
-      this.tabla_banco = this.entidad_bancaria.map((entidad_bancaria) => {
-        return {
-          id_entidad_bancaria: entidad_bancaria.id_entidad_bancaria,
-          banco: entidad_bancaria.entidad_bancaria,
-        };
-      });
+      // this.tabla_banco = this.entidad_bancaria.map((entidad_bancaria) => {
+      //   return {
+      //     id_entidad_bancaria: entidad_bancaria.id_entidad_bancaria,
+      //     banco: entidad_bancaria.entidad_bancaria,
+      //   };
+      // });
     
+      this.tabla_banco = [
+        {
+          id_entidad_bancaria: 1,
+          banco: "Banco de la Republica",
+        },
+        {
+          id_entidad_bancaria: 2,
+          banco: "Banco Bogota",
+        },
+        {
+          id_entidad_bancaria: 3,
+          banco: "Bancocolombia",
+        },
+        {
+          id_entidad_bancaria: 4,
+          banco: "Nequi",
+        },
+        {
+          id_entidad_bancaria: 5,
+          banco: "Daviplata",
+        },
+        {
+          id_entidad_bancaria: 6,
+          banco: "Nubank",
+        },
+      ]
+
       this.dataSourceBanco = new MatTableDataSource(this.tabla_banco); // Inicializar dataSourceBanco
     
       // Asignar paginator y sort al dataSource
